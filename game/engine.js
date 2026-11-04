@@ -14,7 +14,9 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* без сохранений */ } },
   };
   // мета — сквозная для всех жизней: Хор, схема, увиденное
-  let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {} }, store.get(META, {}));
+  let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {} }, store.get(META, {}));
+  meta.guide = meta.guide || {};
+  let guideOn = null; // финал, чей путь подсвечен на схеме
   const saveMeta = () => store.set(META, meta);
   let S = null; // текущая жизнь
 
@@ -418,6 +420,42 @@
     renderPanels();
     show(id);
     if (id === "#flow") renderFlow();
+    if (id === "#guide") renderGuide();
+  }
+
+  // ---------- путеводитель: три ступени подсказок к каждому финалу
+  function renderGuide() {
+    const list = $("#guide-list"); list.innerHTML = "";
+    const gs = G.guides || {};
+    let n = 0;
+    for (const [fid, g] of Object.entries(gs)) {
+      n++;
+      const done = !!meta.visited[fid];
+      const locked = g.secret && !done && !(g.gate && meta.visited[g.gate]);
+      const lvl = meta.guide[fid] || 0;
+      const card = document.createElement("div");
+      card.className = "gcard" + (done ? " done" : "") + (locked ? " locked" : "");
+      let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${locked ? "Секрет" : esc(g.title)}</b><span class="mono dim">${locked ? "????" : esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : ""}</div>`;
+      if (locked) h += `<p class="dim tiny">Это утро откроется, когда ты хотя бы раз дойдёшь до тальника у заводи.</p>`;
+      else {
+        if (lvl >= 1) h += `<p class="ghint">${md(g.hint)}</p>`;
+        if (lvl >= 2) h += `<ul class="gforks">${g.forks.map((f) => `<li>${md(f)}</li>`).join("")}</ul>`;
+        if (lvl >= 3) h += `<ol class="gsteps">${g.steps.filter((s) => s.choice).map((s) => `<li${s.death ? ' class="gdeath"' : ""}><span class="mono dim">${esc(s.year)}</span> ${esc(s.title)} → «${esc(s.label)}»${s.death ? " <i>умереть и вернуться</i>" : ""}</li>`).join("")}</ol>`;
+        if (!g.found) h += `<p class="dim tiny">Дорога сюда пока не построена.</p>`;
+        const labels = ["Подсказка: каким стать", "Главные развилки", "Весь путь"];
+        h += `<div class="gbtns">`;
+        if (lvl < 3 && g.found) h += `<button class="choice ghost-choice gmore">${labels[lvl]}</button>`;
+        if (lvl >= 3) h += `<button class="choice ghost-choice gflow">Показать на схеме</button>`;
+        h += `</div>`;
+      }
+      card.innerHTML = h;
+      const more = card.querySelector(".gmore");
+      if (more) more.onclick = () => { meta.guide[fid] = lvl + 1; saveMeta(); renderGuide(); };
+      const fl = card.querySelector(".gflow");
+      if (fl) fl.onclick = () => { guideOn = fid; openPanel("#flow"); };
+      list.append(card);
+    }
+    if (!n) list.innerHTML = `<p class="dim">Путеводитель пока пуст.</p>`;
   }
   function closePanel() { if (back === "#scene" && S) show("#scene"); else showTitle(); }
 
@@ -490,7 +528,10 @@
     const life = new Set(S ? [...S.stack.map((s) => s.scene), S.scene] : []);
     const frontier = new Set();
     for (const id of Object.keys(visited)) for (const k of kids[id] || []) if (!visited[k]) frontier.add(k);
-    const showNode = (id) => visited[id] || frontier.has(id);
+    const gp = guideOn && G.guides && G.guides[guideOn];
+    const gScenes = new Set(gp ? [...gp.steps.map((s) => s.scene), guideOn] : []);
+    const gChoice = {}; if (gp) for (const s of gp.steps) if (s.choice && !s.death) gChoice[s.scene] = s.choice;
+    const showNode = (id) => visited[id] || frontier.has(id) || gScenes.has(id);
     const W = 176, H = 92, GX = 26, GY = 70, PAD = 24;
     const pos = {};
     let maxW = 0, y = PAD;
@@ -518,7 +559,7 @@
     for (const [id, sc] of Object.entries(G.scenes)) total += (sc.choices || []).length;
     for (const id of Object.keys(pos)) {
       const p = pos[id], sc = G.scenes[id];
-      if (!visited[id]) {
+      if (!visited[id] && !gScenes.has(id)) {
         nodes += `<g class="fnode unk" transform="translate(${p.x},${p.y})"><rect width="${W}" height="${H}" rx="8"/><text x="${W / 2}" y="${H / 2 + 6}" text-anchor="middle" class="q">?</text></g>`;
         continue;
       }
@@ -531,27 +572,29 @@
         const isShown = shown[id] && shown[id][c.id];
         const deathSeen = c.outcomes.some((o) => o.to.startsWith("✝") && meta.journal[o.to]);
         if (isTaken) opened++;
-        const cls = deathSeen && isTaken ? "dead" : isTaken ? "taken" : isShown ? "shown" : "unk";
-        const label = cls === "unk" ? "?" : deathSeen && isTaken ? "✝" : LETTERS[i] || i + 1;
-        const tip = isShown || isTaken ? esc(c.label) : "ещё не видел";
+        const onGuide = gChoice[id] === c.id;
+        const cls = (deathSeen && isTaken ? "dead" : isTaken ? "taken" : isShown ? "shown" : "unk") + (onGuide ? " guide" : "");
+        const label = !onGuide && !isTaken && !isShown ? "?" : deathSeen && isTaken ? "✝" : LETTERS[i] || i + 1;
+        const tip = isShown || isTaken || onGuide ? esc(c.label) : "ещё не видел";
         chips += `<g class="chip ${cls}" transform="translate(${cx},${H - 28})"><title>${tip}</title><rect width="${cw}" height="20" rx="4"/><text x="${cw / 2}" y="14" text-anchor="middle">${label}</text></g>`;
         // рёбра от фишки к сцене
-        if (isTaken || isShown) {
+        if (isTaken || isShown || onGuide) {
           for (const o of c.outcomes) {
             const t = o.to;
             if (!pos[t]) continue;
+            if (onGuide && !(isTaken || isShown) && !gScenes.has(t)) continue;
             const x1 = p.x + cx + cw / 2, y1 = p.y + H - 8, x2 = pos[t].x + W / 2, y2 = pos[t].y;
             const my = (y1 + y2) / 2;
-            edges += `<path class="edge ${isTaken && visited[t] ? "taken" : "shown"} ${life.has(id) && life.has(t) ? "now" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+            edges += `<path class="edge ${isTaken && visited[t] ? "taken" : "shown"} ${life.has(id) && life.has(t) ? "now" : ""} ${onGuide && gScenes.has(t) ? "guide" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
           }
         }
       });
       if (sc.next && pos[sc.next]) {
         const x1 = p.x + W / 2, y1 = p.y + H, x2 = pos[sc.next].x + W / 2, y2 = pos[sc.next].y, my = (y1 + y2) / 2;
-        edges += `<path class="edge taken ${life.has(id) && life.has(sc.next) ? "now" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+        edges += `<path class="edge taken ${life.has(id) && life.has(sc.next) ? "now" : ""} ${gScenes.has(id) && gScenes.has(sc.next) ? "guide" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
       }
       const title = esc((sc.title || id).replace(/^Демо\.\s*/, ""));
-      nodes += `<g class="fnode ${life.has(id) ? "now" : ""} ${S && S.scene === id ? "here" : ""} fe-${sc.photo || "none"}" transform="translate(${p.x},${p.y})">
+      nodes += `<g class="fnode ${gScenes.has(id) ? "guide" : ""} ${life.has(id) ? "now" : ""} ${S && S.scene === id ? "here" : ""} fe-${sc.photo || "none"}" transform="translate(${p.x},${p.y})">
         <rect width="${W}" height="${H}" rx="8"/>
         <text x="12" y="22" class="ft">${title.length > 22 ? title.slice(0, 21) + "…" : title}</text>
         <text x="12" y="40" class="fd">${esc(yearOf(sc.date) || "")}${sc.age != null ? " · " + sc.age : ""}</text>
@@ -559,7 +602,10 @@
     }
     $("#flow-canvas").innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема ветвлений">${edges}${nodes}</svg>`;
     $("#flow-count").textContent = `Развилок открыто: ${opened} из ${total}. Жизней прожито: ${meta.lives || 0}.`;
-    const here = S && pos[S.scene];
+    const fg = $("#flow-guide");
+    fg.hidden = !gp;
+    if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }
+    const here = gp ? pos[gp.steps[0] && gp.steps[0].scene] : S && pos[S.scene];
     if (here) { const wrap = $("#flow-wrap"); wrap.scrollLeft = Math.max(0, here.x - wrap.clientWidth / 2 + W / 2); wrap.scrollTop = Math.max(0, here.y - 120); }
   }
 
@@ -648,7 +694,7 @@
   // ---------- кнопки
   $("#btn-new").onclick = newLife;
   $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; enter(S.scene, true); } };
-  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-howto", "#howto"], ["#btn-about", "#about"]])
+  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));

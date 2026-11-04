@@ -325,3 +325,25 @@ body[data-era="future"] .choice { border-radius: 14px; }
 #text p.norewind.crumble .nr-btn { animation: crumble 1.6s ease forwards; }
 #text p.norewind .nr-end { display: block; text-align: center; letter-spacing: .12em; color: var(--dim); padding: 18px 0; }
 @keyframes crumble { 0% { opacity: 1; filter: none; } 40% { filter: blur(1px); letter-spacing: .3em; } 100% { opacity: 0; filter: blur(6px); transform: translateY(10px) scale(.96); letter-spacing: 1em; } }
+
+/* ---------- путеводитель */
+#guide-list { display: grid; gap: 12px; margin-top: 14px; }
+.gcard { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: rgba(255,255,255,.02); }
+.gcard.done { border-color: #c9a45c; }
+.gcard.locked { border-style: dashed; opacity: .75; }
+.ghead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ghead b { font-size: 1.08em; }
+.gnum { color: var(--dim); }
+.gdone { margin-left: auto; color: #c9a45c; font-size: .8em; text-transform: uppercase; letter-spacing: .08em; }
+.ghint { margin: 10px 0 0; }
+.gforks { margin: 10px 0 0; padding-left: 1.2em; }
+.gforks li, .gsteps li { margin: 4px 0; }
+.gsteps { margin: 10px 0 0; padding-left: 1.6em; font-size: .92em; }
+.gsteps li.gdeath { color: var(--blood); }
+.gbtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.gbtns .choice { width: auto; margin: 0; padding: 8px 12px; font-size: .9em; }
+.fnode.guide rect { stroke: #e2b86a; stroke-width: 2.5; }
+.chip.guide rect { stroke: #e2b86a; stroke-width: 2; }
+.edge.guide { stroke: #e2b86a; stroke-width: 2.5; stroke-dasharray: none; }
+#flow-guide { color: #e2b86a; margin: 8px 0 0; }
+#guide .kicker { color: var(--accent); letter-spacing: .2em; text-transform: uppercase; font-size: 12px; margin: 0; }

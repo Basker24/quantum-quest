@@ -10,6 +10,7 @@
     <button id="btn-me" class="ghost">Я</button>
     <span id="when"></span>
     <span class="bar-right">
+      <button id="btn-guide" class="ghost">Путь</button>
       <button id="btn-flow" class="ghost">Схема</button>
       <button id="btn-journal" class="ghost">Хор</button>
     </span>
@@ -27,6 +28,7 @@
         <div class="menu-row">
           <button id="btn-flow2" class="choice ghost-choice">Схема</button>
           <button id="btn-journal2" class="choice ghost-choice">Хор</button>
+          <button id="btn-guide2" class="choice ghost-choice">Путеводитель</button>
           <button id="btn-howto2" class="choice ghost-choice">О чём игра</button>
         </div>
       </div>
@@ -80,7 +82,17 @@
     <div class="flow-legend mono tiny">
       <span><i class="lg taken"></i>выбирал</span><span><i class="lg shown"></i>видел</span><span><i class="lg unk"></i>не видел</span><span><i class="lg dead"></i>смерть</span><span><i class="lg now"></i>эта жизнь</span>
     </div>
+    <p id="flow-guide" class="tiny mono" hidden></p>
     <div id="flow-wrap"><div id="flow-canvas"></div></div>
+  </section>
+
+  <!-- путеводитель -->
+  <section id="guide" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Путеводитель</p>
+    <h2>Куда ведут дороги</h2>
+    <p class="dim tiny">К каждому утру ведёт хотя бы одна дорога. Подсказки открываются по ступеням: сначала каким надо стать, потом главные развилки, потом весь путь. Открывай, только если сам уже не хочешь искать.</p>
+    <div id="guide-list"></div>
   </section>
 
   <!-- журнал -->
@@ -101,7 +113,7 @@
     <h2>Я</h2>
     <div id="me-list"></div>
     <div id="debug" class="mono tiny" hidden></div>
-    <p class="dim tiny"><button id="btn-howto" class="link">О чём игра</button> · <button id="btn-about" class="link">Об игре</button> · <button id="btn-quit" class="link">в главное меню</button></p>
+    <p class="dim tiny"><button id="btn-guide3" class="link">Путеводитель</button> · <button id="btn-howto" class="link">О чём игра</button> · <button id="btn-about" class="link">Об игре</button> · <button id="btn-quit" class="link">в главное меню</button></p>
   </section>
 
   <!-- о чём игра -->
