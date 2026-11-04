@@ -154,6 +154,9 @@ def main(note=""):
         for b in sc["text"]:
             if "if" in b:
                 t, f = possible(st, b["if"])
+                if "seen" in str(b["if"]):        # смерть могла быть, а могла и не быть
+                    t2, f2 = possible(st, b["if"], frozenset(D))
+                    t, f = t or t2, f or f2
                 k = (sid, "текст", b["md"][:32])
                 if t:
                     cond_true.add(k)
