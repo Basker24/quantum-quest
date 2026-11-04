@@ -108,6 +108,43 @@ def main():
                     changed = True
     live_order = {sid: tuple(n for n in ALL if n in live[sid]) for sid in S}
 
+    # --- абстракция значений: у enum-флага важно только, равен ли он литералу,
+    # с которым его где-то сравнивают в переходах. Остальные значения склеиваются в «*».
+    CMP = defaultdict(set)
+
+    def collect_cmp(e):
+        if isinstance(e, dict):
+            if e.get("op") == "cmp":
+                for a, b in ((e["l"], e["r"]), (e["r"], e["l"])):
+                    if a.get("op") == "var" and b.get("op") == "lit":
+                        CMP[a["n"]].add(b["v"])
+            for v in e.values():
+                collect_cmp(v)
+        elif isinstance(e, list):
+            for v in e:
+                collect_cmp(v)
+
+    for sc in S.values():
+        for c in sc.get("choices", []):
+            collect_cmp(c.get("visible"))
+            for o in c["outcomes"]:
+                collect_cmp(o.get("if"))
+    ENUMS = {n for n, f in CFG["flags"].items() if f["type"] == "enum"}
+
+    def abst(n, v):
+        if n in ENUMS and v is not None and v not in CMP.get(n, ()):
+            return "*"
+        return v
+
+    INTERN, VCACHE = {}, {}
+
+    def pack(aux):
+        t = tuple(sorted(((k, VCACHE.setdefault(v, v)) for k, v in aux.items()), key=lambda kv: kv[0]))
+        return INTERN.setdefault(t, t)
+
+    DEATH_SEALS = {seal(sc) for sc in S.values()
+                   if any(o["to"] in D for c in sc.get("choices", []) for o in c["outcomes"])}
+
     def init():
         st = {k: v["start"] for k, v in CFG["vars"].items()}
         st.update({k: None for k in CFG["flags"]})
@@ -117,15 +154,16 @@ def main():
         c = CFG["vars"][n]
         return max(c["min"], min(c["max"], v))
 
-    # aux: {name: (lo, hi)} для чисел, {name: frozenset} для флагов
+    # aux: {name: (lo, hi)} для неживых чисел, {name: frozenset} для ВСЕХ флагов (точные значения)
     def split(sid, st):
-        keyv = tuple(st[n] for n in live_order[sid])
+        keyv = tuple(abst(n, st[n]) for n in live_order[sid])
         aux = {}
         for n in ALL:
-            if n in live[sid]:
-                continue
             v = st[n]
-            aux[n] = (v, v) if n in CFG["vars"] else frozenset([v])
+            if n in CFG["flags"]:
+                aux[n] = frozenset([v])
+            elif n not in live[sid]:
+                aux[n] = (v, v)
         return keyv, aux
 
     def fx_aux(aux, fx):
@@ -167,13 +205,31 @@ def main():
     st0 = init()
     k0, a0 = split(CFG["start"], st0)
     start = (CFG["start"], k0)
-    AUX[start] = a0
-    work = [start]
-    while work:
-        node = work.pop()
-        sid, keyv = node
+    # сцены обходим в топологическом порядке: к моменту обработки сцены все её входы
+    # уже слиты, поэтому каждый узел раскрывается ровно один раз
+    indeg = {s: 0 for s in S}
+    for s, sc in S.items():
+        for t in set(successors(sc)):
+            if t in S:
+                indeg[t] += 1
+    order, q = [], [s for s in S if indeg[s] == 0]
+    while q:
+        s = q.pop()
+        order.append(s)
+        for t in set(successors(S[s])):
+            if t in S:
+                indeg[t] -= 1
+                if indeg[t] == 0:
+                    q.append(t)
+    if len(order) != len(S):
+        errors.append("цикл в графе сцен: время в игре должно идти только вперёд")
+    PENDING = defaultdict(dict)    # сцена -> {живой ключ: aux (dict, ещё копится)}
+    PENDING[start[0]][start[1]] = a0
+    for sid in order:
         sc = S[sid]
-        if node not in EDGES:
+        for keyv, auxd in PENDING.pop(sid, {}).items():
+            node = (sid, keyv)
+            AUX[node] = pack(auxd)
             st = dict(zip(live_order[sid], keyv))
 
             def run(seen_life):
@@ -219,37 +275,33 @@ def main():
                     if n in st2:
                         st2[n] = clampv(n, st2[n] + v) if kind == "add" else v
                 # переменные, живые в ребёнке, но мёртвые здесь, не бывает: live(parent) ⊇ live(child)
-                ck = tuple(st2[n] for n in live_order[to])
+                ck = tuple(abst(n, st2[n]) for n in live_order[to])
                 edges.append(((to, ck), fx))
-            EDGES[node] = edges
-            alive1 = any(o["to"] not in D for c, o in res1) or ("next" in sc and not sc.get("choices"))
-            info[node] = {"decision": len(vis1) >= 2, "alive1": alive1,
-                          "terminal": not sc.get("choices") and "next" not in sc, "seal": seal(sc),
-                          "dar": st.get("ДАР", 0)}
-            for ch, _ in edges:
-                parents[ch].add(node)
-        # распространяем aux
-        for ch, fx in EDGES[node]:
-            # переменные, живые здесь, но мёртвые в ребёнке, уходят в aux ребёнка
-            st = dict(zip(live_order[sid], keyv))
-            extra = {}
-            for n in live_order[sid]:
-                if n not in live[ch[0]]:
-                    v = st[n]
-                    for kind, fn, fv in fx:
-                        if fn == n:
-                            v = clampv(n, v + fv) if kind == "add" else fv
-                    extra[n] = (v, v) if n in CFG["vars"] else frozenset([v])
-            a = fx_aux(AUX[node], fx)
-            a.update(extra)
-            if ch not in AUX:
-                AUX[ch] = a
-                work.append(ch)
-            else:
-                m, grew = merge(AUX[ch], a)
-                if grew:
-                    AUX[ch] = m
-                    work.append(ch)
+            EDGES[node] = tuple(edges)
+            sg = seal(sc)
+            # (решение?, терминал?, печать, ДАР)
+            info[node] = (len(vis1) >= 2, not sc.get("choices") and "next" not in sc, sg, st.get("ДАР", 0) or 0)
+            if sg in DEATH_SEALS:
+                for ch, _ in edges:
+                    parents[ch].add(node)
+            # распространяем aux в детей (они в более поздних сценах)
+            for ch, fx in edges:
+                # числа, живые здесь, но мёртвые в ребёнке, уходят в aux ребёнка (флаги и так там)
+                extra = {}
+                for n in live_order[sid]:
+                    if n in CFG["vars"] and n not in live[ch[0]]:
+                        v = st[n]
+                        for kind, fn, fv in fx:
+                            if fn == n:
+                                v = clampv(n, v + fv) if kind == "add" else fv
+                        extra[n] = (v, v)
+                a = fx_aux(auxd, fx)
+                a.update(extra)
+                tgt = PENDING[ch[0]]
+                if ch[1] in tgt:
+                    tgt[ch[1]], _ = merge(tgt[ch[1]], a)
+                else:
+                    tgt[ch[1]] = a
 
     # --- I1′
     memo = {}
@@ -258,7 +310,7 @@ def main():
         if n in memo:
             return memo[n]
         memo[n] = False
-        if info[n]["terminal"]:
+        if info[n][1]:
             return False
         r = all(doomed(c) for c, _ in EDGES[n]) if EDGES[n] else True
         memo[n] = r
@@ -273,9 +325,9 @@ def main():
         for p in ps:
             if p in seen:
                 continue
-            if info[p]["seal"] != sealg:
+            if info[p][2] != sealg:
                 return False
-            if info[p]["decision"]:
+            if info[p][0]:
                 if not doomed(p):
                     continue
                 if k - 1 <= 0 or not rescue(p, k - 1, sealg, seen + (p,)):
@@ -286,10 +338,10 @@ def main():
 
     bad = 0
     for n in EDGES:
-        if not doomed(n):
+        if info[n][2] not in DEATH_SEALS or not doomed(n):
             continue
-        d = depth(info[n]["dar"] or 0)
-        if not rescue(n, d - 1, info[n]["seal"]):
+        d = depth(info[n][3])
+        if not rescue(n, d - 1, info[n][2]):
             bad += 1
             if bad <= 15:
                 st = dict(zip(live_order[n[0]], n[1]))
@@ -300,23 +352,29 @@ def main():
 
     # условия абзацев: перебираем возможные значения только тех переменных, что в них участвуют
     from itertools import product
-    for n, aux in AUX.items():
+    for n, auxt in AUX.items():
         sid = n[0]
         blocks = [b for b in S[sid]["text"] if "if" in b]
         if not blocks:
             continue
+        aux = dict(auxt)
         st = dict(zip(live_order[sid], n[1]))
         for b in blocks:
             used = sorted(names(b["if"], set()))
             opts = []
             for u in used:
-                if u in st:
+                if u in CFG["flags"]:
+                    vals = aux[u]
+                    if u in st and st[u] != "*":
+                        vals = {st[u]}
+                    elif u in st:
+                        vals = {v for v in vals if v is not None and v not in CMP.get(u, ())} or vals
+                    opts.append(sorted(vals, key=str))
+                elif u in st:
                     opts.append([st[u]])
-                elif u in CFG["vars"]:
+                else:
                     lo, hi = aux[u]
                     opts.append(list(range(lo, hi + 1, 5)) or [lo])
-                else:
-                    opts.append(sorted(aux[u], key=str))
             k = (sid, "текст", b["md"][:32])
             for combo in product(*opts):
                 r = ev(b["if"], dict(zip(used, combo)))
@@ -341,8 +399,9 @@ def main():
     rng = defaultdict(dict)
     flg = defaultdict(lambda: defaultdict(set))
     count = defaultdict(int)
-    for n, aux in AUX.items():
+    for n, auxt in AUX.items():
         sid = n[0]
+        aux = dict(auxt)
         count[sid] += 1
         st = dict(zip(live_order[sid], n[1]))
         for v in CFG["vars"]:
@@ -353,8 +412,7 @@ def main():
             else:
                 rng[sid][v] = (lo, hi)
         for f in CFG["flags"]:
-            vals = {st[f]} if f in st else aux[f]
-            flg[sid][f] |= set(vals)
+            flg[sid][f] |= set(aux[f])
 
     rank = {"prologue": 0, "trunk": 1, "demo": 2, "branch": 3, "anchor": 4, "final": 5}
     order = sorted(rng, key=lambda s: (rank.get(S[s].get("stage"), 9), s))
