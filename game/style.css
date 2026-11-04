@@ -1,0 +1,153 @@
+:root {
+  --bg: #0d0d0f;
+  --ink: #e9e4da;
+  --dim: #8d877c;
+  --line: #2a2826;
+  --accent: #d9a441;      /* натриевый фонарь */
+  --water: #4f7a78;       /* выцветшая Томь */
+  --blood: #b2463a;
+  --serif: "PT Serif", Georgia, "Times New Roman", serif;
+  --mono: "PT Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body { font: 18px/1.65 var(--serif); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+.mono { font-family: var(--mono); }
+.dim { color: var(--dim); }
+.tiny { font-size: 13px; }
+[hidden] { display: none !important; }
+
+#app { max-width: 680px; margin: 0 auto; padding: 0 16px 64px; min-height: 100vh; }
+.screen { padding-top: 24px; }
+
+/* верхняя полоса */
+#bar { position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; background: linear-gradient(var(--bg) 70%, transparent); font-family: var(--mono); font-size: 13px; color: var(--dim); }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; color: var(--dim); }
+.ghost:hover { color: var(--ink); border-color: var(--dim); }
+.link { background: none; border: 0; padding: 0; color: var(--dim); text-decoration: underline; cursor: pointer; }
+
+/* титул */
+.title-wrap { min-height: 88vh; display: flex; flex-direction: column; justify-content: center; }
+h1 { font-size: clamp(34px, 9vw, 54px); line-height: 1.1; margin: 8px 0; font-weight: 700; letter-spacing: -0.01em; }
+.sub { color: var(--dim); margin: 0 0 32px; }
+.warn { color: var(--dim); font-size: 14px; margin-top: 32px; border-left: 2px solid var(--line); padding-left: 12px; }
+.menu { display: grid; gap: 10px; }
+
+/* текст сцены */
+#meta { font-size: 13px; margin: 14px 0 8px; letter-spacing: .02em; }
+#text p { margin: 0 0 1em; transition: opacity .6s ease; }
+#text p.awake { color: #cfd8d6; border-left: 2px solid var(--water); padding-left: 14px; font-style: italic; }
+#text p.drift { text-shadow: 1px 0 rgba(255,0,60,.25), -1px 0 rgba(0,200,255,.25); }
+
+/* выборы */
+#choices { display: grid; gap: 10px; margin-top: 28px; }
+.choice { display: block; width: 100%; text-align: left; padding: 14px 16px; min-height: 48px; background: #151517;
+  border: 1px solid var(--line); border-radius: 10px; cursor: pointer; transition: border-color .2s, background .2s; }
+.choice:hover, .choice:focus-visible { border-color: var(--accent); background: #19181a; outline: none; }
+.choice small { display: block; color: var(--dim); font-size: 13px; margin-top: 4px; }
+.choice.ghosted { opacity: .6; }
+.choice.ghosted .lbl { text-decoration: line-through; text-decoration-color: rgba(233,228,218,.4); }
+.choice.ghosted small { font-style: italic; }
+.choice.echo { border-color: var(--water); box-shadow: inset 3px 0 0 var(--water); }
+.choice.next { text-align: center; color: var(--dim); }
+.ghost-choice { background: transparent; color: var(--dim); }
+
+/* ===== фотоальбом: вид зависит от эпохи ===== */
+.photo { position: relative; margin: 8px auto 0; aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo .placeholder { display: none; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  font-family: var(--mono); font-size: 12px; text-transform: lowercase; color: rgba(0,0,0,.45); text-align: center; padding: 16px; }
+.photo.empty .placeholder { display: flex; }
+.photo .placeholder small { font-size: 11px; }
+.photo figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 10px; font-size: 13px; font-style: italic; }
+.photo .stamp { position: absolute; right: 14px; bottom: 30px; font-size: 14px; color: #ff8a1e; text-shadow: 0 0 4px rgba(255,120,0,.7); letter-spacing: .08em; }
+
+/* 1990-е: старое ч/б, белая рамка, зерно, царапины */
+.era-bw { background: #f1ede4; padding: 12px 12px 34px; transform: rotate(-.8deg); box-shadow: 0 6px 24px rgba(0,0,0,.6); }
+.era-bw img { filter: grayscale(1) contrast(1.15) sepia(.15); }
+.era-bw.empty::before { content: ""; position: absolute; inset: 12px 12px 34px; background:
+  radial-gradient(ellipse at 50% 40%, #9a968e, #55524d 70%, #2d2b28); filter: grayscale(1); }
+.era-bw::after { content: ""; position: absolute; inset: 12px 12px 34px; pointer-events: none; opacity: .35; mix-blend-mode: multiply;
+  background-image: repeating-radial-gradient(circle at 17% 32%, rgba(0,0,0,.25) 0 1px, transparent 1px 3px),
+    linear-gradient(97deg, transparent 48%, rgba(255,255,255,.5) 48.3%, transparent 48.6%); }
+.era-bw figcaption { color: #3a3631; font-family: "PT Serif", serif; }
+.era-bw .placeholder { color: rgba(255,255,255,.55); }
+.era-bw .stamp { display: none; }
+
+/* 2000-е: цветной глянец из фотомастерской, оранжевая дата */
+.era-color { border-radius: 2px; box-shadow: 0 6px 24px rgba(0,0,0,.6); transform: rotate(.5deg); }
+.era-color img { filter: saturate(1.25) contrast(1.05) sepia(.12); }
+.era-color.empty::before { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, #b9a27d, #6d6658 55%, #3b3a37); }
+.era-color::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(120deg, rgba(255,255,255,.18), transparent 35%); }
+.era-color figcaption { color: #fff; text-shadow: 0 1px 2px #000; background: linear-gradient(transparent, rgba(0,0,0,.5)); }
+.era-color .placeholder { color: rgba(255,255,255,.6); }
+
+/* 2010-е: цифровая мыльница — шум, пересвет */
+.era-digital img { filter: contrast(1.1) saturate(.9); }
+.era-digital.empty::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #2b3136, #12161a); }
+.era-digital::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .25;
+  background-image: repeating-conic-gradient(rgba(255,255,255,.08) 0 25%, transparent 0 50%); background-size: 3px 3px; }
+.era-digital figcaption, .era-phone figcaption, .era-future figcaption { color: #ddd; background: linear-gradient(transparent, rgba(0,0,0,.6)); }
+.era-digital .placeholder, .era-phone .placeholder, .era-future .placeholder { color: rgba(255,255,255,.5); }
+
+/* 2020–2040-е: смартфон — чисто, скруглённо */
+.era-phone { border-radius: 14px; }
+.era-phone.empty::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #31424f, #1a222a); }
+
+/* 2050–2061: слишком чистое будущее */
+.era-future { border-radius: 4px; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(140,200,255,.08); }
+.era-future img { filter: contrast(1.05) saturate(1.1); }
+.era-future.empty::before { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 70% 25%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+    linear-gradient(200deg, transparent 60%, rgba(180,220,255,.25) 61%, transparent 70%),
+    linear-gradient(180deg, #060a12, #0c1320 60%, #1a1a1a); }
+
+/* ===== ДРЕЙФ: детерминированные искажения ===== */
+body[data-drift="1"] .photo img { filter: hue-rotate(8deg); }
+body[data-drift="2"] #text { letter-spacing: .005em; }
+body[data-drift="2"] .photo { transform: rotate(-1.6deg) translateX(3px); }
+body[data-drift="3"] #text p:nth-child(3n) { text-shadow: 1px 0 rgba(255,0,60,.3), -1px 0 rgba(0,200,255,.3); }
+body[data-drift="4"] #text p:nth-child(2n) { filter: blur(.25px); }
+
+/* ===== VHS: смерть и откат ===== */
+.vhs { position: relative; min-height: 92vh; color: #f3efe8; }
+.vhs::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); animation: roll 7s linear infinite; }
+.vhs::after { content: ""; position: fixed; left: 0; right: 0; height: 18vh; top: -20vh; pointer-events: none; z-index: 0;
+  background: linear-gradient(transparent, rgba(255,255,255,.06), transparent); animation: track 3.2s linear infinite; }
+.vhs > * { position: relative; z-index: 1; }
+.vhs-top { display: flex; justify-content: space-between; font-size: 14px; color: #ff4b3a; letter-spacing: .1em; padding: 4px 0 24px; }
+.vhs-top span:first-child { animation: blink 1.2s steps(1) infinite; }
+#death { animation: jitter .18s steps(2) 6; }
+#death-text p { text-shadow: 2px 0 rgba(255,40,40,.45), -2px 0 rgba(40,160,255,.45); animation: in 1.4s ease both; margin: 0 0 1em; }
+.rew .vhs-top { color: #8fd3ff; }
+.rew h2 { font-size: 15px; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
+#tape { display: grid; gap: 10px; }
+.notch { border-left: 3px solid #8fd3ff; }
+.notch span { color: #8fd3ff; margin-right: 6px; }
+@keyframes roll { to { background-position: 0 300px; } }
+@keyframes track { to { top: 110vh; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes jitter { 0% { transform: translate(2px, -1px) skewX(1deg); } 100% { transform: translate(-2px, 1px); } }
+@keyframes in { from { opacity: 0; filter: blur(3px); transform: translateY(6px); } to { opacity: 1; filter: none; transform: none; } }
+
+/* панели */
+.panel { position: relative; }
+.panel h2 { margin-top: 8px; }
+.panel .close { position: absolute; right: 0; top: 24px; font-size: 20px; padding: 0 12px; }
+.entry { border-top: 1px solid var(--line); padding: 14px 0; }
+.entry b { display: block; }
+.entry span { font-size: 13px; }
+.entry p { margin: 6px 0 0; }
+.entry.root b { color: var(--water); }
+#stihii { margin: 12px 0 18px; letter-spacing: .3em; color: #3a3836; }
+#stihii .on { color: var(--accent); }
+.row { display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding: 10px 0; }
+#debug { white-space: pre-wrap; color: var(--dim); border: 1px dashed var(--line); padding: 8px; margin: 16px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (max-width: 420px) { body { font-size: 17px; } }
