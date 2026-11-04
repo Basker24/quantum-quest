@@ -320,3 +320,8 @@ body[data-era="future"] .choice { border-radius: 14px; }
 #awake-text p.shock { font-size: 1.04em; }
 #awake-text p.shock:first-of-type { margin-top: 18px; }
 #awake-btns { display: grid; gap: 10px; margin-top: 26px; }
+#text p.chorus { color: #9fb4bf; font-style: italic; padding-left: 14px; border-left: 1px solid rgba(143,211,255,.3); }
+#text p.norewind .nr-btn { border-left: 3px solid #8fd3ff; }
+#text p.norewind.crumble .nr-btn { animation: crumble 1.6s ease forwards; }
+#text p.norewind .nr-end { display: block; text-align: center; letter-spacing: .12em; color: var(--dim); padding: 18px 0; }
+@keyframes crumble { 0% { opacity: 1; filter: none; } 40% { filter: blur(1px); letter-spacing: .3em; } 100% { opacity: 0; filter: blur(6px); transform: translateY(10px) scale(.96); letter-spacing: 1em; } }

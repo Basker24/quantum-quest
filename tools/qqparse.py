@@ -166,6 +166,13 @@ def parse_fx(src, cfg):
                 raise QQError(f"fx: «{name}» не переменная")
             fx.append(["add", name, int(n) * (1 if sign == "+" else -1)])
             continue
+        m = re.fullmatch(r"(\S+)\s*<=\s*(\d+)", part)       # потолок: ТЕЛ <= 45 (старение)
+        if m:
+            name, n = m.groups()
+            if name not in cfg["vars"]:
+                raise QQError(f"fx: «{name}» не переменная")
+            fx.append(["cap", name, int(n)])
+            continue
         m = re.fullmatch(r"(\S+)\s*=\s*(\S+)", part)
         if m:
             name, val = m.groups()
@@ -233,6 +240,13 @@ def parse_blocks(body, cfg):
         elif s == "::end":
             flush()
             cond = None
+        elif s in ("::chorus", "::norewind"):
+            # ::chorus — голоса Рыбаков из Журнала смертей игрока; ::norewind — лента, которой нет (Ф2)
+            flush()
+            b = {"md": "", "kind": s[2:]}
+            if cond:
+                b.update(cond)
+            blocks.append(b)
         else:
             cur.append(line)
     flush()

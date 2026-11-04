@@ -16,6 +16,7 @@ R   все сцены и смерти достижимы
 Пишет docs/generated/report.md: шапки всех сцен (входы, диапазоны, флаги) и Mermaid-схему.
 """
 import sys
+from itertools import product
 from collections import defaultdict
 
 from qqparse import ROOT, QQError, load
@@ -98,13 +99,19 @@ def main():
                         + [o.get("if") for c in sc.get("choices", []) for o in c["outcomes"]], set())
              for sid, sc in S.items()}
     live = {sid: set(r) | {"ДАР"} for sid, r in reads.items()}
+    # Числа живут сквозь всю игру. Флаги — только внутри своего отрезка (ствол / ветвь / якорь):
+    # на границе отрезка флаг, нужный дальше, берётся из накопленного множества значений
+    # (over-approximation: тупики не пропускаются, но возможны лишние тревоги).
     changed = True
     while changed:
         changed = False
         for sid, sc in S.items():
             for t in successors(sc):
-                if t in S and not live[t] <= live[sid]:
-                    live[sid] |= live[t]
+                if t not in S:
+                    continue
+                add = live[t] if seal(S[t]) == seal(sc) else {n for n in live[t] if n in CFG["vars"]}
+                if not add <= live[sid]:
+                    live[sid] |= add
                     changed = True
     live_order = {sid: tuple(n for n in ALL if n in live[sid]) for sid in S}
 
@@ -145,6 +152,81 @@ def main():
     DEATH_SEALS = {seal(sc) for sc in S.values()
                    if any(o["to"] in D for c in sc.get("choices", []) for o in c["outcomes"])}
 
+    # --- насыщение чисел (точная оптимизация): если значение выше любого будущего порога
+    # даже после всех возможных будущих минусов (или ниже любого порога после всех плюсов),
+    # его точная величина ни на одно условие не влияет — такие значения склеиваются.
+    NUM = list(CFG["vars"])
+
+    def cmp_consts(e, acc):
+        if isinstance(e, dict):
+            if e.get("op") == "cmp":
+                for a, b in ((e["l"], e["r"]), (e["r"], e["l"])):
+                    if a.get("op") == "var" and a["n"] in CFG["vars"] and b.get("op") == "num":
+                        acc[a["n"]].add(b["v"])
+            for v in e.values():
+                cmp_consts(v, acc)
+        elif isinstance(e, list):
+            for v in e:
+                cmp_consts(v, acc)
+        return acc
+
+    own_th = {}
+    for sid, sc in S.items():
+        acc = defaultdict(set)
+        cmp_consts([b.get("if") for b in sc["text"]] + [c.get("visible") for c in sc.get("choices", [])]
+                   + [o.get("if") for c in sc.get("choices", []) for o in c["outcomes"]]
+                   + [b.get("if") for bl in sc.get("after", {}).values() for b in bl], acc)
+        acc["ДАР"] |= {lo for lo, _ in CFG["rollback"]}      # пороги глубины отката
+        own_th[sid] = acc
+    TH, INC, DEC = {}, {}, {}
+    sys.setrecursionlimit(100000)
+
+    def calc(sid):
+        if sid in TH:
+            return
+        TH[sid] = {n: set(own_th[sid].get(n, ())) for n in NUM}
+        INC[sid] = {n: 0 for n in NUM}
+        DEC[sid] = {n: 0 for n in NUM}
+        sc = S[sid]
+        outs = [(sc["next"], [])] if "next" in sc else []
+        for c in sc.get("choices", []):
+            for o in c["outcomes"]:
+                if o["to"] in S:
+                    outs.append((o["to"], c["fx"] + o.get("fx", [])))
+        for to, fx in outs:
+            calc(to)
+            for n in NUM:
+                up = dn = 0
+                for kind, fn, v in fx:
+                    if fn != n:
+                        continue
+                    if kind == "add":
+                        up, dn = (up + v, dn) if v > 0 else (up, dn - v)
+                    else:                       # set / cap: без насыщения
+                        up += 1000
+                        dn += 1000
+                TH[sid][n] |= TH[to][n]
+                INC[sid][n] = max(INC[sid][n], up + INC[to][n])
+                DEC[sid][n] = max(DEC[sid][n], dn + DEC[to][n])
+
+    for sid in S:
+        calc(sid)
+
+    def kv(sid, n, v):
+        """Значение для ключа узла: насыщение для чисел, абстракция для флагов."""
+        if n in ENUMS:
+            return abst(n, v)
+        if n in CFG["vars"] and v is not None:
+            th = TH[sid][n]
+            if th:
+                hi = max(th) + DEC[sid][n] + 5
+                lo = min(th) - INC[sid][n] - 5
+                if v > hi:
+                    return hi
+                if v < lo:
+                    return lo
+        return v
+
     def init():
         st = {k: v["start"] for k, v in CFG["vars"].items()}
         st.update({k: None for k in CFG["flags"]})
@@ -154,16 +236,13 @@ def main():
         c = CFG["vars"][n]
         return max(c["min"], min(c["max"], v))
 
-    # aux: {name: (lo, hi)} для неживых чисел, {name: frozenset} для ВСЕХ флагов (точные значения)
+    # aux: точные (lo, hi) для ВСЕХ чисел и множества для ВСЕХ флагов; ключ — насыщенный/абстрактный
     def split(sid, st):
-        keyv = tuple(abst(n, st[n]) for n in live_order[sid])
+        keyv = tuple(kv(sid, n, st[n]) for n in live_order[sid])
         aux = {}
         for n in ALL:
             v = st[n]
-            if n in CFG["flags"]:
-                aux[n] = frozenset([v])
-            elif n not in live[sid]:
-                aux[n] = (v, v)
+            aux[n] = frozenset([v]) if n in CFG["flags"] else (v, v)
         return keyv, aux
 
     def fx_aux(aux, fx):
@@ -173,7 +252,8 @@ def main():
                 continue
             if n in CFG["vars"]:
                 lo, hi = aux[n]
-                aux[n] = (clampv(n, lo + v), clampv(n, hi + v)) if kind == "add" else (v, v)
+                aux[n] = ((clampv(n, lo + v), clampv(n, hi + v)) if kind == "add"
+                          else (min(lo, v), min(hi, v)) if kind == "cap" else (v, v))
             else:
                 aux[n] = frozenset([v])
         return aux
@@ -225,9 +305,18 @@ def main():
         errors.append("цикл в графе сцен: время в игре должно идти только вперёд")
     PENDING = defaultdict(dict)    # сцена -> {живой ключ: aux (dict, ещё копится)}
     PENDING[start[0]][start[1]] = a0
+    import os
+    VERBOSE = os.environ.get("QQ_VERBOSE")
+    LIMIT = int(os.environ.get("QQ_LIMIT", "1500000"))
     for sid in order:
         sc = S[sid]
-        for keyv, auxd in PENDING.pop(sid, {}).items():
+        bucket = PENDING.pop(sid, {})
+        if VERBOSE:
+            print(f"  {sid}: {len(bucket)} узлов, всего {len(AUX)}", flush=True)
+        if len(AUX) + len(bucket) > LIMIT:
+            print(f"❌ ПЕРЕБОР: больше {LIMIT} узлов на сцене {sid}. Живые переменные: {', '.join(live_order[sid])}")
+            sys.exit(2)
+        for keyv, auxd in bucket.items():
             node = (sid, keyv)
             AUX[node] = pack(auxd)
             st = dict(zip(live_order[sid], keyv))
@@ -273,9 +362,18 @@ def main():
                 st2 = dict(full)
                 for kind, n, v in fx:
                     if n in st2:
-                        st2[n] = clampv(n, st2[n] + v) if kind == "add" else v
-                # переменные, живые в ребёнке, но мёртвые здесь, не бывает: live(parent) ⊇ live(child)
-                ck = tuple(abst(n, st2[n]) for n in live_order[to])
+                        st2[n] = clampv(n, st2[n] + v) if kind == "add" else min(st2[n], v) if kind == "cap" else v
+                # флаги, нужные ребёнку из другого отрезка, но не живые здесь, — из накопленного множества
+                miss = [n for n in live_order[to] if n not in st2]
+                if miss:
+                    a0 = fx_aux(auxd, fx)
+                    choices_ = [sorted({abst(n, v) for v in a0[n]}, key=str) for n in miss]
+                    for combo in product(*choices_):
+                        st3 = dict(st2)
+                        st3.update(zip(miss, combo))
+                        edges.append(((to, tuple(kv(to, n, st3[n]) for n in live_order[to])), fx))
+                    continue
+                ck = tuple(kv(to, n, st2[n]) for n in live_order[to])
                 edges.append(((to, ck), fx))
             EDGES[node] = tuple(edges)
             sg = seal(sc)
@@ -286,17 +384,7 @@ def main():
                     parents[ch].add(node)
             # распространяем aux в детей (они в более поздних сценах)
             for ch, fx in edges:
-                # числа, живые здесь, но мёртвые в ребёнке, уходят в aux ребёнка (флаги и так там)
-                extra = {}
-                for n in live_order[sid]:
-                    if n in CFG["vars"] and n not in live[ch[0]]:
-                        v = st[n]
-                        for kind, fn, fv in fx:
-                            if fn == n:
-                                v = clampv(n, v + fv) if kind == "add" else fv
-                        extra[n] = (v, v)
-                a = fx_aux(auxd, fx)
-                a.update(extra)
+                a = fx_aux(auxd, fx)        # aux хранит точные интервалы всех чисел и множества всех флагов
                 tgt = PENDING[ch[0]]
                 if ch[1] in tgt:
                     tgt[ch[1]], _ = merge(tgt[ch[1]], a)
@@ -351,7 +439,7 @@ def main():
         errors.append(f"I1′: … и ещё {bad - 15} тупиковых состояний")
 
     # условия абзацев: перебираем возможные значения только тех переменных, что в них участвуют
-    from itertools import product
+
     for n, auxt in AUX.items():
         sid = n[0]
         blocks = [b for b in S[sid]["text"] if "if" in b]
@@ -405,7 +493,7 @@ def main():
         count[sid] += 1
         st = dict(zip(live_order[sid], n[1]))
         for v in CFG["vars"]:
-            lo, hi = (st[v], st[v]) if v in st else aux[v]
+            lo, hi = aux[v]
             if v in rng[sid]:
                 a, b = rng[sid][v]
                 rng[sid][v] = (min(a, lo), max(b, hi))

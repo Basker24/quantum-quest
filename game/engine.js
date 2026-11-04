@@ -49,6 +49,7 @@
   function applyFx(fx, st) {
     for (const [kind, name, val] of fx) {
       if (kind === "add") { const v = C.vars[name]; st[name] = Math.max(v.min, Math.min(v.max, st[name] + val)); }
+      else if (kind === "cap") st[name] = Math.min(st[name], val);
       else st[name] = val;
     }
   }
@@ -135,6 +136,8 @@
     let first = true;
     for (const b of sc.text) {
       if (!ok(b.if, st)) continue;
+      if (b.kind === "chorus") { chorusLines().forEach((l) => blocks.push({ md: l, cls: "chorus talk" })); continue; }
+      if (b.kind === "norewind") { blocks.push({ md: "", cls: "norewind" }); continue; }
       const talk = /^—\s/.test(b.md);
       const cls = [b.drift ? "drift" : "", b.kind || "", talk ? "talk" : ""];
       if (first && !b.kind && !talk) { cls.push("first"); first = false; }
@@ -143,11 +146,28 @@
     const art = $("#text"); art.innerHTML = "";
     $("#choices").innerHTML = "";
     const els = blocks.map((b) => { const p = document.createElement("p"); p.className = b.cls; p.innerHTML = md(b.md); p.classList.add("pending"); art.append(p); return p; });
+    // «последний откат, которого нет»: привычная лента, которая рассыпается
+    els.filter((p) => p.classList.contains("norewind")).forEach((p) => {
+      p.innerHTML = `<button class="choice notch nr-btn"><span class="mono">◀◀</span> Хор помнит…</button>`;
+      p.querySelector("button").onclick = (e) => {
+        e.stopPropagation();
+        p.classList.add("crumble");
+        setTimeout(() => { p.innerHTML = `<span class="mono nr-end">Отката нет. И не надо.</span>`; }, REDUCED ? 50 : 1600);
+      };
+    });
     const finish = () => { clearTimeout(typing); typing = null; els.forEach((p) => p.classList.remove("pending")); renderChoices(sc); };
     let i = 0;
     const step = () => { if (i >= els.length) return finish(); els[i].classList.remove("pending"); i++; typing = setTimeout(step, REDUCED ? 60 : 420); };
     art.onclick = () => typing && finish();
     step();
+  }
+
+  // голоса Рыбаков на якоре: эпитафии смертей, которые видел именно этот игрок
+  function chorusLines() {
+    const lines = [];
+    for (const [id, d] of Object.entries(G.deaths)) if (meta.journal[id] && d.epitaph) lines.push("— " + d.epitaph);
+    if (!lines.length) return ["Рыбаки молчат. Я почти никого из них не знаю, и они меня, кажется, тоже."];
+    return lines.slice(-7);
   }
 
   function renderPhoto(sc) {
