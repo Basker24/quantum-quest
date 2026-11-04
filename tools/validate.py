@@ -212,19 +212,19 @@ def main():
     for sid in S:
         calc(sid)
 
+    SAT = {(sid, n): (min(TH[sid][n]) - INC[sid][n] - 5, max(TH[sid][n]) + DEC[sid][n] + 5)
+           for sid in S for n in NUM if TH[sid][n]}
+
     def kv(sid, n, v):
         """Значение для ключа узла: насыщение для чисел, абстракция для флагов."""
         if n in ENUMS:
             return abst(n, v)
-        if n in CFG["vars"] and v is not None:
-            th = TH[sid][n]
-            if th:
-                hi = max(th) + DEC[sid][n] + 5
-                lo = min(th) - INC[sid][n] - 5
-                if v > hi:
-                    return hi
-                if v < lo:
-                    return lo
+        b = SAT.get((sid, n))
+        if b and v is not None:
+            if v > b[1]:
+                return b[1]
+            if v < b[0]:
+                return b[0]
         return v
 
     def init():
@@ -307,15 +307,16 @@ def main():
     PENDING[start[0]][start[1]] = a0
     import os
     VERBOSE = os.environ.get("QQ_VERBOSE")
-    LIMIT = int(os.environ.get("QQ_LIMIT", "1500000"))
+    LIMIT = int(os.environ.get("QQ_LIMIT", "300000"))
     for sid in order:
         sc = S[sid]
         bucket = PENDING.pop(sid, {})
         if VERBOSE:
             print(f"  {sid}: {len(bucket)} узлов, всего {len(AUX)}", flush=True)
         if len(AUX) + len(bucket) > LIMIT:
-            print(f"❌ ПЕРЕБОР: больше {LIMIT} узлов на сцене {sid}. Живые переменные: {', '.join(live_order[sid])}")
-            sys.exit(2)
+            print(f"точный перебор больше {LIMIT} узлов (сцена {sid}) — переключаюсь на быструю проверку")
+            import validate_fast
+            sys.exit(validate_fast.main(note=f"Точный перебор превысил {LIMIT} узлов на сцене {sid}."))
         for keyv, auxd in bucket.items():
             node = (sid, keyv)
             AUX[node] = pack(auxd)
@@ -553,4 +554,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--exact" in sys.argv:
+        main()                      # точный перебор всех состояний (тяжёлый, для небольших графов)
+    else:
+        import validate_fast        # по умолчанию: быстрая интервальная проверка (доли секунды)
+        sys.exit(validate_fast.main(note="Точный перебор: python3 tools/validate.py --exact"))
