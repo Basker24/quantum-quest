@@ -1,0 +1,78 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Тот, кто остался</title>
+<meta name="theme-color" content="#0d0d0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Mono&display=swap">
+<link rel="stylesheet" href="style.css">
+<div id="app">
+  <header id="bar" hidden>
+    <button id="btn-me" class="ghost">Я</button>
+    <span id="when"></span>
+    <button id="btn-journal" class="ghost">Хор</button>
+  </header>
+
+  <!-- титульный экран -->
+  <section id="title" class="screen">
+    <div class="title-wrap">
+      <p class="mono dim">28.07.2061 · 04:12</p>
+      <h1>Тот, кто остался</h1>
+      <p class="sub">Текстовый квест о квантовом бессмертии</p>
+      <div class="menu">
+        <button id="btn-new" class="choice">Новая жизнь</button>
+        <button id="btn-continue" class="choice" hidden>Продолжить</button>
+        <button id="btn-journal2" class="choice ghost-choice">Хор (журнал смертей)</button>
+      </div>
+      <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело — в разделе «Об игре» есть контакты помощи.</p>
+      <p class="mono dim tiny">прототип · ствол Т-00…Т-02 + демо механики</p>
+    </div>
+  </section>
+
+  <!-- сцена -->
+  <main id="scene" class="screen" hidden>
+    <figure id="photo"></figure>
+    <div id="meta" class="mono dim"></div>
+    <article id="text"></article>
+    <nav id="choices"></nav>
+  </main>
+
+  <!-- смерть -->
+  <section id="death" class="screen vhs" hidden>
+    <div class="vhs-top mono"><span>● REC</span><span id="death-tc"></span></div>
+    <article id="death-text"></article>
+    <button id="btn-death-next" class="choice" hidden>…</button>
+  </section>
+
+  <!-- откат -->
+  <section id="rewind" class="screen vhs rew" hidden>
+    <div class="vhs-top mono"><span>◀◀ REW</span><span id="rew-depth"></span></div>
+    <h2 class="mono">Хор помнит</h2>
+    <div id="tape"></div>
+  </section>
+
+  <!-- журнал -->
+  <section id="journal" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <h2>Хор</h2>
+    <p class="dim">Те, кем ты был. Каждая запись — версия тебя, которая не вернулась.</p>
+    <div id="stihii" class="mono"></div>
+    <div id="journal-list"></div>
+  </section>
+
+  <!-- я -->
+  <section id="me" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <h2>Я</h2>
+    <div id="me-list"></div>
+    <div id="debug" class="mono tiny" hidden></div>
+    <p class="dim tiny"><button id="btn-about" class="link">Об игре</button> · <button id="btn-quit" class="link">в главное меню</button></p>
+  </section>
+
+  <section id="about" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <h2>Об игре</h2>
+    <p>Это история об одной обычной жизни, в которой нельзя умереть. Смерть в игре — не наказание и не совет. Это память о тех, кто не вернулся, и о тех, кто их ждал.</p>
+    <p>Если тебе сейчас плохо и хочется поговорить: детский телефон доверия <b>8-800-2000-122</b> (бесплатно, по России), международный каталог служб помощи — <b>findahelpline.com</b>.</p>
+  </section>
+</div>
+<script src="graph.js"></script>
+<script src="engine.js"></script>
