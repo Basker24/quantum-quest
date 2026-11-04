@@ -118,7 +118,7 @@
 
     const blocks = [];
     if (S.awake) { for (const b of S.awake) if (ok(b.if, st)) blocks.push({ md: b.md, cls: "awake" }); S.awake = null; }
-    for (const b of sc.text) if (ok(b.if, st)) blocks.push({ md: b.md, cls: b.drift ? "drift" : "" });
+    for (const b of sc.text) if (ok(b.if, st)) blocks.push({ md: b.md, cls: [b.drift ? "drift" : "", b.kind || "", /^—\s/.test(b.md) ? "talk" : ""].join(" ").trim() });
     const art = $("#text"); art.innerHTML = "";
     const nav = $("#choices"); nav.innerHTML = "";
     const els = blocks.map((b) => { const p = document.createElement("p"); p.className = b.cls; p.innerHTML = md(b.md); p.style.opacity = 0; art.append(p); return p; });

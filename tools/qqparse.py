@@ -210,6 +210,10 @@ def parse_blocks(body, cfg):
             para = para.strip()
             if para:
                 b = {"md": para}
+                if para.startswith("> "):      # ремарка старика из 2061
+                    b = {"md": para[2:].replace("\n> ", "\n"), "kind": "old"}
+                elif para.startswith("! "):    # служебная плашка
+                    b = {"md": para[2:], "kind": "sys"}
                 if cond:
                     b.update(cond)
                 blocks.append(b)

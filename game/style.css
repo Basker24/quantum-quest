@@ -41,6 +41,9 @@ h1 { font-size: clamp(34px, 9vw, 54px); line-height: 1.1; margin: 8px 0; font-we
 #meta { font-size: 13px; margin: 14px 0 8px; letter-spacing: .02em; }
 #text p { margin: 0 0 1em; transition: opacity .6s ease; }
 #text p.awake { color: #cfd8d6; border-left: 2px solid var(--water); padding-left: 14px; font-style: italic; }
+#text p.old { font-style: italic; color: var(--accent); border-left: 2px solid var(--accent); padding-left: 14px; margin-left: 2px; opacity: .92; }
+#text p.sys { font-family: var(--mono); font-size: 13px; color: var(--dim); border: 1px dashed var(--line); padding: 10px 12px; border-radius: 6px; }
+#text p.talk { padding-left: 4px; }
 #text p.drift { text-shadow: 1px 0 rgba(255,0,60,.25), -1px 0 rgba(0,200,255,.25); }
 
 /* выборы */
