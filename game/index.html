@@ -6,31 +6,47 @@
 <title>Тот, кто остался</title>
 <meta name="theme-color" content="#0d0d0f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Mono&family=PT+Serif+Caption&family=Marck+Script&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<canvas id="bg" aria-hidden="true"></canvas>
 <div id="app">
   <header id="bar" hidden>
     <button id="btn-me" class="ghost">Я</button>
     <span id="when"></span>
-    <button id="btn-journal" class="ghost">Хор</button>
+    <span class="bar-right">
+      <button id="btn-flow" class="ghost">Схема</button>
+      <button id="btn-journal" class="ghost">Хор</button>
+    </span>
   </header>
 
   <!-- титульный экран -->
   <section id="title" class="screen">
     <div class="title-wrap">
-      <p class="mono dim">28.07.2061 · 04:12</p>
-      <h1>Тот, кто остался</h1>
-      <p class="sub">Текстовый квест о квантовом бессмертии</p>
+      <p class="mono dim tc">28.07.2061 · 04:12 · Кемерово</p>
+      <h1>Тот,<br>кто остался</h1>
+      <p class="sub">Одна обычная жизнь, в которой нельзя умереть</p>
       <div class="menu">
         <button id="btn-new" class="choice">Новая жизнь</button>
         <button id="btn-continue" class="choice" hidden>Продолжить</button>
-        <button id="btn-journal2" class="choice ghost-choice">Хор (журнал смертей)</button>
+        <div class="menu-row">
+          <button id="btn-flow2" class="choice ghost-choice">Схема</button>
+          <button id="btn-journal2" class="choice ghost-choice">Хор</button>
+          <button id="btn-howto2" class="choice ghost-choice">О чём игра</button>
+        </div>
       </div>
-      <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело — в разделе «Об игре» есть контакты помощи.</p>
-      <p class="mono dim tiny">прототип · ствол Т-00…Т-02 + демо механики</p>
+      <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело, в разделе «Об игре» есть контакты помощи.</p>
+      <p class="mono dim tiny">прототип · пролог, ствол 1996–2007, демо механики смерти</p>
     </div>
+  </section>
+
+  <!-- карточка главы -->
+  <section id="chapter" class="screen" hidden>
+    <div class="leader"><span class="sweep"></span><span id="ch-count" class="mono">3</span></div>
+    <div class="ch-year" id="ch-year"></div>
+    <div class="ch-age mono" id="ch-age"></div>
+    <div class="ch-title" id="ch-title"></div>
   </section>
 
   <!-- сцена -->
@@ -55,13 +71,27 @@
     <div id="tape"></div>
   </section>
 
+  <!-- схема ветвлений -->
+  <section id="flow" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <h2>Схема</h2>
+    <p class="dim tiny" id="flow-count"></p>
+    <div class="flow-legend mono tiny">
+      <span><i class="lg taken"></i>выбирал</span><span><i class="lg shown"></i>видел</span><span><i class="lg unk"></i>не видел</span><span><i class="lg dead"></i>смерть</span><span><i class="lg now"></i>эта жизнь</span>
+    </div>
+    <div id="flow-wrap"><div id="flow-canvas"></div></div>
+  </section>
+
   <!-- журнал -->
   <section id="journal" class="screen panel" hidden>
     <button class="close ghost">×</button>
-    <h2>Хор</h2>
-    <p class="dim">Те, кем ты был. Каждая запись — версия тебя, которая не вернулась.</p>
-    <div id="stihii" class="mono"></div>
-    <div id="journal-list"></div>
+    <div class="notebook">
+      <h2 class="nb-title">Тетрадь Хора</h2>
+      <p class="nb-sub">Те, кем я был. Каждая строка — я, который не вернулся.</p>
+      <div id="stihii" class="mono"></div>
+      <div class="nb-head"><span>№</span><span>когда</span><span>где и как</span><span>кто плакал</span></div>
+      <div id="journal-list"></div>
+    </div>
   </section>
 
   <!-- я -->
@@ -70,13 +100,64 @@
     <h2>Я</h2>
     <div id="me-list"></div>
     <div id="debug" class="mono tiny" hidden></div>
-    <p class="dim tiny"><button id="btn-about" class="link">Об игре</button> · <button id="btn-quit" class="link">в главное меню</button></p>
+    <p class="dim tiny"><button id="btn-howto" class="link">О чём игра</button> · <button id="btn-about" class="link">Об игре</button> · <button id="btn-quit" class="link">в главное меню</button></p>
+  </section>
+
+  <!-- о чём игра -->
+  <section id="howto" class="screen panel" hidden>
+    <button class="close ghost">×</button>
+    <div class="znanie">
+      <p class="mono kicker">Наука и вымысел</p>
+      <h2>О чём эта игра</h2>
+      <p class="lead">Андрей Самохин родился в Кемерове в 1989 году. Летом 1996-го он утонул в Чёрной заводи на Томи и через четыре минуты вернулся. С тех пор он умирает чаще, чем кажется, и каждый раз остаётся жив.</p>
+
+      <h3>Много миров</h3>
+      <p>В 1957 году американский физик Хью Эверетт предложил понимать квантовую механику буквально. Если частица может пойти двумя путями, мир делится надвое: в одной ветви она идёт налево, в другой направо. Ветви больше не встречаются, и каждая так же реальна, как наша. Это одна из серьёзных интерпретаций квантовой механики, физики спорят о ней до сих пор.</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 320 170" role="img" aria-label="Схема: жизнь ветвится, в ветвях со смертью наблюдателя нет, он всегда оказывается в живой ветви">
+          <g fill="none" stroke-width="2" stroke-linecap="round">
+            <path d="M20 85 H90" class="d-live"/>
+            <path d="M90 85 C120 85 120 40 150 40" class="d-dead"/>
+            <path d="M90 85 C120 85 120 125 150 125" class="d-live"/>
+            <path d="M150 125 C180 125 180 95 210 95" class="d-live"/>
+            <path d="M150 125 C180 125 180 155 210 155" class="d-dead"/>
+            <path d="M210 95 C240 95 240 70 270 70" class="d-dead"/>
+            <path d="M210 95 C240 95 240 115 300 115" class="d-live"/>
+          </g>
+          <g class="d-cross" font-size="16" text-anchor="middle"><text x="158" y="45">✝</text><text x="218" y="160">✝</text><text x="278" y="75">✝</text></g>
+          <circle cx="20" cy="85" r="4" class="d-dot"/><circle cx="300" cy="115" r="4" class="d-dot"/>
+          <text x="20" y="108" class="d-label" text-anchor="middle">1996</text><text x="300" y="138" class="d-label" text-anchor="middle">2061</text>
+        </svg>
+        <figcaption>Каждая развилка делит мир. Там, где я умер, меня больше нет и некому это заметить. Поэтому изнутри я всегда оказываюсь в живой ветви.</figcaption>
+      </figure>
+
+      <h3>Квантовое бессмертие</h3>
+      <p>Это мысленный эксперимент конца 1980-х — 1990-х годов, его обсуждали Ханс Моравек и Макс Тегмарк. Представь опыт, в котором ты с вероятностью пятьдесят процентов умираешь. В одной ветви тебя нет, и заметить это тебе нечем. В другой ты жив и видишь, что выжил. Если повторять опыт снова и снова, изнутри ты всегда будешь оказываться там, где жив. Для всех остальных ты почти наверняка давно умер.</p>
+
+      <h3>Почему проверять это на себе не надо</h3>
+      <p>Тегмарк сам же нашёл, где теория ломается. Смерть почти никогда не бывает мгновенным щелчком: человек угасает постепенно, и чистой развилки «жив или мёртв» нет. А мозг тёплый и мокрый, квантовые эффекты гаснут в нём за триллионные доли секунды. Так что в нашем мире квантового бессмертия, скорее всего, нет. В игре — есть.</p>
+
+      <h3>Где кончается наука</h3>
+      <p>У Андрея в голове есть то, чего нет у других: островок, где квантовые эффекты не гаснут. Откуда он взялся, ты узнаешь сам, это часть истории. Из-за него решения Андрея по-настоящему делят мир, а когда какая-то его версия умирает, её память перетекает в ту, что выжила. Это вымысел. Он вдохновлён спорной гипотезой Роджера Пенроуза и Стюарта Хамероффа о квантовых процессах в нейронах.</p>
+
+      <h3>Как это устроено в игре</h3>
+      <ul class="rules">
+        <li><b>Смерть не заканчивает игру.</b> Ты проживаешь её и просыпаешься в точке выбора, помня всё.</li>
+        <li><b>Откат.</b> Насколько далеко назад можно вернуться, зависит от того, насколько развит дар. Сначала только на шаг. Иногда настоящая ошибка была сделана раньше, и до неё ещё надо дотянуться.</li>
+        <li><b>Хор.</b> Тетрадь смертей: все, кем ты был и кто не вернулся. Хор помнит их и в следующих жизнях, и иногда это открывает новые пути.</li>
+        <li><b>Дрейф.</b> Если слишком часто подгонять судьбу под себя, мир начинает меняться в мелочах. Присматривайся к деталям.</li>
+        <li><b>Случайностей нет.</b> Всё, что происходит, следует из твоих решений и из того, каким ты стал.</li>
+        <li><b>Цифр нет.</b> В меню «Я» только слова: каким ты стал, а не сколько очков набрал.</li>
+        <li><b>Схема</b> показывает, какие развилки ты уже прошёл, а какие ещё ждут.</li>
+      </ul>
+    </div>
   </section>
 
   <section id="about" class="screen panel" hidden>
     <button class="close ghost">×</button>
     <h2>Об игре</h2>
-    <p>Это история об одной обычной жизни, в которой нельзя умереть. Смерть в игре — не наказание и не совет. Это память о тех, кто не вернулся, и о тех, кто их ждал.</p>
+    <p>Это история об одной обычной жизни, в которой нельзя умереть. Смерть в игре не наказание и не совет. Это память о тех, кто не вернулся, и о тех, кто их ждал.</p>
     <p>Если тебе сейчас плохо и хочется поговорить: детский телефон доверия <b>8-800-2000-122</b> (бесплатно, по России), международный каталог служб помощи — <b>findahelpline.com</b>.</p>
   </section>
 </div>

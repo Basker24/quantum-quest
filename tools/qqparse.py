@@ -306,6 +306,8 @@ def parse_file(path, cfg):
 
 def load():
     cfg = json.loads((SCENES / "_config.json").read_text(encoding="utf-8"))
+    for m in cfg.get("meta_entries", []):
+        m["if"] = parse_expr(m["cond"], cfg)
     scenes, deaths = {}, {}
     for p in sorted(SCENES.glob("*.md")):
         if p.name.startswith("_"):
