@@ -29,6 +29,9 @@
 
     ## Далее -> Т-02           (сцена без выбора)
 
+    ## После A                (что случилось сразу после выбора A — до перехода; ::if допускаются)
+    текст
+
     ## 🔒 Заметки             (всё ниже игнорируется движком)
 
 Смерть — файл с id, начинающимся на «✝»; секция «## Пробуждение» — текст после отката.
@@ -284,7 +287,7 @@ def parse_file(path, cfg):
     if not sid:
         raise QQError(f"{path.name}: нет id")
     body = re.split(r"^##\s*🔒.*$", body, flags=re.M)[0]
-    parts = re.split(r"^##\s*(Выбор|Пробуждение|Далее.*)$", body, flags=re.M)
+    parts = re.split(r"^##\s*(Выбор|Пробуждение|Далее.*|После\s+\w+)\s*$", body, flags=re.M)
     text = parts[0]
     item = {k: v for k, v in meta.items()}
     if "age" in item:
@@ -301,6 +304,13 @@ def parse_file(path, cfg):
             if not m:
                 raise QQError(f"{sid}: «## Далее -> ID»")
             item["next"] = m.group(1)
+        elif head.startswith("После"):
+            # что случилось сразу после выбора — показывается до перехода в следующую сцену
+            cid = head.split()[1]
+            item.setdefault("after", {})[cid] = parse_blocks(content, cfg)
+    for cid in item.get("after", {}):
+        if cid not in {c["id"] for c in item.get("choices", [])}:
+            raise QQError(f"{sid}: «## После {cid}», а варианта [{cid}] нет")
     return sid, item
 
 

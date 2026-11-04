@@ -64,7 +64,7 @@
   const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
 
   // ---------- экраны
-  const screens = ["#title", "#chapter", "#scene", "#death", "#rewind", "#flow", "#journal", "#me", "#howto", "#about"];
+  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -240,14 +240,47 @@
     meta.taken[S.scene][c.id] = true;
     saveMeta();
     if (o.to.startsWith("✝")) return die(o.to);
-    applyFx(c.fx, st);
-    if (o.fx) applyFx(o.fx, st);
+    const next = clone(st);
+    applyFx(c.fx, next);
+    if (o.fx) applyFx(o.fx, next);
+    const after = sc.after && sc.after[c.id];
+    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); });
+    S.st = next;
     enter(o.to);
   }
 
-  // ---------- смерть
+  // ---------- «что было дальше»: последствие выбора сразу, на том же экране
+  function showAfter(c, blocks, go) {
+    const nav = $("#choices"); nav.innerHTML = "";
+    const art = $("#text");
+    const picked = document.createElement("p");
+    picked.className = "picked mono";
+    picked.innerHTML = "▸ " + md(c.label);
+    art.append(picked);
+    const els = blocks.map((b) => {
+      const p = document.createElement("p");
+      p.className = ["after", b.kind || "", /^—\s/.test(b.md) ? "talk" : ""].join(" ").trim();
+      p.innerHTML = md(b.md); p.classList.add("pending"); art.append(p); return p;
+    });
+    picked.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+    const done = () => {
+      clearTimeout(typing); typing = null;
+      els.forEach((p) => p.classList.remove("pending"));
+      const b = document.createElement("button");
+      b.className = "choice next"; b.textContent = "Дальше";
+      b.onclick = go;
+      nav.append(b);
+    };
+    let i = 0;
+    const step = () => { if (i >= els.length) return done(); els[i].classList.remove("pending"); i++; typing = setTimeout(step, REDUCED ? 60 : 520); };
+    art.onclick = () => typing && done();
+    step();
+  }
+
+  // ---------- смерть: сама смерть → надгробие → шок пробуждения → (если можно глубже) лента отката
   function die(did) {
     const d = G.deaths[did];
+    const first = Object.keys(S.lifeSeen).length === 0;
     S.lifeSeen[did] = true;
     const j = meta.journal[did] || { times: 0, first: new Date().toISOString(), life: meta.lives };
     j.times++; meta.journal[did] = j; saveMeta();
@@ -259,15 +292,21 @@
     const btn = $("#btn-death-next"); btn.hidden = true;
     let i = 0;
     const step = () => {
-      if (i < blocks.length) { const p = document.createElement("p"); p.innerHTML = md(blocks[i].md); art.append(p); i++; setTimeout(step, REDUCED ? 100 : 900); }
-      else { btn.hidden = false; btn.onclick = () => rewind(did); }
+      if (i < blocks.length) { const p = document.createElement("p"); p.innerHTML = md(blocks[i].md); art.append(p); i++; setTimeout(step, REDUCED ? 100 : 1000); return; }
+      // надгробие: чтобы не оставалось сомнений, что это была смерть
+      art.insertAdjacentHTML("beforeend", `<div class="tomb">
+        <div class="tomb-cross">✝</div>
+        <div class="tomb-name">Андрей Николаевич Самохин</div>
+        <div class="tomb-years mono">1989 — ${esc(yearOf(d.date) || "")}</div>
+        <p class="tomb-epitaph">${esc(d.epitaph || "")}</p>
+        ${d.mourner ? `<p class="tomb-mourner"><span class="mono">в том мире</span> ${esc(d.mourner)}</p>` : ""}
+      </div>`);
+      setTimeout(() => { btn.hidden = false; btn.textContent = "…"; btn.onclick = () => awaken(did, first); }, REDUCED ? 100 : 1400);
     };
-    setTimeout(step, REDUCED ? 50 : 600);
+    setTimeout(step, REDUCED ? 50 : 700);
   }
 
-  // ---------- откат
-  function rewind(did) {
-    const d = G.deaths[did];
+  function rewindOptions() {
     const depth = depthFor(S.st["ДАР"] || 0);
     const cur = G.scenes[S.scene];
     if (!S.stack.length || S.stack[S.stack.length - 1].scene !== S.scene) S.stack.push({ scene: S.scene, st: clone(S.st), seal: sealOf(cur), taken: null });
@@ -278,6 +317,64 @@
       if (idx < 0 || S.stack[idx].seal !== sealNow) break;
       opts.push(idx);
     }
+    return { depth, opts };
+  }
+
+  function restore(idx, n) {
+    const snap = S.stack[idx];
+    S.stack = S.stack.slice(0, idx + 1);
+    S.st = clone(snap.st);
+    S.awake = n === 0
+      ? [{ md: "Та же минута. Только теперь я знаю, чем она кончается." }]
+      : [{ md: "…и я снова здесь, на несколько шагов раньше. Тело ещё помнит, как умирало, а голова уже прикидывает, где я ошибся." }];
+    S.ghost = snap.taken;
+    enter(snap.scene, true);
+  }
+
+  // шок: герой стоит живой за минуту до смерти и помнит её, как воспоминание
+  function awaken(did, first) {
+    const d = G.deaths[did];
+    show("#awake");
+    $("#awake-tc").textContent = (G.scenes[S.scene].date || "").toUpperCase();
+    const art = $("#awake-text"); art.innerHTML = "";
+    const nav = $("#awake-btns"); nav.innerHTML = "";
+    // порядок: возвращение в ту же минуту → шок (первая смерть в жизни — длинный) → конкретная память этой смерти
+    const own = (d.awake || []).filter((b) => ok(b.if, S.st));
+    const paras = [];
+    if (own[0]) paras.push({ md: own[0].md, cls: "back" });
+    ((first ? C.shock_first : C.shock_again) || []).forEach((s) => paras.push({ md: s, cls: "shock" }));
+    own.slice(1).forEach((b) => paras.push({ md: b.md, cls: "" }));
+    const els = paras.map((x) => { const p = document.createElement("p"); p.className = x.cls; p.innerHTML = md(x.md); p.classList.add("pending"); art.append(p); return p; });
+    let finished = false, startT = null;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(startT); clearTimeout(typing); typing = null;
+      els.forEach((p) => p.classList.remove("pending"));
+      const { depth, opts } = rewindOptions();
+      if (opts.length <= 1) {
+        const b = document.createElement("button");
+        b.className = "choice"; b.textContent = "Вдохнуть";
+        b.onclick = () => restore(opts[0], 0);
+        nav.append(b);
+      } else {
+        const s = document.createElement("button");
+        s.className = "choice"; s.textContent = "Вдохнуть и остаться в этой минуте";
+        s.onclick = () => restore(opts[0], 0);
+        const b = document.createElement("button");
+        b.className = "choice ghost-choice"; b.innerHTML = `<span class="lbl">Хор помнит больше. Вернуться ещё дальше назад</span>`;
+        b.onclick = () => showTape(depth, opts);
+        nav.append(s, b);
+      }
+    };
+    let i = 0;
+    const step = () => { if (finished) return; if (i >= els.length) return done(); els[i].classList.remove("pending"); i++; typing = setTimeout(step, REDUCED ? 60 : 1100); };
+    art.onclick = done;
+    startT = setTimeout(step, REDUCED ? 30 : 500);
+  }
+
+  // ---------- лента отката
+  function showTape(depth, opts) {
     show("#rewind");
     $("#rew-depth").textContent = WORDS[opts.length] || "";
     const tape = $("#tape"); tape.innerHTML = "";
@@ -287,18 +384,10 @@
       const b = document.createElement("button");
       b.className = "notch choice";
       b.innerHTML = `<span class="mono">${"◀".repeat(n + 1)}</span> ${esc(sc.title || snap.scene)}<small class="mono">${esc(sc.date || "")}</small>`;
-      b.onclick = () => {
-        S.stack = S.stack.slice(0, idx + 1);
-        S.st = clone(snap.st);
-        S.awake = n === 0 ? d.awake || null
-          : [{ md: "…и я снова здесь, на несколько шагов раньше. Тело ещё помнит, как умирало, а голова уже прикидывает, где я ошибся." }];
-        S.ghost = snap.taken;
-        enter(snap.scene, true);
-      };
+      b.onclick = () => restore(idx, n);
       tape.append(b);
     });
-    if (opts.length < depth) tape.insertAdjacentHTML("beforeend", `<p class="dim tiny mono">дальше лента засвечена</p>`);
-    else tape.insertAdjacentHTML("beforeend", `<p class="dim tiny mono">дальше Хор не помнит</p>`);
+    tape.insertAdjacentHTML("beforeend", `<p class="dim tiny mono">${opts.length < depth ? "дальше лента засвечена" : "дальше Хор не помнит"}</p>`);
   }
 
   // ---------- панели

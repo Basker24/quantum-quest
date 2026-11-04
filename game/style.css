@@ -299,3 +299,24 @@ body[data-era="future"] .choice { border-radius: 14px; }
 /* панели поверх фона */
 .panel h2 { font-family: var(--caption); }
 #me .row b { color: var(--accent); font-weight: 400; font-style: italic; }
+
+/* ===== v0.4: последствия выбора, надгробие, шок ===== */
+#text p.picked { color: var(--accent); font-size: 14px; margin: 26px 0 14px; padding-top: 18px; border-top: 1px dashed var(--line); }
+#text p.after { color: var(--ink); }
+.tomb { margin: 30px auto 8px; max-width: 420px; text-align: center; padding: 22px 18px 18px; border: 1px solid rgba(233,228,218,.25);
+  border-radius: 46% 46% 6px 6px / 22% 22% 6px 6px; background: linear-gradient(#1a1a1c, #111113); animation: in 1.6s ease both; text-shadow: none; }
+#death-text .tomb p, #death-text .tomb div { text-shadow: none; animation: none; }
+.tomb-cross { font-size: 26px; color: var(--blood); }
+.tomb-name { font-family: var(--caption); font-size: 21px; margin-top: 6px; }
+.tomb-years { color: var(--dim); letter-spacing: .14em; margin-top: 2px; }
+.tomb-epitaph { font-style: italic; margin: 12px 0 0; font-size: 16px; }
+.tomb-mourner { color: var(--dim); font-size: 14px; margin: 12px 0 0; }
+.tomb-mourner .mono { display: block; text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--blood); margin-bottom: 2px; }
+#awake { color: #e8f2f6; }
+#awake .vhs-top { color: #8fd3ff; }
+#awake-text p { margin: 0 0 1em; transition: opacity .9s ease, transform .9s ease; }
+#awake-text p.pending { opacity: 0; transform: translateY(4px); }
+#awake-text p.back { font-style: italic; color: #b9d7e2; }
+#awake-text p.shock { font-size: 1.04em; }
+#awake-text p.shock:first-of-type { margin-top: 18px; }
+#awake-btns { display: grid; gap: 10px; margin-top: 26px; }
