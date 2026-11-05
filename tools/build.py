@@ -34,6 +34,12 @@ def main():
     except QQError as e:
         print("ОШИБКА:", e)
         sys.exit(1)
+    memos = json.loads((ROOT / "scenes" / "_memos.json").read_text(encoding="utf-8"))
+    memos.pop("_comment", None)
+    g["memos"] = memos
+    missing = [f for f in g["config"]["flags"] if f not in memos]
+    if missing:
+        print("ПРЕДУПРЕЖДЕНИЕ: нет подписи в scenes/_memos.json для", ", ".join(missing))
     if "--no-witness" not in sys.argv:
         g["guides"] = build_guides(g)
     out = ROOT / "game" / "graph.js"

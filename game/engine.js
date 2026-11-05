@@ -493,6 +493,17 @@
       if (v.hidden) continue;
       me.insertAdjacentHTML("beforeend", `<div class="row"><span>${esc(v.name)}</span><b>${esc(tier(k, S.st[k]))}</b></div>`);
     }
+    if (S) {
+      // «Что со мной было»: поднятые флаги словами героя
+      const items = [];
+      for (const [f, m] of Object.entries(G.memos || {})) {
+        const v = S.st[f];
+        if (!m || v === null || v === undefined || v === false) continue;
+        const t = typeof m === "string" ? m : m[v];
+        if (t) items.push(t);
+      }
+      if (items.length) me.insertAdjacentHTML("beforeend", `<h3 class="memo-h">Что со мной было</h3><ul class="memo">${items.map((t) => `<li>${md(t)}</li>`).join("")}</ul><p class="dim tiny">Это помнит не только тот, кто это пережил. Это помнит сюжет.</p>`);
+    }
     if (!S) me.innerHTML = `<p class="dim">Жизнь ещё не начата.</p>`;
     renderDebug();
   }
