@@ -28,6 +28,22 @@ def build_guides(g):
     return out
 
 
+def flag_sources(g):
+    """Метка «↩ год · сцена»: для каждого флага — сцены, где его ставит выбор (fx варианта или исхода).
+    Служебный F_ПУТЬ не метим: он только сортирует ветви."""
+    flags = g["config"]["flags"]
+    out = {}
+    for sid, sc in g["scenes"].items():
+        for c in sc.get("choices") or []:
+            fxs = list(c.get("fx") or [])
+            for o in c.get("outcomes") or []:
+                fxs += o.get("fx") or []
+            for _, name, _ in fxs:
+                if name in flags and name != "F_ПУТЬ" and sid not in out.setdefault(name, []):
+                    out[name].append(sid)
+    return out
+
+
 def main():
     try:
         g = load()
@@ -40,6 +56,7 @@ def main():
     missing = [f for f in g["config"]["flags"] if f not in memos]
     if missing:
         print("ПРЕДУПРЕЖДЕНИЕ: нет подписи в scenes/_memos.json для", ", ".join(missing))
+    g["flag_src"] = flag_sources(g)
     if "--no-witness" not in sys.argv:
         g["guides"] = build_guides(g)
     else:  # без поиска — оставить путеводитель из прошлой сборки, чтобы он не пропал из игры

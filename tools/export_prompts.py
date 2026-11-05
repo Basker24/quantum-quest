@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 """Список промптов для картинок: docs/generated/image_prompts.md и .csv.
-Файл для игры: game/img/<ID>.jpg (ID — как в сцене, движок ищет его сам)."""
+Файл для игры: game/img/<ID>.jpg (ID — как в сцене, движок ищет его сам).
+В промпте плейсхолдер [STYLE_ANCHOR] — манеру рисовки подставляет tools/gen_images.py --style N."""
 import csv
 from qqparse import ROOT, load
 
-STYLE = {
-    "bw": "authentic 1990s black-and-white amateur film photo, Soviet-era camera, grain, slight blur, white paper border",
-    "color": "2000s color print from a photo lab, warm faded colors, flash, slight vignette, date stamp style",
-    "digital": "early 2010s cheap digital point-and-shoot photo, noise, oversaturated, harsh flash",
-    "phone": "2020s-2040s smartphone photo, natural light, slightly compressed, candid",
-    "future": "2050s-2060s ultra-clean, unnaturally sharp and calm image, muted palette, eerie perfection",
-}
-COMMON = "first-person point of view, the narrator is never visible, Kemerovo / Kuzbass, Siberia, Russia, no text, no watermark"
+# Стиль: манера рисовки (плейсхолдер [STYLE_ANCHOR]) + фото-носитель эпохи — см. tools/artstyle.py
+from artstyle import ERA_MEDIUM as STYLE, style_suffix
 
 def main():
     G = load()
@@ -21,7 +16,7 @@ def main():
             continue
         era = sc.get("photo", "bw")
         rows.append({"id": sid, "file": f"game/img/{sid}.jpg", "era": era, "caption": sc.get("photo_caption", ""),
-                     "prompt": f"{sc['photo_prompt']}. Style: {STYLE.get(era, '')}. {COMMON}"})
+                     "prompt": f"{sc['photo_prompt'].rstrip('. ')}. {style_suffix(era)}"})
     out = ROOT / "docs" / "generated"
     with open(out / "image_prompts.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["id", "file", "era", "caption", "prompt"]); w.writeheader(); w.writerows(rows)

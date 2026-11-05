@@ -65,6 +65,44 @@
   const WORDS = ["", "один шаг", "два шага", "три шага", "четыре шага", "пять шагов"];
   const LETTERS = "АБВГДЕЖЗ";
   const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+  const buzz = (pat) => { try { if (navigator.vibrate) navigator.vibrate(pat); } catch (e) { /* нет вибрации */ } };
+  // сцены-заглушки: варианты туда видны, но закрыты
+  const WIP = new Set(C.wip_scenes || ["Ж-00"]);
+  const isWip = (c) => c.outcomes.length > 0 && c.outcomes.every((o) => WIP.has(o.to));
+
+  // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
+  function flagsIn(e, acc = new Set()) {
+    if (!e || typeof e !== "object") return acc;
+    if ((e.op === "var" || e.op === "truthy") && /^F_/.test(e.n) && e.n !== "F_ПУТЬ") acc.add(e.n);
+    for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => flagsIn(y, acc)); else flagsIn(x, acc); }
+    return acc;
+  }
+  function echoTag(cond, skip) {
+    if (!cond || !S || !S.trail) return "";
+    const out = [];
+    for (const f of flagsIn(cond)) {
+      if (skip && skip.has(f)) continue;
+      const src = (G.flag_src || {})[f];
+      if (!src) continue;
+      for (let i = S.trail.length - 1; i >= 0; i--) {
+        const t = S.trail[i];
+        if (t.scene === S.scene || !(t.flags || []).includes(f) || !src.includes(t.scene)) continue;
+        const sc = G.scenes[t.scene], y = yearOf(sc && sc.date);
+        const s = (y ? y + " · " : "") + ((sc && sc.title) || t.scene).replace(/^Демо\.\s*/, "");
+        if (!out.includes(s)) out.push(s);
+        break;
+      }
+    }
+    return out.map((s) => "↩ " + s).join("   ");
+  }
+  // абзацы с меткой: метка — отдельной строкой над абзацем, вне текста
+  function para(art, cls, html, tag) {
+    let t = null;
+    if (tag) { t = document.createElement("div"); t.className = "echo-tag mono pending"; t.textContent = tag; art.append(t); }
+    const p = document.createElement("p"); p.className = cls; p.innerHTML = html; p.classList.add("pending"); p._tag = t; art.append(p);
+    return p;
+  }
+  const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
   const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide"];
@@ -80,7 +118,7 @@
   // ---------- жизнь
   function newLife() {
     meta.lives = (meta.lives || 0) + 1; saveMeta();
-    S = { scene: C.start, st: initState(), stack: [], lifeSeen: {}, awake: null, ghost: null, year: null };
+    S = { scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, awake: null, ghost: null, year: null, replay: false };
     enter(C.start);
   }
   const save = () => store.set(SAVE, S);
@@ -89,11 +127,12 @@
   function enter(id, restored) {
     const sc = G.scenes[id];
     S.scene = id;
+    S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     meta.visited[id] = true;
     if (id === "Т-02б") meta.root = true;
     for (const m of C.meta_entries || []) if (m.scene === id && ok(m.if, S.st)) meta.extra[m.id] = true;
     saveMeta();
-    if (!restored && visible(sc, S.st).length >= 2) S.stack.push({ scene: id, st: clone(S.st), seal: sealOf(sc), taken: null });
+    if (!restored && visible(sc, S.st).length >= 2) S.stack.push({ scene: id, st: clone(S.st), seal: sealOf(sc), taken: null, trail: S.trail.length });
     const y = yearOf(sc.date);
     const newYear = y && y !== S.year;
     if (y) S.year = y;
@@ -132,22 +171,26 @@
     renderPhoto(sc);
     $("#meta").textContent = [sc.date, sc.age != null ? `мне ${sc.age}` : "", DEBUG ? S.scene : ""].filter(Boolean).join(" · ");
     $("#when").textContent = sc.date || "";
+    // после отката сцена уже прочитана: последний абзац и выбор сразу, остальное свёрнуто
+    const replay = !!S.replay; S.replay = false;
 
     const blocks = [];
-    if (S.awake) { for (const b of S.awake) if (ok(b.if, st)) blocks.push({ md: b.md, cls: "awake" }); S.awake = null; }
-    let first = true;
+    if (S.awake) { for (const b of S.awake) if (ok(b.if, st)) blocks.push({ md: b.md, cls: "awake", own: true }); S.awake = null; }
+    let first = true, lastTag = "";
     for (const b of sc.text) {
       if (!ok(b.if, st)) continue;
-      if (b.kind === "chorus") { chorusLines().forEach((l) => blocks.push({ md: l, cls: "chorus talk" })); continue; }
-      if (b.kind === "norewind") { blocks.push({ md: "", cls: "norewind" }); continue; }
+      if (b.kind === "chorus") { chorusLines().forEach((l) => blocks.push({ md: l, cls: "chorus talk" })); lastTag = ""; continue; }
+      if (b.kind === "norewind") { blocks.push({ md: "", cls: "norewind" }); lastTag = ""; continue; }
       const talk = /^—\s/.test(b.md);
       const cls = [b.drift ? "drift" : "", b.kind || "", talk ? "talk" : ""];
       if (first && !b.kind && !talk) { cls.push("first"); first = false; }
-      blocks.push({ md: b.md, cls: cls.join(" ").trim() });
+      const tag = echoTag(b.if);
+      blocks.push({ md: b.md, cls: cls.join(" ").trim(), tag: tag !== lastTag ? tag : "" });
+      lastTag = tag;
     }
     const art = $("#text"); art.innerHTML = "";
     $("#choices").innerHTML = "";
-    const els = blocks.map((b) => { const p = document.createElement("p"); p.className = b.cls; p.innerHTML = md(b.md); p.classList.add("pending"); art.append(p); return p; });
+    const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; return p; });
     // «последний откат, которого нет»: привычная лента, которая рассыпается
     els.filter((p) => p.classList.contains("norewind")).forEach((p) => {
       p.innerHTML = `<button class="choice notch nr-btn"><span class="mono">◀◀</span> Хор помнит…</button>`;
@@ -157,9 +200,28 @@
         setTimeout(() => { p.innerHTML = `<span class="mono nr-end">Отката нет. И не надо.</span>`; }, REDUCED ? 50 : 1600);
       };
     });
-    const finish = () => { clearTimeout(typing); typing = null; els.forEach((p) => p.classList.remove("pending")); renderChoices(sc); };
+    const finish = () => { clearTimeout(typing); typing = null; els.forEach(reveal); renderChoices(sc); };
+    if (replay) {
+      const body = els.filter((p) => !p._own);
+      const hide = body.slice(0, -1);
+      if (hide.length) {
+        const fold = document.createElement("button");
+        fold.className = "seen-fold mono";
+        fold.textContent = "⋯ ты это уже видел";
+        fold.setAttribute("aria-expanded", "false");
+        hide.forEach((p) => { p.classList.add("folded"); if (p._tag) p._tag.classList.add("folded"); });
+        fold.onclick = (e) => {
+          e.stopPropagation();
+          hide.forEach((p) => { p.classList.remove("folded"); if (p._tag) p._tag.classList.remove("folded"); });
+          fold.remove();
+        };
+        art.insertBefore(fold, hide[0]._tag || hide[0]);
+      }
+      art.onclick = null;
+      return finish();
+    }
     let i = 0;
-    const step = () => { if (i >= els.length) return finish(); els[i].classList.remove("pending"); i++; typing = setTimeout(step, REDUCED ? 60 : 420); };
+    const step = () => { if (i >= els.length) return finish(); reveal(els[i]); i++; typing = setTimeout(step, REDUCED ? 60 : 420); };
     art.onclick = () => typing && finish();
     step();
   }
@@ -181,20 +243,27 @@
   }
 
   function renderPhoto(sc) {
-    const ph = $("#photo");
+    const ph = $("#photo"), pc = $("#photo-cap");
+    const sid = sc.id || S.scene;
     ph.className = "photo era-" + (sc.photo || "none");
     ph.innerHTML = "";
+    ph.hidden = true; // фото показываем, только когда оно есть: без заглушек
+    ph.dataset.sid = sid;
+    pc.hidden = true; pc.textContent = "";
     if (!sc.photo) return;
     const img = new Image();
     img.alt = sc.photo_caption || "";
-    img.onerror = () => { img.remove(); ph.classList.add("empty"); };
-    img.src = "img/" + encodeURIComponent(sc.id || S.scene) + ".jpg";
+    img.onload = () => { if (ph.dataset.sid === sid) ph.hidden = false; };
+    img.onerror = () => {
+      img.remove();
+      if (ph.dataset.sid !== sid) return;
+      ph.hidden = true;
+      if (sc.photo_caption) { pc.textContent = sc.photo_caption; pc.hidden = false; }
+    };
+    img.src = "img/" + encodeURIComponent(sid) + ".jpg";
     const cap = document.createElement("figcaption");
     cap.textContent = sc.photo_caption || "";
-    const holder = document.createElement("div");
-    holder.className = "placeholder";
-    holder.innerHTML = `<span>место для фото</span><small>${esc(C.photo_eras[sc.photo] || "")}</small>`;
-    ph.append(img, holder, cap);
+    ph.append(img, cap);
     if (sc.photo === "color" || sc.photo === "bw") {
       const stamp = document.createElement("span");
       stamp.className = "stamp mono";
@@ -222,7 +291,8 @@
     const st = S.st;
     const top = S.stack[S.stack.length - 1];
     const ghost = S.ghost; S.ghost = null;
-    const vis = visible(sc, st);
+    const vis = visible(sc, st).filter((c) => !isWip(c));
+    const dar = st["ДАР"] || 0;
     meta.shown[S.scene] = meta.shown[S.scene] || {};
     vis.forEach((c, i) => {
       meta.shown[S.scene][c.id] = true;
@@ -235,16 +305,24 @@
         b.insertAdjacentHTML("beforeend", `<small>в другом мире я выбрал это</small>`);
       }
       if (c.visible && /seen/.test(JSON.stringify(c.visible))) b.classList.add("echo");
+      // «холодок»: дар чует смертельный исход при нынешнем состоянии (тот же выбор исхода, что в choose)
+      const o = c.outcomes.find((x) => ok(x.if, st));
+      if (o && o.to.startsWith("✝") && dar >= 20) {
+        b.classList.add("cold");
+        if (dar >= 40) b.classList.add("shiver");
+        b.insertAdjacentHTML("beforeend", dar >= 60 ? `<small class="whisper">не надо</small>` : `<small class="chill mono">холодок в затылке</small>`);
+      }
       if (DEBUG) b.insertAdjacentHTML("beforeend", `<small class="mono dbg">[${c.id}] ${esc(c.outcomes.map((o) => (o.if_src ? o.if_src + " → " : "") + o.to).join(" | "))}</small>`);
       b.onclick = () => choose(sc, c);
       nav.append(b);
     });
     // закрытые варианты: текст не показываем, только чего не хватило
     for (const c of sc.choices || []) {
-      if (!c.visible || ok(c.visible, st) || /seen/.test(JSON.stringify(c.visible))) continue;
+      const wip = isWip(c);
+      if (!wip && (!c.visible || ok(c.visible, st) || /seen/.test(JSON.stringify(c.visible)))) continue;
       const b = document.createElement("button");
-      b.className = "choice locked"; b.disabled = true;
-      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(lockReason(c.visible, st))}</small>`;
+      b.className = "choice locked" + (wip ? " wip" : ""); b.disabled = true;
+      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : lockReason(c.visible, st))}</small>`;
       nav.append(b);
     }
     saveMeta();
@@ -308,36 +386,41 @@
     const next = clone(st);
     applyFx(c.fx, next);
     if (o.fx) applyFx(o.fx, next);
+    // след выборов этой жизни: какие флаги поставил этот выбор (для меток «↩»)
+    const setHere = [...(c.fx || []), ...(o.fx || [])].filter(([k, n]) => k === "set" && C.flags[n]).map((x) => x[1]);
+    (S.trail = S.trail || []).push({ scene: S.scene, choice: c.id, flags: setHere });
     const after = sc.after && sc.after[c.id];
-    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); });
+    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); }, new Set(setHere));
     S.st = next;
     enter(o.to);
   }
 
   // ---------- «что было дальше»: последствие выбора сразу, на том же экране
-  function showAfter(c, blocks, go) {
+  function showAfter(c, blocks, go, setHere) {
     const nav = $("#choices"); nav.innerHTML = "";
     const art = $("#text");
     const picked = document.createElement("p");
     picked.className = "picked mono";
     picked.innerHTML = "▸ " + md(c.label);
     art.append(picked);
+    let lastTag = "";
     const els = blocks.map((b) => {
-      const p = document.createElement("p");
-      p.className = ["after", b.kind || "", /^—\s/.test(b.md) ? "talk" : ""].join(" ").trim();
-      p.innerHTML = md(b.md); p.classList.add("pending"); art.append(p); return p;
+      const tag = echoTag(b.if, setHere);
+      const p = para(art, ["after", b.kind || "", /^—\s/.test(b.md) ? "talk" : ""].join(" ").trim(), md(b.md), tag !== lastTag ? tag : "");
+      lastTag = tag;
+      return p;
     });
     picked.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
     const done = () => {
       clearTimeout(typing); typing = null;
-      els.forEach((p) => p.classList.remove("pending"));
+      els.forEach(reveal);
       const b = document.createElement("button");
       b.className = "choice next"; b.textContent = "Дальше";
       b.onclick = go;
       nav.append(b);
     };
     let i = 0;
-    const step = () => { if (i >= els.length) return done(); els[i].classList.remove("pending"); i++; typing = setTimeout(step, REDUCED ? 60 : 520); };
+    const step = () => { if (i >= els.length) return done(); reveal(els[i]); i++; typing = setTimeout(step, REDUCED ? 60 : 520); };
     art.onclick = () => typing && done();
     step();
   }
@@ -353,6 +436,8 @@
     show("#death");
     $("#death-tc").textContent = (d.date || "").toUpperCase();
     const art = $("#death-text"); art.innerHTML = "";
+    art.style.translate = art.style.filter = art.style.transition = "";
+    $("#death").classList.remove("spool");
     const blocks = d.text.filter((b) => ok(b.if, S.st));
     const btn = $("#btn-death-next"); btn.hidden = true;
     let i = 0;
@@ -366,15 +451,49 @@
         <p class="tomb-epitaph">${esc(d.epitaph || "")}</p>
         ${d.mourner ? `<p class="tomb-mourner"><span class="mono">в том мире</span> ${esc(d.mourner)}</p>` : ""}
       </div>`);
-      setTimeout(() => { btn.hidden = false; btn.textContent = "…"; btn.onclick = () => awaken(did, first); }, REDUCED ? 100 : 1400);
+      setTimeout(() => { btn.hidden = false; holdToRewind(btn, art, () => awaken(did, first)); }, REDUCED ? 100 : 1400);
     };
     setTimeout(step, REDUCED ? 50 : 700);
+  }
+
+  // «держи, чтобы перемотать»: ~700 мс, полоса заполняется, текст смерти уезжает вверх лентой.
+  // Короткий тап, Enter и пробел тоже срабатывают (click) — для доступности.
+  const HOLD_MS = 700;
+  function holdToRewind(btn, art, go) {
+    const scr = $("#death"), fill = btn.querySelector(".hold-fill");
+    let t0 = null, raf = null, gone = false;
+    const set = (k) => {
+      if (fill) fill.style.transform = `scaleX(${k})`;
+      if (!REDUCED) { art.style.translate = `0 ${(-k * 40).toFixed(1)}vh`; art.style.filter = k ? `blur(${(k * 1.6).toFixed(2)}px)` : ""; }
+    };
+    const reset = () => { t0 = null; cancelAnimationFrame(raf); art.style.transition = ""; set(0); btn.classList.remove("holding"); scr.classList.remove("spool"); };
+    const finish = () => {
+      if (gone) return;
+      gone = true; cancelAnimationFrame(raf);
+      buzz([25, 35, 50]);
+      scr.classList.add("spool");
+      const fast = t0 == null || performance.now() - t0 < HOLD_MS; // тап: доматываем быстро
+      if (fast && !REDUCED) art.style.transition = "translate .24s ease-in, filter .24s ease-in";
+      set(1);
+      setTimeout(() => { btn.onclick = btn.onpointerdown = btn.onpointerleave = btn.onpointercancel = null; go(); }, REDUCED || !fast ? 0 : 240);
+    };
+    const tick = (now) => { const k = Math.min(1, (now - t0) / HOLD_MS); set(k); if (k >= 1) return finish(); raf = requestAnimationFrame(tick); };
+    btn.onpointerdown = (e) => {
+      if (gone || (e.button != null && e.button > 0)) return;
+      t0 = performance.now(); art.style.transition = "";
+      btn.classList.add("holding"); scr.classList.add("spool"); buzz(12);
+      raf = requestAnimationFrame(tick);
+    };
+    btn.onpointerleave = btn.onpointercancel = () => { if (!gone && t0 != null) reset(); };
+    btn.oncontextmenu = (e) => e.preventDefault();
+    btn.onclick = finish;
+    reset();
   }
 
   function rewindOptions() {
     const depth = depthFor(S.st["ДАР"] || 0);
     const cur = G.scenes[S.scene];
-    if (!S.stack.length || S.stack[S.stack.length - 1].scene !== S.scene) S.stack.push({ scene: S.scene, st: clone(S.st), seal: sealOf(cur), taken: null });
+    if (!S.stack.length || S.stack[S.stack.length - 1].scene !== S.scene) S.stack.push({ scene: S.scene, st: clone(S.st), seal: sealOf(cur), taken: null, trail: (S.trail || []).length });
     const opts = [];
     const sealNow = S.stack[S.stack.length - 1].seal;
     for (let k = 0; k < depth; k++) {
@@ -388,6 +507,8 @@
   function restore(idx, n) {
     const snap = S.stack[idx];
     S.stack = S.stack.slice(0, idx + 1);
+    S.trail = (S.trail || []).slice(0, snap.trail ?? 0);
+    S.replay = true;
     S.st = clone(snap.st);
     S.awake = n === 0
       ? [{ md: "Та же минута. Только теперь я знаю, чем она кончается." }]
@@ -407,7 +528,8 @@
     const own = (d.awake || []).filter((b) => ok(b.if, S.st));
     const paras = [];
     if (own[0]) paras.push({ md: own[0].md, cls: "back" });
-    ((first ? C.shock_first : C.shock_again) || []).forEach((s) => paras.push({ md: s, cls: "shock" }));
+    // первый шок жизни — полный; дальше одна строка: игрок уже знает, что происходит
+    ((first ? C.shock_first : (C.shock_again || []).slice(0, 1)) || []).forEach((s) => paras.push({ md: s, cls: "shock" }));
     own.slice(1).forEach((b) => paras.push({ md: b.md, cls: "" }));
     const els = paras.map((x) => { const p = document.createElement("p"); p.className = x.cls; p.innerHTML = md(x.md); p.classList.add("pending"); art.append(p); return p; });
     let finished = false, startT = null;

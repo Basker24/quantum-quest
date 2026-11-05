@@ -365,3 +365,47 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .choice.locked { opacity: .55; cursor: not-allowed; border-style: dashed; }
 .choice.locked .lbl { letter-spacing: .3em; color: var(--dim); }
 .choice.locked small { display: block; color: var(--dim); font-style: italic; margin-top: 2px; }
+
+/* ===== v1.2: игра, а не книга ===== */
+/* фото без заглушек: подпись — мелкой строкой под датой */
+#photo-cap { font-size: 13px; font-style: italic; margin: -4px 0 12px; }
+/* метка «↩ год · сцена»: этот абзац — след моего выбора */
+.echo-tag { font-size: 11px; letter-spacing: .06em; color: var(--water); margin: 0 0 2px; opacity: .9; transition: opacity .6s ease; }
+.echo-tag.pending { opacity: 0; }
+#awake-text .echo-tag, .echo-tag + p { margin-top: 0; }
+/* после отката: уже виденное свёрнуто */
+.folded { display: none !important; }
+.seen-fold { display: block; width: 100%; text-align: left; background: none; border: 0; border-left: 2px solid var(--line); color: var(--dim);
+  font-size: 13px; letter-spacing: .08em; padding: 6px 12px; margin: 0 0 1em; cursor: pointer; }
+.seen-fold:hover, .seen-fold:focus-visible { color: var(--ink); border-left-color: var(--water); outline: none; }
+/* «холодок»: дар чует смерть до того, как она случится */
+.choice small.chill { color: #8fb9c9; font-size: 12px; letter-spacing: .05em; }
+.choice small.chill::before { content: "❄ "; opacity: .7; }
+.choice small.whisper { color: #a9c6d2; font-style: italic; font-size: 13px; letter-spacing: .12em; }
+.choice small.whisper::before { content: "— "; }
+.choice.cold { border-color: rgba(143,185,201,.35); }
+#choices .choice.shiver { animation: rise .45s ease both, shiver 2.6s ease-in-out 1.1s infinite; animation-delay: calc(var(--i, 0) * 90ms), 1.1s; }
+@keyframes shiver {
+  0%, 82%, 100% { transform: none; }
+  84% { transform: translateX(-1px); } 86% { transform: translateX(1.2px); } 88% { transform: translateX(-.8px); }
+  90% { transform: translateX(.8px); } 92% { transform: translateX(-.4px); } 94% { transform: none; }
+}
+/* экран смерти: держи, чтобы перемотать */
+.choice.hold { position: relative; overflow: hidden; justify-content: center; text-align: center; margin-top: 26px;
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; border-color: rgba(143,211,255,.4); }
+.hold-fill { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(143,211,255,.12), rgba(143,211,255,.32)); transform-origin: left center; transform: scaleX(0); pointer-events: none; }
+.hold-lbl { position: relative; color: #8fd3ff; font-size: 14px; letter-spacing: .12em; }
+.choice.hold.holding { border-color: #8fd3ff; }
+#death.spool #death-text { animation: tape .11s steps(2) infinite; }
+#death.spool::before { opacity: .85; }
+@keyframes tape { 0% { transform: skewX(1.5deg) translateX(2px); } 100% { transform: skewX(-1deg) translateX(-2px); } }
+/* компактная шапка сцены на телефоне */
+@media (max-width: 520px) {
+  .screen { padding-top: 12px; }
+  #bar { padding: 6px 0; font-size: 12px; gap: 6px; }
+  #bar .ghost { padding: 3px 10px; }
+  .bar-right { gap: 5px; }
+  #when { flex: 1 1 auto; min-width: 0; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 4px; }
+  #meta { margin: 8px 0 6px; font-size: 12px; }
+  #choices { margin-top: 22px; }
+}
