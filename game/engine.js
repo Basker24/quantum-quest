@@ -124,8 +124,39 @@
   const save = () => store.set(SAVE, S);
   const visible = (sc, st) => (sc.choices || []).filter((c) => ok(c.visible, st));
 
+  // ---------- Корень: утопление в семь лет показано языком смерти, но без отката (канон п. 26)
+  function rootDeath(done) {
+    show("#death");
+    $("#death-tc").textContent = "28 ИЮЛЯ 1996, ОКОЛО ПОЛУДНЯ";
+    const art = $("#death-text"); art.innerHTML = "";
+    art.style.translate = art.style.filter = art.style.transition = "";
+    const btn = $("#btn-death-next"); btn.hidden = true;
+    const lines = ["Воздух кончается раньше, чем темнота.", "Сверху, через воду, тонкий девчачий голос считает: «…сто девяносто… сто девяносто один…»", "Потом не остаётся ничего, даже счёта."];
+    let i = 0;
+    const step = () => {
+      if (i < lines.length) { const p = document.createElement("p"); p.textContent = lines[i++]; art.append(p); setTimeout(step, REDUCED ? 100 : 1100); return; }
+      art.insertAdjacentHTML("beforeend", `<div class="tomb root-tomb">
+        <div class="tomb-cross">✝</div>
+        <div class="tomb-name">Андрей Николаевич Самохин</div>
+        <div class="tomb-years mono">1989 — 1996</div>
+        <p class="tomb-epitaph">7 лет. Чёрная заводь. Утонул у коряги.</p>
+      </div>
+      <p class="root-line mono">Ника считает: <b class="root-count">200</b></p>`);
+      const cnt = art.querySelector(".root-count"), tomb = art.querySelector(".root-tomb");
+      let n = 200;
+      const tick = () => {
+        cnt.textContent = n;
+        if (n >= 252) { tomb.classList.add("crack"); if (navigator.vibrate) try { navigator.vibrate([30, 60, 30]); } catch (e) {} setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
+        n++; setTimeout(tick, REDUCED ? 5 : 70);
+      };
+      setTimeout(tick, REDUCED ? 50 : 900);
+    };
+    setTimeout(step, REDUCED ? 50 : 600);
+  }
+
   function enter(id, restored) {
     const sc = G.scenes[id];
+    if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     meta.visited[id] = true;

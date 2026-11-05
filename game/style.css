@@ -409,3 +409,12 @@ body[data-era="future"] .choice { border-radius: 14px; }
   #meta { margin: 8px 0 6px; font-size: 12px; }
   #choices { margin-top: 22px; }
 }
+
+/* ---------- Корень: надгробие трескается на 252 */
+.root-count { color: var(--fg); font-size: 1.1em; }
+.root-tomb.crack { animation: crack .5s steps(3) both; border-color: rgba(233,228,218,.6); }
+.root-tomb.crack .tomb-cross { opacity: .25; transform: rotate(8deg); transition: all .6s; }
+.root-tomb.crack .tomb-years { text-decoration: line-through; }
+@keyframes crack { 0% { transform: translate(0,0); } 33% { transform: translate(-3px,1px) rotate(-.6deg); } 66% { transform: translate(3px,-1px) rotate(.6deg); } 100% { transform: none; clip-path: polygon(0 0, 48% 0, 52% 40%, 47% 100%, 0 100%, 0 0, 100% 0, 100% 100%, 53% 100%, 57% 45%, 51% 0); } }
+@media (prefers-reduced-motion: reduce) { .root-tomb.crack { animation: none; } }
+.root-line { text-align: center; color: var(--dim); margin-top: 10px; } .root-line b { color: #ff4b3a; font-size: 1.2em; }

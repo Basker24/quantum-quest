@@ -27,6 +27,10 @@ const G = global.window.GRAPH;
       const i = ls.findIndex(l => l === want);
       if (i < 0) { console.log(`  ${fid}: на ${s.scene} нет варианта «${want}». Есть: ${ls.join(' | ')}`); ok = false; break; }
       await bs[i].click(); await p.waitForTimeout(200);
+      if (!s.death && await p.$('#death:not([hidden])')) { // Корень: смерть без отката
+        await p.waitForSelector('#btn-death-next:not([hidden])', { timeout: 30000 });
+        await p.click('#btn-death-next'); await p.waitForTimeout(200);
+      }
       if (s.death) {
         await p.waitForSelector('#btn-death-next:not([hidden])', { timeout: 30000 });
         await p.click('#btn-death-next'); await p.waitForTimeout(200);
