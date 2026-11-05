@@ -123,6 +123,11 @@ def parse_expr(src, cfg):
         if t and t[0] == "op" and t[1] in (">=", "<=", ">", "<", "==", "!="):
             take()
             right = atom()
+            for x, y in ((left, right), (right, left)):
+                if x["op"] == "var" and y["op"] == "lit":
+                    f = cfg["flags"].get(x["n"])
+                    if f and f.get("type") == "enum" and y["v"] not in f["values"]:
+                        raise QQError(f"у {x['n']} нет значения «{y['v']}» (есть: {', '.join(f['values'])}) в «{src}»")
             return {"op": "cmp", "c": t[1], "l": left, "r": right}
         if left["op"] == "lit":
             raise QQError(f"неизвестное имя «{left['v']}» в «{src}» (объяви его в _config.json)")

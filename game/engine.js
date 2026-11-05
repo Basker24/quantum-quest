@@ -166,10 +166,18 @@
 
   // голоса Рыбаков на якоре: эпитафии смертей, которые видел именно этот игрок
   function chorusLines() {
-    const lines = [];
-    for (const [id, d] of Object.entries(G.deaths)) if (meta.journal[id] && d.epitaph) lines.push("— " + d.epitaph);
-    if (!lines.length) return ["Рыбаки молчат. Я почти никого из них не знаю, и они меня, кажется, тоже."];
-    return lines.slice(-7);
+    // голоса от первого лица, в порядке смертей; первая смерть звучит всегда, остальные — равномерно
+    const seen = Object.entries(G.deaths).filter(([id, d]) => meta.journal[id] && d.epitaph)
+      .sort((a, b) => String(meta.journal[a[0]].first).localeCompare(String(meta.journal[b[0]].first)));
+    if (!seen.length) return ["Рыбаки молчат. Я почти никого из них не знаю, и они меня, кажется, тоже."];
+    const voice = (ep) => {
+      const m = /^(\d+)\s+(год|года|лет)\.\s*(.*)$/.exec(ep);
+      return "— " + (m ? `Мне было ${m[1]}. ${m[3]}` : ep);
+    };
+    const N = 7, pick = [];
+    if (seen.length <= N) pick.push(...seen);
+    else for (let i = 0; i < N; i++) pick.push(seen[Math.round(i * (seen.length - 1) / (N - 1))]);
+    return pick.map(([, d]) => voice(d.epitaph));
   }
 
   function renderPhoto(sc) {
