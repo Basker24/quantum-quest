@@ -265,9 +265,9 @@ def run_style_test(args, key):
     rows = {r["id"]: r for r in read_csv(CAST_CSV)}
     r = rows[STYLE_TEST_SCENE]
     base = r["prompt"].split(" Drawing style:")[0].rstrip(". ")
-    for word in ("old black-and-white family photo, ", "grain, scratches, white border"):
+    # убираем фото-носитель из самой сцены: проба показывает только манеру рисовки, в цвете
+    for word in ("old black-and-white family photo, ", ", grain, scratches, white border"):
         base = base.replace(word, "")
-    base = base.rstrip(", ")
     nums = [args.style] if args.style else sorted(artstyle.STYLE_ANCHORS)
     for n in nums:
         name, anchor = artstyle.STYLE_ANCHORS[n]
