@@ -1,0 +1,11 @@
+id,time,kind,model,quality,size,status,file,refs,tokens
+style-1-painterly,2026-11-05T17:18:08,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/1-painterly.jpg,,
+style-2-ink-watercolor,2026-11-05T17:18:09,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/2-ink-watercolor.jpg,,
+style-3-gouache-soviet,2026-11-05T17:18:10,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/3-gouache-soviet.jpg,,
+style-4-cel-shaded,2026-11-05T17:18:10,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/4-cel-shaded.jpg,,
+style-5-charcoal,2026-11-05T17:18:11,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/5-charcoal.jpg,,
+style-1-painterly,2026-11-05T17:18:20,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/1-painterly.jpg,,1587
+style-2-ink-watercolor,2026-11-05T17:18:53,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/2-ink-watercolor.jpg,,1583
+style-3-gouache-soviet,2026-11-05T17:19:23,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/3-gouache-soviet.jpg,,1592
+style-4-cel-shaded,2026-11-05T17:19:52,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/4-cel-shaded.jpg,,1582
+style-5-charcoal,2026-11-05T17:20:23,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/5-charcoal.jpg,,1578

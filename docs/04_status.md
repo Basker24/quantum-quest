@@ -114,12 +114,12 @@ Claude в новой сессии:
 
 Всё готово к генерации, ключа OpenAI в сессии подготовки не было, поэтому скрипт ни разу не ходил в сеть (проверен только `--dry-run`).
 
-**2026-11-05:** ключ `OPENAI_API_KEY` в окружении уже есть, но сетевая политика окружения не пускает к `api.openai.com` (прокси отвечает 403 на CONNECT). Проба стилей упала на сети, денег не потрачено. Нужно, чтобы автор добавил `api.openai.com` в Allowed domains окружения (меню окружения → Edit → Network access, галку «Allow package managers» оставить) или выбрал уровень доступа пошире. Потом перезапустить шаг 0.
+**2026-11-05:** доступ к `api.openai.com` открыт, проба стилей сделана (`game/img/style-test/`, 5 jpg, показаны автору, ждём выбор номера). `gpt-image-1` снят с API, теперь по умолчанию `gpt-image-2` (через `generations` работает с теми же параметрами; `edits` с референсами на нём ещё не проверялся). Доступны также `gpt-image-1.5`, `gpt-image-1-mini`, `gpt-image-2.5-*`, `gpt-image-2.6-*`. Замечание к промпту Т-01: руки героя от первого лица на пробе выглядят взрослыми, особенно в манерах 2, 3 и 5. Для 7-летнего надо прямо дописать «small child's hands».
 
 - **Библия:** `docs/05_visual.md` — правила, 5 манер рисовки, носители эпох, предметы, карточки 28 персонажей (46 эталонов «персонаж × возраст»), спорные кадры.
 - **Данные:** `tools/build_cast.py` (персонажи, каст сцен, правки кадров с героем) → `docs/generated/characters.csv`, `docs/generated/scene_cast.csv` (104 сцены, 44 с людьми). Стиль: `tools/artstyle.py`. После правки внешности: `python3 tools/build_cast.py`. После правки `photo_prompt` в сценах: сначала `python3 tools/export_prompts.py`, потом `build_cast.py`.
 - **Промпт** = сцена + `In frame:` (персонажи и шрам на руке героя) + `[STYLE_ANCHOR]` (манера, `--style N`) + носитель эпохи («illustrated photograph, painted to look like…») + общие правила.
-- **Модель/цена:** `gpt-image-1`, `--quality medium`, `--size 1536x1024` (эталоны 1024x1536). Журнал расходов: `docs/generated/images_log.csv`. Перед первым запуском сверить имена параметров с https://platform.openai.com/docs/api-reference/images (`input_fidelity`, `image[]` в edits).
+- **Модель/цена:** `gpt-image-2` (был `gpt-image-1`, снят), `--quality medium`, `--size 1536x1024` (эталоны 1024x1536). Журнал расходов: `docs/generated/images_log.csv`. Перед первым запуском сверить имена параметров с https://platform.openai.com/docs/api-reference/images (`input_fidelity`, `image[]` в edits).
 
 Шаги для новой сессии с ключом (`export OPENAI_API_KEY=…`; ключ не печатать и не коммитить):
 0. **Проба манер:** `python3 tools/gen_images.py --style-test` → 5 цветных вариантов Т-01 в `game/img/style-test/`. Показать автору, номер вписать в `DEFAULT_STYLE` в `tools/artstyle.py`.
