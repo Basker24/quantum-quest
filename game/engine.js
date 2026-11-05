@@ -67,7 +67,7 @@
   const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
 
   // ---------- экраны
-  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about"];
+  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -247,6 +247,7 @@
       nav.append(b);
     }
     if (!vis.length && !sc.next) {
+      nav.insertAdjacentHTML("beforeend", `<p class="progress mono tiny">${progressLine()}</p>`);
       const j = document.createElement("button");
       j.className = "choice ghost-choice"; j.textContent = "Открыть Хор";
       j.onclick = () => openPanel("#journal");
@@ -429,6 +430,16 @@
     show(id);
     if (id === "#flow") renderFlow();
     if (id === "#guide") renderGuide();
+  }
+
+  // ---------- итог: сколько открыто
+  function progressLine() {
+    const ids = Object.keys(G.scenes);
+    const ends = ids.filter((id) => G.scenes[id].stage === "final");
+    const seenS = ids.filter((id) => meta.visited[id]).length;
+    const seenE = ends.filter((id) => meta.visited[id]).length;
+    const deaths = Object.keys(G.deaths), seenD = deaths.filter((id) => meta.journal[id]).length;
+    return `Открыто сцен: ${seenS} из ${ids.length} · концовок: ${seenE} из ${ends.length} · смертей: ${seenD} из ${deaths.length}`;
   }
 
   // ---------- путеводитель: три ступени подсказок к каждому финалу
@@ -620,7 +631,7 @@
         ${chips}</g>`;
     }
     $("#flow-canvas").innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема ветвлений">${edges}${nodes}</svg>`;
-    $("#flow-count").textContent = `Развилок открыто: ${opened} из ${total}. Жизней прожито: ${meta.lives || 0}.`;
+    $("#flow-count").textContent = `${progressLine()} · развилок: ${opened} из ${total} · жизней: ${meta.lives || 0}`;
     const fg = $("#flow-guide");
     fg.hidden = !gp;
     if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }

@@ -42,6 +42,13 @@ def main():
         print("ПРЕДУПРЕЖДЕНИЕ: нет подписи в scenes/_memos.json для", ", ".join(missing))
     if "--no-witness" not in sys.argv:
         g["guides"] = build_guides(g)
+    else:  # без поиска — оставить путеводитель из прошлой сборки, чтобы он не пропал из игры
+        old = ROOT / "game" / "graph.js"
+        if old.exists():
+            try:
+                g["guides"] = json.loads(old.read_text(encoding="utf-8")[len("window.GRAPH = "):-2]).get("guides", {})
+            except ValueError:
+                pass
     out = ROOT / "game" / "graph.js"
     out.write_text("window.GRAPH = " + json.dumps(g, ensure_ascii=False) + ";\n", encoding="utf-8")
     # вариант для публикации как Artifact: без своего каркаса doctype/html/head/body
