@@ -354,3 +354,9 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .memo li { padding: 7px 0 7px 18px; border-bottom: 1px dashed var(--line); position: relative; line-height: 1.4; }
 .memo li::before { content: "—"; position: absolute; left: 0; color: var(--dim); }
 .progress { color: var(--accent); text-align: center; margin: 4px 0 14px; letter-spacing: .03em; }
+
+/* ---------- зум схемы */
+.zoombar { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.zoombar button { min-width: 34px; height: 30px; padding: 0 10px; }
+#flow-wrap { touch-action: none; cursor: grab; height: 72vh; }
+#flow-wrap.grab { cursor: grabbing; user-select: none; }

@@ -552,6 +552,40 @@
     return { kids, rank, rows };
   }
 
+  // ---------- зум и перетаскивание схемы (прокрутка в обе стороны — сам #flow-wrap)
+  let flowZoom = 1, flowSize = { w: 1, h: 1 };
+  function setFlowZoom(z, cx, cy) {
+    const wrap = $("#flow-wrap"), svg = $("#flow-canvas svg");
+    if (!svg) return;
+    z = Math.max(0.25, Math.min(2.5, z));
+    const r = wrap.getBoundingClientRect();
+    const px = cx == null ? wrap.clientWidth / 2 : cx - r.left, py = cy == null ? wrap.clientHeight / 2 : cy - r.top;
+    const ux = (wrap.scrollLeft + px) / flowZoom, uy = (wrap.scrollTop + py) / flowZoom;
+    flowZoom = z;
+    svg.setAttribute("width", flowSize.w * z); svg.setAttribute("height", flowSize.h * z);
+    wrap.scrollLeft = ux * z - px; wrap.scrollTop = uy * z - py;
+  }
+  (function initFlowZoom() {
+    const wrap = $("#flow-wrap");
+    $("#z-in").onclick = () => setFlowZoom(flowZoom * 1.25);
+    $("#z-out").onclick = () => setFlowZoom(flowZoom / 1.25);
+    $("#z-fit").onclick = () => setFlowZoom(Math.min(wrap.clientWidth / flowSize.w, wrap.clientHeight / flowSize.h, 1));
+    wrap.addEventListener("wheel", (e) => { if (!e.ctrlKey) return; e.preventDefault(); setFlowZoom(flowZoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1), e.clientX, e.clientY); }, { passive: false });
+    const pts = new Map(); let pinch = null, drag = null;
+    wrap.addEventListener("pointerdown", (e) => {
+      pts.set(e.pointerId, e);
+      if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), z: flowZoom }; drag = null; }
+      else { drag = { x: e.clientX, y: e.clientY, l: wrap.scrollLeft, t: wrap.scrollTop }; wrap.classList.add("grab"); }
+    });
+    wrap.addEventListener("pointermove", (e) => {
+      if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, e);
+      if (pinch && pts.size === 2) { const [a, b] = [...pts.values()]; const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); setFlowZoom(pinch.z * d / pinch.d, (a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2); }
+      else if (drag) { wrap.scrollLeft = drag.l - (e.clientX - drag.x); wrap.scrollTop = drag.t - (e.clientY - drag.y); }
+    });
+    const up = (e) => { pts.delete(e.pointerId); if (pts.size < 2) pinch = null; drag = null; wrap.classList.remove("grab"); };
+    wrap.addEventListener("pointerup", up); wrap.addEventListener("pointercancel", up); wrap.addEventListener("pointerleave", up);
+  })();
+
   function renderFlow() {
     const { kids, rows } = layout();
     const visited = meta.visited, taken = meta.taken, shown = meta.shown;
@@ -630,13 +664,14 @@
         <text x="12" y="40" class="fd">${esc(yearOf(sc.date) || "")}${sc.age != null ? " · " + sc.age : ""}</text>
         ${chips}</g>`;
     }
-    $("#flow-canvas").innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема ветвлений">${edges}${nodes}</svg>`;
+    $("#flow-canvas").innerHTML = `<svg width="${width * flowZoom}" height="${height * flowZoom}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема ветвлений">${edges}${nodes}</svg>`;
+    flowSize = { w: width, h: height };
     $("#flow-count").textContent = `${progressLine()} · развилок: ${opened} из ${total} · жизней: ${meta.lives || 0}`;
     const fg = $("#flow-guide");
     fg.hidden = !gp;
     if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }
     const here = gp ? pos[gp.steps[0] && gp.steps[0].scene] : S && pos[S.scene];
-    if (here) { const wrap = $("#flow-wrap"); wrap.scrollLeft = Math.max(0, here.x - wrap.clientWidth / 2 + W / 2); wrap.scrollTop = Math.max(0, here.y - 120); }
+    if (here) { const wrap = $("#flow-wrap"); wrap.scrollLeft = Math.max(0, (here.x + W / 2) * flowZoom - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, here.y * flowZoom - 120); }
   }
 
   // ---------- живой фон
