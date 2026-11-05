@@ -25,8 +25,8 @@ STYLE_ANCHORS = {
                       "hard-edged shadow shapes"),
     5: ("charcoal", "pencil and charcoal drawing, smudged tones, visible hatching, rough paper grain"),
 }
-# Выбор автора после пробы стилей. Пока None: gen_images.py без --style берёт 1 и предупреждает.
-DEFAULT_STYLE = None
+# Выбор автора после пробы стилей (05.11.2026): 2 — ink-watercolor.
+DEFAULT_STYLE = 2
 
 ERA_MEDIUM = {
     "bw": "illustrated photograph, painted to look like an authentic 1990s black-and-white amateur snapshot "
