@@ -18,7 +18,7 @@ STYLE_ANCHORS = {
     1: ("painterly", "soft digital painting like key art of a narrative video game, visible brushstrokes, "
                      "simplified shapes, expressive warm-and-cold light"),
     2: ("ink-watercolor", "ink line drawing with loose watercolour washes, visible paper texture, "
-                          "restrained palette, lines left unfinished at the edges"),
+                          "restrained palette, painted all the way to the edges of the frame"),
     3: ("gouache-soviet", "gouache and oil painting with bold visible brushstrokes, in the spirit of Soviet "
                           "1970s-80s children's book illustration, flat expressive forms"),
     4: ("cel-shaded", "graphic cel-shaded illustration, clean confident outlines, limited palette of five tones, "
@@ -30,7 +30,7 @@ DEFAULT_STYLE = 2
 
 ERA_MEDIUM = {
     "bw": "illustrated photograph, painted to look like an authentic 1990s black-and-white amateur snapshot "
-          "from a Soviet film camera: grain, slight blur, white paper border",
+          "from a Soviet film camera: grain, slight blur",
     "color": "illustrated photograph, painted to look like a 2000s colour print from a photo lab: warm faded "
              "colours, flash, slight vignette, date-stamp feel",
     "digital": "illustrated photograph, painted to look like an early 2010s cheap digital point-and-shoot shot: "
@@ -41,10 +41,16 @@ ERA_MEDIUM = {
               "and calm, muted palette, eerie perfection",
 }
 
-COMMON = ("first-person point of view, the narrator is never visible except his own hands, Kemerovo / Kuzbass, "
+FULL_BLEED = ("full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, "
+              "no paper edges, no vignette fading to white, no photo frame")
+
+COMMON = (FULL_BLEED + ", first-person point of view, the narrator is never visible except his own hands, Kemerovo / Kuzbass, "
           "Siberia, Russia, no captions, no watermark, no brand logos, no recognizable real people")
 
-REF_COMMON = ("character reference portrait for a story game, waist-up, three-quarter view, neutral plain "
+# Эталоны всегда цветные (решение автора 05.11.2026), независимо от эпохи сцены.
+REF_MEDIUM = "illustrated photograph in full natural colour, true-to-life hair, eye and skin colours"
+
+REF_COMMON = (FULL_BLEED + ", character reference portrait for a story game, waist-up, three-quarter view, neutral plain "
               "light-grey background, soft natural light, no text, no watermark, no logos, "
               "an invented person, not a real or famous person")
 

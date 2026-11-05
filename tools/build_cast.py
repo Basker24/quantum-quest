@@ -11,7 +11,7 @@ import csv
 import re
 import sys
 
-from artstyle import ERA_MEDIUM, REF_COMMON, PLACEHOLDER, COMMON
+from artstyle import ERA_MEDIUM, REF_COMMON, REF_MEDIUM, PLACEHOLDER, COMMON
 from qqparse import ROOT, load
 
 # ---------------------------------------------------------------- персонажи
@@ -296,11 +296,21 @@ def ref_file(cid, age):
     return f"game/img/ref/{cid}_{label(cid, age)}.png"
 
 
+MARK_RE = re.compile(r"mole|dimple|scar|birthmark|gap between|freckle", re.I)
+
+
+def marks(cid):
+    """Приметы (родинки, ямочки, шрамы, щербинка, веснушки) из core: обязательны в любом возрасте."""
+    return [p.strip() for p in CHARS[cid]["core"].split(",") if MARK_RE.search(p)]
+
+
 def ref_prompt(cid, age):
     c = CHARS[cid]
     years, era, look, _ = c["ages"][age]
-    return (f"{look}. Permanent features: {c['core']}. Drawing style: {PLACEHOLDER}. "
-            f"Medium: {ERA_MEDIUM[era]}. {REF_COMMON}")
+    m = marks(cid)
+    must = (f" Distinctive marks that MUST be clearly visible (they stay the same at every age): {'; '.join(m)}." if m else "")
+    return (f"{look}. Permanent features: {c['core']}.{must} Drawing style: {PLACEHOLDER}. "
+            f"Medium: {REF_MEDIUM}. {REF_COMMON}")
 
 
 def main():
@@ -332,7 +342,8 @@ def main():
             c = CHARS[cid]
             short = c["ages"][age][3]
             name = c["ru"].split(",")[0].split(" (")[0]
-            bits.append(f"{short} ({cid})")
+            m = marks(cid)
+            bits.append(f"{short}" + (f", with {' and '.join(m)}" if m else "") + f" ({cid})")
         sc = G["scenes"].get(sid, {})
         sage = int(sc.get("age") or 30)
         if HANDS_RE.search(base) and not NO_SCAR_RE.search(base):
