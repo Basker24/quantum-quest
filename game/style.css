@@ -360,3 +360,8 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .zoombar button { min-width: 34px; height: 30px; padding: 0 10px; }
 #flow-wrap { touch-action: none; cursor: grab; height: 72vh; }
 #flow-wrap.grab { cursor: grabbing; user-select: none; }
+
+/* ---------- закрытые варианты */
+.choice.locked { opacity: .55; cursor: not-allowed; border-style: dashed; }
+.choice.locked .lbl { letter-spacing: .3em; color: var(--dim); }
+.choice.locked small { display: block; color: var(--dim); font-style: italic; margin-top: 2px; }

@@ -239,6 +239,14 @@
       b.onclick = () => choose(sc, c);
       nav.append(b);
     });
+    // закрытые варианты: текст не показываем, только чего не хватило
+    for (const c of sc.choices || []) {
+      if (!c.visible || ok(c.visible, st) || /seen/.test(JSON.stringify(c.visible))) continue;
+      const b = document.createElement("button");
+      b.className = "choice locked"; b.disabled = true;
+      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(lockReason(c.visible, st))}</small>`;
+      nav.append(b);
+    }
     saveMeta();
     if (!vis.length && sc.next) {
       const b = document.createElement("button");
@@ -260,6 +268,32 @@
       nav.append(b, j, f);
     }
     renderDebug();
+  }
+
+  // почему вариант закрыт — словами, без цифр
+  const LACK = { ТЕЛ: "силы", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "воли", ДАР: "дара" };
+  const TOO = { ТЕЛ: "сил", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "упрямства", ДАР: "дара" };
+  function lockReason(e, st) {
+    const need = new Set(), too = new Set(); let flags = false, bond = false, drift = false;
+    (function walk(x, neg) {
+      if (!x || typeof x !== "object") return;
+      if (x.op === "not") return walk(x.a, !neg);
+      if (x.op === "and" || x.op === "or") { for (const y of x.a) if (!ev(y, st) !== neg || x.op === "or") walk(y, neg); return; }
+      if (ev(x, st) !== neg) return; // эта часть условия выполнена
+      if (x.op === "cmp" && x.l.op === "var" && x.r.op === "num" && C.vars[x.l.n]) {
+        const n = x.l.n, up = (x.c === ">=" || x.c === ">") !== neg;
+        if (n === "ДРЕЙФ") drift = true; else if (n.startsWith("СВЯЗЬ")) bond = true;
+        else (up ? need : too).add(n);
+      } else flags = true;
+    })(e, false);
+    const parts = [];
+    const j = e.op === "or" ? " или " : " и ";
+    if (need.size) parts.push("не хватает " + [...need].map((n) => LACK[n] || n).join(j));
+    if (too.size) parts.push("слишком много " + [...too].map((n) => TOO[n] || n).join(" и "));
+    if (bond) parts.push("не хватает близости");
+    if (drift) parts.push("мир слишком сдвинулся");
+    if (flags && !parts.length) parts.push("в этой жизни этого не было");
+    return parts.join(" · ") || "закрыто";
   }
 
   function choose(sc, c) {
