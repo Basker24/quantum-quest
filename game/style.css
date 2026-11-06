@@ -435,3 +435,6 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .choice.meta-echo { border-color: #8c7bb0; box-shadow: inset 3px 0 0 #8c7bb0; border-style: dashed; }
 .choice small.meta-cap { color: #a99bcc; font-size: 12px; letter-spacing: .05em; }
 @media (prefers-reduced-motion: reduce) { .clock .clock-bar i { transition: none; } }
+/* звук: переключатель в панели «Я» */
+#me .sound-row { align-items: baseline; }
+#me .sound-row .link { color: var(--accent); font-size: 13px; letter-spacing: .06em; }
