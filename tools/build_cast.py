@@ -298,7 +298,7 @@ def label(cid, age):
 
 def parse_cast(token):
     cid, a = token.split(":")
-    age = 0 if a == "puppy" else int(a)
+    age = 0 if a in ("puppy", "ref") else int(a)
     return cid, age
 
 
@@ -350,8 +350,8 @@ def main():
         for old, new in FIX.get(sid, []):
             base = base + new if old == "" else base.replace(old, new)
         cast = list(CAST.get(sid, []))
-        if re.search(r"\bsnag\b", base, re.I) and "snag:0" not in cast:
-            cast.append("snag:0")
+        if re.search(r"\bsnag\b", base, re.I) and "snag:ref" not in cast:
+            cast.append("snag:ref")
         bits = []
         for tok in cast:
             cid, age = parse_cast(tok)
