@@ -221,7 +221,7 @@ def scene_refs(cast):
         cid, age = tok.split(":")
         p = ROOT / "game" / "img" / "ref" / f"{cid}_{age}.png"
         if p.exists():
-            refs.append((f"{cid} age {age}", p))
+            refs.append(("the white hand-shaped snag" if cid == "snag" else f"{cid} age {age}", p))
     return refs[:MAX_REFS]
 
 

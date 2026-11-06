@@ -58,7 +58,7 @@
 
 | предмет | где | описание (EN) |
 |---|---|---|
-| Коряга-рука | Т-00, Т-01, Т-06, Я-01 | a white bleached snag sticking out of black still water, its branches spread like the fingers of a hand |
+| Коряга-рука | Т-00, Т-01, Т-06, Я-01 | эталон `game/img/ref/snag_ref.png` (персонаж `snag` в build_cast.py): подкладывается автоматически во все сцены, где в промпте есть «snag» |
 | Чёрная заводь | Т-00, Т-01, Т-06, Я-01, Ф-01 | a perfectly round pond of black tea-coloured still water on a stony Tom river bank, flat slate stones, willow bushes |
 | Панамка с вишнями | Т-01, Я-02 | a white cotton child's panama hat printed with small red cherries, soft brim |
 | Часы «Штурманские» | Т-02б, Я-02, В2.2-00, Ф-02 | an old Soviet men's wristwatch on a steel bracelet, black dial with a small red star, scratched glass, hands stopped at 04:12 |
@@ -88,6 +88,7 @@
 |---|---|---|---|
 | 7 | 1996 | bw | 7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees |
 | 13 | 2002 | color | 13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand |
+| 18 | 2007 | digital | 18-year-old girl, plain and serious, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books |
 | 22 | 2011–2014 | digital | young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
 | 56 | 2045 | phone | woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
 
@@ -377,6 +378,16 @@
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | puppy | 1996 | bw | ginger mongrel puppy, floppy ears, white star on the chest |
+
+### `snag` — Коряга-рука (0 г. р., главный)
+- Из текста: «белая и гладкая, растопыренная, как пятерня» (Т-00); «белая коряга, похожая на руку» (Я-01, В5, В7).
+- (додумано) наклон ствола.
+- **Ядро сходства:** a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up.
+- В кадрах: .
+
+| возраст | годы сцен | эпоха эталона | облик (EN) |
+|---|---|---|---|
+| ref | all | color | a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up |
 <!-- cards:end -->
 
 ## 6. Спорные кадры (зависят от флагов или требуют решения автора)

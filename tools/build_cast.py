@@ -27,6 +27,7 @@ CHARS = {
         ages={
             7: ("1996", "bw", "7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees", "a serious 7-year-old girl, chestnut bob, cherry-print panama hat"),
             13: ("2002", "color", "13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
+            18: ("2007", "digital", "18-year-old girl, plain and serious, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books", "a serious 18-year-old girl with chestnut hair tied back"),
             22: ("2011–2014", "digital", "young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a young woman of about 23, short chestnut pixie cut, strict calm face"),
             56: ("2045", "phone", "woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "a woman doctor of 56, cropped grey hair, glasses on a chain"),
         }),
@@ -208,9 +209,14 @@ CHARS = {
         src="рыжий щенок (Т-01); вырос в «рыжего лопоухого кобеля» (Т-06)", invented="белая звёздочка на груди",
         core="ginger mongrel dog with floppy ears and a white star on the chest",
         ages={0: ("1996", "bw", "ginger mongrel puppy, floppy ears, white star on the chest", "a ginger puppy with floppy ears")}),
+    # Коряга-рука — единый символ во всех кадрах (решение автора 06.11.2026): эталон-предмет, подкладывается автоматически.
+    "snag": dict(ru="Коряга-рука", born=0, tier="main", object=True,
+        src="«белая и гладкая, растопыренная, как пятерня» (Т-00); «белая коряга, похожая на руку» (Я-01, В5, В7)", invented="наклон ствола",
+        core="a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up",
+        ages={0: ("all", "color", "a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up", "the white bone-smooth snag shaped like an open five-fingered hand")}),
 }
 
-AGE_LABEL = {("bublik", 0): "puppy"}
+AGE_LABEL = {("bublik", 0): "puppy", ("snag", 0): "ref"}
 
 # ---------------------------------------------------------------- кто в кадре
 CAST = {
@@ -311,6 +317,10 @@ def marks(cid):
 def ref_prompt(cid, age):
     c = CHARS[cid]
     years, era, look, _ = c["ages"][age]
+    if c.get("object"):
+        return (f"{look}. Object reference: the snag alone, whole, standing in shallow still water, seen from the side, "
+                f"plain light-grey background, nothing else. Drawing style: {PLACEHOLDER}. Medium: {REF_MEDIUM}. "
+                "full-bleed image, no text, no watermark")
     m = marks(cid)
     must = (f" Distinctive marks that MUST be clearly visible (they stay the same at every age): {'; '.join(m)}." if m else "")
     return (f"{look}. Permanent features: {c['core']}.{must} Drawing style: {PLACEHOLDER}. "
@@ -339,13 +349,18 @@ def main():
         base = base.rstrip(". ")
         for old, new in FIX.get(sid, []):
             base = base + new if old == "" else base.replace(old, new)
-        cast = CAST.get(sid, [])
+        cast = list(CAST.get(sid, []))
+        if re.search(r"\bsnag\b", base, re.I) and "snag:0" not in cast:
+            cast.append("snag:0")
         bits = []
         for tok in cast:
             cid, age = parse_cast(tok)
             c = CHARS[cid]
             short = c["ages"][age][3]
             name = c["ru"].split(",")[0].split(" (")[0]
+            if c.get("object"):
+                bits.append(f"{short}, exactly the same snag as in its reference image (snag)")
+                continue
             m = marks(cid)
             bits.append(f"{short}" + (f", with {' and '.join(m)}" if m else "") + f" ({cid})")
         sc = G["scenes"].get(sid, {})

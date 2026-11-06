@@ -1,6 +1,6 @@
 # Промпты для картинок
 
-104 сцен. Готовую картинку назови как в колонке «файл» и положи в `game/img/`.
+133 сцен. Готовую картинку назови как в колонке «файл» и положи в `game/img/`.
 
 ## Я-01 · Чёрная заводь. Без двух минут
 файл: `game/img/Я-01.jpg` · эпоха: future
@@ -42,6 +42,13 @@ late 2000s noisy digital photo, first-person view of a coal face in a longwall l
 
 ```
 2010 digital photo from a cheap phone, very noisy, first-person view down a long dark coal mine drift with rails, a single cap lamp beam, a portable gas detector on a belt glowing red, far behind a second miner's lamp swinging wildly on the walls, high ISO noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В1-03б · Сбойка. Дверь в перемычке
+файл: `game/img/В1-03б.jpg` · эпоха: digital
+
+```
+2010 noisy phone photo, first-person view in a short abandoned mine crosscut half filled with fallen rock, a concrete ventilation stopping with a small steel door, an arrow painted on the door, a cap lamp beam on dust, a gloved hand on the door handle, very dark. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
 ## В1-04 · АБК. Ночь на пятнадцатое
@@ -303,6 +310,188 @@ early 2010s digital photo, first-person view from a lab chair, a young woman wit
 2061, hyper-clean ultra-sharp image, a dried Siberian riverbed seen from the Kemerovo embankment in summer heat, white dust, rusty old cars on the stones, a distant round black pond full of water, a pale comet visible in the daytime sky, first-person view, unnaturally perfect. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
+## В3-01 · Мундыбаш. База партии
+файл: `game/img/В3-01.jpg` · эпоха: digital
+
+```
+2007 cheap digital camera photo, first-person view of the yard of an old one-storey wooden village school used as a geological field base in the Siberian mountains, wooden crates of rock samples with numbers in marker, a grey-haired woman in her fifties in a faded field jacket with a cigarette holding a long-handled geologist's hammer, two saddled horses by a fence, a GAZ van, forested hills in haze behind, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-02 · Голец Кара-Таг. Без десяти четыре
+файл: `game/img/В3-02.jpg` · эпоха: digital
+
+```
+2008 noisy digital photo, first-person view on a bare rocky mountain saddle above the treeline in the Siberian mountains, a single old wind-bent Siberian pine standing alone on the saddle, a field of grey lichen-covered boulders sloping down to dark forest, a shallow gully with a stream between rocks, a huge flat-topped boulder, a black thunderstorm cloud rolling in low over the ridge, a geologist's hammer strapped to a canvas rucksack in the foreground, eerie light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-03 · Зимовье на Тельбесе
+файл: `game/img/В3-03.jpg` · эпоха: digital
+
+```
+2008 noisy digital photo at dusk with flash, first-person view inside a tiny log hunting cabin in the Siberian taiga, a small iron stove glowing, an old man in his seventies with a wild white beard and thick glasses mended with tape sitting on a plank bunk, on the wall a row of old soviet laboratory glass flasks used as candle holders, a wooden ammunition crate under the bunk, a kerosene lamp, two tin mugs of tea, cramped and smoky. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-04 · Рудничный. Новый год
+файл: `game/img/В3-04.jpg` · эпоха: digital
+
+```
+2009 digital compact camera photo with harsh flash, first-person view of a small soviet apartment kitchen on New Year's Eve, an oilcloth table with salads in glass bowls, a girl of eleven holding up to the light a grey rock with shiny golden cubic crystals in it, a shoebox full of envelopes on the windowsill, tinsel, a small TV on the fridge, a man's back in a vest on the frosty balcony behind the glass door, smoke from his cigarette. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-05 · Ручей без названия. Минус пятьдесят один
+файл: `game/img/В3-05.jpg` · эпоха: digital
+
+```
+2012 digital photo in extreme frost, first-person view looking down at a felt boot sunk to the knee in dark water through a broken crust of ice on a frozen creek in Yakutia, steam rising from the water into the air, larch taiga white with hoarfrost on both banks, a low pale sun, a dry dead larch on the bank, sharp cold light, breath vapor. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-06 · Едома на северной реке. Лагерь бивневиков
+файл: `game/img/В3-06.jpg` · эпоха: digital
+
+```
+2015 digital photo, first-person view on a muddy river bank under a tall eroding cliff of grey frozen silt and ice in northern Yakutia, a dark tunnel washed into the cliff by water jets, two gasoline motor pumps with fire hoses, a camp of tarpaulin tents and a rusty boat, unshaven men in camouflage with a hunting rifle leaning on a barrel, a young Yakut woman with a measuring tape and a notebook in the foreground, a huge curved brown mammoth tusk lying on a tarp, mosquitoes, midnight-sun haze. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-07 · Хребет без названия. Борт лёг на левый бок
+файл: `game/img/В3-07.jpg` · эпоха: phone
+
+```
+2023 smartphone photo, tilted, first-person view from inside the cargo cabin of a crashed Mi-8 helicopter lying on its left side on a mountain tundra slope, folding canvas seats hanging sideways, scattered rucksacks and core sample boxes, grey smoke coming through the ceiling from the engine compartment, bright light from the open round windows above, a red fire extinguisher on a bracket, a woman with a broken arm sitting against the wall, fog outside. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-08 · Кабина Ми-8. Левое кресло
+файл: `game/img/В3-08.jpg` · эпоха: phone
+
+```
+2023 smartphone photo, tilted and blurred, first-person view inside the smoky cockpit of a crashed Mi-8 helicopter lying on its left side, a pilot in his thirties in a flight jacket pinned in the left seat with his legs trapped under a crushed pedal assembly and instrument panel, his face calm and pale, the right side sliding window open above showing grey sky, smoke curling along the ceiling, a crowbar on the floor, warning lights, harsh light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-09 · Тундра. Бугор, который дышит
+файл: `game/img/В3-09.jpg` · эпоха: phone
+
+```
+2031 smartphone photo, first-person view on flat wet summer tundra in northern Yakutia, a grassy mound about eight meters high with fresh radial cracks in the turf and a dark wet hole near the top steaming slightly, measurement instruments on tripods and cables in the foreground, a tracked all-terrain vehicle parked downhill in a shallow valley, a small lake on the side, a woman in her forties with a measuring tape on her belt and a young Yakut student with a laptop, low grey sky, uneasy light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-10 · Станция на острове. Полярная ночь
+файл: `game/img/В3-10.jpg` · эпоха: phone
+
+```
+2047 smartphone photo at night, first-person view inside a small arctic research station room, a frosted window with green aurora outside, a desk with an old paper logbook open, a radio receiver with a glowing dial, a geologist's hammer lying on a flat dark stone used as a paperweight, a shoebox of old envelopes tied with a ribbon, a mug of tea steaming, an old man's scarred hand, dim warm lamp light, quiet. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-11 · Поезд Новосибирск — Кемерово. Под утро
+файл: `game/img/В3-11.jpg` · эпоха: phone
+
+```
+2049 smartphone photo, soft and slightly blurred, first-person view inside a night train compartment at dawn, a small table with two glasses of tea in metal holders and a paper bag of gingerbread, a grey-haired woman of sixty with sharp eyes and reading glasses on a cord sitting by the window, birch forest and grey dawn flying past outside, two other passengers asleep on upper berths under blankets, an old man's scarred hand on the table, warm compartment light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-12 · Тельбес. То, что осталось от зимовья
+файл: `game/img/В3-12.jpg` · эпоха: future
+
+```
+2056, too clean and sharp image, first-person view inside a half-collapsed old log cabin in the summer taiga overgrown with fireweed, sunlight through the broken roof, a green soviet ammunition crate with a red star opened on the floor, bundles of old yellowed letters tied with string, sheets covered in pencil handwriting and physics formulas in the margins, a row of old laboratory glass flasks with candle stubs on a shelf, an old man's scarred hand holding one letter, a small grave cross outside the doorway. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В3-13 · Чёрная заводь. Лот
+файл: `game/img/В3-13.jpg` · эпоха: future
+
+```
+2061, too clean ultra-sharp evening image, first-person view at the edge of a perfectly round black pond in the middle of a completely dry stone riverbed, an old man's scarred hands pulling up a wet knotted rope with a lead weight covered in bright yellow sand, a thermometer lying on a flat stone, a geologist's hammer on the stone beside it, drones and floodlights of a scientific commission on the far bank, a bright comet low in the darkening sky, unnaturally perfect light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-01 · Приёмка на Шахтёров. Весы
+файл: `game/img/В4-01.jpg` · эпоха: digital
+
+```
+2007 cheap digital camera photo, first-person view of a scrap metal reception yard in a Siberian mining town in summer, mountains of rusty pipes and radiators, a big platform scale with a weight display in a shabby booth, a heavy man in his fifties in a leather jacket despite the heat sitting on a plastic chair under a beach umbrella, an old blue truck with an open side, dust and poplar fluff in the air, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-02 · Холодный склад у рынка. Без двадцати три
+файл: `game/img/В4-02.jpg` · эпоха: digital
+
+```
+2008 noisy digital photo at night without flash, first-person view from the open door of a walk-in freezer room in a warehouse, stacks of cardboard boxes of frozen chicken legs with an American-looking brand, frost on the walls, outside across an icy loading yard a flashlight beam and the silhouette of a watchman with a shotgun, a refrigerated semi-trailer with open rear doors at the loading ramp, a chain-link fence, breath vapor, heavy grain. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-03 · Гаражи на Шахтёров. Витька вернулся
+файл: `game/img/В4-03.jpg` · эпоха: digital
+
+```
+2008 cheap digital camera photo, first-person view at dusk behind a row of Soviet metal garages, a lean 20-year-old man with a buzz cut in a striped army undershirt sitting on the hood of an old Lada, beer bottles on the hood, a heavy older man in a leather jacket standing with a hand-drawn map on a cigarette pack, coal dust on the ground, warm evening light, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-04 · Копанка под Киселёвском. Внизу
+файл: `game/img/В4-04.jpg` · эпоха: digital
+
+```
+2010 digital photo with flash in darkness, first-person view inside a narrow illegal coal pit tunnel, rough rotten aspen log props holding a sagging roof with a fresh crack, coal dust in the flash, a homemade ladder with rebar rungs going up a shaft to a square of daylight, a man with a headlamp far down the tunnel at the coal face, a pick on the floor, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-05 · Копанка. Забой
+файл: `game/img/В4-05.jpg` · эпоха: digital
+
+```
+2010 digital photo with flash in darkness, first-person view at the end of a low illegal coal tunnel, a young man on the floor with his leg pinned under a broken aspen prop, his headlamp pointing up at a sagging cracked roof, coal dust hanging in the flash, a fresh larch prop wedged under the roof in the background, noise, motion blur. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-06 · Новокузнецк. Подвал бывшего боулинга
+файл: `game/img/В4-06.jpg` · эпоха: digital
+
+```
+2012 digital photo in dim smoky light, first-person view across a green card table in a basement of a closed bowling alley, old bowling lanes in the dark background, a dozen well-dressed spectators standing in a circle holding drinks and banknotes, across the table a frightened 20-year-old young man in a cheap sweater with a small cross on a string, an old revolver lying on green cloth between two glasses of water, no faces of spectators in focus, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-07 · Восьмое марта. Мамин стол
+файл: `game/img/В4-07.jpg` · эпоха: digital
+
+```
+2014 digital camera photo, first-person view of a festive table in a small Soviet kitchen on Women's Day, salads in crystal bowls, a cake, mimosa flowers in a jar, a tired woman in her late forties laughing with her hand over her mouth, a teenage girl with headphones, an empty chair at the head of the table with a man's jacket on it, warm yellow light, slight flash glare. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-08 · Кабинет на последнем этаже
+файл: `game/img/В4-08.jpg` · эпоха: digital
+
+```
+2016 digital photo, first-person view in a large office on the top floor with panoramic windows over an autumn Siberian river and a coal city, a lean straight-backed man of about seventy in an expensive grey suit standing at a desk, on the desk an old cardboard box with soviet notebooks in oilcloth covers and a yellowed newspaper clipping under glass, a cup of tea in a glass holder, cold light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-09 · Кафе на трассе у Топков
+файл: `game/img/В4-09.jpg` · эпоха: digital
+
+```
+late 2010s smartphone photo at night, first-person view through the glass door of an empty roadside cafe on a snowy Siberian highway, plastic flowers on tables, one table set for four with a menu, a kitchen door with a round window in the back wall, a bored waitress behind the counter, black SUVs with headlights off in the parking lot reflected in the glass, cold blue and warm yellow light, noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-10 · Алтай. Балкон над казино
+файл: `game/img/В4-10.jpg` · эпоха: phone
+
+```
+2020s smartphone photo at dawn, first-person view from a balcony above a casino building in a mountain resort zone, pine-covered Altai foothills in pink morning light, neon casino sign switching off, a woman in her early thirties in a croupier's white shirt and black vest sitting on the balcony floor with her back to the railing, her hands around a cup of coffee, a small white crescent scar on the back of one hand, tired face, soft focus. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-11 · Областная. Стоянка у главного входа
+файл: `game/img/В4-11.jpg` · эпоха: phone
+
+```
+2030s smartphone photo at night in wet snow, first-person view from a car windshield with wipers frozen mid-stroke, the lit main entrance of a big regional hospital, a plain grey sedan with two men inside parked right at the entrance with its engine running, exhaust in the cold air, a woman doctor in her mid-thirties in a white coat under a winter jacket standing at the car window holding a folded old canvas storm jacket, slight lens flare. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-12 · Советский проспект. Четыре десять
+файл: `game/img/В4-12.jpg` · эпоха: future
+
+```
+2049, too clean ultra-sharp night image, first-person view from the curb of a wide empty city avenue in a Siberian city in light snow, glowing bus stop with a digital board, a large advertising screen with a smiling grey-haired man and a logo of a lyre, a bus approaching with headlights in the wrong lane, mirrored street signs, an old man's scarred hand holding the collar of a coat, unnaturally perfect light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## В4-13 · Ягуновский. Дом над сухой Томью
+файл: `game/img/В4-13.jpg` · эпоха: future
+
+```
+2061, too clean ultra-sharp night image, first-person view from the terrace of a big empty house on a high bank above a completely dry stone riverbed, a bright comet low over the riverbed, an old man's scarred hand holding a smartphone with an incoming call, a folded old canvas storm jacket on a wicker chair, wild rose bush by the steps, unnaturally perfect light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
 ## В5-01 · Новосибирск. Офис на Красном
 файл: `game/img/В5-01.jpg` · эпоха: digital
 
@@ -527,6 +716,13 @@ mid-2010s digital photo through a car windshield in a Siberian winter, a long-ha
 late 2010s digital photo, first-person view in a small child's bedroom in a new Siberian apartment at evening, a cheap plastic christmas tree with a tangle of chinese LED string lights, a cardboard box from a discount store, a wooden chair wedged under a door handle, a girl's drawings taped to the wall, warm colors, slight blur. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
+## В7-06б · Коридор. Полоска под дверью
+файл: `game/img/В7-06б.jpg` · эпоха: digital
+
+```
+late 2010s digital photo, first-person view in a dark apartment corridor at night, a closed door of a child's room with bright orange light and grey smoke coming from under it, a wet blanket over the photographer's head visible at the frame edge, a kitchen window behind with a shared balcony, noise, motion blur. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
 ## В7-07 · Детская. Розетка у стола
 файл: `game/img/В7-07.jpg` · эпоха: phone
 
@@ -611,13 +807,6 @@ old black-and-white photo, 1996 summer evening, a beer kiosk at a bus stop in a 
 unnaturally perfect clean image, a dispatcher's desk in a Siberian coal mine at night, an old landline phone with the receiver off the hook, a wall board with a list of shifts and one row crossed out with a pencil, an oilcloth notebook lying open with ruled columns filled with tiny numbers, no people, eerie stillness. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
-## Ж-00 · (плёнка не проявлена)
-файл: `game/img/Ж-00.jpg` · эпоха: digital
-
-```
-early digital camera photo, almost black, a blurry silhouette walking away along railway tracks at dawn, heavy noise. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, harsh flash, slightly blown highlights. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
-```
-
 ## ⊣К-02 · Балкон на Шахтёров. Кислородный концентратор
 файл: `game/img/⊣К-02.jpg` · эпоха: phone
 
@@ -630,6 +819,20 @@ early digital camera photo, almost black, a blurry silhouette walking away along
 
 ```
 unnaturally sharp clean image, a stack of thick grey office binders labelled with numbers on a metal shelf in a windowless basement, one binder open on a desk with a typed transcript page, a studio microphone on a boom hanging over an empty pillow in the background behind glass, cold sterile light, no people. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## ⊣К-04 · Остров в море Лаптевых. Комета
+файл: `game/img/⊣К-04.jpg` · эпоха: future
+
+```
+2061, hyper-clean ultra-sharp image of the arctic summer night, first-person view from the steps of a small weathered research station on a flat rocky island, a calm grey sea with scattered ice floes, a bright comet low over the southern horizon, an old man's scarred hand holding a geologist's hammer above a flat dark stone, an open paper logbook on the step, no people, unnaturally perfect light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+```
+
+## ⊣К-06 · Щегловск. Набережная
+файл: `game/img/⊣К-06.jpg` · эпоха: future
+
+```
+2061, too clean ultra-sharp dawn image, first-person view from an embankment of a Siberian city that looks almost like Kemerovo but subtly wrong, a wide full river flowing the wrong way, an old-style street sign reading Shcheglovsk in Cyrillic, people walking past without looking, a comet in the pale sky, an old man's scarred hand on a cold iron railing, unnaturally perfect light. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
 ## ⊣К-07 · Андаманское море. Комета
@@ -650,7 +853,7 @@ unnaturally sharp clean image, a stack of thick grey office binders labelled wit
 файл: `game/img/Т-00.jpg` · эпоха: future
 
 ```
-night, the wide dry stone bed of the Tom river (a big Siberian river) running straight away to the horizon between its high old banks, city lights of Kemerovo and a long bridge over the empty riverbed in the distance, a rusty old Lada car upside down on the stones, in the middle of the dry bed a single round black pool about forty metres across, full to the brim, a white bleached snag sticking out of it, a bright comet whose long tail lies exactly along the line of the riverbed, hyper-clean ultra-sharp image, unnaturally perfect, no people. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
+2061, night before dawn, seen by an old man sitting on a flat stone: the bed of the Tom river, a big wide Siberian river that has completely dried up, stretching far away and curving between its two old high banks; the dark city of Kemerovo along both banks with a few lights and the old embankment with railings above the former water line; a long road bridge crossing over the empty riverbed in the distance; the bottom covered with grey river stones, white dust and empty shells, a stranded rusty boat lying on its side, a navigation buoy lying on the stones, an old rusty Lada car upside down; close in front, in the middle of the dry riverbed, a single round pool about forty metres across, black, still and full to the brim; out of the pool rises the white snag; above, a very bright comet whose long tail lies exactly along the line of the riverbed; the comet is so bright that every stone casts a shadow and all the shadows point towards the pool; hyper-clean, unnaturally calm, no people. Drawing style: [STYLE_ANCHOR]. Medium: an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection. full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, no paper edges, no vignette fading to white, no photo frame, an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, not posing and not performing for the camera, natural believable poses and gestures; the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene explicitly describes the narrator's hand; Kemerovo / Kuzbass, Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people
 ```
 
 ## Т-01 · Витька, Ника и Бублик. Лето 96-го
