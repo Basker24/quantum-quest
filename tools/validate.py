@@ -24,7 +24,10 @@ from qqparse import ROOT, QQError, load
 G = CFG = None
 
 
-def ev(e, st, seen_life=frozenset()):
+def ev(e, st, seen_life=frozenset(), meta=None):
+    """seen_life — смерти этой жизни; meta — смерти из Журнала (все жизни).
+    meta=None: считать Журналом то же, что seen_life (как раньше). Для I1 передают frozenset():
+    мета-эхо (seen без _life) — подарок прошлых жизней, опираться на него нельзя."""
     op = e["op"]
     if op in ("num", "lit"):
         return e["v"]
@@ -33,15 +36,17 @@ def ev(e, st, seen_life=frozenset()):
     if op == "truthy":
         return bool(st.get(e["n"]))
     if op == "not":
-        return not ev(e["a"], st, seen_life)
+        return not ev(e["a"], st, seen_life, meta)
     if op == "and":
-        return all(ev(a, st, seen_life) for a in e["a"])
+        return all(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "or":
-        return any(ev(a, st, seen_life) for a in e["a"])
+        return any(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "seen":
-        return e["id"] in seen_life
+        if e.get("life") or meta is None:
+            return e["id"] in seen_life
+        return e["id"] in meta
     if op == "cmp":
-        l, r = ev(e["l"], st, seen_life), ev(e["r"], st, seen_life)
+        l, r = ev(e["l"], st, seen_life, meta), ev(e["r"], st, seen_life, meta)
         c = e["c"]
         if c in ("==", "!="):
             return (l == r) == (c == "==")
@@ -325,8 +330,13 @@ def main():
             def run(seen_life):
                 vis, res = [], []
                 for c in sc.get("choices", []):
+                    if c.get("cost", 0) > sc.get("clock", 10 ** 9):
+                        continue
                     if "visible" in c:
-                        r = ev(c["visible"], st, seen_life)
+                        # мета-эхо: для I2 считаем Журнал полным, для хода игры (и I1′) — пустым
+                        if ev(c["visible"], st, seen_life, frozenset(D)):
+                            cond_true.add((sid, c["id"], "visible: " + c.get("visible_src", "")))
+                        r = ev(c["visible"], st, seen_life, frozenset())
                         (cond_true if r else cond_false).add((sid, c["id"], "visible: " + c.get("visible_src", "")))
                         if not r:
                             continue
