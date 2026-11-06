@@ -41,7 +41,8 @@
 В шапке смерти: lesson: Азот у пола (карточка «Что я вынес», подпись эха, ≤ 6 слов);
 cause: F_ЗАКЛЕИЛ -> В1-07 (ловушка с причиной в прошлом: засечка ленты «здесь началось»).
 Условия: && || ! ( ) >= <= > < == !=, числа, имена переменных/флагов, литералы enum,
-seen(✝ID) — видел в любой жизни (мета), seen_life(✝ID) — видел в этой жизни.
+seen(✝ID) — видел в любой жизни (мета), seen_life(✝ID) — видел в этой жизни,
+lived(ID) — сцена ID прожита в одной из ПРОШЛЫХ жизней (мета, «встречи ветвей»).
 Функций случайности в языке нет (канон, п. 1).
 
 «Время» (clock/cost): счётчик живёт в цепочке подряд идущих сцен с clock; первая сцена
@@ -63,7 +64,7 @@ class QQError(Exception):
 
 
 # ---------------------------------------------------------------- выражения
-TOK = re.compile(r"\s*(?:(\d+)|(&&|\|\||>=|<=|==|!=|[<>!()])|(seen_life|seen)\s*\(([^)]*)\)|([^\s&|<>=!()]+))")
+TOK = re.compile(r"\s*(?:(\d+)|(&&|\|\||>=|<=|==|!=|[<>!()])|(seen_life|seen|lived)\s*\(([^)]*)\)|([^\s&|<>=!()]+))")
 
 
 def tokenize(src):
@@ -115,6 +116,8 @@ def parse_expr(src, cfg):
             return {"op": "num", "v": t[1]}
         if t[0] == "fn":
             take()
+            if t[1] == "lived":
+                return {"op": "lived", "id": t[2]}
             return {"op": "seen", "id": t[2], "life": t[1] == "seen_life"}
         if t[0] == "name":
             take()
@@ -397,6 +400,21 @@ def load():
     for did, d in deaths.items():
         if "cause" in d and d["cause"]["scene"] not in scenes:
             raise QQError(f"{did}: cause ссылается на несуществующую сцену {d['cause']['scene']}")
+    # lived(ID) — только существующие сцены (смерти — через seen)
+    def lived_ids(x, acc):
+        if isinstance(x, dict):
+            if x.get("op") == "lived":
+                acc.add(x["id"])
+            for v in x.values():
+                lived_ids(v, acc)
+        elif isinstance(x, list):
+            for v in x:
+                lived_ids(v, acc)
+        return acc
+    for sid, sc in scenes.items():
+        for lid in lived_ids(sc, set()):
+            if lid not in scenes:
+                raise QQError(f"{sid}: lived({lid}) — нет такой сцены")
     if cfg["start"] not in scenes:
         raise QQError("стартовой сцены нет")
     return {"config": cfg, "scenes": scenes, "deaths": deaths}

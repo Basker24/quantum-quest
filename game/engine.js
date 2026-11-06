@@ -16,6 +16,9 @@
   // мета — сквозная для всех жизней: Хор, схема, увиденное
   let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {} }, store.get(META, {}));
   meta.guide = meta.guide || {};
+  // lived(ID): номер жизни, в которой сцена посещена впервые. Старые сохранения: всё, что уже в visited, — прошлые жизни (0).
+  meta.vlife = meta.vlife || {};
+  for (const id of Object.keys(meta.visited || {})) if (!(id in meta.vlife)) meta.vlife[id] = 0;
   let guideOn = null; // финал, чей путь подсвечен на схеме
   const saveMeta = () => store.set(META, meta);
   let S = null; // текущая жизнь
@@ -30,6 +33,7 @@
       case "and": return e.a.every((x) => ev(x, st));
       case "or": return e.a.some((x) => ev(x, st));
       case "seen": return e.life ? !!(S && S.lifeSeen[e.id]) : !!meta.journal[e.id];
+      case "lived": return e.id in meta.vlife && meta.vlife[e.id] < (meta.lives || 0);
       case "cmp": {
         const l = ev(e.l, st), r = ev(e.r, st);
         if (e.c === "==") return l === r;
@@ -236,7 +240,7 @@
     return acc;
   }
   const lessonsFor = (e, life) => [...new Set(seenIds(e, life).filter((id) => (life ? S && S.lifeSeen[id] : meta.journal[id])).map((id) => (G.deaths[id] || {}).lesson).filter(Boolean))];
-  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
+  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || e.op === "lived" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
   function flagsIn(e, acc = new Set()) {
@@ -335,6 +339,7 @@
     S.past = S.past || {};
     if (!restored && !(id in S.past)) S.past[id] = (meta.lives || 0) >= 2 && !!meta.visited[id];
     meta.visited[id] = true;
+    if (!(id in meta.vlife)) meta.vlife[id] = meta.lives || 0;
     if (id === "Т-02б") meta.root = true;
     for (const m of C.meta_entries || []) if (m.scene === id && ok(m.if, S.st)) meta.extra[m.id] = true;
     saveMeta();
