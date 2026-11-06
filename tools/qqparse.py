@@ -11,6 +11,8 @@
     photo: bw               # bw | color | digital | phone | future
     photo_caption: ...
     photo_prompt: ...
+    clock: 60               # «время» в острой сцене (канон п. 30): запас секунд, тратят только выборы
+    clock_label: до потери сознания    # что значит ноль
     ---
     Абзацы прозы через пустую строку.
 
@@ -21,6 +23,7 @@
     ## Выбор
     - [A] Текст варианта
       visible: ДАР >= 25
+      cost: 20                (только в сцене с clock: сколько секунд съедает выбор)
       fx: ВОЛ +10, ТЕЛ +5, F_Т01 = СПОР
       if ТЕЛ >= 45 -> В1-08
       if РАЗ >= 40 -> В1-09 ; fx: ДАР +5
@@ -38,6 +41,11 @@
 Условия: && || ! ( ) >= <= > < == !=, числа, имена переменных/флагов, литералы enum,
 seen(✝ID) — видел в любой жизни (мета), seen_life(✝ID) — видел в этой жизни.
 Функций случайности в языке нет (канон, п. 1).
+
+«Время» (clock/cost): счётчик живёт в цепочке подряд идущих сцен с clock; первая сцена
+цепочки заводит его на свой clock, следующие продолжают остаток, первая сцена без clock
+сбрасывает. Вариант с cost больше остатка виден, но закрыт («не успеть»). Остаток хранится
+в состоянии героя под служебным ключом CLOCK_KEY, поэтому откат возвращает и его.
 """
 import json
 import pathlib
@@ -45,6 +53,7 @@ import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCENES = ROOT / "scenes"
+CLOCK_KEY = "_clock"   # служебный ключ остатка секунд в состоянии (движок, свидетели)
 
 
 class QQError(Exception):
@@ -282,6 +291,11 @@ def parse_choices(section, cfg, sid):
             ch["visible_src"] = s[8:].strip()
         elif s.startswith("fx:"):
             ch["fx"] += parse_fx(s[3:], cfg)
+        elif s.startswith("cost:"):
+            m = re.fullmatch(r"cost:\s*(\d+)", s)
+            if not m:
+                raise QQError(f"{sid}/{ch['id']}: «cost: N» — число секунд")
+            ch["cost"] = int(m.group(1))
         elif s.startswith("tags:"):
             ch["tags"] = [t.strip() for t in s[5:].split(",")]
         else:
@@ -317,6 +331,12 @@ def parse_file(path, cfg):
     item = {k: v for k, v in meta.items()}
     if "age" in item:
         item["age"] = int(item["age"])
+    if "clock" in item:
+        if not re.fullmatch(r"\d+", item["clock"]):
+            raise QQError(f"{sid}: «clock: N» — число секунд")
+        item["clock"] = int(item["clock"])
+        if not item.get("clock_label"):
+            raise QQError(f"{sid}: у clock нужен clock_label (что значит ноль)")
     item["text"] = parse_blocks(text, cfg)
     item["file"] = path.name
     for head, content in zip(parts[1::2], parts[2::2]):
@@ -333,6 +353,9 @@ def parse_file(path, cfg):
             # что случилось сразу после выбора — показывается до перехода в следующую сцену
             cid = head.split()[1]
             item.setdefault("after", {})[cid] = parse_blocks(content, cfg)
+    for c in item.get("choices", []):
+        if "cost" in c and "clock" not in item:
+            raise QQError(f"{sid}/{c['id']}: cost без clock в шапке сцены")
     for cid in item.get("after", {}):
         if cid not in {c["id"] for c in item.get("choices", [])}:
             raise QQError(f"{sid}: «## После {cid}», а варианта [{cid}] нет")

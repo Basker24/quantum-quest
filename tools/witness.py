@@ -5,7 +5,10 @@
 Эвристика: сначала пробуем варианты, которые двигают переменные в сторону условий,
 стоящих на рёбрах в цель (ДАР >= 80 → растить ДАР; ДРЕЙФ <= 30 → не растить).
 Смерть — это шаг «умер и откатился»: переменные не меняются, смерть попадает
-в seen_life (открывает эхо-варианты в этой сцене).
+в seen_life (открывает эхо-варианты в этой сцене). Мета-эхо seen(✝…) свидетель не берёт:
+путь должен проходиться с пустым Журналом.
+«Время»: остаток секунд (CLOCK_KEY) — часть точного состояния; вариант с cost больше
+остатка закрыт, переход в сцену без clock сбрасывает счёт.
 
 Результат:
   docs/generated/witness.md — пути для автора;
@@ -15,7 +18,7 @@
 import sys
 from collections import defaultdict
 
-from qqparse import ROOT, load
+from qqparse import CLOCK_KEY, ROOT, load
 from validate import ev
 
 LIMIT = 1500000
@@ -27,6 +30,16 @@ def find_all(G, limit=LIMIT):
     def clamp(n, v):
         c = CFG["vars"][n]
         return max(c["min"], min(c["max"], v))
+
+    def tick(st, sid, cost, to):
+        """Остаток секунд после выбора в sid и входа в to (цепочка сцен с clock)."""
+        st = dict(st)
+        v = st.get(CLOCK_KEY)
+        if v is not None:
+            v -= cost
+        c = S[to].get("clock") if to in S else None
+        st[CLOCK_KEY] = None if c is None else (c if v is None else v)
+        return st
 
     def apply(st, fx):
         st = dict(st)
@@ -135,12 +148,13 @@ def find_all(G, limit=LIMIT):
         want, flag_want, flag_avoid = directions(target)
         st0 = {k: v["start"] for k, v in CFG["vars"].items()}
         st0.update({k: None for k in CFG["flags"]})
+        st0[CLOCK_KEY] = S[CFG["start"]].get("clock")
         visited = set()
         budget = [limit]
         path = []
 
         def key(sid, st, seen):
-            return (sid, tuple(st[n] for n in live[sid]), seen)
+            return (sid, tuple(st[n] for n in live[sid]), st.get(CLOCK_KEY), seen)
 
         def dfs(sid, st, seen):
             if sid == target:
@@ -151,17 +165,20 @@ def find_all(G, limit=LIMIT):
             visited.add(k)
             budget[0] -= 1
             sc = S[sid]
-            vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen)]
+            left = st.get(CLOCK_KEY)
+            vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen, frozenset())]
             if not vis and "next" in sc:
                 if sc["next"] in reach:
                     path.append((sid, None, None))
-                    if dfs(sc["next"], st, frozenset()):
+                    if dfs(sc["next"], tick(st, sid, 0, sc["next"]), frozenset()):
                         return True
                     path.pop()
                 return False
             opts = []
             for c in vis:
-                o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen))
+                if left is not None and c.get("cost", 0) > left:
+                    continue                          # не успеть
+                o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen, frozenset()))
                 if o["to"] in D:
                     if o["to"] not in seen:
                         opts.append((-1000, c, o))   # смерть — только если ничего другого не вышло
@@ -177,7 +194,7 @@ def find_all(G, limit=LIMIT):
                     path.pop()
                     continue
                 path.append((sid, c["id"], None))
-                if dfs(o["to"], apply(apply(st, c["fx"]), o.get("fx", [])), frozenset()):
+                if dfs(o["to"], tick(apply(apply(st, c["fx"]), o.get("fx", [])), sid, c.get("cost", 0), o["to"]), frozenset()):
                     return True
                 path.pop()
             return False

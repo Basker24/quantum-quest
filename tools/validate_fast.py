@@ -12,7 +12,12 @@
   несмертельного варианта (даже с эхо-вариантом после смерти), это тупик.
 
 Это перестраховка: комбинация может оказаться недостижимой (лишняя тревога), но настоящий
-тупик проверка не пропустит. Откат на несколько шагов здесь не учитывается: по правилу
+тупик проверка не пропустит. I1 требует живого пути после ЛЮБОЙ одной смерти в сцене
+(эхо по смыслу: каждая смерть должна что-то открывать). Мета-эхо seen(✝…) из прошлых
+жизней в I1 не считается: Журнал может быть пустым.
+
+«Время» (clock/cost): для каждой сцены копится множество возможных остатков секунд на входе;
+вариант с cost больше остатка закрыт («не успеть») и в I1 не считается. Откат на несколько шагов здесь не учитывается: по правилу
 библии 10.4 в каждой ловушке должен быть безопасный дорогой выход.
 """
 import sys
@@ -56,7 +61,14 @@ def main(note=""):
                     q.append(t)
 
     def new_state():
-        return {"num": {}, "fl": {}}
+        return {"num": {}, "fl": {}, "clk": set()}
+
+    def clk_in(to, vals):
+        """Остатки секунд на входе в сцену: цепочка сцен с clock продолжает счёт, без clock — сброс."""
+        c = S[to].get("clock")
+        if c is None:
+            return {None}
+        return {c if v is None else v for v in vals}
 
     def merge(dst, src):
         for n, (lo, hi) in src["num"].items():
@@ -67,9 +79,10 @@ def main(note=""):
                 dst["num"][n] = (lo, hi)
         for f, vs in src["fl"].items():
             dst["fl"].setdefault(f, set()).update(vs)
+        dst["clk"] |= src.get("clk", set())
 
     def apply_fx(st, fx):
-        out = {"num": dict(st["num"]), "fl": {k: set(v) for k, v in st["fl"].items()}}
+        out = {"num": dict(st["num"]), "fl": {k: set(v) for k, v in st["fl"].items()}, "clk": set(st.get("clk", ()))}
         for kind, n, v in fx:
             if n in CFG["vars"]:
                 lo, hi = out["num"][n]
@@ -107,7 +120,7 @@ def main(note=""):
 
     def refine(st, e, truth):
         """Сужение по простым условиям: num-cmp, enum ==/!=, truthy, И (для «да»)."""
-        out = {"num": dict(st["num"]), "fl": {k: set(v) for k, v in st["fl"].items()}}
+        out = {"num": dict(st["num"]), "fl": {k: set(v) for k, v in st["fl"].items()}, "clk": set(st.get("clk", ()))}
         def one(c):
             if c.get("op") == "and" and truth:
                 for a in c["a"]:
@@ -143,6 +156,7 @@ def main(note=""):
         st0["num"][n] = (CFG["vars"][n]["start"],) * 2
     for f in FL:
         st0["fl"][f] = {None}
+    st0["clk"] = clk_in(CFG["start"], {None})
     STATE = {CFG["start"]: st0}
     entry_from = defaultdict(set)
     reached_deaths = set()
@@ -163,10 +177,18 @@ def main(note=""):
                 if f:
                     cond_false.add(k)
         targets = []
+        clock = sc.get("clock")
+        clks = st["clk"] or {None}
         if "next" in sc and not sc.get("choices"):
-            targets.append((sc["next"], st, []))
+            targets.append((sc["next"], st, [], clks))
         for c in sc.get("choices", []):
             cs = st
+            cost = c.get("cost", 0)
+            fit = {v for v in clks if v is None or v >= cost}
+            if clock is not None and not fit:
+                warns.append(f"T: {sid} [{c['id']}] не успеть никогда (cost {cost} > остатка {max(v for v in clks if v is not None)})")
+                continue
+            nclk = {v - cost for v in fit} if clock is not None else {None}
             if "visible" in c:
                 t, f = possible(st, c["visible"], frozenset(D))   # эхо: могло быть видно после смерти
                 t0, f0 = possible(st, c["visible"])
@@ -202,37 +224,50 @@ def main(note=""):
                     if sc.get("stage") in ("trunk", "prologue"):
                         errors.append(f"C6: смерть {o['to']} в стволе ({sid})")
                     continue
-                targets.append((o["to"], cur, c["fx"] + o.get("fx", [])))
-        for to, cur, fx in targets:
+                targets.append((o["to"], cur, c["fx"] + o.get("fx", []), nclk))
+        for to, cur, fx, ck in targets:
             entry_from[to].add(sid)
-            merge(STATE.setdefault(to, new_state()), apply_fx(cur, fx))
+            nxt = apply_fx(cur, fx)
+            nxt["clk"] = clk_in(to, ck)
+            merge(STATE.setdefault(to, new_state()), nxt)
 
         # --- I1 локально
         if any(o["to"] in D for c in sc.get("choices", []) for o in c["outcomes"]):
             exprs = [c.get("visible") for c in sc["choices"]] + [o.get("if") for c in sc["choices"] for o in c["outcomes"]]
             used = sorted({n for e in exprs if e for n in names(e, set())})
             bad = 0
-            for env in combos(st, used):
+            NOMETA = frozenset()      # мета-эхо (seen без _life) на I1 не опираем
+            for left, env in ((v, e) for v in sorted(clks, key=lambda x: -1 if x is None else x) for e in combos(st, used)):
                 def alive(seen):
-                    dead = set()
+                    dead = []
                     for c in sc["choices"]:
-                        if "visible" in c and not ev(c["visible"], env, seen):
+                        if left is not None and c.get("cost", 0) > left:
+                            continue          # не успеть
+                        if "visible" in c and not ev(c["visible"], env, seen, NOMETA):
                             continue
                         for o in c["outcomes"]:
-                            if "if" in o and not ev(o["if"], env, seen):
+                            if "if" in o and not ev(o["if"], env, seen, NOMETA):
                                 continue
                             if o["to"] not in D:
                                 return True, dead
-                            dead.add(o["to"])
+                            if o["to"] not in dead:
+                                dead.append(o["to"])
                             break
                     return False, dead
                 ok, dead = alive(frozenset())
+                why = ""
                 if not ok and dead:
-                    ok, _ = alive(frozenset(dead))
+                    # после ЛЮБОЙ одной смерти этой сцены должен открыться живой путь
+                    lost = [d for d in dead if not alive(frozenset([d]))[0]]
+                    ok = not lost
+                    why = f" (после смерти {', '.join(lost)} живого пути нет)" if lost else ""
                 if not ok:
                     bad += 1
                     if bad <= 5:
-                        errors.append(f"I1: возможный тупик в {sid} при " + ", ".join(f"{k}={v}" for k, v in env.items()))
+                        tail = ", ".join(f"{k}={v}" for k, v in env.items())
+                        if left is not None:
+                            tail += f", осталось {left} с"
+                        errors.append(f"I1: возможный тупик в {sid} при {tail}{why}")
             if bad > 5:
                 errors.append(f"I1: … в {sid} ещё {bad - 5} таких комбинаций")
 

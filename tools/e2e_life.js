@@ -21,6 +21,7 @@ const { chromium } = require('playwright');
     if (await p.$('#death:not([hidden])')) {
       await p.waitForSelector('#btn-death-next:not([hidden])', { timeout: 30000 });
       await p.click('#btn-death-next'); await p.waitForTimeout(300);
+      if (!(await p.$('#awake:not([hidden])'))) { console.log('   ✝ Корень'); return; }
       await p.click('#awake-text'); await p.waitForTimeout(300);
       await (await p.$$('#awake-btns button'))[0].click(); await p.waitForTimeout(300);
       console.log('   ✝ смерть и откат');

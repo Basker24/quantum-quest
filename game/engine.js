@@ -69,6 +69,12 @@
   // сцены-заглушки: варианты туда видны, но закрыты
   const WIP = new Set(C.wip_scenes || ["Ж-00"]);
   const isWip = (c) => c.outcomes.length > 0 && c.outcomes.every((o) => WIP.has(o.to));
+  // «время» (канон п. 30): остаток секунд живёт в состоянии под служебным ключом, поэтому откат возвращает и его
+  const CLK = "_clock";
+  const leftOf = (sc) => (sc.clock != null && S && S.st[CLK] != null ? S.st[CLK] : null);
+  const late = (sc, c) => { const l = leftOf(sc); return l != null && (c.cost || 0) > l; };
+  // мета-эхо: вариант открыт смертью из Журнала (seen без _life) — память другой жизни
+  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
   function flagsIn(e, acc = new Set()) {
@@ -124,10 +130,43 @@
   const save = () => store.set(SAVE, S);
   const visible = (sc, st) => (sc.choices || []).filter((c) => ok(c.visible, st));
 
+  // ---------- Корень: утопление в семь лет показано языком смерти, но без отката (канон п. 26)
+  function rootDeath(done) {
+    show("#death");
+    $("#death-tc").textContent = "28 ИЮЛЯ 1996, ОКОЛО ПОЛУДНЯ";
+    const art = $("#death-text"); art.innerHTML = "";
+    art.style.translate = art.style.filter = art.style.transition = "";
+    const btn = $("#btn-death-next"); btn.hidden = true;
+    const lines = ["Воздух кончается раньше, чем темнота.", "Сверху, через воду, тонкий девчачий голос считает: «…сто девяносто… сто девяносто один…»", "Потом не остаётся ничего, даже счёта."];
+    let i = 0;
+    const step = () => {
+      if (i < lines.length) { const p = document.createElement("p"); p.textContent = lines[i++]; art.append(p); setTimeout(step, REDUCED ? 100 : 1100); return; }
+      art.insertAdjacentHTML("beforeend", `<div class="tomb root-tomb">
+        <div class="tomb-cross">✝</div>
+        <div class="tomb-name">Андрей Николаевич Самохин</div>
+        <div class="tomb-years mono">1989 — 1996</div>
+        <p class="tomb-epitaph">7 лет. Чёрная заводь. Утонул у коряги.</p>
+      </div>
+      <p class="root-line mono">Ника считает: <b class="root-count">200</b></p>`);
+      const cnt = art.querySelector(".root-count"), tomb = art.querySelector(".root-tomb");
+      let n = 200;
+      const tick = () => {
+        cnt.textContent = n;
+        if (n >= 252) { tomb.classList.add("crack"); if (navigator.vibrate) try { navigator.vibrate([30, 60, 30]); } catch (e) {} setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
+        n++; setTimeout(tick, REDUCED ? 5 : 70);
+      };
+      setTimeout(tick, REDUCED ? 50 : 900);
+    };
+    setTimeout(step, REDUCED ? 50 : 600);
+  }
+
   function enter(id, restored) {
     const sc = G.scenes[id];
+    if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
+    // счётчик секунд: первая сцена цепочки с clock заводит его, следующие продолжают, сцена без clock сбрасывает
+    if (!restored) { if (sc.clock == null) delete S.st[CLK]; else if (S.st[CLK] == null) S.st[CLK] = sc.clock; }
     meta.visited[id] = true;
     if (id === "Т-02б") meta.root = true;
     for (const m of C.meta_entries || []) if (m.scene === id && ok(m.if, S.st)) meta.extra[m.id] = true;
@@ -294,6 +333,13 @@
     const vis = visible(sc, st).filter((c) => !isWip(c));
     const dar = st["ДАР"] || 0;
     meta.shown[S.scene] = meta.shown[S.scene] || {};
+    const left = leftOf(sc);
+    if (left != null && vis.length) {
+      const full = Math.max(1, sc.clock || left);
+      nav.insertAdjacentHTML("beforeend", `<div class="clock mono${left <= full * 0.34 ? " low" : ""}" role="timer" aria-label="осталось ${left} секунд, ${esc(sc.clock_label || "")}">
+        <span class="clock-n">⏱ ${left} с</span><span class="clock-l">· ${esc(sc.clock_label || "")}</span>
+        <span class="clock-bar"><i style="transform:scaleX(${(left / full).toFixed(3)})"></i></span></div>`);
+    }
     vis.forEach((c, i) => {
       meta.shown[S.scene][c.id] = true;
       const b = document.createElement("button");
@@ -305,6 +351,10 @@
         b.insertAdjacentHTML("beforeend", `<small>в другом мире я выбрал это</small>`);
       }
       if (c.visible && /seen/.test(JSON.stringify(c.visible))) b.classList.add("echo");
+      if (hasMeta(c.visible)) { b.classList.add("meta-echo"); b.insertAdjacentHTML("beforeend", `<small class="meta-cap mono">◌ память другой жизни</small>`); }
+      const tooLate = late(sc, c);
+      if (left != null && c.cost) b.insertAdjacentHTML("beforeend", `<small class="cost mono">${tooLate ? "не успеть · " : ""}−${c.cost} с</small>`);
+      if (tooLate) { b.classList.add("locked", "late"); b.disabled = true; nav.append(b); return; }
       // «холодок»: дар чует смертельный исход при нынешнем состоянии (тот же выбор исхода, что в choose)
       const o = c.outcomes.find((x) => ok(x.if, st));
       if (o && o.to.startsWith("✝") && dar >= 20) {
@@ -375,6 +425,7 @@
   }
 
   function choose(sc, c) {
+    if (late(sc, c)) return; // не успеть: кнопка закрыта, клавиатура тоже не проведёт
     const st = S.st;
     const o = c.outcomes.find((x) => ok(x.if, st));
     const top = S.stack[S.stack.length - 1];
@@ -384,6 +435,7 @@
     saveMeta();
     if (o.to.startsWith("✝")) return die(o.to);
     const next = clone(st);
+    if (sc.clock != null && next[CLK] != null) next[CLK] = Math.max(0, next[CLK] - (c.cost || 0));
     applyFx(c.fx, next);
     if (o.fx) applyFx(o.fx, next);
     // след выборов этой жизни: какие флаги поставил этот выбор (для меток «↩»)
