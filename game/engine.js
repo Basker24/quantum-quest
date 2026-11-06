@@ -837,8 +837,8 @@
     const own = (d.awake || []).filter((b) => ok(b.if, S.st));
     const paras = [];
     if (own[0]) paras.push({ md: own[0].md, cls: "back" });
-    // первый шок жизни — полный; дальше одна строка: игрок уже знает, что происходит
-    ((first ? C.shock_first : (C.shock_again || []).slice(0, 1)) || []).forEach((s) => paras.push({ md: s, cls: "shock" }));
+    // первый шок первой жизни — полный; первая смерть следующих жизней — короткий shock_later; дальше одна строка: игрок уже знает, что происходит
+    ((first ? ((meta.lives || 0) >= 2 && C.shock_later && C.shock_later.length ? C.shock_later : C.shock_first) : (C.shock_again || []).slice(0, 1)) || []).forEach((s) => paras.push({ md: s, cls: "shock" }));
     own.slice(1).forEach((b) => paras.push({ md: b.md, cls: "" }));
     const els = paras.map((x) => { const p = document.createElement("p"); p.className = x.cls; p.innerHTML = md(x.md); p.classList.add("pending"); art.append(p); return p; });
     let finished = false, startT = null;
