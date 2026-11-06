@@ -14,7 +14,8 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* без сохранений */ } },
   };
   // мета — сквозная для всех жизней: Хор, схема, увиденное
-  let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {} }, store.get(META, {}));
+  let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {}, seenBlocks: {} }, store.get(META, {}));
+  meta.seenBlocks = meta.seenBlocks || {}; // сцена → {ключ абзаца: номер жизни, когда показан впервые}
   meta.guide = meta.guide || {};
   // lived(ID): номер жизни, в которой сцена посещена впервые. Старые сохранения: всё, что уже в visited, — прошлые жизни (0).
   meta.vlife = meta.vlife || {};
@@ -69,6 +70,8 @@
   const WORDS = ["", "один шаг", "два шага", "три шага", "четыре шага", "пять шагов"];
   const LETTERS = "АБВГДЕЖЗ";
   const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+  // ключ абзаца для быстрого ствола: хеш текста (правка абзаца = новый абзац)
+  const bkey = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = (Math.imul(h, 33) ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
   const buzz = (pat) => { try { if (navigator.vibrate) navigator.vibrate(pat); } catch (e) { /* нет вибрации */ } };
 
   // ---------- звук: только синтез Web Audio, без файлов и без рандома.
@@ -249,9 +252,15 @@
     for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => flagsIn(y, acc)); else flagsIn(x, acc); }
     return acc;
   }
+  // метка = МОЙ выбор, а не название сцены. Не метим выбор минуту назад и тот же год; одна метка на источник за сцену (tagUsed).
+  let tagUsed = new Set();
   function echoTag(cond, skip) {
     if (!cond || !S || !S.trail) return "";
     const out = [];
+    const curY = yearOf((G.scenes[S.scene] || {}).date);
+    // выбор «минуту назад»: последняя запись следа не из этой сцены
+    let prev = -1;
+    for (let i = S.trail.length - 1; i >= 0; i--) if (S.trail[i].scene !== S.scene) { prev = i; break; }
     for (const f of flagsIn(cond)) {
       if (skip && skip.has(f)) continue;
       const src = (G.flag_src || {})[f];
@@ -260,17 +269,28 @@
         const t = S.trail[i];
         if (t.scene === S.scene || !(t.flags || []).includes(f) || !src.includes(t.scene)) continue;
         const sc = G.scenes[t.scene], y = yearOf(sc && sc.date);
-        const s = (y ? y + " · " : "") + ((sc && sc.title) || t.scene).replace(/^Демо\.\s*/, "");
-        if (!out.includes(s)) out.push(s);
+        if (i === prev || (y && y === curY)) break;
+        const ch = ((sc && sc.choices) || []).find((c) => c.id === t.choice);
+        const key = t.scene + "/" + t.choice;
+        if (!tagUsed.has(key)) { tagUsed.add(key); out.push("↩ " + (y ? y + " · " : "") + (ch ? "▸ " + short(ch.label) : ((sc && sc.title) || t.scene))); }
         break;
       }
     }
-    return out.map((s) => "↩ " + s).join("   ");
+    // встреча ветвей: абзац зависит от другой прожитой жизни
+    (function walk(e) {
+      if (!e || typeof e !== "object") return;
+      if (e.op === "lived" && ev(e, S.st)) {
+        const sc = G.scenes[e.id], key = "lived/" + e.id;
+        if (sc && !tagUsed.has(key)) { tagUsed.add(key); const y = yearOf(sc.date); out.push("◌ другая жизнь · " + (y ? y + " · " : "") + (sc.title || e.id).replace(/^Демо\.\s*/, "")); }
+      }
+      for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach(walk); else walk(x); }
+    })(cond);
+    return out.join("   ");
   }
   // абзацы с меткой: метка — отдельной строкой над абзацем, вне текста
   function para(art, cls, html, tag) {
     let t = null;
-    if (tag) { t = document.createElement("div"); t.className = "echo-tag mono pending"; t.textContent = tag; art.append(t); }
+    if (tag) { t = document.createElement("div"); t.className = "echo-tag mono pending" + (/^◌/.test(tag) ? " other-life" : ""); t.textContent = tag; art.append(t); }
     const p = document.createElement("p"); p.className = cls; p.innerHTML = html; p.classList.add("pending"); p._tag = t; art.append(p);
     return p;
   }
@@ -392,6 +412,8 @@
     const lived = !replay && livedTrunk(sc);
 
     const blocks = [];
+    tagUsed = new Set();
+    if (S.check) { blocks.push({ md: S.check, cls: "check", own: true }); S.check = null; }
     if (S.awake) { for (const b of S.awake) if (ok(b.if, st)) blocks.push({ md: b.md, cls: "awake", own: true }); S.awake = null; }
     let first = true, lastTag = "";
     for (const b of sc.text) {
@@ -402,15 +424,22 @@
       const cls = [b.drift ? "drift" : "", b.kind || "", talk ? "talk" : ""];
       if (first && !b.kind && !talk) { cls.push("first"); first = false; }
       const tag = echoTag(b.if);
-      blocks.push({ md: b.md, cls: cls.join(" ").trim(), tag: tag !== lastTag ? tag : "" });
+      blocks.push({ md: b.md, cls: cls.join(" ").trim(), tag: tag !== lastTag ? tag : "", key: bkey(b.md) });
       lastTag = tag;
     }
     const art = $("#text"); art.innerHTML = "";
     $("#choices").innerHTML = "";
-    const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; return p; });
+    // что из этой сцены уже показывалось в прошлых жизнях (до записи этого показа)
+    const sb = meta.seenBlocks[S.scene], life = meta.lives || 0;
+    const oldBlock = (b) => !sb || (b.key in sb && sb[b.key] < life); // старые сохранения без seenBlocks: всё считаем виденным
+    if (lived && sb) for (const b of blocks) if (b.key && !b.own && !oldBlock(b) && !b.tag) b.tag = "◌ иначе, чем в прошлый раз";
+    const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; p._old = !!b.key && oldBlock(b); return p; });
+    const sbNow = (meta.seenBlocks[S.scene] = meta.seenBlocks[S.scene] || {});
+    for (const b of blocks) if (b.key && !(b.key in sbNow)) sbNow[b.key] = life;
+    saveMeta();
     // «последний откат, которого нет»: привычная лента, которая рассыпается
     els.filter((p) => p.classList.contains("norewind")).forEach((p) => {
-      p.innerHTML = `<button class="choice notch nr-btn"><span class="mono">◀◀</span> Хор помнит…</button>`;
+      p.innerHTML = `<button class="choice nr-btn"><span class="mono">◀◀</span> Хор помнит…</button>`;
       p.querySelector("button").onclick = (e) => {
         e.stopPropagation();
         p.classList.add("crumble");
@@ -420,8 +449,12 @@
     const finish = () => { clearTimeout(typing); typing = null; els.forEach(reveal); renderChoices(sc); };
     if (replay || lived) {
       const body = els.filter((p) => !p._own);
-      const hide = body.slice(0, -1);
-      if (hide.length) {
+      // откат: свёрнуто всё, кроме последнего абзаца; быстрый ствол — только абзацы, виденные в прошлой жизни
+      const cand = body.slice(0, -1).filter((p) => replay || p._old);
+      // складки по сплошным кускам свёрнутого
+      const runs = [];
+      for (const p of body) { if (cand.includes(p)) { const r = runs[runs.length - 1]; if (r && r.end === body.indexOf(p) - 1) { r.ps.push(p); r.end++; } else runs.push({ ps: [p], end: body.indexOf(p) }); } }
+      for (const { ps: hide } of runs) {
         const fold = document.createElement("button");
         fold.className = "seen-fold mono" + (lived ? " lived" : "");
         fold.textContent = lived ? "⋯ ты это уже прожил" : "⋯ ты это уже видел";
@@ -520,6 +553,12 @@
         <span class="clock-n">⏱ ${left} с</span><span class="clock-l">· ${esc(sc.clock_label || "")}</span>
         <span class="clock-bar"><i style="transform:scaleX(${(left / full).toFixed(3)})"></i></span></div>`);
     }
+    // смерти-разведка: их ✝ открывает в этой же сцене вариант через seen_life — холодок от них не отводит
+    const unlockers = new Set();
+    for (const c of sc.choices || []) seenIds(c.visible, true).forEach((id) => unlockers.add(id));
+    const pastTaken = (S.past && S.past[S.scene]) ? meta.taken[S.scene] || {} : {};
+    const life = meta.lives || 0;
+    let knows = false;
     vis.forEach((c, i) => {
       meta.shown[S.scene][c.id] = true;
       const b = document.createElement("button");
@@ -539,7 +578,12 @@
       if (tooLate) { b.classList.add("locked", "late"); b.disabled = true; nav.append(b); return; }
       // «холодок»: дар чует смертельный исход при нынешнем состоянии (тот же выбор исхода, что в choose)
       const o = c.outcomes.find((x) => ok(x.if, st));
-      if (o && o.to.startsWith("✝") && dar >= 20) {
+      const pt = pastTaken[c.id];
+      if (pt === true || (typeof pt === "number" && pt < life)) b.insertAdjacentHTML("beforeend", `<small class="past-cap mono">в прошлой жизни я выбрал это</small>`);
+      // ложное эхо (вариант памяти, ведущий в смерть) и смерть, открывающая вариант, — без снежинки
+      const scout = o && o.to.startsWith("✝") && (seenIds(c.visible, true).length > 0 || seenIds(c.visible, false).length > 0 || (unlockers.has(o.to) && !S.lifeSeen[o.to]));
+      if (scout && dar >= 20) knows = true;
+      else if (o && o.to.startsWith("✝") && dar >= 20) {
         b.classList.add("cold");
         if (dar >= 40) b.classList.add("shiver");
         b.insertAdjacentHTML("beforeend", dar >= 60 ? `<small class="whisper">не надо</small>` : `<small class="chill mono">холодок в затылке</small>`);
@@ -548,6 +592,8 @@
       b.onclick = () => choose(sc, c);
       nav.append(b);
     });
+    // Хор знает о чём-то, но не говорит, о какой кнопке
+    if (knows) { const k = document.createElement("p"); k.className = "chorus-knows mono"; k.textContent = "◌ Хор о чём-то знает"; nav.insertBefore(k, nav.querySelector(".choice")); }
     // закрытые варианты: текст не показываем, только чего не хватило
     for (const c of sc.choices || []) {
       const wip = isWip(c);
@@ -615,9 +661,10 @@
     const top = S.stack[S.stack.length - 1];
     if (top && top.scene === S.scene) top.taken = c.id;
     meta.taken[S.scene] = meta.taken[S.scene] || {};
-    meta.taken[S.scene][c.id] = true;
+    if (!meta.taken[S.scene][c.id]) meta.taken[S.scene][c.id] = meta.lives || 0;
     saveMeta();
-    if (o.to.startsWith("✝")) return die(o.to);
+    if (o.to.startsWith("✝")) { S.deathIf = [o.if, c.visible].filter(Boolean); return die(o.to); }
+    const check = statCheck(c, o, st);
     const next = clone(st);
     if (sc.clock != null && next[CLK] != null) next[CLK] = Math.max(0, next[CLK] - (c.cost || 0));
     applyFx(c.fx, next);
@@ -626,19 +673,38 @@
     const setHere = [...(c.fx || []), ...(o.fx || [])].filter(([k, n]) => k === "set" && C.flags[n]).map((x) => x[1]);
     (S.trail = S.trail || []).push({ scene: S.scene, choice: c.id, flags: setHere });
     const after = sc.after && sc.after[c.id];
-    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); }, new Set(setHere));
+    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); }, new Set(setHere), check);
     S.st = next;
+    S.check = check;
     enter(o.to);
   }
 
+  // плашка проверки (п. 4.3 разбора): исход решил стат-порог — словами, без цифр
+  function statCheck(c, o, st) {
+    const statCmp = (e, acc = []) => {
+      if (!e || typeof e !== "object") return acc;
+      if (e.op === "cmp" && e.l && e.l.op === "var" && e.r && e.r.op === "num" && C.vars[e.l.n] && !C.vars[e.l.n].hidden) acc.push(e);
+      for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => statCmp(y, acc)); else statCmp(x, acc); }
+      return acc;
+    };
+    const gate = c.outcomes.find((x) => statCmp(x.if).length);
+    if (!gate) return null;
+    const passed = gate === o;
+    const names = [...new Set(statCmp(gate.if).filter((e) => ev(e, st) === passed).map((e) => C.vars[e.l.n].name.toUpperCase()))];
+    if (!names.length) return null;
+    return names.join(" · ") + " · " + (passed ? "хватило" : "не хватило");
+  }
+
   // ---------- «что было дальше»: последствие выбора сразу, на том же экране
-  function showAfter(c, blocks, go, setHere) {
+  function showAfter(c, blocks, go, setHere, check) {
     const nav = $("#choices"); nav.innerHTML = "";
     const art = $("#text");
+    art.querySelectorAll(".seen-fold").forEach((f) => f.remove()); // складка не остаётся кнопкой над «Дальше»
     const picked = document.createElement("p");
     picked.className = "picked mono";
     picked.innerHTML = "▸ " + md(c.label);
     art.append(picked);
+    if (check) { const k = document.createElement("p"); k.className = "check mono"; k.textContent = check; art.append(k); }
     let lastTag = "";
     const els = blocks.map((b) => {
       const tag = echoTag(b.if, setHere);
@@ -831,6 +897,12 @@
     const strip = document.createElement("div"); strip.className = "strip";
     const head = document.createElement("div"); head.className = "head"; head.setAttribute("aria-hidden", "true");
     const notches = [];
+    // флаги, на которых держится эта смерть: условие cause и условия исхода/варианта, который убил
+    const dflags = new Set();
+    const dc = (G.deaths[did] || {}).cause;
+    if (dc) flagsIn(dc.if, dflags);
+    for (const e of S.deathIf || []) flagsIn(e, dflags);
+    const pulls = (snap) => { const t = (S.trail || [])[snap.trail ?? -1]; return !!t && t.scene === snap.scene && (t.flags || []).some((f) => dflags.has(f) && ((G.flag_src || {})[f] || []).includes(snap.scene)); };
     // слева старое, справа — эта минута
     [...all].reverse().forEach((idx) => {
       const n = all.indexOf(idx); // сколько шагов назад
@@ -845,7 +917,7 @@
       b.innerHTML = `<i class="tick"></i><span class="n-when mono">${n === 0 ? "сейчас" : esc(y || "")}</span>` +
         `<span class="n-title">${esc((sc.title || snap.scene).replace(/^Демо\.\s*/, ""))}</span>` +
         `<span class="n-pick">${pick ? "▸ " + esc(short(pick.label)) : "—"}</span>` +
-        (cause && snap.scene === cause ? `<small class="n-cause mono">↩ здесь началось</small>` : "") +
+        (cause && snap.scene === cause ? `<small class="n-cause mono">↩ здесь началось</small>` : n > 0 && pulls(snap) ? `<small class="n-pull mono">◌ отсюда тянется</small>` : "") +
         (can ? "" : `<small class="n-burnt mono">дар не дотягивается</small>`);
       b.onclick = () => { if (!film.dragged) spin(b); };
       strip.append(b); notches.push(b);
@@ -982,11 +1054,16 @@
     if (meta.root) { any = true; list.insertAdjacentHTML("beforeend", row("0", "28.07.1996<br>около полудня", "Чёрная заводь. Утонул в семь лет. Вытащили через 252 секунды.", "Ника считала вслух.", "root")); }
     for (const m of C.meta_entries || []) if (meta.extra[m.id]) { any = true; list.insertAdjacentHTML("beforeend", row("·", esc(m.date), `<b>${esc(m.title)}</b><br>${esc(m.text)}`, "—", "echo")); }
     const seenSt = new Set();
-    let n = 1;
-    for (const [id, d] of Object.entries(G.deaths)) {
+    let n = 1, curLife = null;
+    // по жизням, внутри жизни — по порядку смертей
+    const dead = Object.entries(G.deaths).filter(([id]) => meta.journal[id])
+      .sort((a, b) => ((meta.journal[a[0]].life || 1) - (meta.journal[b[0]].life || 1)) || String(meta.journal[a[0]].first).localeCompare(String(meta.journal[b[0]].first)));
+    const lifeNo = (j) => j.life || 1;
+    const many = new Set(dead.map(([id]) => lifeNo(meta.journal[id]))).size > 1 || (meta.lives || 0) > 1;
+    for (const [id, d] of dead) {
       const j = meta.journal[id];
-      if (!j) continue;
       any = true;
+      if (many && lifeNo(j) !== curLife) { curLife = lifeNo(j); list.insertAdjacentHTML("beforeend", `<div class="nb-life mono">Жизнь ${curLife}</div>`); }
       if (d.stihia) seenSt.add(d.stihia);
       const [day, time] = String(d.date || "").split(",");
       list.insertAdjacentHTML("beforeend", row(n++, `${esc(day)}${time ? "<br>" + esc(time.trim()) : ""}`, esc(d.epitaph), esc(d.mourner)) );
@@ -1253,13 +1330,14 @@
 
   function showTitle() {
     show("#title");
+    const tl = $("#title-line"); if (tl) tl.textContent = `8 жизней · ${Object.keys(G.scenes).length} сцены · ранний доступ`;
     $("#btn-continue").hidden = !store.get(SAVE, null);
   }
 
   // ---------- кнопки
   $("#btn-new").onclick = newLife;
   $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; enter(S.scene, true); } };
-  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"]])
+  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
   function soundBtn() { const b = $("#btn-sound"); if (!b) return; b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); }

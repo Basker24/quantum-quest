@@ -480,3 +480,14 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .lesson b { display: block; font-weight: 400; }
 .lesson small { color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .spinning .reel { animation: none; } }
+
+/* ---------- v1.7 правки по плейтесту */
+#text p.norewind .nr-btn { width: 100%; display: block; text-align: left; }
+.warn .link { color: inherit; font: inherit; }
+.echo-tag.other-life { color: #a99bcc; }
+.choice small.past-cap { color: var(--dim); font-size: 11px; letter-spacing: .05em; font-style: italic; }
+.chorus-knows { color: #a99bcc; font-size: 12px; letter-spacing: .08em; margin: 0 0 4px; opacity: .85; }
+#text p.check { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--accent); border-left: 2px solid var(--accent); padding: 2px 10px; margin: 0 0 1em; }
+.notch .n-pull { color: #a99bcc; }
+.nb-life { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #6b6458; padding: 14px 0 4px; border-bottom: 1px solid rgba(44,42,38,.35); }
+.nb-life:first-of-type { padding-top: 4px; }
