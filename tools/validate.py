@@ -27,7 +27,9 @@ G = CFG = None
 def ev(e, st, seen_life=frozenset(), meta=None):
     """seen_life — смерти этой жизни; meta — смерти из Журнала (все жизни).
     meta=None: считать Журналом то же, что seen_life (как раньше). Для I1 передают frozenset():
-    мета-эхо (seen без _life) — подарок прошлых жизней, опираться на него нельзя."""
+    мета-эхо (seen без _life) — подарок прошлых жизней, опираться на него нельзя.
+    lived(ID) — сцена прожита в прошлой жизни: истинна только при непустом meta («полный Журнал»),
+    иначе (None, frozenset()) ложна — I1 и свидетели на неё не опираются, I2 считает оба исхода."""
     op = e["op"]
     if op in ("num", "lit"):
         return e["v"]
@@ -41,6 +43,8 @@ def ev(e, st, seen_life=frozenset(), meta=None):
         return all(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "or":
         return any(ev(a, st, seen_life, meta) for a in e["a"])
+    if op == "lived":
+        return bool(meta)
     if op == "seen":
         if e.get("life") or meta is None:
             return e["id"] in seen_life
@@ -475,8 +479,10 @@ def main():
                     lo, hi = aux[u]
                     opts.append(list(range(lo, hi + 1, 5)) or [lo])
             k = (sid, "текст", b["md"][:32])
+            metas = (None, frozenset(D)) if "lived" in str(b["if"]) else (None,)
             for combo in product(*opts):
-                r = ev(b["if"], dict(zip(used, combo)))
+              for mm in metas:
+                r = ev(b["if"], dict(zip(used, combo)), frozenset(), mm)
                 (cond_true if r else cond_false).add(k)
                 if k in cond_true and k in cond_false:
                     break

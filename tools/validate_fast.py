@@ -108,11 +108,11 @@ def main(note=""):
         for c in product(*lists):
             yield dict(zip(used, c))
 
-    def possible(st, e, seen=frozenset()):
+    def possible(st, e, seen=frozenset(), meta=None):
         used = sorted(n for n in names(e, set()) if n in CFG["vars"] or n in CFG["flags"])
         t = f = False
         for env in combos(st, used):
-            r = ev(e, env, seen)
+            r = ev(e, env, seen, meta)
             t, f = t or r, f or not r
             if t and f:
                 break
@@ -171,6 +171,9 @@ def main(note=""):
                 if "seen" in str(b["if"]):        # смерть могла быть, а могла и не быть
                     t2, f2 = possible(st, b["if"], frozenset(D))
                     t, f = t or t2, f or f2
+                if "lived" in str(b["if"]):       # прожито в прошлой жизни — может быть и так, и так
+                    t2, f2 = possible(st, b["if"], frozenset(), frozenset(D))
+                    t, f = t or t2, f or f2
                 k = (sid, "текст", b["md"][:32])
                 if t:
                     cond_true.add(k)
@@ -191,6 +194,8 @@ def main(note=""):
             nclk = {v - cost for v in fit} if clock is not None else {None}
             if "visible" in c:
                 t, f = possible(st, c["visible"], frozenset(D))   # эхо: могло быть видно после смерти
+                if "lived" in str(c["visible"]):
+                    t = t or possible(st, c["visible"], frozenset(), frozenset(D))[0]
                 t0, f0 = possible(st, c["visible"])
                 k = (sid, c["id"], "visible: " + c.get("visible_src", ""))
                 if t:
@@ -199,7 +204,7 @@ def main(note=""):
                     cond_false.add(k)
                 if not t:
                     continue
-                if not ("seen" in str(c["visible"])):
+                if not ("seen" in str(c["visible"]) or "lived" in str(c["visible"])):
                     cs = refine(st, c["visible"], True)
             rem = cs
             for o in c["outcomes"]:

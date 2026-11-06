@@ -16,6 +16,9 @@
   // мета — сквозная для всех жизней: Хор, схема, увиденное
   let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {} }, store.get(META, {}));
   meta.guide = meta.guide || {};
+  // lived(ID): номер жизни, в которой сцена посещена впервые. Старые сохранения: всё, что уже в visited, — прошлые жизни (0).
+  meta.vlife = meta.vlife || {};
+  for (const id of Object.keys(meta.visited || {})) if (!(id in meta.vlife)) meta.vlife[id] = 0;
   let guideOn = null; // финал, чей путь подсвечен на схеме
   const saveMeta = () => store.set(META, meta);
   let S = null; // текущая жизнь
@@ -30,6 +33,7 @@
       case "and": return e.a.every((x) => ev(x, st));
       case "or": return e.a.some((x) => ev(x, st));
       case "seen": return e.life ? !!(S && S.lifeSeen[e.id]) : !!meta.journal[e.id];
+      case "lived": return e.id in meta.vlife && meta.vlife[e.id] < (meta.lives || 0);
       case "cmp": {
         const l = ev(e.l, st), r = ev(e.r, st);
         if (e.c === "==") return l === r;
@@ -66,6 +70,160 @@
   const LETTERS = "АБВГДЕЖЗ";
   const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
   const buzz = (pat) => { try { if (navigator.vibrate) navigator.vibrate(pat); } catch (e) { /* нет вибрации */ } };
+
+  // ---------- звук: только синтез Web Audio, без файлов и без рандома.
+  // Шум — детерминированный генератор (LCG от счётчика). Контекст создаётся по первому жесту игрока.
+  // По умолчанию звук включён, но тихий; кнопка в панели «Я», выбор хранится в meta.sound.
+  const snd = (() => {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const VOL = 0.55; // общий уровень: тихо
+    let ctx = null, master = null, amb = null, ambNodes = null, wantEra = "none", wantScreen = "title";
+    let heartT = null, rew = null, lastChorus = -1e9;
+    const on = () => meta.sound !== false;
+    const lcg = (seed) => { let s = seed >>> 0; return () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296); };
+    const bufs = {};
+    function buf(kind) {
+      if (bufs[kind]) return bufs[kind];
+      const sr = ctx.sampleRate, n = Math.floor(sr * 4), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0);
+      const r = lcg({ white: 7, bw: 1896, color: 1999, digital: 2009, rew: 252 }[kind] || 1);
+      let br = 0, click = 0, sign = 1;
+      for (let i = 0; i < n; i++) {
+        const w = r() * 2 - 1;
+        if (kind === "bw") { // треск плёнки: тихое шипение и редкие щелчки
+          if (click < 0.01 && r() < 0.00022) { click = 0.35 + 0.5 * r(); sign = -sign; }
+          d[i] = w * 0.05 + sign * click * (r() * 0.6 + 0.4); click *= 0.93;
+        } else if (kind === "color") { br = (br + w * 0.02) * 0.995; d[i] = br * 3; } // тёплый «коричневый» шум
+        else if (kind === "digital") { const gate = (Math.floor(i / (sr * 0.09)) * 2654435761 >>> 0) % 7 === 0; d[i] = w * (gate ? 0.06 : 0.018); }
+        else d[i] = w;
+      }
+      return (bufs[kind] = b);
+    }
+    function unlock() {
+      if (!AC || !on()) return;
+      try {
+        if (!ctx) {
+          ctx = new AC();
+          master = ctx.createGain(); master.gain.value = VOL; master.connect(ctx.destination);
+          amb = ctx.createGain(); amb.gain.value = 0; amb.connect(master);
+          applyEra(); applyScreen();
+        }
+        if (ctx.state === "suspended") ctx.resume();
+      } catch (e) { ctx = null; }
+    }
+    const live = () => ctx && on() && ctx.state !== "closed";
+    const ramp = (p, v, t = 0.4) => { const n = ctx.currentTime; p.cancelScheduledValues(n); p.setValueAtTime(p.value, n); p.linearRampToValueAtTime(v, n + t); };
+    function applyEra() {
+      if (!ctx) return;
+      if (ambNodes) { const old = ambNodes; ramp(old.g.gain, 0, 1.2); setTimeout(() => old.stop.forEach((x) => { try { x.stop(); } catch (e) {} }), 1400); ambNodes = null; }
+      const era = wantEra;
+      if (!["bw", "color", "digital"].includes(era)) return; // phone/future/none — почти тишина
+      const g = ctx.createGain(); g.gain.value = 0; g.connect(amb);
+      const src = ctx.createBufferSource(); src.buffer = buf(era); src.loop = true;
+      const f = ctx.createBiquadFilter();
+      const stop = [src];
+      if (era === "bw") { f.type = "highpass"; f.frequency.value = 500; }
+      else if (era === "color") {
+        f.type = "lowpass"; f.frequency.value = 380;
+        for (const [hz, a] of [[50, 0.018], [100.4, 0.012]]) { const o = ctx.createOscillator(), og = ctx.createGain(); o.frequency.value = hz; og.gain.value = a; o.connect(og).connect(g); o.start(); stop.push(o); }
+      } else { f.type = "highpass"; f.frequency.value = 5200; }
+      src.connect(f).connect(g); src.start();
+      ramp(g.gain, { bw: 0.22, color: 0.5, digital: 0.18 }[era], 1.5);
+      ambNodes = { g, stop };
+    }
+    function applyScreen() {
+      if (!ctx) return;
+      const s = wantScreen;
+      ramp(amb.gain, s === "scene" || s === "chapter" ? 1 : s === "death" || s === "awake" || s === "rewind" ? 0 : 0.35, s === "death" ? 0.05 : 0.8);
+    }
+    // короткий тон с огибающей
+    function tone(hz, { at = 0, a = 0.01, d = 0.3, g = 0.1, type = "sine", to = null, dest = null } = {}) {
+      const t = ctx.currentTime + at, o = ctx.createOscillator(), v = ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(hz, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + a + d);
+      v.gain.setValueAtTime(0.0001, t); v.gain.linearRampToValueAtTime(g, t + a); v.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+      o.connect(v).connect(dest || master); o.start(t); o.stop(t + a + d + 0.05);
+    }
+    function noise(at, dur, g, hp) {
+      const t = ctx.currentTime + at, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), v = ctx.createGain();
+      s.buffer = buf("white"); f.type = "highpass"; f.frequency.value = hp;
+      v.gain.setValueAtTime(g, t); v.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      s.connect(f).connect(v).connect(master); s.start(t, (at * 997) % 3); s.stop(t + dur + 0.02);
+    }
+    return {
+      unlock,
+      on,
+      pause(h) { try { if (!ctx) return; if (h) ctx.suspend(); else if (on()) ctx.resume(); } catch (e) { /* ничего */ } },
+      state: () => (ctx ? ctx.state : "none"),
+      toggle() {
+        meta.sound = !on(); saveMeta();
+        if (on()) { unlock(); if (ctx) ramp(master.gain, VOL, 0.3); }
+        else if (ctx) { ramp(master.gain, 0, 0.2); this.heart(false); this.rewStop(); }
+        return on();
+      },
+      era(e) { if (e === wantEra) return; wantEra = e; if (ctx) applyEra(); },
+      screen(id) { wantScreen = id.replace("#", ""); if (ctx) applyScreen(); if (wantScreen !== "scene") this.heart(false); if (wantScreen !== "death") this.rewStop(); },
+      // STOP кассетной деки: два механических щелчка и глухой удар
+      stop() {
+        if (!live()) return;
+        noise(0, 0.025, 0.35, 2500); tone(150, { d: 0.09, g: 0.22, to: 60 });
+        noise(0.08, 0.018, 0.18, 3500);
+      },
+      // перемотка ленты: шорох и вой мотора, высота растёт с удержанием
+      rewStart() {
+        if (!live() || rew) return;
+        const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), o = ctx.createOscillator(), og = ctx.createGain(), g = ctx.createGain();
+        s.buffer = buf("white"); s.loop = true; f.type = "bandpass"; f.Q.value = 3; f.frequency.value = 400;
+        o.type = "sawtooth"; o.frequency.value = 70; og.gain.value = 0.02;
+        g.gain.value = 0; s.connect(f).connect(g); o.connect(og).connect(g); g.connect(master);
+        s.start(); o.start(); ramp(g.gain, 0.16, 0.08);
+        rew = { s, o, f, g };
+      },
+      rewSet(k) { if (!rew) return; const n = ctx.currentTime; rew.f.frequency.setTargetAtTime(400 + k * 3200, n, 0.05); rew.o.frequency.setTargetAtTime(70 + k * 520, n, 0.05); },
+      rewFinish(fast) {
+        if (!live()) return;
+        if (!rew) this.rewStart();
+        if (!rew) return;
+        const n = ctx.currentTime, d = fast ? 0.24 : 0.05;
+        rew.f.frequency.linearRampToValueAtTime(3800, n + d); rew.o.frequency.linearRampToValueAtTime(640, n + d);
+        const r = rew; rew = null;
+        r.g.gain.setValueAtTime(0.16, n + d); r.g.gain.exponentialRampToValueAtTime(0.0001, n + d + 0.35);
+        r.s.stop(n + d + 0.4); r.o.stop(n + d + 0.4);
+        noise(d + 0.02, 0.02, 0.2, 3000); // защёлка «PLAY»
+      },
+      rewStop() {
+        if (!rew || !ctx) return;
+        const r = rew; rew = null; const n = ctx.currentTime;
+        r.g.gain.cancelScheduledValues(n); r.g.gain.setValueAtTime(r.g.gain.value, n); r.g.gain.linearRampToValueAtTime(0, n + 0.12);
+        r.s.stop(n + 0.15); r.o.stop(n + 0.15);
+      },
+      // Хор: тихий аккорд, слоёв столько, сколько записей в Тетради (до 8); голоса входят по одному
+      chorus() {
+        const n = Math.min(8, Object.keys(meta.journal || {}).length || (meta.root ? 1 : 0));
+        if (!live() || !n || ctx.currentTime - lastChorus < 6) return;
+        lastChorus = ctx.currentTime;
+        const HZ = [110, 164.81, 220, 261.63, 329.63, 392, 440, 523.25];
+        const g = 0.07 / Math.sqrt(n), lp = ctx.createBiquadFilter();
+        lp.type = "lowpass"; lp.frequency.value = 1200; lp.connect(master);
+        for (let i = 0; i < n; i++) for (const det of [-0.0025, 0.0025]) {
+          const t = ctx.currentTime + i * 0.35, o = ctx.createOscillator(), v = ctx.createGain();
+          o.type = i % 2 ? "triangle" : "sine"; o.frequency.value = HZ[i] * (1 + det * (1 + (i % 3)));
+          v.gain.setValueAtTime(0.0001, t); v.gain.linearRampToValueAtTime(g / 2, t + 1.6); v.gain.setValueAtTime(g / 2, t + 4); v.gain.linearRampToValueAtTime(0.0001, t + 7.5);
+          o.connect(v).connect(lp); o.start(t); o.stop(t + 7.7);
+        }
+      },
+      // «холодок»: очень тихий низкий тон, когда в выборе есть смерть
+      cold() { if (!live()) return; tone(98, { a: 0.5, d: 1.6, g: 0.05 }); tone(73.4, { a: 0.7, d: 1.8, g: 0.035 }); },
+      // сердцебиение, пока часы острой сцены на исходе
+      heart(want) {
+        if (!want) { clearInterval(heartT); heartT = null; return; }
+        if (heartT || !live()) return;
+        const beat = () => { if (!live()) return; tone(90, { d: 0.16, g: 0.3, to: 45 }); tone(80, { at: 0.26, d: 0.14, g: 0.18, to: 42 }); };
+        beat(); buzz([18, 230, 12]);
+        heartT = setInterval(beat, 950);
+      },
+    };
+  })();
+  for (const t of ["pointerdown", "keydown", "touchstart"]) addEventListener(t, () => snd.unlock(), { capture: true, passive: true });
+  document.addEventListener("visibilitychange", () => snd.pause(document.hidden));
   // сцены-заглушки: варианты туда видны, но закрыты
   const WIP = new Set(C.wip_scenes || ["Ж-00"]);
   const isWip = (c) => c.outcomes.length > 0 && c.outcomes.every((o) => WIP.has(o.to));
@@ -74,7 +232,15 @@
   const leftOf = (sc) => (sc.clock != null && S && S.st[CLK] != null ? S.st[CLK] : null);
   const late = (sc, c) => { const l = leftOf(sc); return l != null && (c.cost || 0) > l; };
   // мета-эхо: вариант открыт смертью из Журнала (seen без _life) — память другой жизни
-  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
+  // память смертей как инвентарь (п. 10 разбора): какие смерти открыли вариант и что из них вынесено
+  function seenIds(e, life, acc = []) {
+    if (!e || typeof e !== "object") return acc;
+    if (e.op === "seen" && !!e.life === life) acc.push(e.id);
+    for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => seenIds(y, life, acc)); else seenIds(x, life, acc); }
+    return acc;
+  }
+  const lessonsFor = (e, life) => [...new Set(seenIds(e, life).filter((id) => (life ? S && S.lifeSeen[id] : meta.journal[id])).map((id) => (G.deaths[id] || {}).lesson).filter(Boolean))];
+  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || e.op === "lived" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
   function flagsIn(e, acc = new Set()) {
@@ -118,13 +284,14 @@
     $("#bar").hidden = id !== "#scene";
     document.body.dataset.screen = id.slice(1);
     bgMode(id === "#title" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
+    snd.screen(id);
     window.scrollTo(0, 0);
   }
 
   // ---------- жизнь
   function newLife() {
     meta.lives = (meta.lives || 0) + 1; saveMeta();
-    S = { scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, awake: null, ghost: null, year: null, replay: false };
+    S = { scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, awake: null, ghost: null, year: null, replay: false, past: {} };
     enter(C.start);
   }
   const save = () => store.set(SAVE, S);
@@ -133,6 +300,7 @@
   // ---------- Корень: утопление в семь лет показано языком смерти, но без отката (канон п. 26)
   function rootDeath(done) {
     show("#death");
+    snd.stop(); buzz(40);
     $("#death-tc").textContent = "28 ИЮЛЯ 1996, ОКОЛО ПОЛУДНЯ";
     const art = $("#death-text"); art.innerHTML = "";
     art.style.translate = art.style.filter = art.style.transition = "";
@@ -152,7 +320,7 @@
       let n = 200;
       const tick = () => {
         cnt.textContent = n;
-        if (n >= 252) { tomb.classList.add("crack"); if (navigator.vibrate) try { navigator.vibrate([30, 60, 30]); } catch (e) {} setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
+        if (n >= 252) { tomb.classList.add("crack"); buzz([30, 60, 30]); setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
         n++; setTimeout(tick, REDUCED ? 5 : 70);
       };
       setTimeout(tick, REDUCED ? 50 : 900);
@@ -167,7 +335,11 @@
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     // счётчик секунд: первая сцена цепочки с clock заводит его, следующие продолжают, сцена без clock сбрасывает
     if (!restored) { if (sc.clock == null) delete S.st[CLK]; else if (S.st[CLK] == null) S.st[CLK] = sc.clock; }
+    // быстрый ствол (п. 9 разбора): сцену ствола, прожитую в прошлой жизни, не печатаем заново
+    S.past = S.past || {};
+    if (!restored && !(id in S.past)) S.past[id] = (meta.lives || 0) >= 2 && !!meta.visited[id];
     meta.visited[id] = true;
+    if (!(id in meta.vlife)) meta.vlife[id] = meta.lives || 0;
     if (id === "Т-02б") meta.root = true;
     for (const m of C.meta_entries || []) if (m.scene === id && ok(m.if, S.st)) meta.extra[m.id] = true;
     saveMeta();
@@ -188,6 +360,7 @@
     $("#ch-age").textContent = sc.age != null ? `мне ${sc.age}` : "";
     $("#ch-title").textContent = sc.title || "";
     document.body.dataset.era = sc.photo || "none";
+    snd.era(sc.photo || "none");
     const cnt = $("#ch-count");
     let n = 3;
     const finish = () => { clearTimeout(chTimer); chTimer = null; $("#chapter").onclick = null; done(); };
@@ -207,11 +380,16 @@
     const st = S.st;
     document.body.dataset.drift = Math.min(4, Math.floor((st["ДРЕЙФ"] || 0) / 20));
     document.body.dataset.era = sc.photo || "none";
+    snd.era(sc.photo || "none");
+    snd.heart(false);
+    if (sc.stage === "anchor") snd.chorus();
     renderPhoto(sc);
     $("#meta").textContent = [sc.date, sc.age != null ? `мне ${sc.age}` : "", DEBUG ? S.scene : ""].filter(Boolean).join(" · ");
     $("#when").textContent = sc.date || "";
     // после отката сцена уже прочитана: последний абзац и выбор сразу, остальное свёрнуто
     const replay = !!S.replay; S.replay = false;
+    // вторая жизнь: ствол уже прожит — свёрнут так же, полный текст по тапу (канон п. 29: ничего не удаляем)
+    const lived = !replay && livedTrunk(sc);
 
     const blocks = [];
     if (S.awake) { for (const b of S.awake) if (ok(b.if, st)) blocks.push({ md: b.md, cls: "awake", own: true }); S.awake = null; }
@@ -240,13 +418,13 @@
       };
     });
     const finish = () => { clearTimeout(typing); typing = null; els.forEach(reveal); renderChoices(sc); };
-    if (replay) {
+    if (replay || lived) {
       const body = els.filter((p) => !p._own);
       const hide = body.slice(0, -1);
       if (hide.length) {
         const fold = document.createElement("button");
-        fold.className = "seen-fold mono";
-        fold.textContent = "⋯ ты это уже видел";
+        fold.className = "seen-fold mono" + (lived ? " lived" : "");
+        fold.textContent = lived ? "⋯ ты это уже прожил" : "⋯ ты это уже видел";
         fold.setAttribute("aria-expanded", "false");
         hide.forEach((p) => { p.classList.add("folded"); if (p._tag) p._tag.classList.add("folded"); });
         fold.onclick = (e) => {
@@ -264,6 +442,8 @@
     art.onclick = () => typing && finish();
     step();
   }
+
+  const livedTrunk = (sc) => !!(S && S.past && S.past[S.scene]) && (sc.stage === "trunk" || sc.stage === "prologue");
 
   // голоса Рыбаков на якоре: эпитафии смертей, которые видел именно этот игрок
   function chorusLines() {
@@ -351,7 +531,9 @@
         b.insertAdjacentHTML("beforeend", `<small>в другом мире я выбрал это</small>`);
       }
       if (c.visible && /seen/.test(JSON.stringify(c.visible))) b.classList.add("echo");
-      if (hasMeta(c.visible)) { b.classList.add("meta-echo"); b.insertAdjacentHTML("beforeend", `<small class="meta-cap mono">◌ память другой жизни</small>`); }
+      const mem = lessonsFor(c.visible, true);
+      if (mem.length) b.insertAdjacentHTML("beforeend", `<small class="mem-cap mono">⟲ память: ${esc(mem.join(" · "))}</small>`);
+      if (hasMeta(c.visible)) { const mm = lessonsFor(c.visible, false); b.classList.add("meta-echo"); b.insertAdjacentHTML("beforeend", `<small class="meta-cap mono">◌ память другой жизни${mm.length ? ": " + esc(mm.join(" · ")) : ""}</small>`); }
       const tooLate = late(sc, c);
       if (left != null && c.cost) b.insertAdjacentHTML("beforeend", `<small class="cost mono">${tooLate ? "не успеть · " : ""}−${c.cost} с</small>`);
       if (tooLate) { b.classList.add("locked", "late"); b.disabled = true; nav.append(b); return; }
@@ -376,6 +558,8 @@
       nav.append(b);
     }
     saveMeta();
+    if (nav.querySelector(".choice.cold")) { snd.cold(); buzz(8); }
+    snd.heart(left != null && vis.length > 0 && left <= Math.max(1, sc.clock || left) * 0.34);
     if (!vis.length && sc.next) {
       const b = document.createElement("button");
       b.className = "choice next"; b.textContent = "Дальше";
@@ -471,6 +655,7 @@
       b.onclick = go;
       nav.append(b);
     };
+    if (livedTrunk(G.scenes[S.scene])) return done(); // прожитый ствол: последствие сразу целиком
     let i = 0;
     const step = () => { if (i >= els.length) return done(); reveal(els[i]); i++; typing = setTimeout(step, REDUCED ? 60 : 520); };
     art.onclick = () => typing && done();
@@ -486,6 +671,7 @@
     j.times++; meta.journal[did] = j; saveMeta();
     save();
     show("#death");
+    snd.stop(); buzz(40);
     $("#death-tc").textContent = (d.date || "").toUpperCase();
     const art = $("#death-text"); art.innerHTML = "";
     art.style.translate = art.style.filter = art.style.transition = "";
@@ -516,15 +702,17 @@
     let t0 = null, raf = null, gone = false;
     const set = (k) => {
       if (fill) fill.style.transform = `scaleX(${k})`;
+      snd.rewSet(k);
       if (!REDUCED) { art.style.translate = `0 ${(-k * 40).toFixed(1)}vh`; art.style.filter = k ? `blur(${(k * 1.6).toFixed(2)}px)` : ""; }
     };
-    const reset = () => { t0 = null; cancelAnimationFrame(raf); art.style.transition = ""; set(0); btn.classList.remove("holding"); scr.classList.remove("spool"); };
+    const reset = () => { snd.rewStop(); t0 = null; cancelAnimationFrame(raf); art.style.transition = ""; set(0); btn.classList.remove("holding"); scr.classList.remove("spool"); };
     const finish = () => {
       if (gone) return;
       gone = true; cancelAnimationFrame(raf);
       buzz([25, 35, 50]);
       scr.classList.add("spool");
       const fast = t0 == null || performance.now() - t0 < HOLD_MS; // тап: доматываем быстро
+      snd.rewFinish(fast);
       if (fast && !REDUCED) art.style.transition = "translate .24s ease-in, filter .24s ease-in";
       set(1);
       setTimeout(() => { btn.onclick = btn.onpointerdown = btn.onpointerleave = btn.onpointercancel = null; go(); }, REDUCED || !fast ? 0 : 240);
@@ -534,6 +722,7 @@
       if (gone || (e.button != null && e.button > 0)) return;
       t0 = performance.now(); art.style.transition = "";
       btn.classList.add("holding"); scr.classList.add("spool"); buzz(12);
+      snd.unlock(); snd.rewStart();
       raf = requestAnimationFrame(tick);
     };
     btn.onpointerleave = btn.onpointercancel = () => { if (!gone && t0 != null) reset(); };
@@ -546,14 +735,16 @@
     const depth = depthFor(S.st["ДАР"] || 0);
     const cur = G.scenes[S.scene];
     if (!S.stack.length || S.stack[S.stack.length - 1].scene !== S.scene) S.stack.push({ scene: S.scene, st: clone(S.st), seal: sealOf(cur), taken: null, trail: (S.trail || []).length });
-    const opts = [];
+    const opts = [], all = [];
     const sealNow = S.stack[S.stack.length - 1].seal;
-    for (let k = 0; k < depth; k++) {
+    // all — засечки этой главы жизни (до 8), opts — те, до которых дотягивается дар
+    for (let k = 0; k < 8; k++) {
       const idx = S.stack.length - 1 - k;
       if (idx < 0 || S.stack[idx].seal !== sealNow) break;
-      opts.push(idx);
+      all.push(idx);
+      if (k < depth) opts.push(idx);
     }
-    return { depth, opts };
+    return { depth, opts, all };
   }
 
   function restore(idx, n) {
@@ -590,19 +781,28 @@
       finished = true;
       clearTimeout(startT); clearTimeout(typing); typing = null;
       els.forEach((p) => p.classList.remove("pending"));
-      const { depth, opts } = rewindOptions();
+      const { depth, opts, all } = rewindOptions();
+      const cause = causeOf(did);
+      if (d.lesson) art.insertAdjacentHTML("beforeend", `<p class="mem-new mono">+ в памяти: ${esc(d.lesson)}</p>`);
       if (opts.length <= 1) {
         const b = document.createElement("button");
         b.className = "choice"; b.textContent = "Вдохнуть";
         b.onclick = () => restore(opts[0], 0);
         nav.append(b);
+        // ловушка с причиной в прошлом, а дар не дотягивается: ленту всё равно можно посмотреть
+        if (cause && all.some((i) => S.stack[i].scene === cause)) {
+          const t = document.createElement("button");
+          t.className = "choice ghost-choice"; t.innerHTML = `<span class="lbl">Посмотреть ленту</span>`;
+          t.onclick = () => showTape(depth, opts, all, did);
+          nav.append(t);
+        }
       } else {
         const s = document.createElement("button");
         s.className = "choice"; s.textContent = "Вдохнуть и остаться в этой минуте";
         s.onclick = () => restore(opts[0], 0);
         const b = document.createElement("button");
         b.className = "choice ghost-choice"; b.innerHTML = `<span class="lbl">Хор помнит больше. Вернуться ещё дальше назад</span>`;
-        b.onclick = () => showTape(depth, opts);
+        b.onclick = () => showTape(depth, opts, all, did);
         nav.append(s, b);
       }
     };
@@ -612,21 +812,107 @@
     startT = setTimeout(step, REDUCED ? 30 : 500);
   }
 
-  // ---------- лента отката
-  function showTape(depth, opts) {
+  // ---------- лента отката: кассета с засечками (п. 11 разбора)
+  // ловушка с причиной в прошлом: у смерти cause {if, scene}; при выполненном условии засечка scene — «здесь началось»
+  function causeOf(did) {
+    const c = (G.deaths[did] || {}).cause;
+    return c && S && ok(c.if, S.st) ? c.scene : null;
+  }
+  const short = (s, n = 46) => { s = String(s || "").replace(/\*\*|\*/g, "").replace(/^«[^»]*»\.?\s*/, "").trim(); return s.length > n ? s.slice(0, n - 1).replace(/[\s,.;:—-]+\S*$/, "") + "…" : s; };
+  function showTape(depth, opts, all, did) {
     show("#rewind");
+    all = all && all.length ? all : opts;
+    const cause = causeOf(did);
     $("#rew-depth").textContent = WORDS[opts.length] || "";
     const tape = $("#tape"); tape.innerHTML = "";
-    opts.forEach((idx, n) => {
-      const snap = S.stack[idx];
-      const sc = G.scenes[snap.scene];
+    const cas = document.createElement("div"); cas.className = "cassette";
+    cas.innerHTML = `<div class="reels" aria-hidden="true"><i class="reel"></i><span class="mono tiny">◀◀ тяни ленту или тронь засечку</span><i class="reel"></i></div>`;
+    const film = document.createElement("div"); film.className = "film"; film.setAttribute("role", "listbox"); film.setAttribute("aria-label", "лента этой жизни");
+    const strip = document.createElement("div"); strip.className = "strip";
+    const head = document.createElement("div"); head.className = "head"; head.setAttribute("aria-hidden", "true");
+    const notches = [];
+    // слева старое, справа — эта минута
+    [...all].reverse().forEach((idx) => {
+      const n = all.indexOf(idx); // сколько шагов назад
+      const snap = S.stack[idx], sc = G.scenes[snap.scene] || {};
+      const pick = (sc.choices || []).find((c) => c.id === snap.taken);
+      const can = opts.includes(idx);
       const b = document.createElement("button");
-      b.className = "notch choice";
-      b.innerHTML = `<span class="mono">${"◀".repeat(n + 1)}</span> ${esc(sc.title || snap.scene)}<small class="mono">${esc(sc.date || "")}</small>`;
-      b.onclick = () => restore(idx, n);
-      tape.append(b);
+      b.className = "notch" + (can ? " on" : " burnt") + (n === 0 ? " now" : "") + (cause && snap.scene === cause ? " cause" : "");
+      b.disabled = !can;
+      b.dataset.idx = idx; b.dataset.n = n;
+      const y = yearOf(sc.date);
+      b.innerHTML = `<i class="tick"></i><span class="n-when mono">${n === 0 ? "сейчас" : esc(y || "")}</span>` +
+        `<span class="n-title">${esc((sc.title || snap.scene).replace(/^Демо\.\s*/, ""))}</span>` +
+        `<span class="n-pick">${pick ? "▸ " + esc(short(pick.label)) : "—"}</span>` +
+        (cause && snap.scene === cause ? `<small class="n-cause mono">↩ здесь началось</small>` : "") +
+        (can ? "" : `<small class="n-burnt mono">дар не дотягивается</small>`);
+      b.onclick = () => { if (!film.dragged) spin(b); };
+      strip.append(b); notches.push(b);
     });
-    tape.insertAdjacentHTML("beforeend", `<p class="dim tiny mono">${opts.length < depth ? "дальше лента засвечена" : "дальше Хор не помнит"}</p>`);
+    film.append(strip, head); cas.append(film);
+    const info = document.createElement("p"); info.className = "tape-info dim tiny mono";
+    const burnt = all.length - opts.length;
+    info.textContent = burnt > 0 ? `дар дотягивается на ${WORDS[opts.length] || opts.length}, дальше лента засвечена` : all.length >= 8 ? "дальше лента склеена" : "дальше Хор не помнит";
+    if (cause && !opts.some((i) => S.stack[i].scene === cause) && all.some((i) => S.stack[i].scene === cause)) info.textContent = "туда, где всё началось, дар пока не дотягивается";
+    cas.append(info); tape.append(cas);
+    const stay = document.createElement("button");
+    stay.className = "choice ghost-choice"; stay.textContent = "Остаться в этой минуте";
+    stay.onclick = () => restore(opts[0], 0);
+    tape.append(stay);
+    // головка стоит на «сейчас»; лента прокручена к правому краю
+    const xOf = (b) => b.offsetLeft + b.offsetWidth / 2;
+    const place = (x) => { head.style.transform = `translateX(${x.toFixed(1)}px)`; };
+    const nowB = notches[notches.length - 1];
+    // видно «сейчас», яркие засечки и край засвеченной ленты
+    requestAnimationFrame(() => { film.scrollLeft = film.scrollWidth; place(xOf(nowB)); });
+    let busy = false;
+    function spin(b) {
+      if (busy || b.disabled) return;
+      busy = true; tape.classList.add("spinning"); b.classList.add("pick");
+      const idx = +b.dataset.idx, n = +b.dataset.n;
+      const x0 = xOf(nowB), x1 = xOf(b), dur = REDUCED ? 0 : 380 + 260 * n;
+      snd.unlock(); snd.rewStart(); buzz(14);
+      const passed = new Set();
+      const t0 = performance.now();
+      const step = (now) => {
+        const k = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - k, 2);
+        const x = x0 + (x1 - x0) * e; place(x); snd.rewSet(k);
+        film.scrollLeft = x - film.clientWidth / 2;
+        for (const o of notches) if (!passed.has(o) && o !== nowB && xOf(o) >= x) { passed.add(o); buzz(6); }
+        if (k < 1) return requestAnimationFrame(step);
+        snd.rewFinish(n > 0); buzz([25, 35, 50]);
+        setTimeout(() => restore(idx, n), REDUCED ? 0 : 260);
+      };
+      requestAnimationFrame(step);
+    }
+    // перетаскивание: тянешь ленту вправо — головка уходит в прошлое; отпустил у яркой засечки — перемотка туда
+    let drag = null;
+    film.onpointerdown = (e) => {
+      if (busy || (e.button != null && e.button > 0)) return;
+      drag = { x: e.clientX, h: xOf(nowB), on: null }; film.dragged = false;
+    };
+    film.onpointermove = (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (!film.dragged && Math.abs(dx) < 8) return;
+      if (!film.dragged) { film.dragged = true; try { film.setPointerCapture(e.pointerId); } catch (err) { /* нет захвата */ } snd.unlock(); snd.rewStart(); }
+      const x = Math.max(xOf(notches[0]), Math.min(xOf(nowB), drag.h - dx * 1.4));
+      place(x);
+      snd.rewSet(Math.min(1, Math.abs(xOf(nowB) - x) / Math.max(1, xOf(nowB) - xOf(notches[0]))));
+      let best = null, bd = 1e9;
+      for (const o of notches) { const d = Math.abs(xOf(o) - x); if (d < bd) { bd = d; best = o; } }
+      if (best !== drag.on) { if (drag.on) drag.on.classList.remove("under"); best.classList.add("under"); drag.on = best; buzz(best.disabled ? [4, 20, 4] : 8); }
+    };
+    film.onpointerup = film.onpointercancel = () => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (d.on) d.on.classList.remove("under");
+      if (!film.dragged) return;
+      setTimeout(() => { film.dragged = false; }, 0);
+      if (d.on && !d.on.disabled && d.on !== nowB) { snd.rewStop(); return spin(d.on); }
+      snd.rewStop(); place(xOf(nowB));
+    };
   }
 
   // ---------- панели
@@ -638,6 +924,7 @@
     show(id);
     if (id === "#flow") renderFlow();
     if (id === "#guide") renderGuide();
+    if (id === "#journal") snd.chorus();
   }
 
   // ---------- итог: сколько открыто
@@ -721,9 +1008,14 @@
         const t = typeof m === "string" ? m : m[v];
         if (t) items.push(t);
       }
+      // «Что я вынес»: карточки знаний из смертей этой жизни (lesson у ✝)
+      const cards = Object.keys(S.lifeSeen || {}).map((id) => [id, G.deaths[id]]).filter(([, d]) => d && d.lesson);
+      if (cards.length) me.insertAdjacentHTML("beforeend", `<h3 class="memo-h">Что я вынес</h3><div class="lessons">${cards.map(([, d]) =>
+        `<div class="lesson"><b>${esc(d.lesson)}</b><small class="mono">✝ ${esc(yearOf(d.date) || "")} · ${esc(d.title || "")}</small></div>`).join("")}</div><p class="dim tiny">Это осталось от смертей этой жизни. Эхо-выбор, открытый такой памятью, подписан ⟲.</p>`);
       if (items.length) me.insertAdjacentHTML("beforeend", `<h3 class="memo-h">Что со мной было</h3><ul class="memo">${items.map((t) => `<li>${md(t)}</li>`).join("")}</ul><p class="dim tiny">Это помнит не только тот, кто это пережил. Это помнит сюжет.</p>`);
     }
     if (!S) me.innerHTML = `<p class="dim">Жизнь ещё не начата.</p>`;
+    soundBtn();
     renderDebug();
   }
   function renderDebug() {
@@ -970,6 +1262,8 @@
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
+  function soundBtn() { const b = $("#btn-sound"); if (!b) return; b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); }
+  $("#btn-sound").onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   showTitle();
 })();
