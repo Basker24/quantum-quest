@@ -24,13 +24,17 @@ STYLE_ANCHORS = {
     4: ("cel-shaded", "graphic cel-shaded illustration, clean confident outlines, limited palette of five tones, "
                       "hard-edged shadow shapes"),
     5: ("charcoal", "pencil and charcoal drawing, smudged tones, visible hatching, rough paper grain"),
+    # 06.11.2026: автор — «на старое фото не похоже, сразу видно нейросеть». Фото главное, рисованность — лёгкая фактура.
+    6: ("photo-overpaint", "it must read first of all as a real photograph: natural anatomy, ordinary unglamorous faces, "
+                           "real light; only a very light hand-painted watercolour overpaint in the tones and paper texture"),
 }
 # Выбор автора после пробы стилей (05.11.2026): 2 — ink-watercolor.
 DEFAULT_STYLE = 2
 
 ERA_MEDIUM = {
-    "bw": "illustrated photograph, painted to look like an authentic 1990s black-and-white amateur snapshot "
-          "from a Soviet film camera: grain, slight blur",
+    "bw": "a scanned 1990s black-and-white amateur snapshot shot by a family member on a cheap Soviet 'Smena' "
+          "film camera: coarse grain, slightly soft focus, uneven exposure, faint light leak, dust and scratches, "
+          "a bit tilted horizon",
     "color": "illustrated photograph, painted to look like a 2000s colour print from a photo lab: warm faded "
              "colours, flash, slight vignette, date-stamp feel",
     "digital": "illustrated photograph, painted to look like an early 2010s cheap digital point-and-shoot shot: "
@@ -44,8 +48,11 @@ ERA_MEDIUM = {
 FULL_BLEED = ("full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, "
               "no paper edges, no vignette fading to white, no photo frame")
 
-COMMON = (FULL_BLEED + ", first-person point of view, the narrator is never visible except his own hands, Kemerovo / Kuzbass, "
-          "Siberia, Russia, no captions, no watermark, no brand logos, no recognizable real people")
+COMMON = (FULL_BLEED + ", an amateur candid snapshot: imperfect off-centre framing, people caught in the middle of what they are doing, "
+          "not posing and not performing for the camera, natural believable poses and gestures; "
+          "the photographer is never visible: no hands, arms or body of the viewer in the frame, unless the scene "
+          "explicitly describes the narrator's hand; Kemerovo / Kuzbass, "
+          "Siberia, Russia, no captions, no date stamp or any text printed on the photo, no watermark, no brand logos, no recognizable real people")
 
 # Эталоны всегда цветные (решение автора 05.11.2026), независимо от эпохи сцены.
 REF_MEDIUM = "illustrated photograph in full natural colour, true-to-life hair, eye and skin colours"

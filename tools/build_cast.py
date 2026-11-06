@@ -348,9 +348,9 @@ def main():
         sage = int(sc.get("age") or 30)
         if HANDS_RE.search(base) and not NO_SCAR_RE.search(base):
             bits.append(hands_note(sage))
-        if sage < 16:
-            # проба стилей: без подсказки модель рисует детям взрослые руки
-            bits.append(f"if the narrator's own hands are visible, they are the small smooth hands of a {sage}-year-old child, not an adult's")
+        if sage < 16 and HANDS_RE.search(base):
+            # без подсказки модель рисует детям взрослые руки; руки — только если сцена их называет (решение автора 06.11.2026)
+            bits.append(f"the narrator's hands are the small smooth hands of a {sage}-year-old child, not an adult's")
         if sid in EXTRA:
             bits.append(EXTRA[sid])
         prompt = base + (". In frame: " + "; ".join(bits) if bits else "")
