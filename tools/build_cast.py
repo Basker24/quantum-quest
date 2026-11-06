@@ -270,7 +270,7 @@ EXTRA = {
     "В7-11": "the man raising the tuning fork in the choir photo wears horn-rimmed glasses",
 }
 
-HANDS_RE = re.compile(r"\b(old man's|man's|a boy's|scarred old|hands? (with|holding|in)|his hands)\b[^,]*\bhands?\b|\bhands? (with|holding)\b", re.I)
+HANDS_RE = re.compile(r"\bpalm\b|\b(old man's|man's|a boy's|scarred old|hands? (with|holding|in)|his hands)\b[^,]*\bhands?\b|\bhands? (with|holding)\b", re.I)
 NO_SCAR_RE = re.compile(r"glove|mitten|scar|bandaged", re.I)
 
 

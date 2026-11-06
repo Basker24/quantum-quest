@@ -25,24 +25,22 @@ STYLE_ANCHORS = {
                       "hard-edged shadow shapes"),
     5: ("charcoal", "pencil and charcoal drawing, smudged tones, visible hatching, rough paper grain"),
     # 06.11.2026: автор — «на старое фото не похоже, сразу видно нейросеть». Фото главное, рисованность — лёгкая фактура.
-    6: ("photo-overpaint", "it must read first of all as a real photograph: natural anatomy, ordinary unglamorous faces, "
+    6: ("photo-overpaint", "it must read first of all as a real photograph: natural proportions, ordinary unglamorous faces, "
                            "real light; only a very light hand-painted watercolour overpaint in the tones and paper texture"),
 }
-# Выбор автора после пробы стилей (05.11.2026): 2 — ink-watercolor.
-DEFAULT_STYLE = 2
+# 05.11.2026 автор выбрал 2 (ink-watercolor); 06.11.2026 после критики «не похоже на фото» — 6.
+DEFAULT_STYLE = 6
 
 ERA_MEDIUM = {
     "bw": "a scanned 1990s black-and-white amateur snapshot shot by a family member on a cheap Soviet 'Smena' "
           "film camera: coarse grain, slightly soft focus, uneven exposure, faint light leak, dust and scratches, "
           "a bit tilted horizon",
-    "color": "illustrated photograph, painted to look like a 2000s colour print from a photo lab: warm faded "
-             "colours, flash, slight vignette, date-stamp feel",
-    "digital": "illustrated photograph, painted to look like an early 2010s cheap digital point-and-shoot shot: "
-               "noise, oversaturated colours, harsh flash",
-    "phone": "illustrated photograph, painted to look like a 2020s-2040s smartphone photo: natural light, "
-             "slightly compressed, candid",
-    "future": "illustrated photograph, painted to look like a 2050s-2060s image: ultra-clean, unnaturally sharp "
-              "and calm, muted palette, eerie perfection",
+    "color": "a scanned 2000s colour print from a cheap photo lab, shot on a point-and-shoot film camera: warm "
+             "faded colours, on-camera flash, slight vignette, slightly soft focus",
+    "digital": "an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, "
+               "harsh flash, slightly blown highlights",
+    "phone": "a 2020s-2040s smartphone photo: natural light, slightly compressed, candid",
+    "future": "a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection",
 }
 
 FULL_BLEED = ("full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, "

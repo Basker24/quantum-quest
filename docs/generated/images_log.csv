@@ -67,3 +67,16 @@ ploy_24,2026-11-05T23:17:56,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/plo
 Т-09,2026-11-06T05:02:52,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3200
 Т-01,2026-11-06T05:06:36,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7,4947
 Т-00,2026-11-06T05:07:11,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,,1723
+Т-02,2026-11-06T05:08:28,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02.jpg,,1651
+Т-02б,2026-11-06T05:08:51,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02б.jpg,,1682
+Т-03,2026-11-06T05:09:19,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1669
+Т-03,2026-11-06T05:10:03,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1694
+Т-04,2026-11-06T05:10:29,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-04.jpg,,1661
+Т-05,2026-11-06T05:10:55,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-05.jpg,grandpa age 51;lunev age 25,4841
+Т-06,2026-11-06T05:11:40,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_451d74caf0584eef89c2c0e269cc9aee.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-07,2026-11-06T05:12:07,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-07.jpg,,1712
+Т-08,2026-11-06T05:12:31,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-08.jpg,,1658
+Т-06,2026-11-06T05:13:12,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_644094e6ad6b489e8ab77451ffe05d23.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-06,2026-11-06T05:13:43,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4862
+Т-09,2026-11-06T05:14:20,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3277
+Т-10,2026-11-06T05:14:48,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-10.jpg,,1658
