@@ -17,30 +17,31 @@ PLACEHOLDER = "[STYLE_ANCHOR]"
 STYLE_ANCHORS = {
     1: ("painterly", "soft digital painting like key art of a narrative video game, visible brushstrokes, "
                      "simplified shapes, expressive warm-and-cold light"),
-    2: ("ink-watercolor", "ink line drawing with loose watercolour washes, visible paper texture, "
-                          "restrained palette, painted all the way to the edges of the frame"),
+    2: ("ink-watercolor", "clearly hand-drawn ink line drawing with loose watercolour washes, visible ink lines and "
+                          "brush marks, visible paper texture, restrained palette, simplified detail, never photorealistic, "
+                          "the same drawn look in every picture, painted all the way to the edges of the frame"),
     3: ("gouache-soviet", "gouache and oil painting with bold visible brushstrokes, in the spirit of Soviet "
                           "1970s-80s children's book illustration, flat expressive forms"),
     4: ("cel-shaded", "graphic cel-shaded illustration, clean confident outlines, limited palette of five tones, "
                       "hard-edged shadow shapes"),
     5: ("charcoal", "pencil and charcoal drawing, smudged tones, visible hatching, rough paper grain"),
-    # 06.11.2026: автор — «на старое фото не похоже, сразу видно нейросеть». Фото главное, рисованность — лёгкая фактура.
+    # 06.11.2026: пробная манера 6, ОТКЛОНЕНА автором: выходила то фото, то рисунок (нарушала канон п. 28). Не использовать.
     6: ("photo-overpaint", "it must read first of all as a real photograph: natural proportions, ordinary unglamorous faces, "
                            "real light; only a very light hand-painted watercolour overpaint in the tones and paper texture"),
 }
-# 05.11.2026 автор выбрал 2 (ink-watercolor); 06.11.2026 после критики «не похоже на фото» — 6.
-DEFAULT_STYLE = 6
+# Выбор автора (05.11.2026): 2 — ink-watercolor. Канон п. 28: рисованная манера поверх «фото эпохи».
+DEFAULT_STYLE = 2
 
 ERA_MEDIUM = {
-    "bw": "a scanned 1990s black-and-white amateur snapshot shot by a family member on a cheap Soviet 'Smena' "
+    "bw": "an illustrated photograph, hand-drawn but painted to look like a scanned 1990s black-and-white amateur snapshot shot by a family member on a cheap Soviet 'Smena' "
           "film camera: coarse grain, slightly soft focus, uneven exposure, faint light leak, dust and scratches, "
           "a bit tilted horizon",
-    "color": "a scanned 2000s colour print from a cheap photo lab, shot on a point-and-shoot film camera: warm "
+    "color": "an illustrated photograph, hand-drawn but painted to look like a scanned 2000s colour print from a cheap photo lab, shot on a point-and-shoot film camera: warm "
              "faded colours, on-camera flash, slight vignette, slightly soft focus",
-    "digital": "an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, "
+    "digital": "an illustrated photograph, hand-drawn but painted to look like an early 2010s photo from a cheap digital point-and-shoot camera: noise, oversaturated colours, "
                "harsh flash, slightly blown highlights",
-    "phone": "a 2020s-2040s smartphone photo: natural light, slightly compressed, candid",
-    "future": "a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection",
+    "phone": "an illustrated photograph, hand-drawn but painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid",
+    "future": "an illustrated photograph, hand-drawn but painted to look like a 2050s-2060s photo: ultra-clean, unnaturally sharp and calm, muted palette, eerie perfection",
 }
 
 FULL_BLEED = ("full-bleed image: the picture fills the entire frame edge to edge, no border, no white margins, "
