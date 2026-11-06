@@ -37,7 +37,7 @@ CHARS = {
         core="round freckled face, snub nose, light blue eyes, wide grin with a small gap between the front teeth, ears that stick out and go red, ginger hair, stocky build",
         ages={
             8: ("1996", "bw", "8-year-old boy, shaggy ginger hair, dense freckles, skinny, shorts and a stretched t-shirt", "a freckled 8-year-old boy with shaggy ginger hair"),
-            14: ("2002", "color", "14-year-old boy, ginger hair grown out, freckles, squinting, cheap cigarette, sports jacket", "a 14-year-old ginger freckled boy, squinting"),
+            14: ("2002", "color", "14-year-old boy, ginger hair grown out, freckles, squinting, navy tracksuit top with two white stripes", "a 14-year-old ginger freckled boy, squinting"),
             18: ("2006", "color", "18-year-old conscript, freshly shaved head with ginger stubble, red flushed face, freckles, white shirt", "a shaved-head ginger 18-year-old with a red face"),
             23: ("2011–2014", "digital", "man of 23-26, short ginger hair, freckles, stocky miner's build, track jacket or a cheap black suit", "a stocky ginger man of about 24, freckles, loud grin"),
             33: ("2021", "phone", "miner of 33, short ginger hair under a dirty helmet, freckles under coal dust, heavy jaw, ginger stubble", "a ginger miner of 33, freckles under coal dust"),
@@ -60,6 +60,7 @@ CHARS = {
         invented="круглое мягкое лицо, ямочка на подбородке, шатенка с химической завивкой в 90-е",
         core="small and short, soft round face, a dimple in the chin, grey eyes, light-brown hair",
         ages={
+            30: ("1996–2000", "bw", "woman of 30, small, light-brown permed hair, a dark work robe of a coal processing plant worker, tired kind face", "a small woman of 30 with permed light-brown hair"),
             41: ("2007", "digital", "woman of 41, light-brown hair under a headscarf, light jacket, small and tired", "a small woman of 41 in a headscarf"),
             54: ("2020", "phone", "woman of 54, small, black mourning headscarf, medical mask, grey eyes", "a small woman of 54 in a black headscarf and a medical mask"),
             95: ("2061", "future", "tiny very old woman of 95, white hair under a flowered headscarf, soft wrinkled round face, grey eyes", "a tiny very old woman in a flowered headscarf"),
@@ -81,6 +82,7 @@ CHARS = {
         core="narrow face, high forehead, pale short-sighted eyes, thin wire-rimmed glasses, thin build, habit of rubbing his eyes",
         ages={
             25: ("1981", "bw", "thin young man of 25, dark side-parted hair, wire glasses, cheap suit, holding a briefcase", "a thin young man of 25 in glasses with a briefcase"),
+            40: ("1996", "bw", "thin pale man of 40 who looks nearly sixty, greying dark hair, wire glasses, worn grey suit, no white coat, worn briefcase", "a thin pale man of about 40 in wire glasses and a grey suit"),
             60: ("2016–2017", "digital", "man of 60, hair gone completely white, wire glasses, tired eyes, good dark coat", "a white-haired man of 60 in wire glasses, tired eyes"),
             85: ("2041", "phone", "very old shrunken man of 85, wispy white hair, glasses hanging on a cord, thin as a teenager", "a very old thin man of 85, glasses on a cord"),
         }),
@@ -216,6 +218,8 @@ CAST = {
     "Т-01": ["vitka:8", "nika:7", "bublik:puppy"],
     "Т-05": ["grandpa:51", "lunev:25"],
     "Т-06": ["vitka:14", "nika:13"],
+    "Т-02б": ["lunev:40"],
+    "Т-07": ["vitka:14"],
     "Т-09": ["vitka:18"],
     "Ф-04": ["father:34"],
     "В1-01": ["tanya:22"],
@@ -271,7 +275,7 @@ EXTRA = {
 }
 
 HANDS_RE = re.compile(r"\bpalm\b|\b(old man's|man's|a boy's|scarred old|hands? (with|holding|in)|his hands)\b[^,]*\bhands?\b|\bhands? (with|holding)\b", re.I)
-NO_SCAR_RE = re.compile(r"glove|mitten|scar|bandaged", re.I)
+NO_SCAR_RE = re.compile(r"glove|mitten|scar|bandage", re.I)
 
 
 def hands_note(age):
@@ -350,7 +354,7 @@ def main():
             bits.append(hands_note(sage))
         if sage < 16 and HANDS_RE.search(base):
             # без подсказки модель рисует детям взрослые руки; руки — только если сцена их называет (решение автора 06.11.2026)
-            bits.append(f"the narrator's hands are the small smooth hands of a {sage}-year-old child, not an adult's")
+            bits.append(f"the narrator's hand is the small smooth hand of a {sage}-year-old child, not an adult's")
         if sid in EXTRA:
             bits.append(EXTRA[sid])
         prompt = base + (". In frame: " + "; ".join(bits) if bits else "")

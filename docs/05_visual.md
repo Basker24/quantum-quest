@@ -95,12 +95,12 @@
 - Из текста: «рыжий в крапинку», орёт громче всех (Т-01); краснеют уши (Т-06); бритый на проводах (Т-09); шахтёр (В1); поседел, белая рубаха поверх свитера (В6-08).
 - (додумано) светло-голубые глаза, курносый нос, широкая щербатая улыбка, оттопыренные уши, коренастый.
 - **Ядро сходства:** round freckled face, snub nose, light blue eyes, wide grin with a small gap between the front teeth, ears that stick out and go red, ginger hair, stocky build.
-- В кадрах: В1-05, В1-06, В1-09, В6-08, Т-01, Т-06, Т-09.
+- В кадрах: В1-05, В1-06, В1-09, В6-08, Т-01, Т-06, Т-07, Т-09.
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 8 | 1996 | bw | 8-year-old boy, shaggy ginger hair, dense freckles, skinny, shorts and a stretched t-shirt |
-| 14 | 2002 | color | 14-year-old boy, ginger hair grown out, freckles, squinting, cheap cigarette, sports jacket |
+| 14 | 2002 | color | 14-year-old boy, ginger hair grown out, freckles, squinting, navy tracksuit top with two white stripes |
 | 18 | 2006 | color | 18-year-old conscript, freshly shaved head with ginger stubble, red flushed face, freckles, white shirt |
 | 23 | 2011–2014 | digital | man of 23-26, short ginger hair, freckles, stocky miner's build, track jacket or a cheap black suit |
 | 33 | 2021 | phone | miner of 33, short ginger hair under a dirty helmet, freckles under coal dust, heavy jaw, ginger stubble |
@@ -127,6 +127,7 @@
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
+| 30 | 1996–2000 | bw | woman of 30, small, light-brown permed hair, a dark work robe of a coal processing plant worker, tired kind face |
 | 41 | 2007 | digital | woman of 41, light-brown hair under a headscarf, light jacket, small and tired |
 | 54 | 2020 | phone | woman of 54, small, black mourning headscarf, medical mask, grey eyes |
 | 95 | 2061 | future | tiny very old woman of 95, white hair under a flowered headscarf, soft wrinkled round face, grey eyes |
@@ -147,11 +148,12 @@
 - Из текста: «молодой и худой, с портфелем» (Т-05); всё время трёт глаза, серый костюм (Т-02б); поседел до белого (В2-07); маленький, как подросток, очки на шнурке (В2.1-07).
 - (додумано) узкое лицо, высокий лоб, светлые близорукие глаза, очки в тонкой оправе всю жизнь.
 - **Ядро сходства:** narrow face, high forehead, pale short-sighted eyes, thin wire-rimmed glasses, thin build, habit of rubbing his eyes.
-- В кадрах: В2-07, В2.1-01, В2.1-07, Т-05.
+- В кадрах: В2-07, В2.1-01, В2.1-07, Т-02б, Т-05.
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 25 | 1981 | bw | thin young man of 25, dark side-parted hair, wire glasses, cheap suit, holding a briefcase |
+| 40 | 1996 | bw | thin pale man of 40 who looks nearly sixty, greying dark hair, wire glasses, worn grey suit, no white coat, worn briefcase |
 | 60 | 2016–2017 | digital | man of 60, hair gone completely white, wire glasses, tired eyes, good dark coat |
 | 85 | 2041 | phone | very old shrunken man of 85, wispy white hair, glasses hanging on a cord, thin as a teenager |
 
@@ -392,3 +394,16 @@
 2. **В7-10: два варианта картинки** — по `F_ПАРТНЁР`: `img/В7-10~НИКА.jpg` и `img/В7-10~ОЛЯ.jpg` (общий принцип: если кадр зависит от сюжета — несколько файлов `<ID>~<ЗНАЧЕНИЕ>.jpg`, у сцены в front matter `photo_by: <ФЛАГ>`; движок сначала ищет вариант, потом `<ID>.jpg`). TODO: поддержка `photo_by` в qqparse/engine и в gen_images.py.
 3. Додуманная внешность — **утверждена** (Ника: серо-зелёные глаза, родинка над губой, каштановые; Витька: голубые глаза, щель между зубами, лопоухий, коренастый; отец: усы в 1996, нос с давним переломом; мама: шатенка с химией в 90-е; Шадрин: серебряные волосы назад).
 4. **Правило: кто по сюжету.** В1-05: в момент кадра (до выбора) у гаражей и отец, и Палыч — в кадре оба: отец докуривает у гаража, Палыч курит у последнего гаража. Если состав кадра зависит от выбора/флага — делать варианты по п. 2.
+
+
+## Чек-лист проверки кадра (обязателен перед показом автору, решение 06.11.2026)
+
+Каждую сгенерированную картинку сверять с ТЕКСТОМ сцены, а не с общим впечатлением:
+1. **Стиль:** явно рисунок (тушь + акварель, манера 2), не фото. Одинаковый во всех кадрах.
+2. **Кто в кадре:** только те, кто есть в сцене в этот момент; лица по эталонам; возраст верный. Никаких «случайных» мам, взрослых в детской палате и т. п.
+3. **Чьи руки:** рука героя только если её называет photo_prompt; размер по возрасту героя; одна или две, но анатомически понятно, чья где. Рука другого человека не должна читаться как рука героя.
+4. **Место и география:** Томь — широкая река; Кемерово/Рудничный без гор; эпоха (машины, одежда, телефоны).
+5. **Детали из текста:** одежда, предметы, повреждения (бритая голова, забинтованная ладонь, ушанка), расположение (кто за рулём, где стоит герой).
+6. **Нет лишнего:** надписей, дат, рамок, белых полей; вещей, которых нет на всех путях (I3).
+7. **Модерация:** у несовершеннолетних нет сигарет, алкоголя у губ и т. п. — ни в сцене, ни в эталоне.
+Не прошёл хоть один пункт → правка промпта и перегенерация ДО показа.
