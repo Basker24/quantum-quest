@@ -61,3 +61,7 @@ ploy_24,2026-11-05T23:17:56,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/plo
 Т-05,2026-11-05T23:18:31,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-05.jpg,grandpa age 51;lunev age 25,
 Т-06,2026-11-05T23:18:32,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-06.jpg,vitka age 14;nika age 13,
 Т-09,2026-11-05T23:18:33,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-09.jpg,vitka age 18,
+Т-01,2026-11-06T05:01:17,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7,4828
+Т-05,2026-11-06T05:01:50,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-05.jpg,grandpa age 51;lunev age 25,4773
+Т-06,2026-11-06T05:02:24,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4807
+Т-09,2026-11-06T05:02:52,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3200

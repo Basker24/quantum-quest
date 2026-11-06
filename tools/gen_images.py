@@ -168,7 +168,7 @@ def generate(args, key, kind, item_id, prompt, out, size, refs=(), compress=True
         endpoint = "edits"
         fields = [("model", args.model), ("prompt", prompt), ("size", size), ("quality", args.quality),
                   ("n", "1"), ("output_format", fmt)]
-        if args.fidelity != "none":
+        if args.fidelity != "none" and args.model.startswith("gpt-image-1"):  # gpt-image-2 параметр не принимает
             fields.append(("input_fidelity", args.fidelity))
         files = [("image[]", p) for _, p in refs]
     else:
