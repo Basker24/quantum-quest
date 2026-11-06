@@ -87,7 +87,7 @@
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 7 | 1996 | bw | 7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees |
-| 13 | 2002 | color | 13-year-old girl, chestnut hair in a low ponytail, metal braces visible when she smiles, oversized t-shirt, a paperback book in hand |
+| 13 | 2002 | color | 13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand |
 | 22 | 2011–2014 | digital | young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
 | 56 | 2045 | phone | woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
 

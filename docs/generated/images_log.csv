@@ -80,3 +80,7 @@ ploy_24,2026-11-05T23:17:56,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/plo
 Т-06,2026-11-06T05:13:43,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4862
 Т-09,2026-11-06T05:14:20,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3277
 Т-10,2026-11-06T05:14:48,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-10.jpg,,1658
+nika_13,2026-11-06T05:17:25,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_13.png,,1658
+Т-03,2026-11-06T05:17:50,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1726
+Т-06,2026-11-06T05:18:18,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_6b60d93d03334a8fb1c3055774e6275e.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-06,2026-11-06T05:18:49,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4862

@@ -55,7 +55,7 @@ COMMON = (FULL_BLEED + ", an amateur candid snapshot: imperfect off-centre frami
 # Эталоны всегда цветные (решение автора 05.11.2026), независимо от эпохи сцены.
 REF_MEDIUM = "illustrated photograph in full natural colour, true-to-life hair, eye and skin colours"
 
-REF_COMMON = (FULL_BLEED + ", character reference portrait for a story game, waist-up, three-quarter view, neutral plain "
+REF_COMMON = (FULL_BLEED + ", ordinary unglamorous real-life face, not a model, character reference portrait for a story game, waist-up, three-quarter view, neutral plain "
               "light-grey background, soft natural light, no text, no watermark, no logos, "
               "an invented person, not a real or famous person")
 

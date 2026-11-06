@@ -26,7 +26,7 @@ CHARS = {
         core="oval face with a narrow pointed chin, serious level gaze like a strict head teacher, straight dark eyebrows, grey-green eyes, a small mole above the left corner of the upper lip, chestnut hair, slim",
         ages={
             7: ("1996", "bw", "7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees", "a serious 7-year-old girl, chestnut bob, cherry-print panama hat"),
-            13: ("2002", "color", "13-year-old girl, chestnut hair in a low ponytail, metal braces visible when she smiles, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
+            13: ("2002", "color", "13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
             22: ("2011–2014", "digital", "young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a young woman of about 23, short chestnut pixie cut, strict calm face"),
             56: ("2045", "phone", "woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "a woman doctor of 56, cropped grey hair, glasses on a chain"),
         }),
