@@ -27,9 +27,9 @@ CHARS = {
         ages={
             7: ("1996", "bw", "7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees", "a serious 7-year-old girl, chestnut bob, cherry-print panama hat"),
             13: ("2002", "color", "13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
-            18: ("2007", "digital", "18-year-old girl, plain and serious, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books", "a serious 18-year-old girl with chestnut hair tied back"),
-            22: ("2011–2014", "digital", "young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a young woman of about 23, short chestnut pixie cut, strict calm face"),
-            56: ("2045", "phone", "woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "a woman doctor of 56, cropped grey hair, glasses on a chain"),
+            18: ("2007", "digital", "18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books", "a very pretty serious 18-year-old girl with chestnut hair tied back"),
+            22: ("2011–2014", "digital", "young woman of 22-25, very beautiful in a natural way, fine features, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a beautiful young woman of about 23, short chestnut pixie cut, strict calm face"),
+            56: ("2045", "phone", "woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "an attractive elegant woman doctor of 56, cropped grey hair, glasses on a chain"),
         }),
     "vitka": dict(
         ru="Витька", born=1988, tier="main",
@@ -323,8 +323,11 @@ def ref_prompt(cid, age):
                 "full-bleed image, no text, no watermark")
     m = marks(cid)
     must = (f" Distinctive marks that MUST be clearly visible (they stay the same at every age): {'; '.join(m)}." if m else "")
+    common = REF_COMMON
+    if re.search(r"pretty|beautiful|attractive", look):  # Ника с 18 — «сильно симпатичнее» (решение автора 06.11.2026)
+        common = common.replace("ordinary unglamorous real-life face, not a model", "natural real-life beauty, no heavy make-up")
     return (f"{look}. Permanent features: {c['core']}.{must} Drawing style: {PLACEHOLDER}. "
-            f"Medium: {REF_MEDIUM}. {REF_COMMON}")
+            f"Medium: {REF_MEDIUM}. {common}")
 
 
 def main():

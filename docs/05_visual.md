@@ -88,9 +88,9 @@
 |---|---|---|---|
 | 7 | 1996 | bw | 7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees |
 | 13 | 2002 | color | 13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand |
-| 18 | 2007 | digital | 18-year-old girl, plain and serious, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books |
-| 22 | 2011–2014 | digital | young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
-| 56 | 2045 | phone | woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
+| 18 | 2007 | digital | 18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books |
+| 22 | 2011–2014 | digital | young woman of 22-25, very beautiful in a natural way, fine features, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
+| 56 | 2045 | phone | woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
 
 ### `vitka` — Витька (1988 г. р., главный)
 - Из текста: «рыжий в крапинку», орёт громче всех (Т-01); краснеют уши (Т-06); бритый на проводах (Т-09); шахтёр (В1); поседел, белая рубаха поверх свитера (В6-08).
