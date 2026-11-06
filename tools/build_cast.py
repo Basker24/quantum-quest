@@ -21,14 +21,14 @@ from qqparse import ROOT, load
 CHARS = {
     "nika": dict(
         ru="Ника", born=1989, tier="main",
-        src="«лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); короткая стрижка, Витькина куртка (В1-05, В2-05); седая, коротко стриженная, очки на цепочке (В1-12)",
+        src="«лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); длинные волосы, Витькина куртка (В1-05; до 06.11.2026 была короткая стрижка), очень красивая с 18 лет (решение автора); седая, коротко стриженная, очки на цепочке (В1-12)",
         invented="серо-зелёные глаза, прямые тёмные брови, родинка над левым краем верхней губы, каштановые волосы",
         core="oval face with a narrow pointed chin, serious level gaze like a strict head teacher, straight dark eyebrows, grey-green eyes, a small mole above the left corner of the upper lip, chestnut hair, slim",
         ages={
             7: ("1996", "bw", "7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees", "a serious 7-year-old girl, chestnut bob, cherry-print panama hat"),
             13: ("2002", "color", "13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
             18: ("2007", "digital", "18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books", "a very pretty serious 18-year-old girl with chestnut hair tied back"),
-            22: ("2011–2014", "digital", "young woman of 22-25, very beautiful in a natural way, fine features, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a beautiful young woman of about 23, short chestnut pixie cut, strict calm face"),
+            22: ("2011–2014", "digital", "young woman of 22-25, extraordinarily beautiful, almost an ideal of beauty, fine symmetrical features, long thick glossy chestnut hair falling below the shoulder blades, an oversized men's jacket over her shoulders or a white lab coat, little make-up", "an extraordinarily beautiful young woman of about 23 with long chestnut hair, strict calm face"),
             56: ("2045", "phone", "woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "an attractive elegant woman doctor of 56, cropped grey hair, glasses on a chain"),
         }),
     "vitka": dict(

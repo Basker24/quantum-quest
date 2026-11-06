@@ -79,7 +79,7 @@
 
 <!-- cards:begin -->
 ### `nika` — Ника (1989 г. р., главный)
-- Из текста: «лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); короткая стрижка, Витькина куртка (В1-05, В2-05); седая, коротко стриженная, очки на цепочке (В1-12).
+- Из текста: «лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); длинные волосы, Витькина куртка (В1-05; до 06.11.2026 была короткая стрижка), очень красивая с 18 лет (решение автора); седая, коротко стриженная, очки на цепочке (В1-12).
 - (додумано) серо-зелёные глаза, прямые тёмные брови, родинка над левым краем верхней губы, каштановые волосы.
 - **Ядро сходства:** oval face with a narrow pointed chin, serious level gaze like a strict head teacher, straight dark eyebrows, grey-green eyes, a small mole above the left corner of the upper lip, chestnut hair, slim.
 - В кадрах: В1-05, В1-06, В1-12, В2-05, Т-01, Т-06, Я-02.
@@ -89,7 +89,7 @@
 | 7 | 1996 | bw | 7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees |
 | 13 | 2002 | color | 13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand |
 | 18 | 2007 | digital | 18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books |
-| 22 | 2011–2014 | digital | young woman of 22-25, very beautiful in a natural way, fine features, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
+| 22 | 2011–2014 | digital | young woman of 22-25, extraordinarily beautiful, almost an ideal of beauty, fine symmetrical features, long thick glossy chestnut hair falling below the shoulder blades, an oversized men's jacket over her shoulders or a white lab coat, little make-up |
 | 56 | 2045 | phone | woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
 
 ### `vitka` — Витька (1988 г. р., главный)
