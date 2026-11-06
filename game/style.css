@@ -130,8 +130,6 @@ body[data-drift="4"] #text p:nth-child(2n) { filter: blur(.25px); }
 .rew .vhs-top { color: #8fd3ff; }
 .rew h2 { font-size: 15px; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
 #tape { display: grid; gap: 10px; }
-.notch { border-left: 3px solid #8fd3ff; }
-.notch span { color: #8fd3ff; margin-right: 6px; }
 @keyframes roll { to { background-position: 0 300px; } }
 @keyframes track { to { top: 110vh; } }
 @keyframes blink { 50% { opacity: 0; } }
@@ -438,3 +436,47 @@ body[data-era="future"] .choice { border-radius: 14px; }
 /* звук: переключатель в панели «Я» */
 #me .sound-row { align-items: baseline; }
 #me .sound-row .link { color: var(--accent); font-size: 13px; letter-spacing: .06em; }
+
+/* ---------- лента-кассета (п. 11 разбора) */
+.cassette { border: 1px solid #2c3a44; border-radius: 12px; background: linear-gradient(#121820, #0c1015); padding: 10px 0 8px; min-width: 0; }
+.reels { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 14px 8px; color: #6f8ea3; }
+.reel { width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto; border: 2px solid #3d5566;
+  background: radial-gradient(circle, #0c1015 0 4px, #3d5566 5px 6px, transparent 7px), repeating-conic-gradient(#22303a 0 30deg, #121a21 30deg 60deg); }
+.spinning .reel { animation: spin .5s linear infinite; }
+@keyframes spin { to { transform: rotate(-360deg); } }
+.film { position: relative; overflow-x: auto; overflow-y: hidden; touch-action: pan-y; cursor: grab; scrollbar-width: none;
+  background: #1d1a14; border-block: 9px solid #0b0a08;
+  border-image: repeating-linear-gradient(90deg, #0b0a08 0 9px, #3a3428 9px 15px) 9 0; }
+.film::-webkit-scrollbar { display: none; }
+.strip { display: flex; gap: 0; padding: 0 12px; width: max-content; }
+.notch { position: relative; width: 100px; flex: 0 0 100px; min-height: 150px; padding: 26px 8px 12px; text-align: left;
+  background: none; border: 0; border-right: 1px dashed rgba(143,211,255,.12); color: var(--ink); font: inherit; cursor: pointer;
+  display: flex; flex-direction: column; gap: 4px; transition: background .2s, opacity .2s; }
+.notch .tick { position: absolute; top: 0; left: 50%; width: 2px; height: 18px; background: #8fd3ff; transform: translateX(-1px); }
+.notch .n-when { color: #8fd3ff; font-size: 12px; letter-spacing: .06em; }
+.notch .n-title { font-size: 14px; line-height: 1.25; }
+.notch .n-pick { font-size: 12px; line-height: 1.3; color: #cdd7dc; font-style: italic; }
+.notch small { font-size: 11px; display: block; margin-top: auto; }
+.notch.on:hover, .notch.on:focus-visible, .notch.under, .notch.pick { background: rgba(143,211,255,.09); outline: none; }
+.notch.now .tick { background: var(--blood); height: 24px; }
+.notch.now .n-when { color: #ff8a7a; }
+.notch.burnt { cursor: not-allowed; opacity: .42; filter: sepia(.8) saturate(.5) blur(.3px);
+  background: radial-gradient(ellipse at 50% 40%, rgba(255,214,150,.18), transparent 70%); }
+.notch.burnt .tick { background: #6b5b45; }
+.notch.burnt.under { opacity: .6; }
+.notch .n-burnt { color: #c9a777; }
+.notch.cause { box-shadow: inset 0 -3px 0 var(--accent); }
+.notch .n-cause { color: var(--accent); }
+.notch.cause.burnt { opacity: .7; }
+.film .head { position: absolute; top: 0; bottom: 0; left: 0; width: 2px; margin-left: -1px; background: #ff4b3a; box-shadow: 0 0 8px #ff4b3a; pointer-events: none; }
+.film .head::before { content: ""; position: absolute; top: 0; left: -6px; border: 7px solid transparent; border-top-color: #ff4b3a; }
+.tape-info { padding: 8px 14px 0; margin: 0; }
+#tape { display: grid; gap: 14px; min-width: 0; }
+/* ---------- память смертей как инвентарь (п. 10 разбора) */
+.choice small.mem-cap { color: #8fc9c4; font-size: 12px; letter-spacing: .04em; }
+.mem-new { color: #8fc9c4; font-size: 13px; border: 1px dashed rgba(143,201,196,.4); border-radius: 6px; padding: 6px 10px; display: inline-block; }
+.lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 6px 0; }
+.lesson { border: 1px solid var(--line); border-left: 3px solid var(--water); border-radius: 8px; padding: 8px 10px; background: rgba(79,122,120,.08); line-height: 1.3; }
+.lesson b { display: block; font-weight: 400; }
+.lesson small { color: var(--dim); font-size: 11px; }
+@media (prefers-reduced-motion: reduce) { .spinning .reel { animation: none; } }

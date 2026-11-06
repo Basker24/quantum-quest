@@ -228,6 +228,14 @@
   const leftOf = (sc) => (sc.clock != null && S && S.st[CLK] != null ? S.st[CLK] : null);
   const late = (sc, c) => { const l = leftOf(sc); return l != null && (c.cost || 0) > l; };
   // мета-эхо: вариант открыт смертью из Журнала (seen без _life) — память другой жизни
+  // память смертей как инвентарь (п. 10 разбора): какие смерти открыли вариант и что из них вынесено
+  function seenIds(e, life, acc = []) {
+    if (!e || typeof e !== "object") return acc;
+    if (e.op === "seen" && !!e.life === life) acc.push(e.id);
+    for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => seenIds(y, life, acc)); else seenIds(x, life, acc); }
+    return acc;
+  }
+  const lessonsFor = (e, life) => [...new Set(seenIds(e, life).filter((id) => (life ? S && S.lifeSeen[id] : meta.journal[id])).map((id) => (G.deaths[id] || {}).lesson).filter(Boolean))];
   const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
@@ -518,7 +526,9 @@
         b.insertAdjacentHTML("beforeend", `<small>в другом мире я выбрал это</small>`);
       }
       if (c.visible && /seen/.test(JSON.stringify(c.visible))) b.classList.add("echo");
-      if (hasMeta(c.visible)) { b.classList.add("meta-echo"); b.insertAdjacentHTML("beforeend", `<small class="meta-cap mono">◌ память другой жизни</small>`); }
+      const mem = lessonsFor(c.visible, true);
+      if (mem.length) b.insertAdjacentHTML("beforeend", `<small class="mem-cap mono">⟲ память: ${esc(mem.join(" · "))}</small>`);
+      if (hasMeta(c.visible)) { const mm = lessonsFor(c.visible, false); b.classList.add("meta-echo"); b.insertAdjacentHTML("beforeend", `<small class="meta-cap mono">◌ память другой жизни${mm.length ? ": " + esc(mm.join(" · ")) : ""}</small>`); }
       const tooLate = late(sc, c);
       if (left != null && c.cost) b.insertAdjacentHTML("beforeend", `<small class="cost mono">${tooLate ? "не успеть · " : ""}−${c.cost} с</small>`);
       if (tooLate) { b.classList.add("locked", "late"); b.disabled = true; nav.append(b); return; }
@@ -720,14 +730,16 @@
     const depth = depthFor(S.st["ДАР"] || 0);
     const cur = G.scenes[S.scene];
     if (!S.stack.length || S.stack[S.stack.length - 1].scene !== S.scene) S.stack.push({ scene: S.scene, st: clone(S.st), seal: sealOf(cur), taken: null, trail: (S.trail || []).length });
-    const opts = [];
+    const opts = [], all = [];
     const sealNow = S.stack[S.stack.length - 1].seal;
-    for (let k = 0; k < depth; k++) {
+    // all — засечки этой главы жизни (до 8), opts — те, до которых дотягивается дар
+    for (let k = 0; k < 8; k++) {
       const idx = S.stack.length - 1 - k;
       if (idx < 0 || S.stack[idx].seal !== sealNow) break;
-      opts.push(idx);
+      all.push(idx);
+      if (k < depth) opts.push(idx);
     }
-    return { depth, opts };
+    return { depth, opts, all };
   }
 
   function restore(idx, n) {
@@ -764,19 +776,28 @@
       finished = true;
       clearTimeout(startT); clearTimeout(typing); typing = null;
       els.forEach((p) => p.classList.remove("pending"));
-      const { depth, opts } = rewindOptions();
+      const { depth, opts, all } = rewindOptions();
+      const cause = causeOf(did);
+      if (d.lesson) art.insertAdjacentHTML("beforeend", `<p class="mem-new mono">+ в памяти: ${esc(d.lesson)}</p>`);
       if (opts.length <= 1) {
         const b = document.createElement("button");
         b.className = "choice"; b.textContent = "Вдохнуть";
         b.onclick = () => restore(opts[0], 0);
         nav.append(b);
+        // ловушка с причиной в прошлом, а дар не дотягивается: ленту всё равно можно посмотреть
+        if (cause && all.some((i) => S.stack[i].scene === cause)) {
+          const t = document.createElement("button");
+          t.className = "choice ghost-choice"; t.innerHTML = `<span class="lbl">Посмотреть ленту</span>`;
+          t.onclick = () => showTape(depth, opts, all, did);
+          nav.append(t);
+        }
       } else {
         const s = document.createElement("button");
         s.className = "choice"; s.textContent = "Вдохнуть и остаться в этой минуте";
         s.onclick = () => restore(opts[0], 0);
         const b = document.createElement("button");
         b.className = "choice ghost-choice"; b.innerHTML = `<span class="lbl">Хор помнит больше. Вернуться ещё дальше назад</span>`;
-        b.onclick = () => showTape(depth, opts);
+        b.onclick = () => showTape(depth, opts, all, did);
         nav.append(s, b);
       }
     };
@@ -786,21 +807,107 @@
     startT = setTimeout(step, REDUCED ? 30 : 500);
   }
 
-  // ---------- лента отката
-  function showTape(depth, opts) {
+  // ---------- лента отката: кассета с засечками (п. 11 разбора)
+  // ловушка с причиной в прошлом: у смерти cause {if, scene}; при выполненном условии засечка scene — «здесь началось»
+  function causeOf(did) {
+    const c = (G.deaths[did] || {}).cause;
+    return c && S && ok(c.if, S.st) ? c.scene : null;
+  }
+  const short = (s, n = 46) => { s = String(s || "").replace(/\*\*|\*/g, "").replace(/^«[^»]*»\.?\s*/, "").trim(); return s.length > n ? s.slice(0, n - 1).replace(/[\s,.;:—-]+\S*$/, "") + "…" : s; };
+  function showTape(depth, opts, all, did) {
     show("#rewind");
+    all = all && all.length ? all : opts;
+    const cause = causeOf(did);
     $("#rew-depth").textContent = WORDS[opts.length] || "";
     const tape = $("#tape"); tape.innerHTML = "";
-    opts.forEach((idx, n) => {
-      const snap = S.stack[idx];
-      const sc = G.scenes[snap.scene];
+    const cas = document.createElement("div"); cas.className = "cassette";
+    cas.innerHTML = `<div class="reels" aria-hidden="true"><i class="reel"></i><span class="mono tiny">◀◀ тяни ленту или тронь засечку</span><i class="reel"></i></div>`;
+    const film = document.createElement("div"); film.className = "film"; film.setAttribute("role", "listbox"); film.setAttribute("aria-label", "лента этой жизни");
+    const strip = document.createElement("div"); strip.className = "strip";
+    const head = document.createElement("div"); head.className = "head"; head.setAttribute("aria-hidden", "true");
+    const notches = [];
+    // слева старое, справа — эта минута
+    [...all].reverse().forEach((idx) => {
+      const n = all.indexOf(idx); // сколько шагов назад
+      const snap = S.stack[idx], sc = G.scenes[snap.scene] || {};
+      const pick = (sc.choices || []).find((c) => c.id === snap.taken);
+      const can = opts.includes(idx);
       const b = document.createElement("button");
-      b.className = "notch choice";
-      b.innerHTML = `<span class="mono">${"◀".repeat(n + 1)}</span> ${esc(sc.title || snap.scene)}<small class="mono">${esc(sc.date || "")}</small>`;
-      b.onclick = () => restore(idx, n);
-      tape.append(b);
+      b.className = "notch" + (can ? " on" : " burnt") + (n === 0 ? " now" : "") + (cause && snap.scene === cause ? " cause" : "");
+      b.disabled = !can;
+      b.dataset.idx = idx; b.dataset.n = n;
+      const y = yearOf(sc.date);
+      b.innerHTML = `<i class="tick"></i><span class="n-when mono">${n === 0 ? "сейчас" : esc(y || "")}</span>` +
+        `<span class="n-title">${esc((sc.title || snap.scene).replace(/^Демо\.\s*/, ""))}</span>` +
+        `<span class="n-pick">${pick ? "▸ " + esc(short(pick.label)) : "—"}</span>` +
+        (cause && snap.scene === cause ? `<small class="n-cause mono">↩ здесь началось</small>` : "") +
+        (can ? "" : `<small class="n-burnt mono">дар не дотягивается</small>`);
+      b.onclick = () => { if (!film.dragged) spin(b); };
+      strip.append(b); notches.push(b);
     });
-    tape.insertAdjacentHTML("beforeend", `<p class="dim tiny mono">${opts.length < depth ? "дальше лента засвечена" : "дальше Хор не помнит"}</p>`);
+    film.append(strip, head); cas.append(film);
+    const info = document.createElement("p"); info.className = "tape-info dim tiny mono";
+    const burnt = all.length - opts.length;
+    info.textContent = burnt > 0 ? `дар дотягивается на ${WORDS[opts.length] || opts.length}, дальше лента засвечена` : all.length >= 8 ? "дальше лента склеена" : "дальше Хор не помнит";
+    if (cause && !opts.some((i) => S.stack[i].scene === cause) && all.some((i) => S.stack[i].scene === cause)) info.textContent = "туда, где всё началось, дар пока не дотягивается";
+    cas.append(info); tape.append(cas);
+    const stay = document.createElement("button");
+    stay.className = "choice ghost-choice"; stay.textContent = "Остаться в этой минуте";
+    stay.onclick = () => restore(opts[0], 0);
+    tape.append(stay);
+    // головка стоит на «сейчас»; лента прокручена к правому краю
+    const xOf = (b) => b.offsetLeft + b.offsetWidth / 2;
+    const place = (x) => { head.style.transform = `translateX(${x.toFixed(1)}px)`; };
+    const nowB = notches[notches.length - 1];
+    // видно «сейчас», яркие засечки и край засвеченной ленты
+    requestAnimationFrame(() => { film.scrollLeft = film.scrollWidth; place(xOf(nowB)); });
+    let busy = false;
+    function spin(b) {
+      if (busy || b.disabled) return;
+      busy = true; tape.classList.add("spinning"); b.classList.add("pick");
+      const idx = +b.dataset.idx, n = +b.dataset.n;
+      const x0 = xOf(nowB), x1 = xOf(b), dur = REDUCED ? 0 : 380 + 260 * n;
+      snd.unlock(); snd.rewStart(); buzz(14);
+      const passed = new Set();
+      const t0 = performance.now();
+      const step = (now) => {
+        const k = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - k, 2);
+        const x = x0 + (x1 - x0) * e; place(x); snd.rewSet(k);
+        film.scrollLeft = x - film.clientWidth / 2;
+        for (const o of notches) if (!passed.has(o) && o !== nowB && xOf(o) >= x) { passed.add(o); buzz(6); }
+        if (k < 1) return requestAnimationFrame(step);
+        snd.rewFinish(n > 0); buzz([25, 35, 50]);
+        setTimeout(() => restore(idx, n), REDUCED ? 0 : 260);
+      };
+      requestAnimationFrame(step);
+    }
+    // перетаскивание: тянешь ленту вправо — головка уходит в прошлое; отпустил у яркой засечки — перемотка туда
+    let drag = null;
+    film.onpointerdown = (e) => {
+      if (busy || (e.button != null && e.button > 0)) return;
+      drag = { x: e.clientX, h: xOf(nowB), on: null }; film.dragged = false;
+    };
+    film.onpointermove = (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (!film.dragged && Math.abs(dx) < 8) return;
+      if (!film.dragged) { film.dragged = true; try { film.setPointerCapture(e.pointerId); } catch (err) { /* нет захвата */ } snd.unlock(); snd.rewStart(); }
+      const x = Math.max(xOf(notches[0]), Math.min(xOf(nowB), drag.h - dx * 1.4));
+      place(x);
+      snd.rewSet(Math.min(1, Math.abs(xOf(nowB) - x) / Math.max(1, xOf(nowB) - xOf(notches[0]))));
+      let best = null, bd = 1e9;
+      for (const o of notches) { const d = Math.abs(xOf(o) - x); if (d < bd) { bd = d; best = o; } }
+      if (best !== drag.on) { if (drag.on) drag.on.classList.remove("under"); best.classList.add("under"); drag.on = best; buzz(best.disabled ? [4, 20, 4] : 8); }
+    };
+    film.onpointerup = film.onpointercancel = () => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (d.on) d.on.classList.remove("under");
+      if (!film.dragged) return;
+      setTimeout(() => { film.dragged = false; }, 0);
+      if (d.on && !d.on.disabled && d.on !== nowB) { snd.rewStop(); return spin(d.on); }
+      snd.rewStop(); place(xOf(nowB));
+    };
   }
 
   // ---------- панели
@@ -896,6 +1003,10 @@
         const t = typeof m === "string" ? m : m[v];
         if (t) items.push(t);
       }
+      // «Что я вынес»: карточки знаний из смертей этой жизни (lesson у ✝)
+      const cards = Object.keys(S.lifeSeen || {}).map((id) => [id, G.deaths[id]]).filter(([, d]) => d && d.lesson);
+      if (cards.length) me.insertAdjacentHTML("beforeend", `<h3 class="memo-h">Что я вынес</h3><div class="lessons">${cards.map(([, d]) =>
+        `<div class="lesson"><b>${esc(d.lesson)}</b><small class="mono">✝ ${esc(yearOf(d.date) || "")} · ${esc(d.title || "")}</small></div>`).join("")}</div><p class="dim tiny">Это осталось от смертей этой жизни. Эхо-выбор, открытый такой памятью, подписан ⟲.</p>`);
       if (items.length) me.insertAdjacentHTML("beforeend", `<h3 class="memo-h">Что со мной было</h3><ul class="memo">${items.map((t) => `<li>${md(t)}</li>`).join("")}</ul><p class="dim tiny">Это помнит не только тот, кто это пережил. Это помнит сюжет.</p>`);
     }
     if (!S) me.innerHTML = `<p class="dim">Жизнь ещё не начата.</p>`;

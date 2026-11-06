@@ -38,6 +38,8 @@
     ## 🔒 Заметки             (всё ниже игнорируется движком)
 
 Смерть — файл с id, начинающимся на «✝»; секция «## Пробуждение» — текст после отката.
+В шапке смерти: lesson: Азот у пола (карточка «Что я вынес», подпись эха, ≤ 6 слов);
+cause: F_ЗАКЛЕИЛ -> В1-07 (ловушка с причиной в прошлом: засечка ленты «здесь началось»).
 Условия: && || ! ( ) >= <= > < == !=, числа, имена переменных/флагов, литералы enum,
 seen(✝ID) — видел в любой жизни (мета), seen_life(✝ID) — видел в этой жизни.
 Функций случайности в языке нет (канон, п. 1).
@@ -337,6 +339,15 @@ def parse_file(path, cfg):
         item["clock"] = int(item["clock"])
         if not item.get("clock_label"):
             raise QQError(f"{sid}: у clock нужен clock_label (что значит ноль)")
+    # смерть: lesson — карточка «Что я вынес» (≤ 6 слов); cause — ловушка с причиной в прошлом:
+    # «cause: УСЛОВИЕ -> ID» — при условии засечка ID на ленте отката помечена «здесь началось»
+    if "lesson" in item and len(item["lesson"].split()) > 6:
+        raise QQError(f"{sid}: lesson длиннее 6 слов")
+    if "cause" in item:
+        m = re.fullmatch(r"(.+?)\s*->\s*(\S+)", item["cause"])
+        if not m:
+            raise QQError(f"{sid}: «cause: УСЛОВИЕ -> ID»")
+        item["cause"] = {"if": parse_expr(m.group(1), cfg), "if_src": m.group(1).strip(), "scene": m.group(2)}
     item["text"] = parse_blocks(text, cfg)
     item["file"] = path.name
     for head, content in zip(parts[1::2], parts[2::2]):
@@ -383,6 +394,9 @@ def load():
         for t in targets:
             if t not in scenes and t not in deaths:
                 raise QQError(f"{sid}: ссылка на несуществующую сцену {t}")
+    for did, d in deaths.items():
+        if "cause" in d and d["cause"]["scene"] not in scenes:
+            raise QQError(f"{did}: cause ссылается на несуществующую сцену {d['cause']['scene']}")
     if cfg["start"] not in scenes:
         raise QQError("стартовой сцены нет")
     return {"config": cfg, "scenes": scenes, "deaths": deaths}
