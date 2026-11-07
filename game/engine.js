@@ -558,7 +558,7 @@
     for (const c of sc.choices || []) seenIds(c.visible, true).forEach((id) => unlockers.add(id));
     const pastTaken = (S.past && S.past[S.scene]) ? meta.taken[S.scene] || {} : {};
     const life = meta.lives || 0;
-    let knows = false;
+    let knows = false, cold = false;
     vis.forEach((c, i) => {
       meta.shown[S.scene][c.id] = true;
       const b = document.createElement("button");
@@ -580,20 +580,24 @@
       const o = c.outcomes.find((x) => ok(x.if, st));
       const pt = pastTaken[c.id];
       if (pt === true || (typeof pt === "number" && pt < life)) b.insertAdjacentHTML("beforeend", `<small class="past-cap mono">в прошлой жизни я выбрал это</small>`);
-      // ложное эхо (вариант памяти, ведущий в смерть) и смерть, открывающая вариант, — без снежинки
-      const scout = o && o.to.startsWith("✝") && (seenIds(c.visible, true).length > 0 || seenIds(c.visible, false).length > 0 || (unlockers.has(o.to) && !S.lifeSeen[o.to]));
-      if (scout && dar >= 20) knows = true;
-      else if (o && o.to.startsWith("✝") && dar >= 20) {
-        b.classList.add("cold");
-        if (dar >= 40) b.classList.add("shiver");
-        b.insertAdjacentHTML("beforeend", dar >= 60 ? `<small class="whisper">не надо</small>` : `<small class="chill mono">холодок в затылке</small>`);
+      // «холодок» (баланс v1.9): ДАР 20–59 — одна строка над вариантами, без указания кнопки;
+      // ДАР ≥ 60 — метка на конкретной смертельной кнопке. Ложное эхо (вариант памяти, ведущий в смерть) дар не метит никогда.
+      const deadly = !!o && o.to.startsWith("✝");
+      const falseEcho = deadly && (seenIds(c.visible, true).length > 0 || seenIds(c.visible, false).length > 0);
+      if (deadly) {
+        if (dar < 20) { if (unlockers.has(o.to) && !S.lifeSeen[o.to]) knows = true; } // эхо возможно, а дар ещё молчит
+        else if (!falseEcho) {
+          cold = true;
+          if (dar >= 60) { b.classList.add("cold", "shiver"); b.insertAdjacentHTML("beforeend", `<small class="whisper">не надо</small>`); }
+        }
       }
       if (DEBUG) b.insertAdjacentHTML("beforeend", `<small class="mono dbg">[${c.id}] ${esc(c.outcomes.map((o) => (o.if_src ? o.if_src + " → " : "") + o.to).join(" | "))}</small>`);
       b.onclick = () => choose(sc, c);
       nav.append(b);
     });
     // Хор знает о чём-то, но не говорит, о какой кнопке
-    if (knows) { const k = document.createElement("p"); k.className = "chorus-knows mono"; k.textContent = "◌ Хор о чём-то знает"; nav.insertBefore(k, nav.querySelector(".choice")); }
+    if (cold && dar < 60) { const k = document.createElement("p"); k.className = "cold-line mono"; k.textContent = "❄ холодок в затылке: здесь что-то не так"; nav.insertBefore(k, nav.querySelector(".choice")); }
+    else if (knows && !cold) { const k = document.createElement("p"); k.className = "chorus-knows mono"; k.textContent = "◌ Хор о чём-то знает"; nav.insertBefore(k, nav.querySelector(".choice")); }
     // закрытые варианты: текст не показываем, только чего не хватило
     for (const c of sc.choices || []) {
       const wip = isWip(c);
@@ -604,7 +608,7 @@
       nav.append(b);
     }
     saveMeta();
-    if (nav.querySelector(".choice.cold")) { snd.cold(); buzz(8); }
+    if (cold) { snd.cold(); buzz(8); }
     snd.heart(left != null && vis.length > 0 && left <= Math.max(1, sc.clock || left) * 0.34);
     if (!vis.length && sc.next) {
       const b = document.createElement("button");
@@ -1297,7 +1301,7 @@
     cx.lineWidth = 1; cx.beginPath(); cx.moveTo(kx, ky); cx.lineTo(kx - w * 0.5, ky + h * 0.27); cx.stroke();
     cx.fillStyle = "rgba(240,248,255,.9)"; cx.beginPath(); cx.arc(kx, ky, 2.4, 0, Math.PI * 2); cx.fill();
     // заводь и круги
-    const px = w * 0.5, py = h * 0.86, rx = Math.min(w * 0.46, 340), ry = rx * 0.18;
+    const wide = w >= 960, px = wide ? w * 0.3 : w * 0.5, py = h * (wide ? 0.88 : 0.94), rx = Math.min(w * (wide ? 0.26 : 0.46), 340), ry = rx * 0.18;
     cx.fillStyle = "#050506"; cx.beginPath(); cx.ellipse(px, py, rx, ry, 0, 0, Math.PI * 2); cx.fill();
     for (let k = 0; k < 3; k++) {
       const ph = ((t / 4.5) + k / 3) % 1;
@@ -1328,20 +1332,61 @@
   addEventListener("resize", resize);
   resize();
 
+  // ---------- титул: продолжение, прогресс, счётчики разделов
+  const savedLife = () => {
+    const sv = store.get(SAVE, null);
+    const sc = sv && G.scenes[sv.scene];
+    if (!sc || (!(sc.choices || []).length && !sc.next)) return null; // финал прожит — продолжать нечего
+    return { sv, sc };
+  };
+  let newArmed = null;
   function showTitle() {
     show("#title");
-    const tl = $("#title-line"); if (tl) tl.textContent = `8 жизней · ${Object.keys(G.scenes).length} сцены · ранний доступ`;
-    $("#btn-continue").hidden = !store.get(SAVE, null);
+    document.body.dataset.era = "none"; // на титуле — натриевый акцент, а не цвет эпохи последней сцены
+    const ids = Object.keys(G.scenes), ends = ids.filter((id) => G.scenes[id].stage === "final"), deaths = Object.keys(G.deaths);
+    const seenE = ends.filter((id) => meta.visited[id]).length, seenD = deaths.filter((id) => meta.journal[id]).length;
+    const lives = meta.lives || 0;
+    $("#title-line").textContent = lives
+      ? `прожито жизней: ${lives} · концовок ${seenE} из ${ends.length} · смертей ${seenD} из ${deaths.length}`
+      : `впереди: ${ends.length} концовок · ${deaths.length} смертей · ${ids.length} сцен`;
+    const live = savedLife();
+    const cb = $("#btn-continue"), nb = $("#btn-new");
+    cb.hidden = !live;
+    nb.classList.toggle("ghost-choice", !!live);
+    disarmNew();
+    if (live) {
+      const y = yearOf(live.sc.date);
+      $("#continue-sub").textContent = `жизнь ${lives || 1}${y ? " · " + y : ""} · «${(live.sc.title || live.sv.scene).replace(/^Демо\.\s*/, "")}»`;
+    }
+    const jn = Object.keys(meta.journal || {}).length + (meta.root ? 1 : 0);
+    $("#m-journal").textContent = jn ? `${jn} ${jn % 10 === 1 && jn % 100 !== 11 ? "строка" : jn % 10 >= 2 && jn % 10 <= 4 && (jn % 100 < 12 || jn % 100 > 14) ? "строки" : "строк"}` : "пусто";
+    $("#m-flow").textContent = `${ids.filter((id) => meta.visited[id]).length}/${ids.length}`;
+    $("#m-guide").textContent = `${seenE}/${ends.length}`;
+    soundBtn();
+    if (typeof devTitle === "function") devTitle();
+  }
+  function disarmNew() {
+    clearTimeout(newArmed); newArmed = null;
+    $("#btn-new").classList.remove("armed");
+    $("#btn-new .cta-l").textContent = "Новая жизнь";
+    $("#new-sub").textContent = "с лета 1996-го, мне семь";
   }
 
   // ---------- кнопки
-  $("#btn-new").onclick = newLife;
+  // при живом сохранении «Новая жизнь» просит второе нажатие: первое только предупреждает
+  $("#btn-new").onclick = () => {
+    if (!savedLife() || newArmed) { disarmNew(); return newLife(); }
+    $("#btn-new").classList.add("armed");
+    $("#btn-new .cta-l").textContent = "Начать заново?";
+    $("#new-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и схема останутся";
+    newArmed = setTimeout(disarmNew, 5000);
+  };
   $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; enter(S.scene, true); } };
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
-  function soundBtn() { const b = $("#btn-sound"); if (!b) return; b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); }
-  $("#btn-sound").onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
+  function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } }
+  for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   showTitle();
 })();
