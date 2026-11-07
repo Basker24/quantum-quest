@@ -1,0 +1,357 @@
+<title>Объяснение</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Ночной квартал у реки: большая живая карта слева, сцена и правки мира справа. Один тёмный мир. */
+:root{
+  color-scheme: dark;
+  --bg:#0d121c; --panel:#141b29; --panel2:#1a2334; --line:#2a3550;
+  --fg:#e8e3d4; --dim:#8f96a8; --amber:#f0a83a; --amber-soft:#3a2d17;
+  --red:#e0614f; --red-soft:#3a1d1c; --ok:#86c39d; --ok-soft:#1a3125; --gas:#e9c046; --water:#4d8fc4;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:16px 40px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3.6vw,28px);margin:0;letter-spacing:.02em}
+h1 small{display:block;font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--dim);letter-spacing:0;margin-top:4px}
+h2{font-family:var(--f-display);font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0;color:var(--dim)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.top{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px}
+.hud{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.clock{font-family:var(--f-mono);font-size:30px;font-weight:500;color:var(--amber);line-height:1}
+.clock small{display:block;font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.meter{min-width:210px}
+.meter .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.meter .lbl b{color:var(--fg);font-family:var(--f-mono);font-weight:500}
+.bar{position:relative;height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--amber);transition:width .4s}
+.bar u{position:absolute;top:0;bottom:0;width:1px;background:var(--fg);opacity:.5}
+.ticks{position:relative;height:14px;font-size:10px;color:var(--dim);font-family:var(--f-mono)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+
+.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.goals{grid-template-columns:minmax(0,1fr)}}
+.goal{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.goal.saved{border-left-color:var(--ok)} .goal.dead{border-left-color:var(--red);opacity:.75}
+.goal .h{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.goal .nm{font-weight:600;font-size:16px}
+.goal .st{font-family:var(--f-mono);font-size:12px;white-space:nowrap}
+.goal.danger .st{color:var(--amber)} .goal.saved .st{color:var(--ok)} .goal.dead .st{color:var(--red)}
+.goal .d{font-size:13px;color:var(--dim)}
+
+.main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;min-width:0}
+
+.mapbox{position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#0a0f17}
+.mapbox svg{display:block;width:100%;height:auto}
+.loc{cursor:pointer}
+.loc .lab{font-family:var(--f-body);font-weight:600;font-size:30px;fill:#f3eee0;paint-order:stroke;stroke:#0b0f18;stroke-width:8px;stroke-linejoin:round}
+.loc .lab.cur{fill:var(--amber)}
+.loc:hover .ring{stroke:var(--amber)}
+.ring{fill:rgba(12,16,26,.55);stroke:#f3eee0;stroke-width:4}
+.ring.cur{stroke:var(--amber);stroke-width:6}
+.pulse{fill:none;stroke:var(--amber);stroke-width:5;animation:pu 1.8s ease-out infinite}
+@keyframes pu{from{r:24;opacity:.9}to{r:60;opacity:0}}
+.danger-ring{fill:none;stroke:var(--red);stroke-width:5;animation:pu2 1.2s ease-out infinite}
+@keyframes pu2{from{r:16;opacity:1}to{r:44;opacity:0}}
+.gasflow{stroke-dasharray:14 12;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-26}}
+.siren{animation:blink .7s steps(2) infinite}
+@keyframes blink{50%{opacity:.15}}
+.goto{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.goto button{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:5px 9px;font-size:13px}
+.goto button:hover{border-color:#4a5a80}
+.goto button span{font-family:var(--f-mono);color:var(--dim);margin-left:6px;font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--dim);margin-top:8px}
+.legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:5px;border-radius:2px}
+
+.scene h3{font-family:var(--f-display);font-weight:500;font-size:19px;margin:0 0 8px}
+.scene p{margin:0 0 8px}
+.clue{border-left:2px solid var(--amber);padding:6px 10px;background:var(--amber-soft);color:#f3d9ab;margin:8px 0 0;font-size:14px}
+.acts{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.act{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:9px 12px}
+.act:hover:not(:disabled){border-color:#4a5a80}
+.act .t{font-family:var(--f-mono);font-size:12px;color:var(--dim);white-space:nowrap}
+.act.die{border-color:#5a2a26;background:#1f1519}
+.act.die:hover:not(:disabled){border-color:var(--red)}
+.act .k{color:var(--red);font-family:var(--f-mono);margin-right:6px}
+.act.clue-a .k{color:var(--amber)}
+.act:disabled{opacity:.55;cursor:not-allowed}
+.act .why{display:block;font-size:12.5px;color:#b9b2a2;margin-top:2px;font-style:italic}
+.act.minor{background:none;padding:6px 12px}
+
+.edits{display:flex;flex-direction:column;gap:8px}
+.edit{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--panel2)}
+.edit .h{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:13.5px}
+.edit .h .c{font-family:var(--f-mono);color:var(--amber);font-weight:500;white-space:nowrap}
+.edit .s{font-size:12.5px;color:var(--dim);margin-top:2px}
+.empty{color:var(--dim);font-size:13px;margin:0}
+.log{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;font-size:13px}
+.log div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px}
+.log .tm{font-family:var(--f-mono);color:var(--dim)}
+.log .x{color:var(--red)} .log .g{color:var(--ok)} .log .a{color:var(--amber)}
+details.rules summary{cursor:pointer;font-weight:600}
+details.rules ol{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#cfcabd}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.ghost{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-size:13px;color:var(--dim)}
+.ghost:hover{color:var(--fg);border-color:#4a5a80}
+
+.ov{position:fixed;inset:0;background:rgba(6,8,14,.86);display:flex;align-items:center;justify-content:center;z-index:20;
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
+.ov[hidden]{display:none}
+.ovbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;max-width:540px;width:100%;padding:22px;display:flex;flex-direction:column;gap:14px;max-height:100%;overflow:auto}
+.die{color:#d9b2ab}
+.die b{font-family:var(--f-mono);color:var(--red);font-weight:500;letter-spacing:.08em;display:block;margin-bottom:6px;font-size:12px}
+.because{font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.35;text-wrap:balance}
+.because span{color:var(--amber)}
+.stamp{border:1px dashed var(--amber);border-radius:4px;padding:10px 12px;background:var(--amber-soft)}
+.stamp .h{display:flex;justify-content:space-between;gap:10px;font-weight:600}
+.stamp .h .c{font-family:var(--f-mono);color:var(--amber)}
+.stamp .s{font-size:13px;color:#e9d3a9;margin-top:4px}
+.stamp.zero{border-color:var(--ok);background:var(--ok-soft)} .stamp.zero .c{color:var(--ok)}
+.go{align-self:flex-start;background:var(--amber);color:#1d1404;border:0;border-radius:4px;padding:10px 18px;font-weight:600}
+.ending h3{font-family:var(--f-display);font-size:22px;margin:0}
+.ending ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Объяснение<small>Ночь 1 · Три жизни. Ты не можешь умереть, но у каждого твоего выживания есть причина, и мир её запомнит.</small></h1>
+    <div class="hud">
+      <div class="clock" id="clock">01:00<small>до рассвета 4:00</small></div>
+      <div class="meter">
+        <div class="lbl" title="4 — совпадения, 7 — люди помнят иначе, 10 — мир чужой"><span>Невероятность мира · пороги 4 / 7 / 10</span><b id="nval">0</b></div>
+        <div class="bar"><i id="nfill" style="width:0%"></i><u style="left:33.3%"></u><u style="left:58.3%"></u><u style="left:83.3%"></u></div>
+        <div class="ticks"><span style="left:33.3%">4</span><span style="left:58.3%">7</span><span style="left:83.3%">10</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="goals" id="goals" aria-label="Три жизни"></section>
+
+  <div class="main">
+    <div class="col">
+      <section class="card" style="padding:10px">
+        <div class="mapbox"><svg id="map" viewBox="0 0 1536 1024" role="img" aria-label="Карта квартала"></svg></div>
+        <div class="legend">
+          <span><i style="background:var(--gas)"></i>газ идёт</span><span><i style="background:#666"></i>газ перекрыт</span>
+          <span><i style="background:#111a2a;border:1px solid #444"></i>нет света</span><span><i style="background:var(--water)"></i>вода в котловане</span>
+        </div>
+        <div class="goto" id="goto"></div>
+      </section>
+      <section class="card">
+        <div class="row"><h2>Журнал ночи</h2><button class="ghost" id="reset">Начать ночь заново</button></div>
+        <div class="log" id="log" style="margin-top:10px"></div>
+      </section>
+    </div>
+    <div class="col">
+      <section class="card scene" id="scene"></section>
+      <section class="card">
+        <div class="row"><h2>Правки мира</h2><span class="mono" style="font-size:12px;color:var(--dim)" id="ecount">0</span></div>
+        <div class="edits" id="edits" style="margin-top:10px"></div>
+      </section>
+      <section class="card">
+        <details class="rules" id="rules">
+          <summary>Как устроен мир</summary>
+          <ol>
+            <li>Ты не можешь умереть. После смерти ты живёшь дальше в мире, где выжил. Время назад не идёт: встать занимает 15 минут.</li>
+            <li>У выживания всегда есть причина, и мир её запоминает. Срабатывает самое вероятное объяснение, для которого в мире уже есть условия. Подготовь мир, и объяснение изменится.</li>
+            <li>Правки не снимаются и мешают друг другу: то, что спасает одного, может погубить другого.</li>
+            <li>Каждая правка добавляет невероятности. С 4 начинаются совпадения, с 7 люди помнят иначе, с 10 мир уже не твой.</li>
+            <li>Чужие смерти не отменяются.</li>
+            <li>Можно обойтись без смертей. Это дольше и труднее.</li>
+          </ol>
+        </details>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov" hidden><div class="ovbox" id="ovbox"></div></div>
+
+<script src="core.js"></script>
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+let S;
+const hm=G.hm, L=G.LOC;
+const KEY='obyasnenie-night1';
+
+function goals(){
+  const g=[
+    {k:'misha',nm:'Миша, друг',d:'Спит за запертой дверью, в квартире утечка газа. Хор знает: в 02:45 он не проснётся.'},
+    {k:'liza',nm:'Лиза, сестра',d:'В реанимации на ИВЛ. В 03:00 подстанцию отключат, генератор больницы сломан. Без света аппарат протянет минут двадцать.'},
+    {k:'danya',nm:'Даня, сосед, 7 лет',d:'Упал в котлован на стройке. Вода прибывает, к 03:30 она будет выше головы.'}
+  ];
+  document.getElementById('goals').innerHTML=g.map(x=>{
+    const p=S[x.k]; let st=p.st, txt;
+    if(x.k==='liza'&&st==='danger'&&G.lizaSafe(S)){st='saved';txt='в безопасности'}
+    else txt=st==='danger'?'в опасности':st==='saved'?'спасён'+(x.k==='liza'?'а':'')+' · '+hm(p.at):'погиб'+(x.k==='liza'?'ла':'')+' · '+hm(p.at);
+    if(x.k==='liza'&&p.st==='danger'&&!G.lizaSafe(S)&&!G.powered(S,S.t))txt='без света '+p.unp+' мин';
+    else if(x.k==='liza'&&p.st==='danger'&&!G.lizaSafe(S)&&!G.gridOn(S,S.t)){txt='на генераторе';st='saved'}
+    return '<div class="goal '+st+'"><div class="h"><span class="nm">'+x.nm+'</span><span class="st">'+txt+'</span></div><div class="d">'+x.d+'</div></div>';
+  }).join('');
+}
+
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e}
+function drawMap(){
+  const svg=document.getElementById('map'); svg.innerHTML='';
+  el('image',{href:'map.jpg',x:0,y:0,width:1536,height:1024,preserveAspectRatio:'none'},svg);
+  // темнота на восточном берегу
+  if(!G.gridOn(S,S.t)){
+    el('path',{d:'M884 0 C870 200 900 300 882 420 C866 560 912 650 868 760 C860 880 876 960 872 1024 L1536 1024 L1536 0 Z',fill:'rgba(4,7,14,.66)'},svg);
+    if(G.powered(S,S.t)){ el('ellipse',{cx:1090,cy:220,rx:150,ry:110,fill:'rgba(255,214,140,.16)'},svg); }
+    el('text',{x:1205,y:990,'font-size':28,fill:'#cfd6e6','font-family':'IBM Plex Mono, monospace','text-anchor':'middle'},svg,'восточный берег без света');
+  }
+  // газопровод
+  const gasCol=S.gas?'#e9c046':'#6a6a6a';
+  const gp=el('g',{fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},svg);
+  const pipe=(d,on)=>{el('path',{d,stroke:'#0b0f18','stroke-width':12,opacity:.6},gp);el('path',{d,stroke:on?gasCol:'#6a6a6a','stroke-width':6,class:on?'gasflow':''},gp)};
+  pipe('M150 470 L215 420 L300 330 L330 250',S.gas);
+  pipe('M330 250 L380 205 L420 175',S.gas&&!S.riser);
+  pipe('M300 330 L470 420 L560 400 L680 352 L890 352 L980 300 L1060 250',S.gas);
+  if(S.riser){el('path',{d:'M362 192 l34 34 M396 192 l-34 34',stroke:'#e0614f','stroke-width':7},svg)}
+  // мост заклинило
+  if(S.jam){
+    el('rect',{x:672,y:318,width:224,height:58,fill:'rgba(224,97,79,.18)',stroke:'#e0614f','stroke-width':5,'stroke-dasharray':'14 10'},svg);
+    el('text',{x:785,y:305,'font-size':26,fill:'#ffb0a4','text-anchor':'middle','font-family':'IBM Plex Mono, monospace'},svg,'пролёт заклинило');
+    el('text',{x:785,y:900,'font-size':24,fill:'#9cc8ee','text-anchor':'middle','font-family':'IBM Plex Mono, monospace'},svg,'вода сброшена');
+  }
+  // котлован: уровень воды
+  let lvl;
+  if(S.danya.st==='saved')lvl=.12; else if(S.danya.st==='dead')lvl=1;
+  else if(S.drainAt!==null){const k=Math.min(1,Math.max(0,(S.t-(S.drainAt-30))/30));const base=.4+.6*Math.min(1,(S.drainAt-30-60)/150);lvl=base-(base-.12)*k}
+  else lvl=.4+.6*Math.min(1,(S.t-60)/150);
+  const top=750,bot=852,h=(bot-top)*lvl;
+  el('rect',{x:152,y:bot-h,width:150,height:h,fill:'rgba(77,143,196,.55)',stroke:'rgba(160,200,235,.6)','stroke-width':2},svg);
+  // Даня
+  const dx=230,dy=790;
+  if(S.danya.st==='danger'){el('circle',{cx:dx,cy:dy,r:16,class:'danger-ring'},svg);el('circle',{cx:dx,cy:dy,r:9,fill:'#ffe4d0'},svg)}
+  else if(S.danya.st==='saved'){el('circle',{cx:335,cy:870,r:10,fill:'#86c39d'},svg)}
+  // Миша
+  if(S.misha.st==='danger'){el('circle',{cx:470,cy:120,r:16,class:'danger-ring'},svg)}
+  else if(S.misha.st==='saved'){el('circle',{cx:455,cy:200,r:10,fill:'#86c39d'},svg)}
+  // Лиза
+  if(S.liza.st==='danger'&&!G.lizaSafe(S)&&S.t>=150&&!(S.genReady!==null&&S.t>=S.genReady&&S.gas)){el('circle',{cx:1085,cy:285,r:16,class:'danger-ring'},svg)}
+  // генератор МЧС
+  if(S.truck.gen){el('rect',{x:1140,y:250,width:40,height:30,fill:'#c9c25a',stroke:'#222','stroke-width':3},svg)}
+  // машина МЧС
+  const T=S.truck, tl=L[T.loc], tx=tl.x+(T.loc==='mchs'?-10:45), ty=tl.y+(T.loc==='mchs'?70:40);
+  const tg=el('g',{transform:'translate('+tx+' '+ty+')',opacity:T.awake?1:.55},svg);
+  el('rect',{x:-34,y:-16,width:68,height:32,rx:5,fill:'#c9392b',stroke:'#1a0d0b','stroke-width':3},tg);
+  el('rect',{x:-34,y:-3,width:68,height:6,fill:'#f1efe6'},tg);
+  el('rect',{x:14,y:-14,width:16,height:28,fill:'#8a2318'},tg);
+  if(T.awake){el('circle',{cx:0,cy:-22,r:6,fill:'#5aa0ff',class:S.t<T.busy?'siren':''},tg)}
+  el('text',{x:0,y:44,'font-size':22,fill:'#ffd6cf','text-anchor':'middle','font-family':'IBM Plex Mono, monospace',stroke:'#0b0f18','stroke-width':6,'paint-order':'stroke'},tg,T.awake?(S.t<T.busy?'МЧС едут':'МЧС'):'МЧС спят');
+  // Гоша
+  const person=(x,y,c,t)=>{el('circle',{cx:x,cy:y,r:10,fill:c,stroke:'#0b0f18','stroke-width':3},svg); if(t)el('text',{x:x,y:y-18,'font-size':20,fill:c,'text-anchor':'middle',stroke:'#0b0f18','stroke-width':5,'paint-order':'stroke','font-family':'Golos Text, sans-serif'},svg,t)};
+  if(S.gosha==='follow'){const p=L[S.loc];person(p.x-42,p.y+30,'#9fd3ff','Гоша')}
+  if(S.gosha==='work'||S.gosha==='stay'){person(1130,320,'#9fd3ff','Гоша')}
+  if(S.gosha==='sleep'){person(1180,665,'#7d8ca0','')}
+  if(S.loadersAtPit){person(270,725,'#e7c7a0','грузчики')}
+  else if(S.loaders){person(470,600,'#e7c7a0','грузчики')}
+  if(S.gasman){person(190,430,'#e9c046','газовик')}
+  // места
+  const D=G.dist(S,S.loc);
+  for(const k in L){
+    const p=L[k], cur=k===S.loc, g=el('g',{class:'loc',tabindex:0,role:'button','aria-label':p.n+(cur?' — ты здесь':' — '+D[k]+' мин')},svg);
+    el('circle',{cx:p.x,cy:p.y,r:60,fill:'transparent'},g);
+    if(cur)el('circle',{cx:p.x,cy:p.y,r:24,class:'pulse'},g);
+    el('circle',{cx:p.x,cy:p.y,r:20,class:'ring'+(cur?' cur':'')},g);
+    if(cur)el('circle',{cx:p.x,cy:p.y,r:8,fill:'#f0a83a'},g);
+    const below=['stroika','shluz','avto','podst','rynok','grp'].includes(k);
+    el('text',{x:k==='grp'?p.x-50:p.x,y:below?p.y+52:p.y-32,'text-anchor':k==='grp'?'start':'middle',class:'lab'+(cur?' cur':'')},g,p.n+(!cur&&D[k]<Infinity?' · '+D[k]:''));
+    const go=()=>{if(!cur)doId('go:'+k)};
+    g.addEventListener('click',go); g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+  }
+}
+
+function render(){
+  document.getElementById('clock').innerHTML=hm(S.t)+'<small>до рассвета '+hm(Math.max(0,G.DAWN-S.t))+'</small>';
+  document.getElementById('nval').textContent=S.N;
+  document.getElementById('nfill').style.width=Math.min(100,S.N/12*100)+'%';
+  goals(); drawMap();
+  // куда идти
+  const mv=G.moves(S).sort((a,b)=>a.min-b.min);
+  document.getElementById('goto').innerHTML=mv.map(m=>'<button data-to="'+m.to+'">'+L[m.to].n+'<span>'+m.min+' мин</span></button>').join('');
+  document.querySelectorAll('#goto button').forEach(b=>b.onclick=()=>doId('go:'+b.dataset.to));
+  // сцена
+  const A=G.list(S);
+  let h='<h3>'+L[S.loc].n+'</h3><p>'+G.descr(S)+'</p>';
+  const inv=[]; if(S.inv.rope)inv.push('верёвка'); if(S.inv.lom)inv.push('лом'); if(S.gosha==='follow')inv.push('с тобой Гоша');
+  if(inv.length)h+='<p class="mono" style="font-size:12px;color:var(--dim)">С собой: '+inv.join(', ')+'</p>';
+  if(S.clue)h+='<div class="clue">'+S.clue+'</div>';
+  h+='<div class="acts">';
+  A.forEach((a,i)=>{
+    const minor=a.id==='wait'||a.id==='dawn';
+    const cls='act'+(a.kind==='die'?' die':'')+(a.kind==='clue'?' clue-a':'')+(minor?' minor':'');
+    const k=a.kind==='die'?'<span class="k">✝</span>':a.kind==='clue'?'<span class="k">?</span>':'';
+    const t=a.id==='dawn'?'до 05:00':a.min+' мин';
+    h+='<button class="'+cls+'" data-i="'+i+'"'+(a.off||S.over?' disabled':'')+'><span>'+k+a.lbl+(a.off?'<span class="why">'+a.off+'</span>':'')+'</span><span class="t">'+t+'</span></button>';
+  });
+  h+='</div>';
+  const sc=document.getElementById('scene'); sc.innerHTML=h;
+  sc.querySelectorAll('.act').forEach(b=>b.onclick=()=>doId(A[+b.dataset.i].id));
+  // правки и журнал
+  document.getElementById('ecount').textContent=S.edits.length+' · Н '+S.N;
+  document.getElementById('edits').innerHTML=S.edits.length?S.edits.map(e=>'<div class="edit"><div class="h"><span>'+G.EDITS[e].t+'</span><span class="c">+'+G.EDITS[e].c+'</span></div><div class="s">'+G.EDITS[e].s+'</div></div>').join(''):'<p class="empty">Пока это твой мир. Каждая смерть оставит здесь карточку.</p>';
+  document.getElementById('log').innerHTML=S.log.map(l=>'<div><span class="tm">'+hm(l.t)+'</span><span class="'+l.cls+'">'+l.txt+'</span></div>').join('');
+  if(S.over&&ov.hidden)showEnding();
+}
+
+const ov=document.getElementById('ov'), ovbox=document.getElementById('ovbox');
+function doId(id){
+  if(S.over)return;
+  const r=G.apply(S,id); if(!r)return;
+  persist();
+  if(r.kind==='die')showWake(r); else render();
+}
+function showWake(r){
+  const e=r.r.e?G.EDITS[r.r.e]:null;
+  ovbox.innerHTML='<div class="die"><b>✝ '+hm(r.at)+'</b>'+r.d.die+'</div>'+
+    '<div class="because">…и я жив. <span>Я выжил, потому что</span> '+r.r.why+'</div>'+
+    (e?'<div class="stamp"><div class="h"><span>Правка: '+e.t+'</span><span class="c">Н +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
+      :'<div class="stamp zero"><div class="h"><span>Правки нет: объяснение уже было в мире</span><span class="c">Н +0</span></div><div class="s">Ты просто потерял 15 минут.</div></div>')+
+    '<button class="go" id="wake">Встать · '+hm(S.t)+'</button>';
+  ov.hidden=false; const b=document.getElementById('wake'); b.focus();
+  b.onclick=()=>{ov.hidden=true;render()};
+}
+function showEnding(){
+  const who=[['misha','Миша'],['liza','Лиза'],['danya','Даня']];
+  const st=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S))?'saved':S[k].st;
+  const n=who.filter(([k])=>st(k)==='saved').length;
+  const h=n===3?(S.deaths===0?'Все живы':'Все трое живы'):n===2?'Двое живы':n===1?'Один жив':'Никого';
+  ovbox.innerHTML='<div class="ending"><h3>'+h+'</h3></div><ul>'+
+    who.map(([k,nm])=>'<li>'+nm+': '+(st(k)==='saved'?'жив'+(k==='liza'?'а':''):'погиб'+(k==='liza'?'ла':'')+' в '+hm(S[k].at))+'</li>').join('')+
+    '<li>Невероятность мира: <b class="mono">'+S.N+'</b>'+(S.N>=10?' · мир чужой':S.N>=7?' · тебя помнят другим':S.N>=4?' · совпадения':' · мир твой')+'</li>'+
+    '<li>Твоих смертей за ночь: <b class="mono">'+S.deaths+'</b></li>'+
+    '<li>Свидетели чуда: '+(S.wit.length?S.wit.join(', '):'нет')+'</li></ul>'+
+    '<p style="margin:0;color:var(--dim);font-size:14px">Без единой смерти можно спасти двоих. Всех троих — с одной смертью и невероятностью 1, если не потерять ни минуты.</p>'+
+    '<button class="go" id="again">Ещё одна ночь</button>';
+  ov.hidden=false;
+  document.getElementById('again').onclick=()=>{S=fresh();persist();ov.hidden=true;render()};
+}
+function fresh(){const X=G.fresh();X.log.unshift({t:60,txt:'Час ночи. Хор шепчет три имени и три времени. Ты слышал, как они умирают, в других мирах.',cls:'a'});return X}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const v=localStorage.getItem(KEY);return v?JSON.parse(v):null}catch(e){return null}}
+document.getElementById('reset').onclick=()=>{S=fresh();persist();ov.hidden=true;render()};
+function start(data){
+  S=(data&&data.S)||load();
+  if(!S){S=fresh();try{document.getElementById('rules').open=true}catch(e){}}
+  render();
+}
+window.claude?.hot?.snapshot?.(()=>({S}));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
