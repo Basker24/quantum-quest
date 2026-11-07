@@ -25,7 +25,8 @@ from validate import ev
 LIMIT = 1500000
 
 
-def find_all(G, limit=LIMIT):
+def kit(G):
+    """Общие части поиска (переиспользует tools/dev_presets.py): переходы, достижимость, эвристика, живые переменные."""
     S, D, CFG = G["scenes"], G["deaths"], G["config"]
 
     def clamp(n, v):
@@ -144,18 +145,52 @@ def find_all(G, limit=LIMIT):
                     changed = True
     live = {sid: tuple(sorted(v)) for sid, v in live.items()}
 
+    def st0():
+        st = {k: v["start"] for k, v in CFG["vars"].items()}
+        st.update({k: None for k in CFG["flags"]})
+        st[CLOCK_KEY] = S[CFG["start"]].get("clock")
+        return st
+
+    def key(sid, st, seen):
+        return (sid, tuple(st[n] for n in live[sid]), st.get(CLOCK_KEY), seen)
+
+    def options(sid, st, seen, reach, dirs):
+        """Варианты в порядке перебора: (score, c, o); смерти — в конце, только ещё не виденные в этой сцене."""
+        sc = S[sid]
+        left = st.get(CLOCK_KEY)
+        vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen, frozenset())]
+        opts = []
+        for c in vis:
+            if left is not None and c.get("cost", 0) > left:
+                continue                          # не успеть
+            o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen, frozenset()))
+            if o["to"] in D:
+                if o["to"] not in seen:
+                    opts.append((-1000, c, o))   # смерть — только если ничего другого не вышло
+                continue
+            if o["to"] in reach:
+                opts.append((score(c, o, *dirs), c, o))
+        opts.sort(key=lambda x: -x[0])
+        return vis, opts
+
+    def step(sid, st, c, o):
+        return tick(apply(apply(st, c["fx"]), o.get("fx", [])), sid, c.get("cost", 0), o["to"])
+
+    from types import SimpleNamespace
+    return SimpleNamespace(S=S, D=D, CFG=CFG, finals=finals, succ=succ, can_reach=can_reach, directions=directions,
+                           tick=tick, apply=apply, st0=st0, key=key, options=options, step=step, live=live)
+
+
+def find_all(G, limit=LIMIT):
+    K = kit(G)
+    S, D, CFG, finals, can_reach, directions, tick, key = K.S, K.D, K.CFG, K.finals, K.can_reach, K.directions, K.tick, K.key
+
     def search(target):
         reach = can_reach(target)
-        want, flag_want, flag_avoid = directions(target)
-        st0 = {k: v["start"] for k, v in CFG["vars"].items()}
-        st0.update({k: None for k in CFG["flags"]})
-        st0[CLOCK_KEY] = S[CFG["start"]].get("clock")
+        dirs = directions(target)
         visited = set()
         budget = [limit]
         path = []
-
-        def key(sid, st, seen):
-            return (sid, tuple(st[n] for n in live[sid]), st.get(CLOCK_KEY), seen)
 
         def dfs(sid, st, seen):
             if sid == target:
@@ -166,8 +201,7 @@ def find_all(G, limit=LIMIT):
             visited.add(k)
             budget[0] -= 1
             sc = S[sid]
-            left = st.get(CLOCK_KEY)
-            vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen, frozenset())]
+            vis, opts = K.options(sid, st, seen, reach, dirs)
             if not vis and "next" in sc:
                 if sc["next"] in reach:
                     path.append((sid, None, None))
@@ -175,18 +209,6 @@ def find_all(G, limit=LIMIT):
                         return True
                     path.pop()
                 return False
-            opts = []
-            for c in vis:
-                if left is not None and c.get("cost", 0) > left:
-                    continue                          # не успеть
-                o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen, frozenset()))
-                if o["to"] in D:
-                    if o["to"] not in seen:
-                        opts.append((-1000, c, o))   # смерть — только если ничего другого не вышло
-                    continue
-                if o["to"] in reach:
-                    opts.append((score(c, o, want, flag_want, flag_avoid), c, o))
-            opts.sort(key=lambda x: -x[0])
             for _, c, o in opts:
                 if o["to"] in D:
                     path.append((sid, c["id"], o["to"]))
@@ -195,12 +217,12 @@ def find_all(G, limit=LIMIT):
                     path.pop()
                     continue
                 path.append((sid, c["id"], None))
-                if dfs(o["to"], tick(apply(apply(st, c["fx"]), o.get("fx", [])), sid, c.get("cost", 0), o["to"]), frozenset()):
+                if dfs(o["to"], K.step(sid, st, c, o), frozenset()):
                     return True
                 path.pop()
             return False
 
-        found = dfs(CFG["start"], st0, frozenset())
+        found = dfs(CFG["start"], K.st0(), frozenset())
         return (list(path) if found else None), limit - budget[0]
 
     return {t: search(t) for t in finals}

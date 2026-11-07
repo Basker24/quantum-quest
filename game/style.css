@@ -531,3 +531,38 @@ body[data-era="future"] .choice { border-radius: 14px; }
   #title .warn { grid-area: warn; align-self: start; max-width: 30em; }
 }
 .menu-list { background: rgba(13,13,15,.78); border-radius: 4px; }
+
+/* ================= v1.9: режим автора ================= */
+.dev-menu { margin-top: 10px; border-top-color: #3a3424; }
+.dev-menu .m-t { font-family: var(--mono); font-size: 15px; color: #c9b27a; }
+.choice small.devcap { color: #9aa58c; font-size: 11.5px; line-height: 1.45; letter-spacing: 0; word-break: break-word; }
+.choice small.devcap .dv-now { color: #d8e0c4; }
+.choice small.devcap .dv-vis { color: #8fa3b8; }
+.choice small.devcap .dv-fx { color: #c9b27a; }
+.choice small.dv-lack { color: #d98a7e; }
+.choice.dev-locked { opacity: .75; }
+.choice.dev-locked .lbl { color: var(--dim); }
+.choice.dev-path { box-shadow: inset 3px 0 0 #c9b27a; }
+.choice small.dv-path { color: #c9b27a; font-size: 12px; }
+.dev-goals { display: grid; gap: 2px; font-size: 11.5px; color: #9aa58c; border: 1px dashed #3a3424; border-radius: 6px; padding: 6px 10px; margin-bottom: 4px; word-break: break-word; }
+.dev-goals b { color: #c9b27a; font-weight: 400; }
+.dev-panel h3 { font-size: 16px; margin: 22px 0 8px; }
+.dev-panel code, .dev-panel .dv-s { font-family: var(--mono); font-size: 12px; }
+.dev-panel .dv-s { color: #c9b27a; }
+.dv-row { border-top: 1px solid var(--line); padding: 8px 0; font-size: 15px; }
+.dv-row summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.dv-row summary b { color: var(--accent); }
+.dv-cnt { margin-left: auto; font-size: 11px; color: var(--dim); }
+.dv-row ul { margin: 4px 0 8px; padding-left: 18px; font-size: 13px; line-height: 1.5; color: #cfc9bd; }
+.dv-row li { margin: 2px 0; word-break: break-word; }
+.dv-row li.dv-pass { color: #a9c79a; }
+.dv-h { margin: 8px 0 0; font-family: var(--mono); font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .1em; }
+.dv-off > summary { cursor: pointer; color: var(--dim); padding: 10px 0; font-size: 13px; }
+.dj-q { width: 100%; padding: 10px 12px; margin: 8px 0 4px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: 15px; }
+.dj-branch { font-size: 13px; color: #c9b27a; letter-spacing: .1em; margin: 18px 0 4px; }
+.dj-list { display: grid; }
+.dj-scene { text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 9px 2px; cursor: pointer; color: var(--ink); font-size: 15px; min-height: 44px; }
+.dj-scene:hover, .dj-scene:focus-visible { color: var(--accent); outline: none; }
+.dj-goals { display: grid; gap: 8px; }
+.dj-goal small { padding-left: 0; word-break: break-word; }
+.choice.dev-locked .lbl { letter-spacing: normal; font-family: var(--serif); font-size: inherit; text-transform: none; }

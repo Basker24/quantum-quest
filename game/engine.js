@@ -297,7 +297,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide"];
+  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -591,7 +591,8 @@
           if (dar >= 60) { b.classList.add("cold", "shiver"); b.insertAdjacentHTML("beforeend", `<small class="whisper">не надо</small>`); }
         }
       }
-      if (DEBUG) b.insertAdjacentHTML("beforeend", `<small class="mono dbg">[${c.id}] ${esc(c.outcomes.map((o) => (o.if_src ? o.if_src + " → " : "") + o.to).join(" | "))}</small>`);
+      if (devOn) devDecorate(b, c, st);
+      else if (DEBUG) b.insertAdjacentHTML("beforeend", `<small class="mono dbg">[${c.id}] ${esc(c.outcomes.map((o) => (o.if_src ? o.if_src + " → " : "") + o.to).join(" | "))}</small>`);
       b.onclick = () => choose(sc, c);
       nav.append(b);
     });
@@ -601,6 +602,7 @@
     // закрытые варианты: текст не показываем, только чего не хватило
     for (const c of sc.choices || []) {
       const wip = isWip(c);
+      if (devOn && !wip && c.visible && !ok(c.visible, st)) { nav.append(devLocked(c, st)); continue; }
       if (!wip && (!c.visible || ok(c.visible, st) || /seen/.test(JSON.stringify(c.visible)))) continue;
       const b = document.createElement("button");
       b.className = "choice locked" + (wip ? " wip" : ""); b.disabled = true;
@@ -608,6 +610,7 @@
       nav.append(b);
     }
     saveMeta();
+    if (devOn) devGoals(nav, sc);
     if (cold) { snd.cold(); buzz(8); }
     snd.heart(left != null && vis.length > 0 && left <= Math.max(1, sc.clock || left) * 0.34);
     if (!vis.length && sc.next) {
@@ -1001,6 +1004,9 @@
     if (id === "#flow") renderFlow();
     if (id === "#guide") renderGuide();
     if (id === "#journal") snd.chorus();
+    if (id === "#devstate") renderDevState();
+    if (id === "#devstats") renderDevStats();
+    if (id === "#devjump") renderDevJump();
   }
 
   // ---------- итог: сколько открыто
@@ -1332,6 +1338,189 @@
   addEventListener("resize", resize);
   resize();
 
+  // ================= режим автора (пункт меню или ?dev; хранится в localStorage) =================
+  // Подписи на вариантах: куда ведёт, условия, fx; закрытые — с текстом и «не хватило»; панели состояния,
+  // справка по статам и прыжок в сцену с реальным состоянием из пути-свидетеля (game/dev.js, tools/dev_presets.py).
+  const DEVKEY = "qq_dev";
+  if (/[?&]dev(=|&|$)/.test(location.search)) store.set(DEVKEY, true);
+  let devOn = !!store.get(DEVKEY, false);
+  let devLoading = null;
+  function devLoad() {
+    if (window.DEV) return Promise.resolve(window.DEV);
+    if (devLoading) return devLoading;
+    devLoading = new Promise((res) => {
+      const sc = document.createElement("script");
+      sc.src = "dev.js";
+      sc.onload = () => res(window.DEV || null);
+      sc.onerror = () => { devLoading = null; res(null); };
+      document.head.append(sc);
+    });
+    return devLoading;
+  }
+  const exprStr = (e) => {
+    if (!e || typeof e !== "object") return String(e);
+    switch (e.op) {
+      case "num": case "lit": return e.v === null ? "null" : String(e.v);
+      case "var": case "truthy": return e.n;
+      case "not": return "!" + exprStr(e.a);
+      case "and": case "or": return "(" + e.a.map(exprStr).join(e.op === "and" ? " && " : " || ") + ")";
+      case "cmp": return `${exprStr(e.l)} ${e.c} ${exprStr(e.r)}`;
+      case "seen": return (e.life ? "seen_life(" : "seen(") + e.id + ")";
+      case "lived": return "lived(" + e.id + ")";
+    }
+    return e.op;
+  };
+  const nameOf = (to) => { const x = G.scenes[to] || G.deaths[to]; return to.startsWith("✝") ? to : `${to} «${(x && x.title) || ""}»`; };
+  const fmtFx = (fx) => (fx || []).map(([k, n, v]) => (k === "add" ? `${n} ${v >= 0 ? "+" : ""}${v}` : k === "cap" ? `${n} ≤ ${v}` : `${n} = ${v}`)).join(", ");
+  // чего не хватило: невыполненные части условия с текущими значениями
+  function lack(e, st) {
+    if (!e || ev(e, st)) return [];
+    switch (e.op) {
+      case "and": return e.a.flatMap((x) => lack(x, st));
+      case "or": return [e.a.map((x) => lack(x, st).join(" и ")).filter(Boolean).join(" или ")];
+      case "cmp": {
+        if (e.l.op === "var" && e.r.op === "num") { const v = st[e.l.n] ?? 0; return [e.c === ">=" || e.c === ">" ? `${e.l.n} ${v}/${e.r.v}` : `${e.l.n} ${v}, нужно ${e.c} ${e.r.v}`]; }
+        if (e.l.op === "var") return [`${e.l.n} = ${st[e.l.n] ?? "null"}, нужно ${e.c} ${exprStr(e.r)}`];
+        return [exprStr(e)];
+      }
+      case "truthy": return [`${e.n} не стоит`];
+      case "seen": return [(e.life ? "не умирал здесь: " : "нет в Журнале: ") + e.id];
+      case "lived": return ["не прожито: " + e.id];
+      default: return ["нужно: " + exprStr(e)];
+    }
+  }
+  function devCapHtml(c, st) {
+    const now = c.outcomes.find((x) => ok(x.if, st));
+    const outs = c.outcomes.map((o) => `<span class="${o === now ? "dv-now" : ""}">${o === now ? "▸ " : ""}${o.if_src ? esc(o.if_src) + " " : c.outcomes.length > 1 ? "иначе " : ""}→ ${esc(nameOf(o.to))}${o.fx && o.fx.length ? " · " + esc(fmtFx(o.fx)) : ""}</span>`);
+    return `<small class="devcap mono">${outs.join("<br>")}` +
+      (c.visible_src ? `<br><span class="dv-vis">видно: ${esc(c.visible_src)}</span>` : "") +
+      (c.fx && c.fx.length ? `<br><span class="dv-fx">fx: ${esc(fmtFx(c.fx))}</span>` : "") + `</small>`;
+  }
+  function devDecorate(b, c, st) {
+    b.insertAdjacentHTML("beforeend", devCapHtml(c, st));
+    const t = devTailStep();
+    if (t && t[1] === c.id) { b.classList.add("dev-path"); b.insertAdjacentHTML("beforeend", `<small class="dv-path mono">▶ путь к ${esc(nameOf(S.dev.target))}${t[2] ? " · сначала умереть здесь" : ""}</small>`); }
+  }
+  function devLocked(c, st) {
+    const b = document.createElement("button");
+    b.className = "choice locked dev-locked"; b.disabled = true;
+    b.innerHTML = `<span class="num mono">${esc(c.id)}</span><span class="lbl">${md(c.label)}</span><small class="devcap mono dv-lack">не хватило: ${esc(lack(c.visible, st).join(" · ") || c.visible_src)}</small>` + devCapHtml(c, st);
+    return b;
+  }
+  // следующий шаг пути-свидетеля к цели прыжка в этой сцене (смерть-разведка — раньше живого шага)
+  function devTailStep() {
+    if (!S || !S.dev || !S.dev.tail) return null;
+    return S.dev.tail.find((t) => t[0] === S.scene && t[1] && !(t[2] && S.lifeSeen[t[2]])) || null;
+  }
+  // над вариантами: к каким целям ведёт выбор (по пресетам этой сцены)
+  function devGoals(nav, sc) {
+    const P = window.DEV && window.DEV.presets[S.scene];
+    const box = document.createElement("div"); box.className = "dev-goals mono";
+    const by = {};
+    if (P) for (const [tid, p] of Object.entries(P)) { const t = p.tail.find((x) => x[0] === S.scene && x[1] && !x[2]); if (t) (by[t[1]] = by[t[1]] || []).push(tid); }
+    const parts = Object.entries(by).map(([cid, ts]) => `<b>${esc(cid)}</b> → ${ts.map(esc).join(", ")}`);
+    box.innerHTML = `<span>⚙ ${esc(S.scene)}${S.dev ? " · цель " + esc(S.dev.target) : ""}</span>` + (parts.length ? `<span>к целям: ${parts.join(" · ")}</span>` : window.DEV ? "" : `<span class="dim">пресеты грузятся…</span>`);
+    nav.insertBefore(box, nav.firstChild);
+    if (!window.DEV) devLoad().then((d) => { if (d && S && !$("#scene").hidden && G.scenes[S.scene] === sc) renderChoices(sc); });
+  }
+
+  // ---------- панель «Состояние»
+  const where = (s) => `<span class="dv-s">${esc(s.y || "")} · ${esc(s.s)}</span> ${esc(s.w)}`;
+  const cmpTxt = { ">=": "≥", "<=": "≤", ">": ">", "<": "<", "==": "=", "!=": "≠" };
+  function renderDevState() {
+    const box = $("#devstate-body");
+    if (!S) { box.innerHTML = `<p class="dim">Жизнь не начата. Начни новую или прыгни в сцену.</p>`; return; }
+    const st = S.st;
+    let h = `<p class="mono tiny dim">сцена ${esc(S.scene)} · жизнь ${meta.lives || 0} · стек: ${esc(S.stack.map((x) => x.scene).join(" › "))}${S.dev ? " · цель " + esc(S.dev.target) : ""}</p><h3>Переменные</h3>`;
+    for (const [k, v] of Object.entries(C.vars)) {
+      const ch = (G.var_checks || {})[k] || [], fx = (G.var_fx || {})[k] || [];
+      h += `<details class="dv-row"><summary><span class="mono">${esc(k)}</span> <b>${esc(st[k])}</b> <span class="dim">${esc(v.name)}${v.tiers ? " · " + esc(tier(k, st[k])) : ""}</span><span class="dv-cnt mono">${ch.length} пров. · ${fx.length} изм.</span></summary>
+        <p class="dv-h">проверяется</p><ul>${ch.map((x) => `<li class="${ev({ op: "cmp", c: x.c, l: { op: "var", n: k }, r: { op: "num", v: x.n } }, st) ? "dv-pass" : ""}">${where(x)} · <b>${cmpTxt[x.c] || x.c} ${x.n}</b> · ${esc(x.g)}</li>`).join("") || "<li>нигде</li>"}</ul>
+        <p class="dv-h">меняется</p><ul>${fx.map((x) => `<li>${where(x)} · <b>${esc(x.d)}</b></li>`).join("") || "<li>нигде</li>"}</ul></details>`;
+    }
+    const flagRow = (f) => {
+      const src = (G.flag_src || {})[f] || [], rd = (G.flag_reads || {})[f] || [];
+      return `<details class="dv-row"><summary><span class="mono">${esc(f)}</span> <b>${esc(st[f] ?? "—")}</b><span class="dv-cnt mono">${src.length} ст. · ${rd.length} чт.</span></summary>
+        <p class="dv-h">ставится</p><ul>${src.map((s2) => `<li>${esc(nameOf(s2))}</li>`).join("") || "<li>нигде (не выбором)</li>"}</ul>
+        <p class="dv-h">читается</p><ul>${rd.map((x) => `<li>${where(x)} · <code>${esc(x.c)}</code></li>`).join("") || "<li>нигде</li>"}</ul></details>`;
+    };
+    const fl = Object.keys(C.flags), on = fl.filter((f) => st[f] != null), off = fl.filter((f) => st[f] == null);
+    h += `<h3>Флаги: поставлено ${on.length}</h3>${on.map(flagRow).join("")}<details class="dv-off"><summary class="mono">не поставлены (${off.length})</summary>${off.map(flagRow).join("")}</details>`;
+    if (st[CLK] != null) h += `<p class="mono tiny">${CLK} = ${esc(st[CLK])} с</p>`;
+    box.innerHTML = h;
+  }
+
+  // ---------- панель «Справка по статам»
+  function renderDevStats() {
+    const box = $("#devstats-body");
+    box.innerHTML = Object.entries(C.vars).map(([k, v]) => {
+      const ch = (G.var_checks || {})[k] || [];
+      const ths = [...new Set(ch.map((x) => x.n))].sort((a, b) => a - b);
+      return `<details class="dv-row"${v.hidden ? "" : " open"}><summary><span class="mono">${esc(k)}</span> <b>${esc(v.name)}</b><span class="dv-cnt mono">${ch.length} проверок · пороги ${ths.join(", ") || "—"}</span></summary>
+        <ul>${ch.map((x) => `<li>${where(x)} · <b>${cmpTxt[x.c] || x.c} ${x.n}</b> · ${esc(x.g)}</li>`).join("") || "<li>нигде не проверяется</li>"}</ul></details>`;
+    }).join("");
+  }
+
+  // ---------- панель «Прыжок в сцену»: сцена → цель → старт с реальным состоянием пути-свидетеля
+  const branchOf = (id) => (/^(Т|Ф|⊣К|Я)-/.test(id) ? { "Т": "Ствол", "Ф": "Финалы", "⊣К": "Тупики", "Я": "Якорь" }[id.split("-")[0]] : id.split("-")[0]);
+  let jumpPick = null;
+  function renderDevJump() {
+    const box = $("#devjump-body"), q = ($("#devjump-q").value || "").trim().toLowerCase();
+    if (!window.DEV) { box.innerHTML = `<p class="dim">Пресеты грузятся… (game/dev.js; собери: python3 tools/build.py)</p>`; devLoad().then((d) => { if (d) renderDevJump(); else box.innerHTML = `<p class="dim">Нет game/dev.js. Собери: <code>python3 tools/build.py</code>.</p>`; }); return; }
+    const D = window.DEV;
+    if (jumpPick) {
+      const sc = G.scenes[jumpPick], P = D.presets[jumpPick] || {}, F = D.fail[jumpPick] || [];
+      const goals = [...Object.keys(P), ...F].sort();
+      box.innerHTML = `<button class="link mono" id="dj-back">← все сцены</button><h3>${esc(jumpPick)} «${esc(sc.title)}» <span class="dim mono tiny">${esc(yearOf(sc.date) || "")}</span></h3>
+        <p>Статы под какую дальнейшую историю?</p><div class="dj-goals">${goals.map((t) => {
+          const p = P[t], g = G.scenes[t];
+          return `<button class="choice dj-goal${p ? "" : " locked"}" data-t="${esc(t)}"${p ? "" : " disabled"}><span class="lbl">${esc(t)} «${esc(g.title)}»</span><small class="mono">${p ? `${p.tail.length} шагов · ${esc(Object.entries(p.st).filter(([k]) => C.vars[k] && !C.vars[k].hidden).map(([k, v]) => k + " " + v).join(" "))}` : "пути не найдено"}</small></button>`;
+        }).join("") || `<p class="dim">Отсюда целей нет: это сама цель или конец.</p>`}</div>`;
+      $("#dj-back").onclick = () => { jumpPick = null; renderDevJump(); };
+      box.querySelectorAll(".dj-goal:not([disabled])").forEach((b) => (b.onclick = () => devJump(jumpPick, b.dataset.t)));
+      return;
+    }
+    const groups = {};
+    for (const [id, sc] of Object.entries(G.scenes)) {
+      if (q && !(id.toLowerCase().includes(q) || (sc.title || "").toLowerCase().includes(q))) continue;
+      (groups[branchOf(id)] = groups[branchOf(id)] || []).push([id, sc]);
+    }
+    const rank = (g) => ({ "Ствол": "0", "Якорь": "8", "Финалы": "9a", "Тупики": "9b" }[g] || "5" + g);
+    box.innerHTML = Object.entries(groups).sort((a, b) => rank(a[0]).localeCompare(rank(b[0]))).map(([g, list]) => `<h3 class="dj-branch mono">${esc(g)}</h3><div class="dj-list">${list.map(([id, sc]) => {
+      const n = Object.keys(D.presets[id] || {}).length, f = (D.fail[id] || []).length;
+      return `<button class="dj-scene" data-id="${esc(id)}"><span class="mono">${esc(id)}</span> ${esc(sc.title)} <span class="dim mono tiny">${esc(yearOf(sc.date) || "")} · целей ${n}${f ? "/" + (n + f) : ""}</span></button>`;
+    }).join("")}</div>`).join("") || `<p class="dim">Ничего не нашлось.</p>`;
+    box.querySelectorAll(".dj-scene").forEach((b) => (b.onclick = () => { jumpPick = b.dataset.id; renderDevJump(); window.scrollTo(0, 0); }));
+  }
+  function devJump(sid, tid) {
+    const p = window.DEV && window.DEV.presets[sid] && window.DEV.presets[sid][tid];
+    if (!p) return false;
+    meta.lives = (meta.lives || 0) + 1; saveMeta();
+    const st = initState(); Object.assign(st, p.st);
+    S = { scene: sid, st, stack: [], trail: p.tr.map(([scene, choice, flags]) => ({ scene, choice, flags })), lifeSeen: {}, awake: null, ghost: null, year: null, replay: false, past: {}, rootShown: true, dev: { target: tid, tail: p.tail } };
+    // стек отката: последние шаги до сцены с их настоящими состояниями (отличия от состояния входа)
+    for (const [ps, pc, diff, ti] of p.pre) {
+      const s2 = clone(st); for (const [k, v] of Object.entries(diff)) s2[k] = v;
+      const psc = G.scenes[ps];
+      if (psc && visible(psc, s2).length >= 2) S.stack.push({ scene: ps, st: s2, seal: sealOf(psc), taken: pc, trail: ti });
+    }
+    jumpPick = null;
+    enter(sid);
+    return true;
+  }
+  function devApply() {
+    document.body.classList.toggle("dev", devOn);
+    const b = $("#btn-dev"); b.textContent = devOn ? "режим автора: вкл" : "режим автора: выкл"; b.setAttribute("aria-pressed", String(devOn));
+    $("#dev-menu").hidden = !devOn;
+    $("#btn-dev-bar").hidden = !devOn;
+    if (devOn) { devLoad(); window.QQDEV = { jump: devJump, load: devLoad }; }
+  }
+  function devTitle() { devApply(); }
+  $("#btn-dev").onclick = () => { devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
+  for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
+    $(btn).onclick = () => openPanel(panel);
+  $("#devjump-q").oninput = () => { jumpPick = null; renderDevJump(); };
+
   // ---------- титул: продолжение, прогресс, счётчики разделов
   const savedLife = () => {
     const sv = store.get(SAVE, null);
@@ -1363,7 +1552,7 @@
     $("#m-flow").textContent = `${ids.filter((id) => meta.visited[id]).length}/${ids.length}`;
     $("#m-guide").textContent = `${seenE}/${ends.length}`;
     soundBtn();
-    if (typeof devTitle === "function") devTitle();
+    devTitle();
   }
   function disarmNew() {
     clearTimeout(newArmed); newArmed = null;

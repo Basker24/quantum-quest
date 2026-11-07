@@ -19,6 +19,7 @@
       <button id="btn-guide" class="ghost">Путь</button>
       <button id="btn-flow" class="ghost">Схема</button>
       <button id="btn-journal" class="ghost">Хор</button>
+      <button id="btn-dev-bar" class="ghost" hidden aria-label="Режим автора: состояние">⚙</button>
     </span>
   </header>
 
@@ -41,9 +42,14 @@
           <button id="btn-guide2" class="mitem"><span class="m-t">Путеводитель</span><span class="m-s">подсказки к каждому финалу, по ступеням</span><span class="m-n mono" id="m-guide"></span></button>
           <button id="btn-howto2" class="mitem"><span class="m-t">О чём игра</span><span class="m-s">Эверетт, квантовое бессмертие и правила дара</span></button>
         </nav>
+        <nav id="dev-menu" class="menu-list dev-menu" aria-label="Режим автора" hidden>
+          <button id="btn-devjump" class="mitem"><span class="m-t">⚙ Прыжок в сцену</span><span class="m-s">любая сцена со статами под выбранную историю</span></button>
+          <button id="btn-devstate" class="mitem"><span class="m-t">⚙ Состояние</span><span class="m-s">все переменные и флаги: где ставятся и читаются</span></button>
+          <button id="btn-devstats" class="mitem"><span class="m-t">⚙ Справка по статам</span><span class="m-s">все проверки каждой характеристики по годам</span></button>
+        </nav>
         <div class="settings mono tiny">
           <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button>
-          <button id="btn-dev" class="set-btn" aria-pressed="false" hidden>режим автора: выкл</button>
+          <button id="btn-dev" class="set-btn" aria-pressed="false">режим автора: выкл</button>
           <button id="btn-about2" class="set-btn">об игре и помощь</button>
         </div>
       </div>
@@ -182,6 +188,30 @@
         <li><b>Схема</b> показывает, какие развилки ты уже прошёл, а какие ещё ждут.</li>
       </ul>
     </div>
+  </section>
+
+  <!-- режим автора -->
+  <section id="devstate" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Состояние</h2>
+    <p class="mono tiny"><button id="dv-to-jump" class="link">прыжок в сцену</button> · <button id="dv-to-stats" class="link">справка по статам</button></p>
+    <div id="devstate-body"></div>
+  </section>
+  <section id="devstats" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Справка по статам</h2>
+    <p class="dim tiny">Каждая проверка характеристики в игре: год · сцена, где проверяется, порог и что даёт. Собирает <code>tools/build.py</code>.</p>
+    <div id="devstats-body"></div>
+  </section>
+  <section id="devjump" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Прыжок в сцену</h2>
+    <p class="dim tiny">Состояние берётся из настоящего пути start → сцена → цель (<code>tools/dev_presets.py</code>), а не придумывается. <button id="dv-to-state" class="link">состояние</button></p>
+    <input id="devjump-q" class="dj-q mono" type="search" placeholder="поиск: ID или название" autocomplete="off">
+    <div id="devjump-body"></div>
   </section>
 
   <section id="about" class="screen panel" hidden>
