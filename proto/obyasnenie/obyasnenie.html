@@ -2,354 +2,456 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Ночной квартал у реки: большая живая карта слева, сцена и правки мира справа. Один тёмный мир. */
+/* Игра на одной ночи: HUD сверху, живая карта, под ней сцена и выбор. Один тёмный мир под натриевыми фонарями. */
 :root{
   color-scheme: dark;
-  --bg:#0d121c; --panel:#141b29; --panel2:#1a2334; --line:#2a3550;
-  --fg:#e8e3d4; --dim:#8f96a8; --amber:#f0a83a; --amber-soft:#3a2d17;
-  --red:#e0614f; --red-soft:#3a1d1c; --ok:#86c39d; --ok-soft:#1a3125; --gas:#e9c046; --water:#4d8fc4;
-  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
-  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --bg:#0a0e16; --panel:#121927; --panel2:#182133; --panel3:#1f2a40; --line:#29344d;
+  --fg:#ece6d6; --dim:#8e95a7; --amber:#f2a93a; --amber-d:#3b2c14;
+  --red:#e2604d; --red-d:#3a1a18; --ok:#86c49e; --ok-d:#173024; --blue:#6aa6d8;
+  --f-d:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-b:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-m:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;
-  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:16px 40px}
-.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
-h1{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3.6vw,28px);margin:0;letter-spacing:.02em}
-h1 small{display:block;font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--dim);letter-spacing:0;margin-top:4px}
-h2{font-family:var(--f-display);font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0;color:var(--dim)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-b);font-size:15px;line-height:1.5;
+  padding-left:max(12px, env(safe-area-inset-left, 0px));padding-right:max(12px, env(safe-area-inset-right, 0px));padding-block:0 40px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:30;background:var(--bg)}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-m);font-variant-numeric:tabular-nums}
+.game{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 
-.top{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px}
-.hud{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
-.clock{font-family:var(--f-mono);font-size:30px;font-weight:500;color:var(--amber);line-height:1}
-.clock small{display:block;font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
-.meter{min-width:210px}
-.meter .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
-.meter .lbl b{color:var(--fg);font-family:var(--f-mono);font-weight:500}
-.bar{position:relative;height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
-.bar i{position:absolute;inset:0 auto 0 0;background:var(--amber);transition:width .4s}
-.bar u{position:absolute;top:0;bottom:0;width:1px;background:var(--fg);opacity:.5}
-.ticks{position:relative;height:14px;font-size:10px;color:var(--dim);font-family:var(--f-mono)}
-.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+/* HUD */
+.hud{position:sticky;top:env(safe-area-inset-top, 0px);z-index:15;background:linear-gradient(var(--bg) 82%,rgba(10,14,22,0));padding:10px 0 12px;
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center}
+.clock{font-family:var(--f-m);font-size:34px;font-weight:500;color:var(--amber);line-height:1;letter-spacing:.02em}
+.clock small{display:block;font-size:10.5px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-top:5px}
+.lives{display:flex;gap:8px;justify-content:center;min-width:0;max-width:100%}
+.life{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:40px;padding:4px 12px 4px 4px;min-width:0}
+.life img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--amber);flex:none}
+.life.saved img{border-color:var(--ok)} .life.dead img{border-color:var(--red);filter:grayscale(1) brightness(.6)}
+.life .tx{min-width:0;line-height:1.2;overflow:hidden}
+.life .nm,.life .st{overflow:hidden;text-overflow:ellipsis}
+.life .nm{font-weight:600;font-size:13.5px;white-space:nowrap}
+.life .st{font-family:var(--f-m);font-size:11.5px;white-space:nowrap;color:var(--amber)}
+.life.saved .st{color:var(--ok)} .life.dead .st{color:var(--red)}
+.life.urgent{animation:urg 1s ease-in-out infinite}
+@keyframes urg{50%{border-color:var(--red)}}
+.right{display:flex;gap:8px;align-items:center}
+.gauge{width:150px}
+.gauge .lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);letter-spacing:.04em}
+.gauge .lbl b{font-family:var(--f-m);color:var(--fg);font-weight:500;font-size:13px}
+.gbar{position:relative;height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;margin-top:4px;overflow:hidden}
+.gbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--amber),var(--red));transition:width .5s}
+.gbar u{position:absolute;top:0;bottom:0;width:1px;background:var(--fg);opacity:.45}
+.hbtn{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px;position:relative}
+.hbtn:hover{border-color:#4a5a80}
+.hbtn .badge{position:absolute;top:-6px;right:-6px;background:var(--amber);color:#1b1205;border-radius:10px;font-size:11px;font-weight:700;padding:0 5px;font-family:var(--f-m)}
+@media (max-width:900px){
+  .hud{grid-template-columns:auto minmax(0,1fr);}
+  .lives{grid-column:1/-1;grid-row:2;justify-content:space-between}
+  .life{padding-right:8px;flex:1 1 0}
+  .life .nm{font-size:12.5px}
+  .gauge{width:110px}
+}
+@media (max-width:520px){ .life img{width:32px;height:32px} .life .st{font-size:10.5px} .hbtn{padding:6px 8px;font-size:12px} .clock{font-size:28px} }
 
-.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-@media (max-width:640px){.goals{grid-template-columns:minmax(0,1fr)}}
-.goal{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
-.goal.saved{border-left-color:var(--ok)} .goal.dead{border-left-color:var(--red);opacity:.75}
-.goal .h{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.goal .nm{font-weight:600;font-size:16px}
-.goal .st{font-family:var(--f-mono);font-size:12px;white-space:nowrap}
-.goal.danger .st{color:var(--amber)} .goal.saved .st{color:var(--ok)} .goal.dead .st{color:var(--red)}
-.goal .d{font-size:13px;color:var(--dim)}
-
-.main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;align-items:start}
-@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
-.col{display:flex;flex-direction:column;gap:14px;min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;min-width:0}
-
-.mapbox{position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#0a0f17}
-.mapbox svg{display:block;width:100%;height:auto}
+/* карта */
+.mapwrap{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#070a10;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.mapwrap svg{display:block;width:100%;height:auto}
 .loc{cursor:pointer}
-.loc .lab{font-family:var(--f-body);font-weight:600;font-size:30px;fill:#f3eee0;paint-order:stroke;stroke:#0b0f18;stroke-width:8px;stroke-linejoin:round}
-.loc .lab.cur{fill:var(--amber)}
-.loc:hover .ring{stroke:var(--amber)}
-.ring{fill:rgba(12,16,26,.55);stroke:#f3eee0;stroke-width:4}
-.ring.cur{stroke:var(--amber);stroke-width:6}
-.pulse{fill:none;stroke:var(--amber);stroke-width:5;animation:pu 1.8s ease-out infinite}
-@keyframes pu{from{r:24;opacity:.9}to{r:60;opacity:0}}
+.lab{font-family:var(--f-b);font-weight:600;font-size:29px;fill:#f3eee0;paint-order:stroke;stroke:#080b12;stroke-width:8px;stroke-linejoin:round}
+.lab .mins{font-family:var(--f-m);font-weight:400;fill:#c9c2b0}
+.lab.cur{fill:var(--amber)}
+.ring{fill:rgba(10,14,22,.6);stroke:#f3eee0;stroke-width:4;transition:stroke .2s}
+.loc:hover .ring{stroke:var(--amber);stroke-width:6}
 .danger-ring{fill:none;stroke:var(--red);stroke-width:5;animation:pu2 1.2s ease-out infinite}
-@keyframes pu2{from{r:16;opacity:1}to{r:44;opacity:0}}
+@keyframes pu2{from{r:16;opacity:1}to{r:46;opacity:0}}
+.pulse{fill:none;stroke:var(--amber);stroke-width:5;animation:pu 1.8s ease-out infinite}
+@keyframes pu{from{r:22;opacity:.9}to{r:62;opacity:0}}
 .gasflow{stroke-dasharray:14 12;animation:flow 1.2s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-26}}
-.siren{animation:blink .7s steps(2) infinite}
-@keyframes blink{50%{opacity:.15}}
-.goto{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.goto button{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:5px 9px;font-size:13px}
-.goto button:hover{border-color:#4a5a80}
-.goto button span{font-family:var(--f-mono);color:var(--dim);margin-left:6px;font-size:12px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--dim);margin-top:8px}
-.legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:5px;border-radius:2px}
+.siren{animation:blink .6s steps(2) infinite}
+@keyframes blink{50%{opacity:.1}}
+.toasts{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(92%,560px)}
+.toast{background:rgba(12,16,26,.92);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:6px;padding:8px 12px;font-size:14px;animation:tin .35s ease-out, tout .5s ease-in 4.5s forwards;width:100%}
+.toast.g{border-left-color:var(--ok)} .toast.x{border-left-color:var(--red)}
+@keyframes tin{from{transform:translateY(-10px);opacity:0}}
+@keyframes tout{to{opacity:0;transform:translateY(-6px)}}
+.maplegend{position:absolute;left:10px;bottom:8px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#c7cbd6;background:rgba(8,11,18,.7);padding:4px 8px;border-radius:4px}
+.maplegend i{display:inline-block;width:14px;height:4px;vertical-align:middle;margin-right:4px;border-radius:2px}
+@media (max-width:640px){.maplegend{display:none}}
 
-.scene h3{font-family:var(--f-display);font-weight:500;font-size:19px;margin:0 0 8px}
-.scene p{margin:0 0 8px}
-.clue{border-left:2px solid var(--amber);padding:6px 10px;background:var(--amber-soft);color:#f3d9ab;margin:8px 0 0;font-size:14px}
-.acts{display:flex;flex-direction:column;gap:7px;margin-top:12px}
-.act{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:9px 12px}
-.act:hover:not(:disabled){border-color:#4a5a80}
-.act .t{font-family:var(--f-mono);font-size:12px;color:var(--dim);white-space:nowrap}
-.act.die{border-color:#5a2a26;background:#1f1519}
-.act.die:hover:not(:disabled){border-color:var(--red)}
-.act .k{color:var(--red);font-family:var(--f-mono);margin-right:6px}
-.act.clue-a .k{color:var(--amber)}
-.act:disabled{opacity:.55;cursor:not-allowed}
-.act .why{display:block;font-size:12.5px;color:#b9b2a2;margin-top:2px;font-style:italic}
-.act.minor{background:none;padding:6px 12px}
+/* сцена и выбор под картой */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:12px;align-items:start}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+.place{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
+.place h2{font-family:var(--f-d);font-weight:600;font-size:21px;margin:0 0 8px;letter-spacing:.01em}
+.place p{margin:0 0 8px;color:#d9d3c3}
+.carry{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.carry span{font-size:12px;font-family:var(--f-m);padding:2px 8px;border-radius:12px;background:var(--panel3);color:#cfc8b5}
+.result{margin-top:12px;border-radius:8px;padding:10px 12px;background:var(--panel2);border:1px solid var(--line);animation:tin .35s ease-out}
+.result b{display:block;font-family:var(--f-m);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.result.clue{background:var(--amber-d);border-color:#6a4c1c;color:#f6dfb4}
+.result.clue b{color:var(--amber)}
+.choices{display:flex;flex-direction:column;gap:7px;min-width:0}
+.choice{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 12px;transition:border-color .15s,transform .1s}
+.choice:hover:not(:disabled){border-color:#55648c;transform:translateX(2px)}
+.choice .key{font-family:var(--f-m);font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:4px;text-align:center;line-height:22px;height:24px}
+.choice .lb{font-weight:500}
+.choice .why{display:block;font-size:12.5px;color:#a9a291;font-style:italic;font-weight:400;margin-top:2px}
+.choice .tm{font-family:var(--f-m);font-size:12px;color:var(--dim);white-space:nowrap}
+.choice.clue .lb::before{content:"? ";color:var(--amber)}
+.choice.clue.new .lb::after{content:" · новое";color:var(--amber);font-size:12px;font-family:var(--f-m)}
+.choice.die{background:linear-gradient(90deg,#241417,#18121a);border-color:#5a2a26}
+.choice.die .lb::before{content:"✝ ";color:var(--red)}
+.choice.die .tm{color:#d9877a}
+.choice.die:hover:not(:disabled){border-color:var(--red)}
+.choice.minor{background:none;border-style:dashed;padding:8px 12px}
+.choice:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.sep{font-family:var(--f-m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:6px 2px 0}
 
-.edits{display:flex;flex-direction:column;gap:8px}
-.edit{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--panel2)}
-.edit .h{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:13.5px}
-.edit .h .c{font-family:var(--f-mono);color:var(--amber);font-weight:500;white-space:nowrap}
-.edit .s{font-size:12.5px;color:var(--dim);margin-top:2px}
-.empty{color:var(--dim);font-size:13px;margin:0}
-.log{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;font-size:13px}
-.log div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px}
-.log .tm{font-family:var(--f-mono);color:var(--dim)}
-.log .x{color:var(--red)} .log .g{color:var(--ok)} .log .a{color:var(--amber)}
-details.rules summary{cursor:pointer;font-weight:600}
-details.rules ol{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#cfcabd}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.ghost{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-size:13px;color:var(--dim)}
-.ghost:hover{color:var(--fg);border-color:#4a5a80}
+/* шторка */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:25;
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 16px 16px;display:flex;flex-direction:column;gap:12px;transform:translateX(100%);transition:transform .25s}
+.drawer.open{transform:none}
+.tabs{display:flex;gap:6px}
+.tabs button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:13px}
+.tabs button.on{border-color:var(--amber);color:var(--amber)}
+.dbody{overflow:auto;display:flex;flex-direction:column;gap:8px;min-height:0}
+.edit{border:1px solid var(--line);border-radius:6px;padding:9px 11px;background:var(--panel2)}
+.edit .h{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:14px}
+.edit .h .c{font-family:var(--f-m);color:var(--amber);font-weight:500}
+.edit .s{font-size:13px;color:var(--dim);margin-top:3px}
+.logl{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;font-size:13.5px}
+.logl .t{font-family:var(--f-m);color:var(--dim)}
+.logl .x{color:var(--red)} .logl .g{color:var(--ok)} .logl .a{color:var(--amber)}
+.rules ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;color:#d6d0c0}
+.close{align-self:flex-end;background:none;border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--dim)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:24}
 
-.ov{position:fixed;inset:0;background:rgba(6,8,14,.86);display:flex;align-items:center;justify-content:center;z-index:20;
-  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
-.ov[hidden]{display:none}
-.ovbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;max-width:540px;width:100%;padding:22px;display:flex;flex-direction:column;gap:14px;max-height:100%;overflow:auto}
-.die{color:#d9b2ab}
-.die b{font-family:var(--f-mono);color:var(--red);font-weight:500;letter-spacing:.08em;display:block;margin-bottom:6px;font-size:12px}
-.because{font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.35;text-wrap:balance}
-.because span{color:var(--amber)}
-.stamp{border:1px dashed var(--amber);border-radius:4px;padding:10px 12px;background:var(--amber-soft)}
-.stamp .h{display:flex;justify-content:space-between;gap:10px;font-weight:600}
-.stamp .h .c{font-family:var(--f-mono);color:var(--amber)}
-.stamp .s{font-size:13px;color:#e9d3a9;margin-top:4px}
-.stamp.zero{border-color:var(--ok);background:var(--ok-soft)} .stamp.zero .c{color:var(--ok)}
-.go{align-self:flex-start;background:var(--amber);color:#1d1404;border:0;border-radius:4px;padding:10px 18px;font-weight:600}
-.ending h3{font-family:var(--f-display);font-size:22px;margin:0}
-.ending ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+/* титул */
+.title{position:fixed;inset:0;z-index:40;background:#05070c center/cover no-repeat;display:flex;align-items:center;justify-content:center;
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));overflow:auto}
+.title::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,7,12,.55),rgba(5,7,12,.93) 70%)}
+.tbox{position:relative;max-width:680px;width:100%;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.tbox h1{font-family:var(--f-d);font-weight:800;font-size:clamp(36px,8vw,68px);letter-spacing:.04em;margin:0;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.tbox .night{font-family:var(--f-m);color:var(--amber);letter-spacing:.2em;text-transform:uppercase;font-size:13px}
+.tbox p{margin:0;font-size:16px;color:#ddd6c4;max-width:58ch}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+.trio div{background:rgba(18,25,39,.8);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center}
+.trio img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--amber);flex:none}
+.trio b{display:block;font-size:14px}
+.trio span{font-family:var(--f-m);font-size:12px;color:var(--amber)}
+@media (max-width:560px){.trio{grid-template-columns:minmax(0,1fr)}}
+.tbtns{display:flex;flex-wrap:wrap;gap:10px}
+.big{background:var(--amber);color:#1b1205;border:0;border-radius:8px;padding:13px 26px;font-weight:700;font-size:16px;font-family:var(--f-b)}
+.big:hover{filter:brightness(1.08)}
+.big.ghost{background:rgba(18,25,39,.85);color:var(--fg);border:1px solid var(--line);font-weight:500}
+
+/* смерть и финал */
+.ov{position:fixed;inset:0;z-index:35;display:flex;align-items:center;justify-content:center;background:rgba(3,4,8,.94);
+  padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));overflow:auto}
+.ov[hidden],.title[hidden],.scrim[hidden]{display:none}
+.ovbox{max-width:600px;width:100%;display:flex;flex-direction:column;gap:16px;margin:auto}
+.redflash{position:fixed;inset:0;background:var(--red);opacity:0;pointer-events:none;z-index:36;animation:flash .7s ease-out}
+@keyframes flash{0%{opacity:.55}100%{opacity:0}}
+.tc{font-family:var(--f-m);color:var(--red);letter-spacing:.2em;font-size:13px}
+.dtext{font-size:19px;color:#e8c9c2;line-height:1.55;animation:fadein .8s ease-out both}
+.alive{font-family:var(--f-d);font-weight:600;font-size:clamp(22px,4vw,30px);animation:fadein .8s ease-out .9s both}
+.because{font-size:18px;line-height:1.5;animation:fadein .8s ease-out 1.5s both}
+.because em{font-style:normal;color:var(--amber)}
+.stamp{border:2px dashed var(--amber);border-radius:8px;padding:12px 14px;background:var(--amber-d);transform:rotate(-1.2deg);animation:stamp .45s cubic-bezier(.2,1.6,.4,1) 2.1s both}
+.stamp .h{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+.stamp .h .c{font-family:var(--f-m);color:var(--amber)}
+.stamp .s{font-size:14px;color:#ecd6aa;margin-top:4px}
+.stamp.zero{border-color:var(--ok);background:var(--ok-d)} .stamp.zero .c{color:var(--ok)}
+@keyframes stamp{from{transform:scale(1.6) rotate(-6deg);opacity:0}to{transform:rotate(-1.2deg);opacity:1}}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}}
+.seen{border-left:3px solid var(--blue);padding:4px 12px;color:#cfdbe8;font-size:15px;animation:fadein .8s ease-out 2.5s both}
+.seen b{display:block;font-family:var(--f-m);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.ovbox .big{align-self:flex-start;animation:fadein .5s ease-out 2.7s both}
+.end h2{font-family:var(--f-d);font-weight:800;font-size:clamp(28px,6vw,44px);margin:0;line-height:1.05}
+.endtrio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.endtrio div{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.endtrio img{width:78px;height:78px;border-radius:50%;object-fit:cover;border:3px solid var(--ok)}
+.endtrio .dead img{border-color:var(--red);filter:grayscale(1) brightness(.55)}
+.endtrio b{font-size:14px}
+.endtrio span{font-family:var(--f-m);font-size:12px;color:var(--dim)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stats div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.stats b{display:block;font-family:var(--f-m);font-size:24px;font-weight:500;color:var(--amber)}
+.stats span{font-size:12px;color:var(--dim)}
+.verdict{color:#d8d1bf;margin:0}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 
-<div class="wrap">
-  <header class="top">
-    <h1>Объяснение<small>Ночь 1 · Три жизни. Ты не можешь умереть, но у каждого твоего выживания есть причина, и мир её запомнит.</small></h1>
-    <div class="hud">
-      <div class="clock" id="clock">01:00<small>до рассвета 4:00</small></div>
-      <div class="meter">
-        <div class="lbl" title="4 — совпадения, 7 — люди помнят иначе, 10 — мир чужой"><span>Невероятность мира · пороги 4 / 7 / 10</span><b id="nval">0</b></div>
-        <div class="bar"><i id="nfill" style="width:0%"></i><u style="left:33.3%"></u><u style="left:58.3%"></u><u style="left:83.3%"></u></div>
-        <div class="ticks"><span style="left:33.3%">4</span><span style="left:58.3%">7</span><span style="left:83.3%">10</span></div>
+<div class="title" id="title">
+  <div class="tbox">
+    <div class="night">Ночь первая · Три жизни</div>
+    <h1>ОБЪЯСНЕНИЕ</h1>
+    <p>Мне тридцать четыре, и умереть я не могу. Каждый раз я просыпаюсь в мире, где выжил. Только у выживания всегда есть причина, и мир её запоминает: кто-то вовремя включил насос, где-то перекрыли газ, кого-то завернули по рации.</p>
+    <p>Сегодня ночью Хор шепчет мне три имени и три времени. Я уже слышал, как они умирают. В других мирах.</p>
+    <div class="trio">
+      <div><img src="misha.jpg" alt=""><span><b>Миша, друг</b><span>газ · 02:45</span></span></div>
+      <div><img src="liza.jpg" alt=""><span><b>Лиза, сестра</b><span>свет · 03:00</span></span></div>
+      <div><img src="danya.jpg" alt=""><span><b>Даня, 7 лет</b><span>вода · 03:30</span></span></div>
+    </div>
+    <div class="tbtns">
+      <button class="big" id="t-new">Начать ночь</button>
+      <button class="big ghost" id="t-cont" hidden>Продолжить</button>
+      <button class="big ghost" id="t-rules">Как играть</button>
+    </div>
+    <p class="mono" id="t-best" style="font-size:12px;color:var(--dim)"></p>
+  </div>
+</div>
+
+<div class="game">
+  <header class="hud">
+    <div class="clock" id="clock">01:00<small>до рассвета 4:00</small></div>
+    <div class="lives" id="lives"></div>
+    <div class="right">
+      <div class="gauge" title="Невероятность мира. 4 — совпадения, 7 — люди помнят иначе, 10 — мир чужой">
+        <div class="lbl"><span>Невероятность</span><b id="nval">0</b></div>
+        <div class="gbar"><i id="nfill" style="width:0%"></i><u style="left:33.3%"></u><u style="left:58.3%"></u><u style="left:83.3%"></u></div>
       </div>
+      <button class="hbtn" id="b-world">Мир<span class="badge" id="ebadge" hidden>0</span></button>
+      <button class="hbtn" id="b-menu">☰</button>
     </div>
   </header>
 
-  <section class="goals" id="goals" aria-label="Три жизни"></section>
+  <section class="mapwrap">
+    <svg id="map" viewBox="0 0 1536 1024" role="img" aria-label="Карта квартала"></svg>
+    <div class="toasts" id="toasts"></div>
+    <div class="maplegend"><span><i style="background:#e9c046"></i>газ</span><span><i style="background:#666"></i>газ перекрыт</span><span><i style="background:#0b111d;border:1px solid #556"></i>нет света</span><span><i style="background:var(--blue)"></i>вода</span></div>
+  </section>
 
-  <div class="main">
-    <div class="col">
-      <section class="card" style="padding:10px">
-        <div class="mapbox"><svg id="map" viewBox="0 0 1536 1024" role="img" aria-label="Карта квартала"></svg></div>
-        <div class="legend">
-          <span><i style="background:var(--gas)"></i>газ идёт</span><span><i style="background:#666"></i>газ перекрыт</span>
-          <span><i style="background:#111a2a;border:1px solid #444"></i>нет света</span><span><i style="background:var(--water)"></i>вода в котловане</span>
-        </div>
-        <div class="goto" id="goto"></div>
-      </section>
-      <section class="card">
-        <div class="row"><h2>Журнал ночи</h2><button class="ghost" id="reset">Начать ночь заново</button></div>
-        <div class="log" id="log" style="margin-top:10px"></div>
-      </section>
-    </div>
-    <div class="col">
-      <section class="card scene" id="scene"></section>
-      <section class="card">
-        <div class="row"><h2>Правки мира</h2><span class="mono" style="font-size:12px;color:var(--dim)" id="ecount">0</span></div>
-        <div class="edits" id="edits" style="margin-top:10px"></div>
-      </section>
-      <section class="card">
-        <details class="rules" id="rules">
-          <summary>Как устроен мир</summary>
-          <ol>
-            <li>Ты не можешь умереть. После смерти ты живёшь дальше в мире, где выжил. Время назад не идёт: встать занимает 15 минут.</li>
-            <li>У выживания всегда есть причина, и мир её запоминает. Срабатывает самое вероятное объяснение, для которого в мире уже есть условия. Подготовь мир, и объяснение изменится.</li>
-            <li>Правки не снимаются и мешают друг другу: то, что спасает одного, может погубить другого.</li>
-            <li>Каждая правка добавляет невероятности. С 4 начинаются совпадения, с 7 люди помнят иначе, с 10 мир уже не твой.</li>
-            <li>Чужие смерти не отменяются.</li>
-            <li>Можно обойтись без смертей. Это дольше и труднее.</li>
-          </ol>
-        </details>
-      </section>
-    </div>
-  </div>
+  <section class="stage">
+    <div class="place" id="place"></div>
+    <div class="choices" id="choices"></div>
+  </section>
 </div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Мир и журнал">
+  <button class="close" id="d-close">Закрыть</button>
+  <div class="tabs"><button data-tab="world" class="on">Правки мира</button><button data-tab="log">Журнал</button><button data-tab="rules">Правила</button></div>
+  <div class="dbody" id="dbody"></div>
+  <button class="big ghost" id="d-restart" style="margin-top:auto">Начать ночь заново</button>
+</aside>
 
 <div class="ov" id="ov" hidden><div class="ovbox" id="ovbox"></div></div>
 
 <script src="core.js"></script>
 <script>
 (function(){
-const NS='http://www.w3.org/2000/svg';
-let S;
-const hm=G.hm, L=G.LOC;
-const KEY='obyasnenie-night1';
+const NS='http://www.w3.org/2000/svg', L=G.LOC, hm=G.hm, KEY='obyasnenie-n1-beta', BEST='obyasnenie-n1-best';
+let S, tab='world', token=null, anim=null, shownT=null;
+const $=id=>document.getElementById(id);
+const RULES='<div class="rules"><ol><li>Ты не можешь умереть. После смерти ты живёшь дальше в мире, где выжил. Время назад не идёт: подняться занимает 15 минут.</li><li>У выживания всегда есть причина, и мир её запоминает. Срабатывает самое вероятное объяснение, для которого в мире уже есть условия. Подготовь мир, и смерть объяснится по-другому.</li><li>Правки не снимаются и мешают друг другу: то, что спасает одного, может погубить другого.</li><li>Каждая правка добавляет невероятности. С 4 начинаются совпадения, с 7 люди помнят иначе, с 10 мир уже не твой.</li><li>Чужие смерти не отменяются.</li><li>Люди видят твои смерти. Кто-то после этого пойдёт за тобой куда угодно, а кто-то сбежит.</li><li>Без смертей можно спасти двоих. Чтобы спасти троих, придётся умереть.</li><li>Ходи по карте, нажимая на места. Цифры у мест — минуты пути. Действия можно выбирать клавишами 1–9.</li></ol></div>';
 
-function goals(){
-  const g=[
-    {k:'misha',nm:'Миша, друг',d:'Спит за запертой дверью, в квартире утечка газа. Хор знает: в 02:45 он не проснётся.'},
-    {k:'liza',nm:'Лиза, сестра',d:'В реанимации на ИВЛ. В 03:00 подстанцию отключат, генератор больницы сломан. Без света аппарат протянет минут двадцать.'},
-    {k:'danya',nm:'Даня, сосед, 7 лет',d:'Упал в котлован на стройке. Вода прибывает, к 03:30 она будет выше головы.'}
-  ];
-  document.getElementById('goals').innerHTML=g.map(x=>{
-    const p=S[x.k]; let st=p.st, txt;
-    if(x.k==='liza'&&st==='danger'&&G.lizaSafe(S)){st='saved';txt='в безопасности'}
-    else txt=st==='danger'?'в опасности':st==='saved'?'спасён'+(x.k==='liza'?'а':'')+' · '+hm(p.at):'погиб'+(x.k==='liza'?'ла':'')+' · '+hm(p.at);
-    if(x.k==='liza'&&p.st==='danger'&&!G.lizaSafe(S)&&!G.powered(S,S.t))txt='без света '+p.unp+' мин';
-    else if(x.k==='liza'&&p.st==='danger'&&!G.lizaSafe(S)&&!G.gridOn(S,S.t)){txt='на генераторе';st='saved'}
-    return '<div class="goal '+st+'"><div class="h"><span class="nm">'+x.nm+'</span><span class="st">'+txt+'</span></div><div class="d">'+x.d+'</div></div>';
-  }).join('');
+/* ---------- HUD */
+function lifeState(k){
+  const p=S[k]; let cls=p.st, txt;
+  if(p.st==='saved')txt='спас'+(k==='liza'?'ена':'ён')+' '+hm(p.at);
+  else if(p.st==='dead')txt='погиб'+(k==='liza'?'ла':'')+' '+hm(p.at);
+  else if(k==='liza'&&G.lizaSafe(S)){cls='saved';txt='в безопасности'}
+  else if(k==='liza'&&!G.powered(S,S.t)){txt='без света '+p.unp+' мин'}
+  else if(k==='liza'&&!G.gridOn(S,S.t)){cls='saved';txt='на генераторе'}
+  else txt={misha:'газ · 02:45',liza:'свет · 03:00',danya:'вода · 03:30'}[k];
+  const dl={misha:165,liza:S.subEarly?S.t+20:200,danya:210}[k];
+  const urgent=p.st==='danger'&&cls!=='saved'&&dl-S.t<=30;
+  return {cls,txt,urgent};
+}
+function hud(){
+  const t=S.t;
+  $('clock').innerHTML=hm(t)+'<small>до рассвета '+hm(Math.max(0,G.DAWN-t))+'</small>';
+  const names={misha:'Миша',liza:'Лиза',danya:'Даня'};
+  $('lives').innerHTML=['misha','liza','danya'].map(k=>{const s=lifeState(k);return '<div class="life '+s.cls+(s.urgent?' urgent':'')+'"><img src="'+k+'.jpg" alt=""><div class="tx"><div class="nm">'+names[k]+'</div><div class="st">'+s.txt+'</div></div></div>'}).join('');
+  $('nval').textContent=S.N; $('nfill').style.width=Math.min(100,S.N/12*100)+'%';
+  const b=$('ebadge'); b.hidden=!S.edits.length; b.textContent=S.edits.length;
 }
 
+/* ---------- карта */
 function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e}
+function person(svg,x,y,c,t){el('circle',{cx:x,cy:y,r:11,fill:c,stroke:'#080b12','stroke-width':4},svg);if(t)el('text',{x:x,y:y-20,'font-size':21,fill:c,'text-anchor':'middle',stroke:'#080b12','stroke-width':6,'paint-order':'stroke','font-family':'Golos Text, sans-serif','font-weight':600},svg,t)}
+function item(svg,x,y,t){const g=el('g',{transform:'translate('+x+' '+y+')'},svg);el('rect',{x:-4,y:-18,width:t.length*13+16,height:28,rx:14,fill:'rgba(242,169,58,.92)'},g);el('text',{x:4+(t.length*13+8)/2-4,y:2,'font-size':19,'text-anchor':'middle',fill:'#1b1205','font-family':'IBM Plex Mono, monospace','font-weight':500},g,t)}
 function drawMap(){
-  const svg=document.getElementById('map'); svg.innerHTML='';
+  const svg=$('map'); svg.innerHTML='';
   el('image',{href:'map.jpg',x:0,y:0,width:1536,height:1024,preserveAspectRatio:'none'},svg);
-  // темнота на восточном берегу
   if(!G.gridOn(S,S.t)){
-    el('path',{d:'M884 0 C870 200 900 300 882 420 C866 560 912 650 868 760 C860 880 876 960 872 1024 L1536 1024 L1536 0 Z',fill:'rgba(4,7,14,.66)'},svg);
-    if(G.powered(S,S.t)){ el('ellipse',{cx:1090,cy:220,rx:150,ry:110,fill:'rgba(255,214,140,.16)'},svg); }
-    el('text',{x:1205,y:990,'font-size':28,fill:'#cfd6e6','font-family':'IBM Plex Mono, monospace','text-anchor':'middle'},svg,'восточный берег без света');
+    el('path',{d:'M884 0 C870 200 900 300 882 420 C866 560 912 650 868 760 C860 880 876 960 872 1024 L1536 1024 L1536 0 Z',fill:'rgba(3,6,12,.7)'},svg);
+    if(G.powered(S,S.t))el('ellipse',{cx:1090,cy:220,rx:150,ry:110,fill:'rgba(255,214,140,.18)'},svg);
+    el('text',{x:1205,y:992,'font-size':26,fill:'#cfd6e6','font-family':'IBM Plex Mono, monospace','text-anchor':'middle'},svg,'восточный берег без света');
   }
-  // газопровод
-  const gasCol=S.gas?'#e9c046':'#6a6a6a';
   const gp=el('g',{fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},svg);
-  const pipe=(d,on)=>{el('path',{d,stroke:'#0b0f18','stroke-width':12,opacity:.6},gp);el('path',{d,stroke:on?gasCol:'#6a6a6a','stroke-width':6,class:on?'gasflow':''},gp)};
+  const pipe=(d,on)=>{el('path',{d,stroke:'#080b12','stroke-width':12,opacity:.6},gp);el('path',{d,stroke:on?'#e9c046':'#6a6a6a','stroke-width':6,class:on?'gasflow':''},gp)};
   pipe('M150 470 L215 420 L300 330 L330 250',S.gas);
   pipe('M330 250 L380 205 L420 175',S.gas&&!S.riser);
   pipe('M300 330 L470 420 L560 400 L680 352 L890 352 L980 300 L1060 250',S.gas);
-  if(S.riser){el('path',{d:'M362 192 l34 34 M396 192 l-34 34',stroke:'#e0614f','stroke-width':7},svg)}
-  // мост заклинило
+  if(S.riser)el('path',{d:'M362 192 l34 34 M396 192 l-34 34',stroke:'#e2604d','stroke-width':7},svg);
   if(S.jam){
-    el('rect',{x:672,y:318,width:224,height:58,fill:'rgba(224,97,79,.18)',stroke:'#e0614f','stroke-width':5,'stroke-dasharray':'14 10'},svg);
-    el('text',{x:785,y:305,'font-size':26,fill:'#ffb0a4','text-anchor':'middle','font-family':'IBM Plex Mono, monospace'},svg,'пролёт заклинило');
-    el('text',{x:785,y:900,'font-size':24,fill:'#9cc8ee','text-anchor':'middle','font-family':'IBM Plex Mono, monospace'},svg,'вода сброшена');
+    el('rect',{x:672,y:318,width:224,height:58,fill:'rgba(226,96,77,.2)',stroke:'#e2604d','stroke-width':5,'stroke-dasharray':'14 10'},svg);
+    el('text',{x:785,y:302,'font-size':24,fill:'#ffb0a4','text-anchor':'middle','font-family':'IBM Plex Mono, monospace',stroke:'#080b12','stroke-width':6,'paint-order':'stroke'},svg,'пролёт заклинило');
+    el('text',{x:785,y:905,'font-size':22,fill:'#9cc8ee','text-anchor':'middle','font-family':'IBM Plex Mono, monospace',stroke:'#080b12','stroke-width':6,'paint-order':'stroke'},svg,'вода сброшена');
   }
-  // котлован: уровень воды
+  if(!S.jam&&S.t>=150&&S.t<180&&!S.crew){const g=el('g',{transform:'translate('+(700+(S.t-150)*5)+' 343)'},svg);el('rect',{x:-26,y:-13,width:52,height:26,rx:4,fill:'#3a6fb0',stroke:'#080b12','stroke-width':3},g);el('circle',{cx:20,cy:-14,r:5,fill:'#ffb347',class:'siren'},g)}
+  // котлован
   let lvl;
   if(S.danya.st==='saved')lvl=.12; else if(S.danya.st==='dead')lvl=1;
   else if(S.drainAt!==null){const k=Math.min(1,Math.max(0,(S.t-(S.drainAt-30))/30));const base=.4+.6*Math.min(1,(S.drainAt-30-60)/150);lvl=base-(base-.12)*k}
   else lvl=.4+.6*Math.min(1,(S.t-60)/150);
   const top=750,bot=852,h=(bot-top)*lvl;
   el('rect',{x:152,y:bot-h,width:150,height:h,fill:'rgba(77,143,196,.55)',stroke:'rgba(160,200,235,.6)','stroke-width':2},svg);
-  // Даня
-  const dx=230,dy=790;
-  if(S.danya.st==='danger'){el('circle',{cx:dx,cy:dy,r:16,class:'danger-ring'},svg);el('circle',{cx:dx,cy:dy,r:9,fill:'#ffe4d0'},svg)}
-  else if(S.danya.st==='saved'){el('circle',{cx:335,cy:870,r:10,fill:'#86c39d'},svg)}
-  // Миша
-  if(S.misha.st==='danger'){el('circle',{cx:470,cy:120,r:16,class:'danger-ring'},svg)}
-  else if(S.misha.st==='saved'){el('circle',{cx:455,cy:200,r:10,fill:'#86c39d'},svg)}
-  // Лиза
-  if(S.liza.st==='danger'&&!G.lizaSafe(S)&&S.t>=150&&!(S.genReady!==null&&S.t>=S.genReady&&S.gas)){el('circle',{cx:1085,cy:285,r:16,class:'danger-ring'},svg)}
-  // генератор МЧС
-  if(S.truck.gen){el('rect',{x:1140,y:250,width:40,height:30,fill:'#c9c25a',stroke:'#222','stroke-width':3},svg)}
+  if(S.danya.st==='danger'){el('circle',{cx:230,cy:790,r:16,class:'danger-ring'},svg);el('circle',{cx:230,cy:790,r:9,fill:'#ffe4d0'},svg)}
+  else if(S.danya.st==='saved')person(svg,335,872,'#86c49e','');
+  if(S.misha.st==='danger')el('circle',{cx:470,cy:120,r:16,class:'danger-ring'},svg); else if(S.misha.st==='saved')person(svg,455,205,'#86c49e','');
+  if(S.liza.st==='danger'&&!G.lizaSafe(S)&&S.t>=150&&!(S.genReady!==null&&S.t>=S.genReady&&S.gas))el('circle',{cx:1085,cy:285,r:16,class:'danger-ring'},svg);
+  if(S.truck.gen)el('rect',{x:1140,y:250,width:40,height:30,fill:'#c9c25a',stroke:'#222','stroke-width':3},svg);
+  // предметы, о которых ты знаешь
+  if(S.know.lom&&!S.inv.lom)item(svg,265,715,'лом');
+  if(S.know.rope&&!S.inv.rope)item(svg,455,600,'верёвка');
   // машина МЧС
-  const T=S.truck, tl=L[T.loc], tx=tl.x+(T.loc==='mchs'?-10:45), ty=tl.y+(T.loc==='mchs'?70:40);
+  const T=S.truck, tl=L[T.loc], tx=tl.x+(T.loc==='mchs'?-10:48), ty=tl.y+(T.loc==='mchs'?72:42);
   const tg=el('g',{transform:'translate('+tx+' '+ty+')',opacity:T.awake?1:.55},svg);
   el('rect',{x:-34,y:-16,width:68,height:32,rx:5,fill:'#c9392b',stroke:'#1a0d0b','stroke-width':3},tg);
-  el('rect',{x:-34,y:-3,width:68,height:6,fill:'#f1efe6'},tg);
-  el('rect',{x:14,y:-14,width:16,height:28,fill:'#8a2318'},tg);
-  if(T.awake){el('circle',{cx:0,cy:-22,r:6,fill:'#5aa0ff',class:S.t<T.busy?'siren':''},tg)}
-  el('text',{x:0,y:44,'font-size':22,fill:'#ffd6cf','text-anchor':'middle','font-family':'IBM Plex Mono, monospace',stroke:'#0b0f18','stroke-width':6,'paint-order':'stroke'},tg,T.awake?(S.t<T.busy?'МЧС едут':'МЧС'):'МЧС спят');
-  // Гоша
-  const person=(x,y,c,t)=>{el('circle',{cx:x,cy:y,r:10,fill:c,stroke:'#0b0f18','stroke-width':3},svg); if(t)el('text',{x:x,y:y-18,'font-size':20,fill:c,'text-anchor':'middle',stroke:'#0b0f18','stroke-width':5,'paint-order':'stroke','font-family':'Golos Text, sans-serif'},svg,t)};
-  if(S.gosha==='follow'){const p=L[S.loc];person(p.x-42,p.y+30,'#9fd3ff','Гоша')}
-  if(S.gosha==='work'||S.gosha==='stay'){person(1130,320,'#9fd3ff','Гоша')}
-  if(S.gosha==='sleep'){person(1180,665,'#7d8ca0','')}
-  if(S.loadersAtPit){person(270,725,'#e7c7a0','грузчики')}
-  else if(S.loaders){person(470,600,'#e7c7a0','грузчики')}
-  if(S.gasman){person(190,430,'#e9c046','газовик')}
+  el('rect',{x:-34,y:-3,width:68,height:6,fill:'#f1efe6'},tg); el('rect',{x:14,y:-14,width:16,height:28,fill:'#8a2318'},tg);
+  if(T.awake)el('circle',{cx:0,cy:-22,r:6,fill:'#5aa0ff',class:S.t<T.busy?'siren':''},tg);
+  el('text',{x:0,y:44,'font-size':21,fill:'#ffd6cf','text-anchor':'middle','font-family':'IBM Plex Mono, monospace',stroke:'#080b12','stroke-width':6,'paint-order':'stroke'},tg,T.awake?(S.t<T.busy?'МЧС едут':'МЧС ждут'):'МЧС спят');
+  // люди
+  if(S.gosha==='work'||S.gosha==='stay')person(svg,1132,322,'#9fd3ff','Гоша');
+  if(S.gosha==='sleep'&&S.know.gosha)person(svg,1182,668,'#7d8ca0','Гоша спит');
+  if(S.loadersAtPit)person(svg,272,722,'#e7c7a0','грузчики'); else if(S.loaders)person(svg,470,602,'#e7c7a0','грузчики');
+  if(S.gasman)person(svg,190,428,'#e9c046','газовик');
   // места
   const D=G.dist(S,S.loc);
   for(const k in L){
-    const p=L[k], cur=k===S.loc, g=el('g',{class:'loc',tabindex:0,role:'button','aria-label':p.n+(cur?' — ты здесь':' — '+D[k]+' мин')},svg);
-    el('circle',{cx:p.x,cy:p.y,r:60,fill:'transparent'},g);
-    if(cur)el('circle',{cx:p.x,cy:p.y,r:24,class:'pulse'},g);
-    el('circle',{cx:p.x,cy:p.y,r:20,class:'ring'+(cur?' cur':'')},g);
-    if(cur)el('circle',{cx:p.x,cy:p.y,r:8,fill:'#f0a83a'},g);
+    const p=L[k], cur=k===S.loc, g=el('g',{class:'loc',tabindex:0,role:'button','aria-label':p.n+(cur?', ты здесь':', '+D[k]+' минут')},svg);
+    el('circle',{cx:p.x,cy:p.y,r:62,fill:'transparent'},g);
+    el('circle',{cx:p.x,cy:p.y,r:20,class:'ring'},g);
     const below=['stroika','shluz','avto','podst','rynok','grp'].includes(k);
-    el('text',{x:k==='grp'?p.x-50:p.x,y:below?p.y+52:p.y-32,'text-anchor':k==='grp'?'start':'middle',class:'lab'+(cur?' cur':'')},g,p.n+(!cur&&D[k]<Infinity?' · '+D[k]:''));
-    const go=()=>{if(!cur)doId('go:'+k)};
+    const tx2=k==='grp'?p.x-52:p.x, anchor=k==='grp'?'start':'middle';
+    const tt=el('text',{x:tx2,y:below?p.y+52:p.y-32,'text-anchor':anchor,class:'lab'+(cur?' cur':'')},g,p.n);
+    if(!cur&&D[k]<Infinity)el('tspan',{class:'mins'},tt,' '+D[k]+'′');
+    const go=()=>{if(!cur&&D[k]<Infinity)doId('go:'+k)};
     g.addEventListener('click',go); g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
   }
+  // фишка героя
+  token=el('g',{},svg);
+  el('circle',{cx:0,cy:0,r:22,class:'pulse'},token);
+  el('circle',{cx:0,cy:0,r:15,fill:'#f2a93a',stroke:'#1b1205','stroke-width':4},token);
+  if(S.gosha==='follow')el('circle',{cx:-30,cy:18,r:10,fill:'#9fd3ff',stroke:'#080b12','stroke-width':4},token);
+  const p=L[S.loc]; token.setAttribute('transform','translate('+p.x+' '+p.y+')');
+}
+function animateRoute(route,done){
+  if(!route||route.length<2||matchMedia('(prefers-reduced-motion: reduce)').matches){done();return}
+  const pts=route.map(k=>[L[k].x,L[k].y]); const seg=180; let i=0, t0=null;
+  const stepF=ts=>{ if(t0===null)t0=ts; const k=Math.min(1,(ts-t0)/seg); const a=pts[i],b=pts[i+1];
+    token.setAttribute('transform','translate('+(a[0]+(b[0]-a[0])*k)+' '+(a[1]+(b[1]-a[1])*k)+')');
+    if(k<1){anim=requestAnimationFrame(stepF);return}
+    i++; t0=null; if(i<pts.length-1){anim=requestAnimationFrame(stepF)}else done(); };
+  anim=requestAnimationFrame(stepF);
 }
 
-function render(){
-  document.getElementById('clock').innerHTML=hm(S.t)+'<small>до рассвета '+hm(Math.max(0,G.DAWN-S.t))+'</small>';
-  document.getElementById('nval').textContent=S.N;
-  document.getElementById('nfill').style.width=Math.min(100,S.N/12*100)+'%';
-  goals(); drawMap();
-  // куда идти
-  const mv=G.moves(S).sort((a,b)=>a.min-b.min);
-  document.getElementById('goto').innerHTML=mv.map(m=>'<button data-to="'+m.to+'">'+L[m.to].n+'<span>'+m.min+' мин</span></button>').join('');
-  document.querySelectorAll('#goto button').forEach(b=>b.onclick=()=>doId('go:'+b.dataset.to));
-  // сцена
-  const A=G.list(S);
-  let h='<h3>'+L[S.loc].n+'</h3><p>'+G.descr(S)+'</p>';
-  const inv=[]; if(S.inv.rope)inv.push('верёвка'); if(S.inv.lom)inv.push('лом'); if(S.gosha==='follow')inv.push('с тобой Гоша');
-  if(inv.length)h+='<p class="mono" style="font-size:12px;color:var(--dim)">С собой: '+inv.join(', ')+'</p>';
-  if(S.clue)h+='<div class="clue">'+S.clue+'</div>';
-  h+='<div class="acts">';
-  A.forEach((a,i)=>{
-    const minor=a.id==='wait'||a.id==='dawn';
-    const cls='act'+(a.kind==='die'?' die':'')+(a.kind==='clue'?' clue-a':'')+(minor?' minor':'');
-    const k=a.kind==='die'?'<span class="k">✝</span>':a.kind==='clue'?'<span class="k">?</span>':'';
-    const t=a.id==='dawn'?'до 05:00':a.min+' мин';
-    h+='<button class="'+cls+'" data-i="'+i+'"'+(a.off||S.over?' disabled':'')+'><span>'+k+a.lbl+(a.off?'<span class="why">'+a.off+'</span>':'')+'</span><span class="t">'+t+'</span></button>';
-  });
-  h+='</div>';
-  const sc=document.getElementById('scene'); sc.innerHTML=h;
-  sc.querySelectorAll('.act').forEach(b=>b.onclick=()=>doId(A[+b.dataset.i].id));
-  // правки и журнал
-  document.getElementById('ecount').textContent=S.edits.length+' · Н '+S.N;
-  document.getElementById('edits').innerHTML=S.edits.length?S.edits.map(e=>'<div class="edit"><div class="h"><span>'+G.EDITS[e].t+'</span><span class="c">+'+G.EDITS[e].c+'</span></div><div class="s">'+G.EDITS[e].s+'</div></div>').join(''):'<p class="empty">Пока это твой мир. Каждая смерть оставит здесь карточку.</p>';
-  document.getElementById('log').innerHTML=S.log.map(l=>'<div><span class="tm">'+hm(l.t)+'</span><span class="'+l.cls+'">'+l.txt+'</span></div>').join('');
-  if(S.over&&ov.hidden)showEnding();
+/* ---------- сцена и выбор */
+function scene(){
+  const p=L[S.loc];
+  let h='<h2>'+p.n+'</h2><p>'+G.descr(S)+'</p>';
+  const carry=[]; if(S.inv.rope)carry.push('верёвка'); if(S.inv.lom)carry.push('лом'); if(S.gosha==='follow')carry.push(S.goshaSaw?'Гоша, верит каждому слову':'Гоша идёт с тобой');
+  if(carry.length)h+='<div class="carry">'+carry.map(x=>'<span>'+x+'</span>').join('')+'</div>';
+  if(S.last)h+='<div class="result '+(S.last.cls||'')+'"><b>'+S.last.title+'</b>'+S.last.text+'</div>';
+  $('place').innerHTML=h;
+  const A=G.list(S); let n=0, html='', sepDone=false;
+  const main=A.filter(a=>a.id!=='wait'&&a.id!=='dawn'), minor=A.filter(a=>a.id==='wait'||a.id==='dawn');
+  const render=(a,i)=>{
+    const cls='choice'+(a.kind==='die'?' die':'')+(a.kind==='clue'?' clue'+(a.fresh?' new':''):'')+((a.id==='wait'||a.id==='dawn')?' minor':'');
+    const tm=a.id==='dawn'?'до 05:00':a.kind==='die'?'смерть · 15′':a.min+'′';
+    n++; return '<button class="'+cls+'" data-id="'+a.id+'"'+(a.off||S.over?' disabled':'')+'><span class="key">'+n+'</span><span><span class="lb">'+a.lbl+'</span>'+(a.off?'<span class="why">'+a.off+'</span>':'')+'</span><span class="tm">'+tm+'</span></button>';
+  };
+  main.forEach(a=>html+=render(a)); html+='<div class="sep">или</div>'; minor.forEach(a=>html+=render(a));
+  $('choices').innerHTML=html;
+  $('choices').querySelectorAll('.choice').forEach(b=>b.onclick=()=>doId(b.dataset.id));
 }
+function drawer(){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  let h='';
+  if(tab==='world')h=S.edits.length?S.edits.map(e=>'<div class="edit"><div class="h"><span>'+G.EDITS[e].t+'</span><span class="c">Н +'+G.EDITS[e].c+'</span></div><div class="s">'+G.EDITS[e].s+'</div></div>').join(''):'<p style="color:var(--dim);margin:0">Пока это твой мир. Каждая твоя смерть оставит здесь карточку: что изменилось и чем это грозит.</p>';
+  if(tab==='log')h=S.log.map(l=>'<div class="logl"><span class="t">'+hm(l.t)+'</span><span class="'+l.cls+'">'+l.txt+'</span></div>').join('');
+  if(tab==='rules')h=RULES;
+  $('dbody').innerHTML=h;
+}
+function render(){ hud(); drawMap(); scene(); drawer(); if(S.over&&$('ov').hidden&&$('title').hidden)ending(); }
 
-const ov=document.getElementById('ov'), ovbox=document.getElementById('ovbox');
+function toast(l){const d=document.createElement('div');d.className='toast '+(l.cls||'');d.textContent=hm(l.t)+' · '+l.txt;$('toasts').appendChild(d);setTimeout(()=>d.remove(),5200)}
 function doId(id){
   if(S.over)return;
-  const r=G.apply(S,id); if(!r)return;
+  const before=S.log.length; const r=G.apply(S,id); if(!r)return;
   persist();
-  if(r.kind==='die')showWake(r); else render();
+  const fresh=S.log.slice(0,S.log.length-before).reverse().filter(l=>l.cls&&!l.txt.startsWith('✝')&&!l.txt.startsWith('Правка')&&!l.txt.startsWith('Объяснение'));
+  if(r.kind==='die'){death(r,fresh);return}
+  if(r.kind==='go'){ scene(); hud(); animateRoute(r.route,()=>{drawMap();drawer();fresh.forEach(toast);if(S.over)ending()}); return }
+  render(); fresh.forEach(toast);
 }
-function showWake(r){
+function death(r,fresh){
   const e=r.r.e?G.EDITS[r.r.e]:null;
-  ovbox.innerHTML='<div class="die"><b>✝ '+hm(r.at)+'</b>'+r.d.die+'</div>'+
-    '<div class="because">…и я жив. <span>Я выжил, потому что</span> '+r.r.why+'</div>'+
-    (e?'<div class="stamp"><div class="h"><span>Правка: '+e.t+'</span><span class="c">Н +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
-      :'<div class="stamp zero"><div class="h"><span>Правки нет: объяснение уже было в мире</span><span class="c">Н +0</span></div><div class="s">Ты просто потерял 15 минут.</div></div>')+
-    '<button class="go" id="wake">Встать · '+hm(S.t)+'</button>';
-  ov.hidden=false; const b=document.getElementById('wake'); b.focus();
-  b.onclick=()=>{ov.hidden=true;render()};
+  const fl=document.createElement('div');fl.className='redflash';document.body.appendChild(fl);setTimeout(()=>fl.remove(),800);
+  $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+'</div><div class="dtext">'+r.d.die+'</div>'+
+    '<div class="alive">…и я жив.</div><div class="because"><em>Я выжил, потому что</em> '+r.r.why+'</div>'+
+    (e?'<div class="stamp"><div class="h"><span>Правка мира: '+e.t+'</span><span class="c">Н +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
+      :'<div class="stamp zero"><div class="h"><span>Правки нет: объяснение уже было в мире</span><span class="c">Н +0</span></div><div class="s">Ты просто потерял пятнадцать минут.</div></div>')+
+    (r.seen.length?'<div class="seen"><b>Кто это видел</b>'+r.seen.join('<br><br>')+'</div>':'')+
+    '<button class="big" id="wake">Встать · '+hm(S.t)+'</button>';
+  $('ov').hidden=false; const b=$('wake'); setTimeout(()=>b.focus(),50);
+  b.onclick=()=>{$('ov').hidden=true;render();fresh.forEach(toast)};
 }
-function showEnding(){
-  const who=[['misha','Миша'],['liza','Лиза'],['danya','Даня']];
-  const st=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S))?'saved':S[k].st;
-  const n=who.filter(([k])=>st(k)==='saved').length;
-  const h=n===3?(S.deaths===0?'Все живы':'Все трое живы'):n===2?'Двое живы':n===1?'Один жив':'Никого';
-  ovbox.innerHTML='<div class="ending"><h3>'+h+'</h3></div><ul>'+
-    who.map(([k,nm])=>'<li>'+nm+': '+(st(k)==='saved'?'жив'+(k==='liza'?'а':''):'погиб'+(k==='liza'?'ла':'')+' в '+hm(S[k].at))+'</li>').join('')+
-    '<li>Невероятность мира: <b class="mono">'+S.N+'</b>'+(S.N>=10?' · мир чужой':S.N>=7?' · тебя помнят другим':S.N>=4?' · совпадения':' · мир твой')+'</li>'+
-    '<li>Твоих смертей за ночь: <b class="mono">'+S.deaths+'</b></li>'+
-    '<li>Свидетели чуда: '+(S.wit.length?S.wit.join(', '):'нет')+'</li></ul>'+
-    '<p style="margin:0;color:var(--dim);font-size:14px">Без единой смерти можно спасти двоих. Всех троих — с одной смертью и невероятностью 1, если не потерять ни минуты.</p>'+
-    '<button class="go" id="again">Ещё одна ночь</button>';
-  ov.hidden=false;
-  document.getElementById('again').onclick=()=>{S=fresh();persist();ov.hidden=true;render()};
+function ending(){
+  const names={misha:'Миша',liza:'Лиза',danya:'Даня'};
+  const ok=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S));
+  const n=['misha','liza','danya'].filter(ok).length;
+  const title=n===3?'Все трое живы':n===2?'Двое живы':n===1?'Один живой':'Никого';
+  const verdict=n===3&&S.N<=1?'Лучше этой ночи не бывает. Мир почти не заметил, что ты в нём был.':n===3?'Все живы. Мир заплатил за это: '+(S.N>=7?'тебя уже помнят другим.':S.N>=4?'в квартале пошли совпадения.':'несколько правок, и только.'):n===2&&S.deaths===0?'Двое живы, и ни одной твоей смерти. Это предел для честного пути. Третьего можно спасти, только умерев.':'Хор запомнит эту ночь. Попробуй иначе: смерть здесь — инструмент, а не ошибка.';
+  let best=null; try{best=JSON.parse(localStorage.getItem(BEST)||'null')}catch(e){}
+  const score=n*100-S.N*5-S.deaths; const isBest=!best||score>best.score;
+  if(isBest)try{localStorage.setItem(BEST,JSON.stringify({score,n,N:S.N,d:S.deaths}))}catch(e){}
+  $('ovbox').innerHTML='<div class="end"><div class="tc" style="color:var(--amber)">05:00 · РАССВЕТ</div><h2>'+title+'</h2></div>'+
+    '<div class="endtrio">'+['misha','liza','danya'].map(k=>'<div class="'+(ok(k)?'':'dead')+'"><img src="'+k+'.jpg" alt=""><b>'+names[k]+'</b><span>'+(ok(k)?'жив'+(k==='liza'?'а':''):'погиб'+(k==='liza'?'ла':'')+' в '+hm(S[k].at))+'</span></div>').join('')+'</div>'+
+    '<div class="stats"><div><b>'+S.deaths+'</b><span>твоих смертей</span></div><div><b>'+S.N+'</b><span>невероятность</span></div><div><b>'+S.wit.length+'</b><span>свидетелей чуда</span></div></div>'+
+    '<p class="verdict">'+verdict+'</p>'+(isBest?'<p class="mono" style="margin:0;color:var(--amber);font-size:12px">Новый лучший результат</p>':'')+
+    '<div class="tbtns"><button class="big" id="again">Ещё одна ночь</button><button class="big ghost" id="tomenu">В меню</button></div>';
+  $('ov').hidden=false;
+  $('again').onclick=()=>{S=G.fresh();persist();$('ov').hidden=true;render()};
+  $('tomenu').onclick=()=>{$('ov').hidden=true;showTitle()};
 }
-function fresh(){const X=G.fresh();X.log.unshift({t:60,txt:'Час ночи. Хор шепчет три имени и три времени. Ты слышал, как они умирают, в других мирах.',cls:'a'});return X}
+
+/* ---------- шторка, титул, сохранение */
+function openDrawer(t){tab=t||tab;drawer();$('drawer').classList.add('open');$('scrim').hidden=false}
+function closeDrawer(){$('drawer').classList.remove('open');$('scrim').hidden=true}
+$('b-world').onclick=()=>openDrawer('world'); $('b-menu').onclick=()=>openDrawer('log');
+$('d-close').onclick=closeDrawer; $('scrim').onclick=closeDrawer;
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;drawer()});
+$('d-restart').onclick=()=>{S=G.fresh();persist();closeDrawer();render()};
+function showTitle(){
+  const t=$('title'); t.hidden=false; t.style.backgroundImage='url(map.jpg)';
+  $('t-cont').hidden=!(S&&S.t>G.T0&&!S.over);
+  let best=null; try{best=JSON.parse(localStorage.getItem(BEST)||'null')}catch(e){}
+  $('t-best').textContent=best?'Лучшая ночь: спасено '+best.n+' из 3 · невероятность '+best.N+' · смертей '+best.d:'';
+}
+$('t-new').onclick=()=>{S=G.fresh();persist();$('title').hidden=true;render()};
+$('t-cont').onclick=()=>{$('title').hidden=true;render()};
+$('t-rules').onclick=()=>{$('title').hidden=true;render();openDrawer('rules')};
+document.addEventListener('keydown',e=>{
+  if(!$('title').hidden||!$('ov').hidden||e.target.tagName==='INPUT')return;
+  const n=+e.key; if(n>=1&&n<=9){const b=$('choices').querySelectorAll('.choice')[n-1]; if(b&&!b.disabled)b.click()}
+  if(e.key==='Escape')closeDrawer();
+});
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const v=localStorage.getItem(KEY);return v?JSON.parse(v):null}catch(e){return null}}
-document.getElementById('reset').onclick=()=>{S=fresh();persist();ov.hidden=true;render()};
 function start(data){
-  S=(data&&data.S)||load();
-  if(!S){S=fresh();try{document.getElementById('rules').open=true}catch(e){}}
+  S=(data&&data.S)||load()||G.fresh();
   render();
+  if(!(data&&data.S))showTitle(); else $('title').hidden=true;
 }
 window.claude?.hot?.snapshot?.(()=>({S}));
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
