@@ -140,6 +140,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 .tbox h1{font-family:var(--f-d);font-weight:800;font-size:clamp(36px,8vw,68px);letter-spacing:.04em;margin:0;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.6)}
 .tbox .night{font-family:var(--f-m);color:var(--amber);letter-spacing:.2em;text-transform:uppercase;font-size:13px}
 .tbox p{margin:0;font-size:16px;color:#ddd6c4;max-width:58ch}
+.tbox .tag{font-family:var(--f-d);font-weight:600;font-size:clamp(18px,3vw,24px);color:var(--fg)}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
 .trio div{background:rgba(18,25,39,.8);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center}
 .trio img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--amber);flex:none}
@@ -159,20 +160,24 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 .redflash{position:fixed;inset:0;background:var(--red);opacity:0;pointer-events:none;z-index:36;animation:flash .7s ease-out}
 @keyframes flash{0%{opacity:.55}100%{opacity:0}}
 .tc{font-family:var(--f-m);color:var(--red);letter-spacing:.2em;font-size:13px}
-.dtext{font-size:19px;color:#e8c9c2;line-height:1.55;animation:fadein .8s ease-out both}
-.alive{font-family:var(--f-d);font-weight:600;font-size:clamp(22px,4vw,30px);animation:fadein .8s ease-out .9s both}
-.because{font-size:18px;line-height:1.5;animation:fadein .8s ease-out 1.5s both}
-.because em{font-style:normal;color:var(--amber)}
-.stamp{border:2px dashed var(--amber);border-radius:8px;padding:12px 14px;background:var(--amber-d);transform:rotate(-1.2deg);animation:stamp .45s cubic-bezier(.2,1.6,.4,1) 2.1s both}
+.dead{font-family:var(--f-d);font-weight:800;font-size:clamp(30px,6vw,46px);color:var(--red);letter-spacing:.03em;line-height:1;animation:fadein .5s ease-out .1s both}
+.dtext{font-size:18px;color:#e8c9c2;line-height:1.55;animation:fadein .8s ease-out .4s both}
+.alive{font-family:var(--f-d);font-weight:600;font-size:clamp(22px,4vw,30px);animation:fadein .8s ease-out 1.1s both}
+.because{margin:0;font-size:15px;color:var(--dim);animation:fadein .8s ease-out 1.4s both}
+.why{margin:0;font-size:18px;line-height:1.5;animation:fadein .8s ease-out 1.7s both}
+.mem{margin:0;font-size:14px;color:#cdb4ad;font-style:italic;animation:fadein .8s ease-out 2s both}
+.stamp .lb{display:block;font-family:var(--f-m);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.stamp.zero .lb{color:var(--ok)}
+.stamp{border:2px dashed var(--amber);border-radius:8px;padding:12px 14px;background:var(--amber-d);transform:rotate(-1.2deg);animation:stamp .45s cubic-bezier(.2,1.6,.4,1) 2.3s both}
 .stamp .h{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .stamp .h .c{font-family:var(--f-m);color:var(--amber)}
 .stamp .s{font-size:14px;color:#ecd6aa;margin-top:4px}
 .stamp.zero{border-color:var(--ok);background:var(--ok-d)} .stamp.zero .c{color:var(--ok)}
 @keyframes stamp{from{transform:scale(1.6) rotate(-6deg);opacity:0}to{transform:rotate(-1.2deg);opacity:1}}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}}
-.seen{border-left:3px solid var(--blue);padding:4px 12px;color:#cfdbe8;font-size:15px;animation:fadein .8s ease-out 2.5s both}
+.seen{border-left:3px solid var(--blue);padding:4px 12px;color:#cfdbe8;font-size:15px;animation:fadein .8s ease-out 2.6s both}
 .seen b{display:block;font-family:var(--f-m);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
-.ovbox .big{align-self:flex-start;animation:fadein .5s ease-out 2.7s both}
+.ovbox .big{align-self:flex-start;animation:fadein .5s ease-out 2.8s both}
 .end h2{font-family:var(--f-d);font-weight:800;font-size:clamp(28px,6vw,44px);margin:0;line-height:1.05}
 .endtrio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .endtrio div{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -190,11 +195,12 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 
 <div class="title" id="title">
   <div class="tbox">
-    <div class="night">Ночь первая · Три жизни</div>
+    <div class="night">Дополнение к «Тот, кто остался» · Ночь первая</div>
     <h1>ОБЪЯСНЕНИЕ</h1>
-    <p>Мне тридцать четыре, и умереть у меня не получается. Каждый раз меня что-то спасает. То сторож вовремя проснётся, то водитель успеет затормозить, то газовик спросонья перекроет газ. Для всех вокруг мне просто повезло.</p>
-    <p>Только я помню и другое, как я умер. В соседних мирах так и было, и память оттуда приходит ко мне. Отец называл это Хором.</p>
-    <p>Сегодня Хор с вечера повторяет три имени и три времени. Я уже слышал, как эти трое умирают в других мирах.</p>
+    <p class="tag">Умереть ты не можешь. Успеть ты можешь не всё.</p>
+    <p>Каждый раз, когда ты погибаешь, ты продолжаешь жить в мире, где тебе повезло. Там сторож вовремя включил насос, а водитель успел затормозить. Люди видят только, как тебе повезло. Как ты умер, помнишь один ты.</p>
+    <p>Сегодня ночью в твоём квартале должны умереть трое. Друг, сестра и соседский мальчишка. Ты знаешь, кто и когда. До рассвета четыре часа.</p>
+    <p>Ходи по кварталу, говори с людьми, ищи способы. А если не успеваешь, умри с умом. Каждая твоя смерть что-то меняет в мире. Иногда это кого-то спасает, а иногда губит.</p>
     <div class="trio">
       <div><img src="misha.jpg" alt=""><span><b>Миша, друг</b><span>газ · 02:45</span></span></div>
       <div><img src="liza.jpg" alt=""><span><b>Лиза, сестра</b><span>свет · 03:00</span></span></div>
@@ -251,7 +257,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 const NS='http://www.w3.org/2000/svg', L=G.LOC, hm=G.hm, KEY='obyasnenie-n1-beta', BEST='obyasnenie-n1-best';
 let S, tab='world', token=null, anim=null, shownT=null;
 const $=id=>document.getElementById(id);
-const RULES='<div class="rules"><ol><li>Умереть ты не можешь. Когда ты погибаешь, ты продолжаешь жить в мире, где тебя что-то спасло. Время назад не идёт, а чтобы прийти в себя, нужно 15 минут.</li><li>Ты помнишь свою смерть, потому что в соседнем мире она случилась. Это Хор. Люди вокруг видят только, как тебя спасли.</li><li>Спасает всегда то, чего ты не видел. Всё, что ты видел своими глазами, в этом мире так и есть. Поэтому спасение приходит в ту же секунду: кто-то проснулся, затормозил, рванул рычаг.</li><li>Из всех возможных спасений случается самое простое из тех, для которых в мире уже всё есть. Если заранее что-то поменять, та же смерть закончится по-другому.</li><li>То, что тебя спасло, остаётся. Бывает, что спасаешь одного и этим губишь другого.</li><li>Невероятность показывает, сколько чудес случилось вокруг тебя за ночь. С 4 по району пойдут слухи, с 7 от тебя начнут шарахаться, с 10 тобой заинтересуются люди из Томска.</li><li>Если умирать у людей на глазах нарочно, кто-то начнёт тебя слушаться, а кто-то сбежит.</li><li>Чужие смерти не отменяются.</li><li>Без смертей можно спасти двоих. Чтобы спасти троих, придётся умереть.</li><li>Чтобы идти, нажми на место на карте. Цифра рядом — сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
+const RULES='<div class="rules"><ol><li>Ты не можешь умереть. Когда ты погибаешь, ты продолжаешь жить в мире, где тебе повезло. На то, чтобы прийти в себя, уходит 15 минут. Время назад не отматывается.</li><li>Ты помнишь, как умер. Люди вокруг видели только, как тебе повезло.</li><li>Везение случается в ту же секунду, когда ты погибаешь, и всегда там, куда ты не смотрел.</li><li>Какое будет везение, зависит от того, что уже есть в мире. Если заранее что-то поменять, та же смерть закончится по-другому.</li><li>То, что тебя спасло, остаётся в мире насовсем. Иногда это помогает другим, иногда мешает.</li><li>Невероятность показывает, сколько чудес случилось вокруг тебя за ночь. Чем она выше, тем больше людей это замечают.</li><li>Если кто-то умер не по твоей воле, это навсегда.</li><li>Без единой смерти можно спасти двоих. Чтобы спасти троих, придётся умереть.</li><li>Чтобы пойти куда-то, нажми на место на карте. Цифра рядом показывает, сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
 
 /* ---------- HUD */
 function lifeState(k){
@@ -361,7 +367,7 @@ function animateRoute(route,done){
 function scene(){
   const p=L[S.loc];
   let h='<h2>'+p.n+'</h2><p>'+G.descr(S)+'</p>';
-  const carry=[]; if(S.inv.rope)carry.push('верёвка'); if(S.inv.lom)carry.push('лом'); if(S.gosha==='follow')carry.push(S.goshaSaw?'Гоша, верит каждому слову':'Гоша идёт с тобой');
+  const carry=[]; if(S.inv.rope)carry.push('верёвка, для котлована'); if(S.inv.lom)carry.push('лом, для двери Миши'); if(S.gosha==='follow')carry.push(S.goshaSaw?'Гоша, верит каждому слову':'Гоша идёт с тобой');
   if(carry.length)h+='<div class="carry">'+carry.map(x=>'<span>'+x+'</span>').join('')+'</div>';
   if(S.last)h+='<div class="result '+(S.last.cls||'')+'"><b>'+S.last.title+'</b>'+S.last.text+'</div>';
   $('place').innerHTML=h;
@@ -391,7 +397,7 @@ function doId(id){
   if(S.over)return;
   const before=S.log.length; const r=G.apply(S,id); if(!r)return;
   persist();
-  const fresh=S.log.slice(0,S.log.length-before).reverse().filter(l=>l.cls&&!l.txt.startsWith('✝')&&!l.txt.startsWith('Правка')&&!l.txt.startsWith('Объяснение'));
+  const fresh=S.log.slice(0,S.log.length-before).reverse().filter(l=>l.cls&&!l.txt.startsWith('✝')&&!l.txt.startsWith('✦')&&!l.txt.startsWith('Тебя спасло'));
   if(r.kind==='die'){death(r,fresh);return}
   if(r.kind==='go'){ scene(); hud(); animateRoute(r.route,()=>{drawMap();drawer();fresh.forEach(toast);if(S.over)ending()}); return }
   render(); fresh.forEach(toast);
@@ -399,12 +405,12 @@ function doId(id){
 function death(r,fresh){
   const e=r.r.e?G.EDITS[r.r.e]:null;
   const fl=document.createElement('div');fl.className='redflash';document.body.appendChild(fl);setTimeout(()=>fl.remove(),800);
-  $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+' · ТАК БЫЛО В СОСЕДНЕМ МИРЕ</div><div class="dtext">'+r.d.die+'</div>'+
-    '<div class="alive">…а здесь я жив.</div><div class="because"><em>Я выжил, потому что</em> '+r.r.why+'</div>'+
-    (e?'<div class="stamp"><div class="h"><span>'+e.t+'</span><span class="c">Невероятность +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
-      :'<div class="stamp zero"><div class="h"><span>Спасло то, что уже было</span><span class="c">Невероятность +0</span></div><div class="s">Ты просто потерял пятнадцать минут.</div></div>')+
+  $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+'</div><div class="dead">Ты умер</div><div class="dtext">'+r.d.die+'</div>'+
+    '<div class="alive">Но ты жив.</div><p class="because">Есть мир, где тебе повезло, и дальше ты живёшь в нём. Вот что там случилось.</p><p class="why">'+r.r.why+'</p><p class="mem">Как ты умер, помнишь только ты.</p>'+
+    (e?'<div class="stamp"><b class="lb">Теперь в мире</b><div class="h"><span>'+e.t+'</span><span class="c">Невероятность +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
+      :'<div class="stamp zero"><b class="lb">В мире ничего не поменялось</b><div class="h"><span>Тебя спасло то, что уже было</span><span class="c">Невероятность +0</span></div><div class="s">Ты потерял пятнадцать минут.</div></div>')+
     (r.seen.length?'<div class="seen"><b>Что видели люди</b>'+r.seen.join('<br><br>')+'</div>':'')+
-    '<button class="big" id="wake">Встать · '+hm(S.t)+'</button>';
+    '<button class="big" id="wake">Дальше · '+hm(S.t)+'</button>';
   $('ov').hidden=false; const b=$('wake'); setTimeout(()=>b.focus(),50);
   b.onclick=()=>{$('ov').hidden=true;render();fresh.forEach(toast)};
 }
@@ -413,7 +419,7 @@ function ending(){
   const ok=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S));
   const n=['misha','liza','danya'].filter(ok).length;
   const title=n===3?'Все трое живы':n===2?'Двое живы':n===1?'Один живой':'Никого';
-  const verdict=n===3&&S.N<=1?'Все живы, а про ночные чудеса почти никто не знает. Лучше эту ночь не пройти.':n===3?'Все живы, но чудес за ночь было много. '+(S.N>=10?'Утром за тобой приедут из Томска.':S.N>=7?'Соседи от тебя уже шарахаются.':S.N>=4?'По району ходят слухи.':'Пара чудес, и только.'):n===2&&S.deaths===0?'Двое живы, и ты ни разу не умер. Больше без смертей не успеть. Третьего спасёшь, только если умрёшь сам.':'Попробуй ещё раз. Здесь можно умирать нарочно, и иногда только так и успеваешь.';
+  const verdict=n===3&&S.N<=1?'Все трое живы. Чудес было совсем мало, и почти никто ничего не заметил. Лучше эту ночь не пройти.':n===3?'Все трое живы. '+(S.N>=10?'Чудес было столько, что утром за тобой приедут из Томска.':S.N>=7?'Соседи теперь тебя обходят.':S.N>=4?'По району пошли разговоры.':'Чудес было немного.'):n===2&&S.deaths===0?'Двое живы, и ты ни разу не умер. Без смертей больше двоих не спасти. Чтобы успеть к третьему, придётся умереть.':'Попробуй ещё раз. Иногда успеть можно, только если умереть.';
   let best=null; try{best=JSON.parse(localStorage.getItem(BEST)||'null')}catch(e){}
   const score=n*100-S.N*5-S.deaths; const isBest=!best||score>best.score;
   if(isBest)try{localStorage.setItem(BEST,JSON.stringify({score,n,N:S.N,d:S.deaths}))}catch(e){}
