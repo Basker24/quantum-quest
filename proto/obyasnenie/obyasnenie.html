@@ -192,7 +192,8 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
   <div class="tbox">
     <div class="night">Ночь первая · Три жизни</div>
     <h1>ОБЪЯСНЕНИЕ</h1>
-    <p>Мне тридцать четыре, и умереть у меня не получается. Каждый раз находится причина, почему я выжил. Сторож вовремя проснулся, газ перекрыли на проверку, водителя развернули по рации. Причина потом так и остаётся в мире, и всем с ней жить дальше.</p>
+    <p>Мне тридцать четыре, и умереть у меня не получается. Каждый раз меня что-то спасает. То сторож вовремя проснётся, то водитель успеет затормозить, то газовик спросонья перекроет газ. Для всех вокруг мне просто повезло.</p>
+    <p>Только я помню и другое, как я умер. В соседних мирах так и было, и память оттуда приходит ко мне. Отец называл это Хором.</p>
     <p>Сегодня Хор с вечера повторяет три имени и три времени. Я уже слышал, как эти трое умирают в других мирах.</p>
     <div class="trio">
       <div><img src="misha.jpg" alt=""><span><b>Миша, друг</b><span>газ · 02:45</span></span></div>
@@ -213,7 +214,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
     <div class="clock" id="clock">01:00<small>до рассвета 4:00</small></div>
     <div class="lives" id="lives"></div>
     <div class="right">
-      <div class="gauge" title="Невероятность мира. 4 — совпадения, 7 — люди помнят иначе, 10 — мир чужой">
+      <div class="gauge" title="Сколько чудес случилось вокруг тебя за ночь. 4 — слухи, 7 — от тебя шарахаются, 10 — тобой заинтересуются люди из Томска">
         <div class="lbl"><span>Невероятность</span><b id="nval">0</b></div>
         <div class="gbar"><i id="nfill" style="width:0%"></i><u style="left:33.3%"></u><u style="left:58.3%"></u><u style="left:83.3%"></u></div>
       </div>
@@ -237,7 +238,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" aria-label="Мир и журнал">
   <button class="close" id="d-close">Закрыть</button>
-  <div class="tabs"><button data-tab="world" class="on">Правки мира</button><button data-tab="log">Журнал</button><button data-tab="rules">Правила</button></div>
+  <div class="tabs"><button data-tab="world" class="on">Что иначе</button><button data-tab="log">Журнал</button><button data-tab="rules">Правила</button></div>
   <div class="dbody" id="dbody"></div>
   <button class="big ghost" id="d-restart" style="margin-top:auto">Начать ночь заново</button>
 </aside>
@@ -250,7 +251,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 const NS='http://www.w3.org/2000/svg', L=G.LOC, hm=G.hm, KEY='obyasnenie-n1-beta', BEST='obyasnenie-n1-best';
 let S, tab='world', token=null, anim=null, shownT=null;
 const $=id=>document.getElementById(id);
-const RULES='<div class="rules"><ol><li>Умереть ты не можешь. После смерти ты живёшь дальше в мире, где выжил. Время назад не идёт, а чтобы подняться, нужно 15 минут.</li><li>У выживания всегда есть причина, и она остаётся в мире. Срабатывает самая простая причина из тех, для которых в мире уже всё есть. Если заранее что-то поменять, та же смерть объяснится по-другому.</li><li>Правки не снимаются и мешают друг другу. Бывает, что спасаешь одного и этим губишь другого.</li><li>Каждая правка добавляет невероятности. С 4 начинаются совпадения, с 7 люди помнят иначе, с 10 мир уже не твой.</li><li>Чужие смерти не отменяются.</li><li>Люди видят, как ты умираешь и встаёшь. Кто-то после этого начинает слушаться, кто-то убегает.</li><li>Без смертей можно спасти двоих. Чтобы спасти троих, придётся умереть.</li><li>Чтобы идти, нажми на место на карте. Цифра рядом — сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
+const RULES='<div class="rules"><ol><li>Умереть ты не можешь. Когда ты погибаешь, ты продолжаешь жить в мире, где тебя что-то спасло. Время назад не идёт, а чтобы прийти в себя, нужно 15 минут.</li><li>Ты помнишь свою смерть, потому что в соседнем мире она случилась. Это Хор. Люди вокруг видят только, как тебя спасли.</li><li>Спасает всегда то, чего ты не видел. Всё, что ты видел своими глазами, в этом мире так и есть. Поэтому спасение приходит в ту же секунду: кто-то проснулся, затормозил, рванул рычаг.</li><li>Из всех возможных спасений случается самое простое из тех, для которых в мире уже всё есть. Если заранее что-то поменять, та же смерть закончится по-другому.</li><li>То, что тебя спасло, остаётся. Бывает, что спасаешь одного и этим губишь другого.</li><li>Невероятность показывает, сколько чудес случилось вокруг тебя за ночь. С 4 по району пойдут слухи, с 7 от тебя начнут шарахаться, с 10 тобой заинтересуются люди из Томска.</li><li>Если умирать у людей на глазах нарочно, кто-то начнёт тебя слушаться, а кто-то сбежит.</li><li>Чужие смерти не отменяются.</li><li>Без смертей можно спасти двоих. Чтобы спасти троих, придётся умереть.</li><li>Чтобы идти, нажми на место на карте. Цифра рядом — сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
 
 /* ---------- HUD */
 function lifeState(k){
@@ -325,6 +326,7 @@ function drawMap(){
   if(S.gosha==='sleep'&&S.know.gosha)person(svg,1182,668,'#7d8ca0','Гоша спит');
   if(S.loadersAtPit)person(svg,272,722,'#e7c7a0','грузчики'); else if(S.loaders)person(svg,470,602,'#e7c7a0','грузчики');
   if(S.gasman)person(svg,190,428,'#e9c046','газовик');
+  if(S.heart)person(svg,S.t>=S.veraAt?190:262,S.t>=S.veraAt?722:285,'#f0b8c8','Вера');
   // места
   const D=G.dist(S,S.loc);
   for(const k in L){
@@ -377,7 +379,7 @@ function scene(){
 function drawer(){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
   let h='';
-  if(tab==='world')h=S.edits.length?S.edits.map(e=>'<div class="edit"><div class="h"><span>'+G.EDITS[e].t+'</span><span class="c">Н +'+G.EDITS[e].c+'</span></div><div class="s">'+G.EDITS[e].s+'</div></div>').join(''):'<p style="color:var(--dim);margin:0">Пока мир такой, каким был вечером. После каждой смерти здесь появится карточка: что поменялось и чем это аукнется.</p>';
+  if(tab==='world')h=S.edits.length?S.edits.map(e=>'<div class="edit"><div class="h"><span>'+G.EDITS[e].t+'</span><span class="c">Н +'+G.EDITS[e].c+'</span></div><div class="s">'+G.EDITS[e].s+'</div></div>').join(''):'<p style="color:var(--dim);margin:0">Пока в этом мире ничего необычного. После каждой смерти здесь появится карточка о том, что тебя спасло и чем это аукнется.</p>';
   if(tab==='log')h=S.log.map(l=>'<div class="logl"><span class="t">'+hm(l.t)+'</span><span class="'+l.cls+'">'+l.txt+'</span></div>').join('');
   if(tab==='rules')h=RULES;
   $('dbody').innerHTML=h;
@@ -397,11 +399,11 @@ function doId(id){
 function death(r,fresh){
   const e=r.r.e?G.EDITS[r.r.e]:null;
   const fl=document.createElement('div');fl.className='redflash';document.body.appendChild(fl);setTimeout(()=>fl.remove(),800);
-  $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+'</div><div class="dtext">'+r.d.die+'</div>'+
-    '<div class="alive">…и я жив.</div><div class="because"><em>Я выжил, потому что</em> '+r.r.why+'</div>'+
-    (e?'<div class="stamp"><div class="h"><span>Правка мира: '+e.t+'</span><span class="c">Н +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
-      :'<div class="stamp zero"><div class="h"><span>Правки нет: объяснение уже было в мире</span><span class="c">Н +0</span></div><div class="s">Ты просто потерял пятнадцать минут.</div></div>')+
-    (r.seen.length?'<div class="seen"><b>Кто это видел</b>'+r.seen.join('<br><br>')+'</div>':'')+
+  $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+' · ТАК БЫЛО В СОСЕДНЕМ МИРЕ</div><div class="dtext">'+r.d.die+'</div>'+
+    '<div class="alive">…а здесь я жив.</div><div class="because"><em>Я выжил, потому что</em> '+r.r.why+'</div>'+
+    (e?'<div class="stamp"><div class="h"><span>'+e.t+'</span><span class="c">Невероятность +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
+      :'<div class="stamp zero"><div class="h"><span>Спасло то, что уже было</span><span class="c">Невероятность +0</span></div><div class="s">Ты просто потерял пятнадцать минут.</div></div>')+
+    (r.seen.length?'<div class="seen"><b>Что видели люди</b>'+r.seen.join('<br><br>')+'</div>':'')+
     '<button class="big" id="wake">Встать · '+hm(S.t)+'</button>';
   $('ov').hidden=false; const b=$('wake'); setTimeout(()=>b.focus(),50);
   b.onclick=()=>{$('ov').hidden=true;render();fresh.forEach(toast)};
@@ -411,7 +413,7 @@ function ending(){
   const ok=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S));
   const n=['misha','liza','danya'].filter(ok).length;
   const title=n===3?'Все трое живы':n===2?'Двое живы':n===1?'Один живой':'Никого';
-  const verdict=n===3&&S.N<=1?'Все живы, а квартал почти такой же, каким был вечером. Лучше эту ночь не пройти.':n===3?'Все живы, но квартал уже другой. '+(S.N>=7?'Соседи помнят тебя не таким, каким ты себя помнишь.':S.N>=4?'По району пошли странные совпадения.':'Пара правок, и только.'):n===2&&S.deaths===0?'Двое живы, и ты ни разу не умер. Больше без смертей не успеть. Третьего спасёшь, только если умрёшь сам.':'Попробуй ещё раз. Здесь можно умирать нарочно, и иногда только так и успеваешь.';
+  const verdict=n===3&&S.N<=1?'Все живы, а про ночные чудеса почти никто не знает. Лучше эту ночь не пройти.':n===3?'Все живы, но чудес за ночь было много. '+(S.N>=10?'Утром за тобой приедут из Томска.':S.N>=7?'Соседи от тебя уже шарахаются.':S.N>=4?'По району ходят слухи.':'Пара чудес, и только.'):n===2&&S.deaths===0?'Двое живы, и ты ни разу не умер. Больше без смертей не успеть. Третьего спасёшь, только если умрёшь сам.':'Попробуй ещё раз. Здесь можно умирать нарочно, и иногда только так и успеваешь.';
   let best=null; try{best=JSON.parse(localStorage.getItem(BEST)||'null')}catch(e){}
   const score=n*100-S.N*5-S.deaths; const isBest=!best||score>best.score;
   if(isBest)try{localStorage.setItem(BEST,JSON.stringify({score,n,N:S.N,d:S.deaths}))}catch(e){}

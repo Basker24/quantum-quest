@@ -5,7 +5,7 @@ const MAXD = +process.argv[2] || 0, ALL = process.argv[3] === '1';
 const clone = S => JSON.parse(JSON.stringify(S));
 const key = S => [S.t, S.loc, +S.inv.rope, +S.inv.lom, S.edits.slice().sort().join(','), +S.gas, +S.riser, +S.jam, +S.crew, +S.subEarly,
   +S.truck.awake, S.truck.loc, S.truck.busy, +S.truck.gen, +S.truck.pit, +!!S.truck.genOrdered, S.gosha, S.genReady, +S.loadersAtPit, S.drainAt,
-  Object.keys(S.know).filter(k=>!k.startsWith('c:')).sort().join(','), +S.goshaSaw, S.misha.st, S.liza.st, S.liza.unp, S.danya.st, S.ev.map(e => e.at + e.type).join(','), S.deaths].join('|');
+  Object.keys(S.know).filter(k=>!k.startsWith('c:')).sort().join(','), +S.goshaSaw, S.veraAt, S.misha.st, S.liza.st, S.liza.unp, S.danya.st, S.ev.map(e => e.at + e.type).join(','), S.deaths].join('|');
 const saved = S => (S.misha.st === 'saved') + (S.danya.st === 'saved') + ((S.liza.st === 'saved' || G.lizaSafe(S)) && S.liza.st !== 'dead');
 const dead = S => (S.misha.st === 'dead') + (S.danya.st === 'dead') + (S.liza.st === 'dead');
 const seen = new Set();
