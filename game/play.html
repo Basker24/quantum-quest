@@ -13,27 +13,41 @@
       <button id="btn-guide" class="ghost">Путь</button>
       <button id="btn-flow" class="ghost">Схема</button>
       <button id="btn-journal" class="ghost">Хор</button>
+      <button id="btn-dev-bar" class="ghost" hidden aria-label="Режим автора: состояние">⚙</button>
     </span>
   </header>
 
   <!-- титульный экран -->
   <section id="title" class="screen">
     <div class="title-wrap">
-      <p class="mono dim tc">28.07.2061 · 04:12 · Кемерово</p>
-      <h1>Тот,<br>кто остался</h1>
-      <p class="sub">Одна обычная жизнь, в которой нельзя умереть</p>
+      <div class="title-head">
+        <p class="mono dim tc">28.07.2061 · 04:12 · Кемерово</p>
+        <h1>Тот,<br>кто остался</h1>
+        <p class="hook">Каждый раз, когда я умираю, я снова стою за минуту до смерти и помню её.</p>
+        <p class="sub">Кузбасс, 1996–2061. Одна жизнь, восемь дорог и Хор тех, кем я был и кто не вернулся.</p>
+      </div>
       <div class="menu">
-        <button id="btn-new" class="choice">Новая жизнь</button>
-        <button id="btn-continue" class="choice" hidden>Продолжить</button>
-        <div class="menu-row">
-          <button id="btn-flow2" class="choice ghost-choice">Схема</button>
-          <button id="btn-journal2" class="choice ghost-choice">Хор</button>
-          <button id="btn-guide2" class="choice ghost-choice">Путеводитель</button>
-          <button id="btn-howto2" class="choice ghost-choice">О чём игра</button>
+        <button id="btn-continue" class="choice main-cta" hidden><span class="cta-l">Продолжить</span><small id="continue-sub" class="mono"></small></button>
+        <button id="btn-new" class="choice main-cta"><span class="cta-l">Новая жизнь</span><small id="new-sub" class="mono">с лета 1996-го, мне семь</small></button>
+        <p id="title-line" class="progress-line mono tiny"></p>
+        <nav class="menu-list" aria-label="Разделы">
+          <button id="btn-journal2" class="mitem"><span class="m-t">Тетрадь Хора</span><span class="m-s">все, кем я был и кто не вернулся</span><span class="m-n mono" id="m-journal"></span></button>
+          <button id="btn-flow2" class="mitem"><span class="m-t">Схема</span><span class="m-s">какие развилки пройдены, какие ещё ждут</span><span class="m-n mono" id="m-flow"></span></button>
+          <button id="btn-guide2" class="mitem"><span class="m-t">Путеводитель</span><span class="m-s">подсказки к каждому финалу, по ступеням</span><span class="m-n mono" id="m-guide"></span></button>
+          <button id="btn-howto2" class="mitem"><span class="m-t">О чём игра</span><span class="m-s">Эверетт, квантовое бессмертие и правила дара</span></button>
+        </nav>
+        <nav id="dev-menu" class="menu-list dev-menu" aria-label="Режим автора" hidden>
+          <button id="btn-devjump" class="mitem"><span class="m-t">⚙ Прыжок в сцену</span><span class="m-s">любая сцена со статами под выбранную историю</span></button>
+          <button id="btn-devstate" class="mitem"><span class="m-t">⚙ Состояние</span><span class="m-s">все переменные и флаги: где ставятся и читаются</span></button>
+          <button id="btn-devstats" class="mitem"><span class="m-t">⚙ Справка по статам</span><span class="m-s">все проверки каждой характеристики по годам</span></button>
+        </nav>
+        <div class="settings mono tiny">
+          <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button>
+          <button id="btn-dev" class="set-btn" aria-pressed="false">режим автора: выкл</button>
+          <button id="btn-about2" class="set-btn">об игре и помощь</button>
         </div>
       </div>
-      <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело, в разделе <button id="btn-about2" class="link">«Об игре»</button> есть контакты помощи.</p>
-      <p id="title-line" class="mono dim tiny">8 жизней · 133 сцены · ранний доступ</p>
+      <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело, в разделе «Об игре и помощь» есть телефоны, по которым ответят.</p>
     </div>
   </section>
 
@@ -170,9 +184,33 @@
     </div>
   </section>
 
+  <!-- режим автора -->
+  <section id="devstate" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Состояние</h2>
+    <p class="mono tiny"><button id="dv-to-jump" class="link">прыжок в сцену</button> · <button id="dv-to-stats" class="link">справка по статам</button></p>
+    <div id="devstate-body"></div>
+  </section>
+  <section id="devstats" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Справка по статам</h2>
+    <p class="dim tiny">Каждая проверка характеристики в игре: год · сцена, где проверяется, порог и что даёт. Собирает <code>tools/build.py</code>.</p>
+    <div id="devstats-body"></div>
+  </section>
+  <section id="devjump" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Прыжок в сцену</h2>
+    <p class="dim tiny">Состояние берётся из настоящего пути start → сцена → цель (<code>tools/dev_presets.py</code>), а не придумывается. <button id="dv-to-state" class="link">состояние</button></p>
+    <input id="devjump-q" class="dj-q mono" type="search" placeholder="поиск: ID или название" autocomplete="off">
+    <div id="devjump-body"></div>
+  </section>
+
   <section id="about" class="screen panel" hidden>
     <button class="close ghost">×</button>
-    <h2>Об игре</h2>
+    <h2>Об игре и помощь</h2>
     <p>Это история об одной обычной жизни, в которой нельзя умереть. Смерть в игре не наказание и не совет. Это память о тех, кто не вернулся, и о тех, кто их ждал.</p>
     <p>Если тебе сейчас плохо и хочется поговорить: детский телефон доверия <b>8-800-2000-122</b> (бесплатно, по России), международный каталог служб помощи — <b>findahelpline.com</b>.</p>
   </section>
