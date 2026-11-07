@@ -1,7 +1,7 @@
 /* «Объяснение» — дополнение к «Тот, кто остался». Движок и ночь 1 «Три жизни». Чистая логика без DOM.
    API: G.fresh(), G.list(S), G.moves(S), G.apply(S, id) → {kind, ...}, G.path(S, from, to), G.descr(S), G.danyaPhase(S). */
 (function (root) {
-  const T0 = 60, DAWN = 300;
+  const T0 = 60, DAWN = 300, CREW_FROM = 135, MISHA_DL = 165, DANYA_DL = 220; // ремонтники на мосту с 02:15 до 03:00
   const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
 
   // ---------- места (координаты на карте 1536×1024)
@@ -43,15 +43,17 @@
 
   function fresh() {
     return {
-      t: T0, loc: 'dvor', inv: { rope: false, lom: false }, know: {}, edits: [], N: 0, deaths: 0, log: [], ev: [], last: null,
+      t: T0, loc: 'dvor', inv: { rope: false, lom: false, note: false }, know: {}, edits: [], N: 0, deaths: 0, log: [], ev: [], last: null,
       gas: true, leak: true, riser: false, jam: false, crew: false, subEarly: false,
       truck: { awake: false, loc: 'mchs', busy: 0, gen: false, pit: false, pitAt: null, genOrdered: false },
       gosha: 'sleep', goshaSaw: false, genReady: null, loaders: false, loadersAtPit: false, gasman: false, heart: false, veraAt: null, drainAt: null, pulling: false,
       misha: { st: 'danger', at: null, how: null }, liza: { st: 'danger', at: null, unp: 0, how: null }, danya: { st: 'danger', at: null, how: null },
-      seenN: {}, wit: [], over: false
+      seenN: {}, wit: [], over: false, cop: false, copDone: false
     };
   }
   const has = (S, e) => S.edits.includes(e);
+  // плата за чудеса: 0 — тихо, 1 — разговоры (с 2), 2 — недоверие (с 4), 3 — участковый (с 6)
+  const rep = S => S.N >= 6 ? 3 : S.N >= 4 ? 2 : S.N >= 2 ? 1 : 0;
   const log = (S, txt, cls) => S.log.unshift({ t: S.t, txt, cls: cls || '' });
 
   // ---------- ходьба
@@ -107,14 +109,14 @@
       S.t = keep;
     }
     checkNow(S);
-    if (S.misha.st === 'danger' && t >= 165) { S.misha.st = 'dead'; S.misha.at = 165; log(S, 'В 02:45 Миша умер. Он так и не проснулся, отравился газом.', 'x'); }
+    if (S.misha.st === 'danger' && t >= MISHA_DL) { S.misha.st = 'dead'; S.misha.at = MISHA_DL; log(S, 'В 02:45 Миша умер. Он так и не проснулся, отравился газом.', 'x'); }
     if (S.liza.st === 'danger') {
       if (!powered(S, prev)) { S.liza.unp += 5; if (S.liza.unp >= 25) { S.liza.st = 'dead'; S.liza.at = t; log(S, 'Аппарат ИВЛ двадцать минут стоял без электричества. В ' + hm(t) + ' Лиза умерла.', 'x'); } }
       else S.liza.unp = 0;
       if (S.liza.st === 'danger' && t >= DAWN) save(S, 'liza', 'Подстанцию включили, ночь кончилась.');
     }
-    if (S.danya.st === 'danger' && t >= 210) { S.danya.st = 'dead'; S.danya.at = 210; log(S, 'В 03:30 вода в котловане поднялась выше головы. Даня утонул.', 'x'); }
-    const th = [[4, 'По району пошли разговоры, что с тобой за одну ночь случилось несколько чудес.'], [7, 'Соседи стали тебя обходить. Кто-то позвонил участковому.'], [10, 'Утром в квартал приедет человек из Томска. Он ищет таких, как ты.']];
+    if (S.danya.st === 'danger' && t >= DANYA_DL) { S.danya.st = 'dead'; S.danya.at = DANYA_DL; log(S, 'В 03:40 вода в котловане поднялась выше головы. Даня утонул.', 'x'); }
+    const th = [[2, 'Про тебя пошли разговоры. Люди теперь с тобой осторожничают, любой разговор и любая просьба занимают больше времени.'], [4, 'Тебе перестали доверять. Сторож, грузчики, Гоша и медсестра больше ничем тебе не помогут.'], [6, 'Кто-то позвонил участковому. Он пришёл и теперь не отходит от тебя ни на шаг.']];
     for (const [k, txt] of th) if (S.N >= k && !S.seenN[k]) { S.seenN[k] = 1; log(S, txt, 'a'); }
     if (t >= DAWN) S.over = true;
     if (S.misha.st !== 'danger' && S.danya.st !== 'danger' && (S.liza.st !== 'danger' || lizaSafe(S))) S.over = true;
@@ -137,6 +139,7 @@
       case 'loaders': S.loaders = true; S.wit.push('грузчики'); break;
       case 'heart': S.heart = true; S.veraAt = S.t + 15; S.wit.push('Вера'); break;
     }
+    if (S.N >= 6 && !S.cop) S.cop = true;
     checkNow(S);
   }
 
@@ -220,7 +223,7 @@
         if (S.loadersAtPit && S.danya.st === 'danger') x += ' У края ждут грузчики.';
         if (S.heart && S.t >= S.veraAt) x += S.danya.st === 'saved' ? ' Вера сидит рядом с Даней.' : ' У края стоит Вера.';
         break;
-      case 'most': x = 'Разводной мост через реку.' + (S.jam ? ' Он застрял в поднятом положении, пройти нельзя.' : (S.t >= 150 && S.t < 180 && !S.crew) ? ' По мосту едет машина горсетей, ремонтники едут к подстанции.' : ' Ночью тут никого.'); break;
+      case 'most': x = 'Разводной мост через реку.' + (S.jam ? ' Он застрял в поднятом положении, пройти нельзя.' : (S.t >= CREW_FROM && S.t < 180 && !S.crew) ? ' По мосту едет машина горсетей, ремонтники едут к подстанции.' : ' Ночью тут никого.'); break;
       case 'shluz': x = 'Шлюз на реке. По мостику над затворами можно перейти на другой берег. В будке сидит шлюзовщик.' + (S.jam ? ' Камера пустая.' : ''); break;
       case 'bolnica':
         x = 'Больница. В реанимации на третьем этаже лежит твоя сестра Лиза. Она дышит через аппарат ИВЛ, а он работает от электричества.';
@@ -249,8 +252,11 @@
   function list(S) {
     const A = [], L = S.loc, T = S.truck, K = S.know, ph = danyaPhase(S);
     const act = (id, lbl, min, off) => A.push({ id, lbl, min, kind: 'act', off: off || null });
-    const clue = (id, lbl, txt, learn) => A.push({ id, lbl, min: 5, kind: 'clue', txt, learn: learn || null, fresh: learn ? !K[learn] : !K['c:' + id] });
-    const death = k => { const d = DEATHS[k]; A.push({ id: 'die:' + k, lbl: d.lbl, min: 15, kind: 'die', off: d.off ? d.off(S) : null }); };
+    const R = rep(S), slow = R >= 1 ? 5 : 0;
+    const PEOPLE = ['vera', 'door', 'rynokguard', 'pit', 'pit2', 'shluz', 'nurse', 'mchsdesk'];
+    const clue = (id, lbl, txt, learn) => { const L2 = learn ? [].concat(learn) : []; A.push({ id, lbl, min: 5 + (PEOPLE.includes(id) ? slow : 0), kind: 'clue', txt, learn: L2.length ? L2 : null, fresh: L2.length ? L2.some(k => !K[k]) : !K['c:' + id] }); };
+    const ask = (id, lbl, min, refuse) => act(id, lbl, min + slow, R >= 2 && refuse ? refuse : null);
+    const death = k => { const d = DEATHS[k]; A.push({ id: 'die:' + k, lbl: d.lbl, min: 15, kind: 'die', off: S.cop ? 'Участковый ходит за тобой по пятам. При нём ничего такого не сделаешь.' : d.off ? d.off(S) : null }); };
     const goshaHere = S.gosha === 'follow';
     const mDanger = S.misha.st === 'danger', dDanger = S.danya.st === 'danger', lDanger = S.liza.st === 'danger';
     switch (L) {
@@ -261,24 +267,24 @@
         death('heart'); break;
       case 'misha':
         if (mDanger) clue('door', 'Позвонить Мише в дверь', 'Ты звонишь и стучишь, никто не открывает. Из-под двери пахнет газом. Дверь железная, изнутри закрыта на щеколду. Сверху спускается соседка: «Он после смены, спит. Я звонила в газовую, там автоответчик. Такую дверь только ломом откроешь. На стройке у вагончика лом лежит, я видела».', 'lom');
-        if (mDanger && (K.lom || S.inv.lom)) act('lom-door', 'Открыть дверь ломом', 20, !S.inv.lom ? 'Без лома эту дверь не открыть. Лом лежит на стройке у вагончика.' : null);
+        if (mDanger && (K.lom || S.inv.lom)) act('lom-door', 'Открыть дверь ломом', 15, !S.inv.lom ? 'Без лома эту дверь не открыть. Лом лежит на стройке у вагончика.' : null);
         death('lighter'); break;
       case 'roof':
         clue('roof', 'Посмотреть вниз', S.leak && mDanger ? 'У подъезда стоят соседи в халатах и спорят, кто будет звонить в МЧС. На стройке блестит вода в котловане. На том берегу светится больница.' : 'Внизу тихо. На стройке блестит вода в котловане, на том берегу светится больница.');
         death('roof'); break;
       case 'rynok':
         if (dDanger) clue('rynokguard', 'Поговорить со сторожем', '«Пацан в котловане? Бери верёвку, вон на гвозде висит». Про грузчиков он говорит: «Они к шести придут. Если холодильники сломаются, вызову раньше, а так все спят».', 'rope');
-        if (dDanger && K.rope && !S.inv.rope) act('rope', 'Взять верёвку', 5);
-        if (S.loaders && !S.loadersAtPit && dDanger && ph !== 'mchs') act('loaders-go', 'Позвать грузчиков к котловану', 5);
+        if (dDanger && K.rope && !S.inv.rope) ask('rope', 'Взять верёвку', 5, 'Сторож убирает верёвку: «Иди отсюда. Про тебя всякое рассказывают».');
+        if (S.loaders && !S.loadersAtPit && dDanger && ph !== 'mchs') ask('loaders-go', 'Позвать грузчиков к котловану', 5, 'Грузчики отворачиваются. Про тебя они уже слышали.');
         death('freeze'); break;
       case 'grp':
         if (!S.gasman) clue('grpknock', 'Постучать в будку газовика', 'Будка закрыта изнутри. Газовик спит в наушниках и не слышит, как ты стучишь. Без него газ не перекрыть. Задвижки опломбированы, и ты не знаешь, какая из них куда.');
-        if (S.gasman && mDanger && S.leak) act('riser', 'Попросить газовика перекрыть газ в доме Миши', 10);
+        if (S.gasman && mDanger && S.leak) ask('riser', 'Попросить газовика перекрыть газ в доме Миши', 10, null);
         death('grp'); break;
       case 'stroika':
-        if (ph === 'danger' || ph === 'mchsComing') clue('pit', 'Поговорить с Даней', '«Даня, я здесь!» — «Дядя Андрей, тут холодно. Я котёнка не нашёл». Вода сочится из старой трубы со стороны реки и прибывает. К половине четвёртого она поднимется выше его головы. Ты пробуешь дотянуться до него, но стенки скользкие, и тебя самого тянет вниз. С верёвкой и вдвоём получится: один спускается, второй держит. Сторож пьяный спит в вагончике, его не разбудить.', 'rope');
+        if (ph === 'danger' || ph === 'mchsComing') clue('pit', 'Поговорить с Даней', '«Даня, я здесь!» — «Дядя Андрей, тут холодно. Я котёнка не нашёл». Вода сочится из старой трубы со стороны реки и прибывает. К 03:40 она поднимется выше его головы. Ты пробуешь дотянуться до него, но стенки скользкие, и тебя самого тянет вниз. С верёвкой и вдвоём получится: один спускается, второй держит. Сторож пьяный спит в вагончике, его не разбудить.', 'rope');
         if (ph === 'draining') clue('pit2', 'Поговорить с Даней', '«Дядя Андрей, вода уходит!» Насос гудит, Даня уже стоит по пояс.');
-        if (mDanger && K.lom && !S.inv.lom) act('lom', 'Взять лом (для двери Миши)', 5);
+        if (mDanger && K.lom && !S.inv.lom) act('lom', 'Взять лом у вагончика', 5);
         if ((ph === 'danger' || ph === 'draining' || ph === 'mchsComing') && (K.rope || S.inv.rope)) {
           const helper = goshaHere ? 'с Гошей' : S.loadersAtPit ? 'с грузчиками' : (S.heart && S.t >= S.veraAt) ? 'с Верой' : null;
           act('pull', 'Вытащить Даню верёвкой' + (helper ? ' ' + helper : ''), 15,
@@ -288,7 +294,7 @@
         break;
       case 'most':
         clue('most', 'Осмотреться на мосту', S.jam ? 'Мост застрял поднятым. На тот берег отсюда не попасть.' : 'Ночью мост пустой. Это единственная дорога из города к подстанции, другой нет.');
-        if (!S.jam && S.t >= 150 && S.t < 180 && !S.crew) death('crew');
+        if (!S.jam && S.t >= CREW_FROM && S.t < 180 && !S.crew) { act('stopcrew', S.inv.note ? 'Остановить машину горсетей и отдать бумагу' : 'Остановить машину горсетей', 5); death('crew'); }
         break;
       case 'shluz':
         clue('shluz', 'Поговорить со шлюзовщиком', S.jam ? 'Шлюзовщик с тобой разговаривать не хочет.' : '«Сбросить воду? Без команды диспетчера нельзя. Если сбросить, река обмелеет и к вам на стройку течь перестанет. Только мост заклинит, он разводной. В девяносто восьмом так уже было».');
@@ -297,7 +303,9 @@
         clue('nurse', 'Спросить медсестру про Лизу',
           S.liza.st === 'dead' ? '«Мне очень жаль». Медсестра отводит глаза.'
           : (lizaSafe(S) || S.genReady !== null) ? '«Свет у нас будет, не волнуйтесь. Лиза спит».'
-          : '«Лиза в стабильном состоянии. Только в три часа ночи отключат подстанцию, у них плановый ремонт. Генератор у нас газовый и с весны не работает. Механик Гоша из автосервиса обещал починить и не пришёл. Без электричества аппарат проработает минут двадцать. В МЧС генератор дают только при ЧС».', lDanger ? 'gosha' : null);
+          : '«Лиза в стабильном состоянии. Только в три часа ночи отключат подстанцию, у них плановый ремонт. Генератор у нас газовый и с весны не работает. Механик Гоша из автосервиса обещал починить и не пришёл. Без электричества аппарат проработает минут двадцать. В МЧС генератор дают только при ЧС».', lDanger ? ['gosha', 'nogen'] : null);
+        if (lDanger && !S.crew && !lizaSafe(S) && !S.inv.note && K.nogen && (K.crewtime || K.needpaper))
+          ask('note', 'Попросить медсестру написать бумагу для ремонтников', 10, 'Медсестра про тебя уже наслышана и писать ничего не будет.');
         if (goshaHere && S.genReady === null && lDanger) act('gen', 'Отвести Гошу к генератору', S.goshaSaw ? 30 : 45,
           !S.gas ? '«Газа нет, а генератор газовый. Не запустится», — говорит Гоша.' : null);
         break;
@@ -306,10 +314,10 @@
         break;
       case 'avto':
         if (!K.gosha) clue('cabin', 'Заглянуть в бытовку', 'В бытовке на старом автомобильном сиденье спит мужик в рабочем комбинезоне. На шкафчике написано: «Гоша».', 'gosha');
-        if (K.gosha && S.gosha === 'sleep') act('gosha', 'Разбудить механика Гошу', 5);
+        if (K.gosha && S.gosha === 'sleep') ask('gosha', 'Разбудить механика Гошу', 5, 'Гоша смотрит на тебя из бытовки и не выходит: «Про тебя такое рассказывают… Нет, Андрюха, никуда я с тобой не пойду».');
         death('poison'); break;
       case 'podst':
-        clue('podst', 'Прочитать объявление на воротах', '«Плановое отключение с 03:00 до 05:00». Ниже от руки: «Бригада выезжает из города в 02:30». Решётка кабельного канала отогнута.');
+        clue('podst', 'Прочитать объявление на воротах', '«Плановое отключение с 03:00 до 05:00». Ниже от руки: «Бригада выезжает из города в 02:15». Решётка кабельного канала отогнута.', 'crewtime');
         death('sub'); break;
     }
     if (T.awake && T.loc === L) {
@@ -336,8 +344,8 @@
     const a = list(S).find(x => x.id === id);
     if (!a || a.off) return null;
     if (a.kind === 'clue') {
-      S.know['c:' + a.id] = true; if (a.learn) S.know[a.learn] = true;
-      S.last = { title: a.lbl, text: a.txt, cls: 'clue' }; advance(S, 5); return { kind: 'clue' };
+      S.know['c:' + a.id] = true; if (a.learn) for (const k of a.learn) S.know[k] = true;
+      S.last = { title: a.lbl, text: (a.min > 5 ? 'Сначала на тебя долго и молча смотрят. ' : '') + a.txt, cls: 'clue' }; advance(S, a.min); return { kind: 'clue' };
     }
     if (a.kind === 'die') {
       const k = id.slice(4), d = DEATHS[k], r = d.res(S);
@@ -351,21 +359,27 @@
       if (r.e) { addEdit(S, r.e); log(S, '✦ ' + EDITS[r.e].t + '. Невероятность +' + EDITS[r.e].c + '.', 'a'); }
       else log(S, 'Тебя спасло то, что уже было в мире. Ничего нового не появилось.', 'g');
       advance(S, 15);
+      if (S.cop && !S.copDone) { S.copDone = true; seen.push('Через десять минут приходит участковый. Ему уже позвонили трое. Полчаса он расспрашивает тебя, что происходит, и потом не отходит ни на шаг.'); advance(S, 30); }
       return { kind: 'die', d, r, at, seen };
     }
     const T = S.truck;
     const done = (title, text) => { S.last = { title, text, cls: 'act' }; };
     switch (id) {
-      case 'lom-door': S.ev.push({ at: S.t + 20, type: 'door' }); done('Дверь', 'Ты поддеваешь щеколду ломом. С третьего раза дверь открывается. В квартире полно газа, Миша спит на диване. Ты перекрываешь газ на плите, открываешь окна и выносишь Мишу на лестницу.'); advance(S, 20); return { kind: 'act' };
+      case 'lom-door': S.ev.push({ at: S.t + 15, type: 'door' }); done('Дверь', 'Ты поддеваешь щеколду ломом. С третьего раза дверь открывается. В квартире полно газа, Миша спит на диване. Ты перекрываешь газ на плите, открываешь окна и выносишь Мишу на лестницу.'); advance(S, 15); return { kind: 'act' };
       case 'rope': S.inv.rope = true; done('Верёвка', 'Сторож отдаёт тебе моток верёвки, метров пятнадцать.'); break;
-      case 'lom': S.inv.lom = true; done('Лом', 'Лом лежит у вагончика. Сторож спит и ничего не слышит. С ломом можно открыть дверь Миши.'); break;
+      case 'lom': S.inv.lom = true; done('Лом', 'Лом лежит у вагончика. Сторож спит и ничего не слышит.'); break;
       case 'loaders-go': S.loadersAtPit = true; done('Грузчики', 'Грузчики оставляют ящики и идут к стройке. Они будут ждать у котлована.'); break;
-      case 'riser': S.ev.push({ at: S.t + 10, type: 'riser' }); done('Газ', 'Газовик идёт с тобой к дому Миши и в подвале перекрывает задвижку на стояке. В доме Миши газа больше нет, в остальном квартале есть.'); advance(S, 10); return { kind: 'act' };
+      case 'riser': S.ev.push({ at: S.t + a.min, type: 'riser' }); done('Газ', 'Газовик идёт с тобой к дому Миши и в подвале перекрывает задвижку на стояке. В доме Миши газа больше нет, в остальном квартале есть.'); advance(S, a.min); return { kind: 'act' };
       case 'pull': { const who = S.gosha === 'follow' ? 'Гоша' : S.loadersAtPit ? 'грузчики' : 'Вера'; S.pulling = true; S.ev.push({ at: S.t + 15, type: 'pull' }); done('Котлован', 'Ты обвязываешься верёвкой и спускаешься в воду. Даня хватается за тебя. Наверху верёвку тянет ' + who + '. Через десять минут вы оба наверху.'); advance(S, 15); return { kind: 'act' }; }
       case 'gosha': S.gosha = 'follow'; done('Гоша', 'Ты будишь Гошу и объясняешь про генератор. «В больнице? Там твоя Лиза? Ладно, пошли. Только не беги, у меня колено». Гоша идёт с тобой.'); break;
       case 'gen': { const m = S.goshaSaw ? 30 : 45; S.gosha = 'work'; S.genReady = S.t + m; S.ev.push({ at: S.t + m, type: 'gen' }); done('Генератор', 'Гоша осматривает генератор. «Клапан сгорел. Сниму со своей машины, это ' + (S.goshaSaw ? 'полчаса' : 'минут сорок пять') + '. Я тут останусь, мало ли что». Генератор заработает в ' + hm(S.genReady) + '.'); advance(S, 5); return { kind: 'act' }; }
       case 'mchs-gen': { const tt = vehicle(S, S.loc, 'bolnica'); T.loc = 'bolnica'; T.busy = S.t + tt + 15; T.genOrdered = true; S.ev.push({ at: S.t + tt + 10, type: 'mchsGen' }); done('МЧС', 'Спасатели едут в больницу с генератором. Подключат в ' + hm(S.t + tt + 10) + '.'); break; }
       case 'mchs-pit': { const tt = vehicle(S, S.loc, 'stroika'); T.loc = 'stroika'; T.pit = true; T.pitAt = S.t + tt; T.busy = S.t + tt + 10; S.ev.push({ at: S.t + tt + 10, type: 'pitRescue' }); done('МЧС', 'Спасатели едут на стройку. Даню достанут в ' + hm(S.t + tt + 10) + '.'); break; }
+      case 'note': S.inv.note = true; done('Бумага', 'Медсестра сначала не понимает, зачем. Потом пишет на бланке: «Резервного питания нет, пациентка на ИВЛ. Отключать подстанцию нельзя». Дежурный врач ставит печать.'); advance(S, a.min); return { kind: 'act' };
+      case 'stopcrew':
+        if (S.inv.note) { S.crew = true; S.inv.note = false; done('Ремонтники', 'Ты машешь руками, машина останавливается. Водитель читает бумагу, вздыхает и звонит диспетчеру. «Ладно. Отменили. Поехали на другую аварию». Отключения в три часа не будет.'); log(S, 'Ремонтников развернули по бумаге из больницы. Отключения не будет.', 'g'); }
+        else { S.know.needpaper = true; done('Ремонтники', 'Ты машешь руками, машина останавливается. Ты объясняешь про больницу. Водитель качает головой: «У меня наряд. Пусть больница пишет бумагу, тогда позвоню диспетчеру. А так не могу». Он уезжает к подстанции.'); }
+        advance(S, a.min); return { kind: 'act' };
       case 'wait': done('Ожидание', 'Ты ждёшь пятнадцать минут.'); advance(S, 15); return { kind: 'act' };
       case 'dawn': advance(S, DAWN - S.t); return { kind: 'act' };
     }
@@ -373,5 +387,5 @@
     return { kind: 'act' };
   }
 
-  root.G = { T0, DAWN, LOC, EDGES, EDITS, DEATHS, DEATH_AT, fresh, list, moves, apply, descr, dist, path, hm, powered, gridOn, lizaSafe, vehicle, danyaPhase };
+  root.G = { rep, CREW_FROM, T0, DAWN, LOC, EDGES, EDITS, DEATHS, DEATH_AT, fresh, list, moves, apply, descr, dist, path, hm, powered, gridOn, lizaSafe, vehicle, danyaPhase };
 })(typeof window !== 'undefined' ? window : globalThis);

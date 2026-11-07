@@ -16,6 +16,8 @@ for (let run = 0; run < 20000; run++) {
     if (S.misha.st !== 'danger' && /В подъезде пахнет газом/.test(d)) flag('Миша спасён, а в подъезде пахнет газом', S);
     if (!S.leak && ids.includes('die:lighter') && !A.find(a => a.id === 'die:lighter').off) flag('Утечки нет, а зажигалка доступна', S);
     if (S.heart && S.loc === 'dvor' && ids.includes('vera')) flag('Вера ушла, а с ней можно говорить во дворе', S);
+    if (S.cop && A.some(a => a.kind === 'die' && !a.off)) flag('Участковый рядом, а смерть доступна', S);
+    if (G.rep(S) >= 2 && A.some(a => ['rope', 'gosha', 'loaders-go', 'note'].includes(a.id) && !a.off)) flag('Тебе не верят, а помощь доступна', S);
     const avail = A.filter(a => !a.off && a.id !== 'dawn');
     const moves = G.moves(S);
     if (rnd(3) === 0 && moves.length) G.apply(S, 'go:' + moves[rnd(moves.length)].to);
