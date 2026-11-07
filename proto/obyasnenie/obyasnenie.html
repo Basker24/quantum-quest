@@ -133,13 +133,15 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:24}
 
 /* титул */
-.title{position:fixed;inset:0;z-index:40;background:#05070c center/cover no-repeat;display:flex;align-items:center;justify-content:center;
+.title{position:fixed;inset:0;z-index:40;background:#05070c center/cover no-repeat;display:block;
   padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));overflow:auto}
-.title::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,7,12,.55),rgba(5,7,12,.93) 70%)}
-.tbox{position:relative;max-width:680px;width:100%;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.title::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,rgba(5,7,12,.55),rgba(5,7,12,.93) 70%)}
+.tbox{position:relative;max-width:700px;width:100%;display:flex;flex-direction:column;gap:18px;align-items:flex-start;margin:4vh auto}
 .tbox h1{font-family:var(--f-d);font-weight:800;font-size:clamp(36px,8vw,68px);letter-spacing:.04em;margin:0;line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.6)}
 .tbox .night{font-family:var(--f-m);color:var(--amber);letter-spacing:.2em;text-transform:uppercase;font-size:13px}
 .tbox p{margin:0;font-size:16px;color:#ddd6c4;max-width:58ch}
+.tsec{display:flex;flex-direction:column;gap:8px;border-left:2px solid rgba(242,169,58,.5);padding-left:14px}
+.tsec h3{margin:0;font-family:var(--f-m);font-weight:500;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
 .tbox .tag{font-family:var(--f-d);font-weight:600;font-size:clamp(18px,3vw,24px);color:var(--fg)}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
 .trio div{background:rgba(18,25,39,.8);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center}
@@ -195,15 +197,30 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 
 <div class="title" id="title">
   <div class="tbox">
-    <div class="night">Дополнение к «Тот, кто остался» · Ночь первая</div>
+    <div class="night">Первое дополнение к игре «Тот, кто остался»</div>
     <h1>ОБЪЯСНЕНИЕ</h1>
     <p class="tag">Умереть ты не можешь. Успеть ты можешь не всё.</p>
-    <p>Каждый раз, когда ты погибаешь, ты продолжаешь жить в мире, где тебе повезло. Там сторож вовремя включил насос, а водитель успел затормозить. Люди видят только, как тебе повезло. Как ты умер, помнишь один ты.</p>
-    <p>Сегодня ночью в твоём квартале должны умереть трое. Друг, сестра и соседский мальчишка. Ты знаешь, кто и когда. До рассвета четыре часа.</p>
-    <p>Ходи по кварталу, говори с людьми, ищи способы. А если не успеваешь, умри с умом. Каждая твоя смерть что-то меняет в мире. Иногда это кого-то спасает, а иногда губит.</p>
+
+    <div class="tsec">
+      <h3>Квантовое бессмертие</h3>
+      <p>В 1957 году физик Хью Эверетт предложил смотреть на квантовую механику так. Каждый раз, когда может случиться и одно, и другое, мир расходится на несколько вариантов, и все они существуют на самом деле. Это называют многомировой интерпретацией.</p>
+      <p>Из неё вытекает мысленный эксперимент. Допустим, ты попал в ситуацию, где в одном варианте мира погибаешь, а в другом чудом остаёшься жив. Изнутри ты можешь оказаться только во втором: там, где тебя нет, тебе нечего чувствовать. Свою смерть ты не увидишь никогда. Это и есть квантовое бессмертие.</p>
+      <p>Проверить это нельзя. Доказательство получит только тот, кто выжил, и никому другому он его не передаст. Со стороны это всегда выглядит как обычное везение.</p>
+    </div>
+
+    <div class="tsec">
+      <h3>Одна из жизней Андрея Самохина</h3>
+      <p>В основной игре «Тот, кто остался» Андрей в семь лет тонет в Чёрной заводи и выживает. С тех пор он слышит Хор: память о своих смертях в соседних мирах. Детство у него одно, а дальше жизнь расходится на много веток.</p>
+      <p>«Объяснение» — одна из этих веток, отдельная история. Андрею тридцать четыре, он живёт в Кемерове, и умереть у него не получается. Каждый раз, когда он погибает, он продолжает жить в мире, где ему повезло. Там сторож вовремя включил насос, а водитель успел затормозить. Люди видят только, как ему повезло. Как он умер, помнит один Андрей.</p>
+    </div>
+
+    <div class="tsec">
+      <h3>Эта ночь</h3>
+      <p>До рассвета в квартале должны умереть трое: друг детства Витька, сестра Ника и соседский мальчишка Даня. Хор подсказал Андрею, кто и когда. У него четыре часа, весь квартал и смерть, которой можно пользоваться. Только каждое чудесное спасение кто-то видит, и про Андрея начинают говорить.</p>
+    </div>
     <div class="trio">
-      <div><img src="misha.jpg" alt=""><span><b>Миша, друг</b><span>газ · 02:45</span></span></div>
-      <div><img src="liza.jpg" alt=""><span><b>Лиза, сестра</b><span>свет · 03:00</span></span></div>
+      <div><img src="misha.jpg" alt=""><span><b>Витька, друг</b><span>газ · 02:45</span></span></div>
+      <div><img src="liza.jpg" alt=""><span><b>Ника, сестра</b><span>свет · 03:00</span></span></div>
       <div><img src="danya.jpg" alt=""><span><b>Даня, 7 лет</b><span>вода · 03:40</span></span></div>
     </div>
     <div class="tbtns">
@@ -275,7 +292,7 @@ function lifeState(k){
 function hud(){
   const t=S.t;
   $('clock').innerHTML=hm(t)+'<small>до рассвета '+hm(Math.max(0,G.DAWN-t))+'</small>';
-  const names={misha:'Миша',liza:'Лиза',danya:'Даня'};
+  const names={misha:'Витька',liza:'Ника',danya:'Даня'};
   $('lives').innerHTML=['misha','liza','danya'].map(k=>{const s=lifeState(k);return '<div class="life '+s.cls+(s.urgent?' urgent':'')+'"><img src="'+k+'.jpg" alt=""><div class="tx"><div class="nm">'+names[k]+'</div><div class="st">'+s.txt+'</div></div></div>'}).join('');
   $('nval').textContent=S.N; $('nfill').style.width=Math.min(100,S.N/8*100)+'%'; $('nrep').textContent=['Невероятность','Про тебя говорят','Тебе не верят','Участковый рядом'][G.rep(S)];
   const b=$('ebadge'); b.hidden=!S.edits.length; b.textContent=S.edits.length;
@@ -415,7 +432,7 @@ function death(r,fresh){
   b.onclick=()=>{$('ov').hidden=true;render();fresh.forEach(toast)};
 }
 function ending(){
-  const names={misha:'Миша',liza:'Лиза',danya:'Даня'};
+  const names={misha:'Витька',liza:'Ника',danya:'Даня'};
   const ok=k=>S[k].st==='saved'||(k==='liza'&&S[k].st==='danger'&&G.lizaSafe(S));
   const n=['misha','liza','danya'].filter(ok).length;
   const title=n===3?'Все трое живы':n===2?'Двое живы':n===1?'Один живой':'Никого';
