@@ -1,0 +1,114 @@
+id,time,kind,model,quality,size,status,file,refs,tokens
+style-1-painterly,2026-11-05T17:18:08,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/1-painterly.jpg,,
+style-2-ink-watercolor,2026-11-05T17:18:09,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/2-ink-watercolor.jpg,,
+style-3-gouache-soviet,2026-11-05T17:18:10,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/3-gouache-soviet.jpg,,
+style-4-cel-shaded,2026-11-05T17:18:10,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/4-cel-shaded.jpg,,
+style-5-charcoal,2026-11-05T17:18:11,style-test,gpt-image-1,medium,1536x1024,error: HTTP 400: The model 'gpt-image-1' does not exist.,game/img/style-test/5-charcoal.jpg,,
+style-1-painterly,2026-11-05T17:18:20,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/1-painterly.jpg,,1587
+style-2-ink-watercolor,2026-11-05T17:18:53,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/2-ink-watercolor.jpg,,1583
+style-3-gouache-soviet,2026-11-05T17:19:23,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/3-gouache-soviet.jpg,,1592
+style-4-cel-shaded,2026-11-05T17:19:52,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/4-cel-shaded.jpg,,1582
+style-5-charcoal,2026-11-05T17:20:23,style-test,gpt-image-2,medium,1536x1024,ok,game/img/style-test/5-charcoal.jpg,,1578
+nika_7,2026-11-05T17:24:48,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_7.png,,1558
+nika_13,2026-11-05T17:25:14,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_13.png,,1561
+vitka_8,2026-11-05T17:25:41,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_8.png,,1548
+father_45,2026-11-05T17:26:08,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/father_45.png,,1548
+mother_41,2026-11-05T17:26:38,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/mother_41.png,,1528
+sonka_13,2026-11-05T17:27:05,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/sonka_13.png,,1529
+lunev_60,2026-11-05T17:27:30,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/lunev_60.png,,1531
+nika_7,2026-11-05T17:32:28,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_7.png,,1614
+nika_13,2026-11-05T17:32:54,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_13.png,,1616
+vitka_8,2026-11-05T17:33:21,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_8.png,,1609
+father_45,2026-11-05T17:34:07,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/father_45.png,,1577
+mother_41,2026-11-05T17:34:37,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/mother_41.png,,1582
+sonka_13,2026-11-05T17:35:04,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/sonka_13.png,,1558
+lunev_60,2026-11-05T17:35:30,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/lunev_60.png,,1560
+nika_22,2026-11-05T17:40:10,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_22.png,,1616
+Т-00,2026-11-05T17:40:29,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,,1592
+nika_56,2026-11-05T17:40:36,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_56.png,,1613
+Т-02,2026-11-05T17:40:59,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02.jpg,,1586
+vitka_14,2026-11-05T17:41:04,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_14.png,,1609
+Т-02б,2026-11-05T17:41:30,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02б.jpg,,1592
+vitka_18,2026-11-05T17:41:31,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_18.png,,1610
+vitka_23,2026-11-05T17:42:00,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_23.png,,1614
+Т-03,2026-11-05T17:41:59,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1604
+vitka_33,2026-11-05T17:42:25,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_33.png,,1612
+Т-04,2026-11-05T17:42:33,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-04.jpg,,1596
+vitka_43,2026-11-05T17:42:56,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_43.png,,1617
+Т-07,2026-11-05T17:43:00,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-07.jpg,,1641
+father_34,2026-11-05T17:43:24,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/father_34.png,,1575
+Т-08,2026-11-05T17:43:33,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-08.jpg,,1581
+father_59,2026-11-05T17:43:52,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/father_59.png,,1581
+Т-10,2026-11-05T17:44:04,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-10.jpg,,1583
+father_65,2026-11-05T17:44:20,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/father_65.png,,1579
+mother_54,2026-11-05T17:44:51,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/mother_54.png,,1579
+mother_95,2026-11-05T17:45:18,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/mother_95.png,,1588
+sonka_22,2026-11-05T17:45:48,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/sonka_22.png,,1557
+sonka_63,2026-11-05T17:46:14,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/sonka_63.png,,1559
+lunev_25,2026-11-05T17:46:42,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/lunev_25.png,,1564
+lunev_85,2026-11-05T17:47:07,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/lunev_85.png,,1566
+grandpa_51,2026-11-05T17:47:37,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/grandpa_51.png,,1560
+shadrin_68,2026-11-05T17:48:07,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/shadrin_68.png,,1554
+ploy_24,2026-11-05T17:48:33,ref,gpt-image-2,medium,1024x1536,error: [Errno 104] Connection reset by peer,game/img/ref/ploy_24.png,,
+ploy_36,2026-11-05T17:48:45,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/ploy_36.png,,1591
+dasha_12,2026-11-05T17:49:12,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/dasha_12.png,,1548
+gleb_24,2026-11-05T17:49:40,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/gleb_24.png,,1548
+anna_markovna_50,2026-11-05T17:50:10,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/anna_markovna_50.png,,1551
+serafim_75,2026-11-05T17:50:36,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/serafim_75.png,,1551
+tanya_22,2026-11-05T17:51:06,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/tanya_22.png,,1570
+ploy_24,2026-11-05T23:17:56,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/ploy_24.png,,1596
+Т-01,2026-11-05T23:18:29,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-01.jpg,vitka age 8;nika age 7,
+Т-05,2026-11-05T23:18:31,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-05.jpg,grandpa age 51;lunev age 25,
+Т-06,2026-11-05T23:18:32,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-09,2026-11-05T23:18:33,scene,gpt-image-2,medium,1536x1024,error: HTTP 400: The model 'gpt-image-2' does not support the 'input_fidelity' parameter.,game/img/Т-09.jpg,vitka age 18,
+Т-01,2026-11-06T05:01:17,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7,4828
+Т-05,2026-11-06T05:01:50,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-05.jpg,grandpa age 51;lunev age 25,4773
+Т-06,2026-11-06T05:02:24,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4807
+Т-09,2026-11-06T05:02:52,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3200
+Т-01,2026-11-06T05:06:36,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7,4947
+Т-00,2026-11-06T05:07:11,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,,1723
+Т-02,2026-11-06T05:08:28,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02.jpg,,1651
+Т-02б,2026-11-06T05:08:51,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02б.jpg,,1682
+Т-03,2026-11-06T05:09:19,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1669
+Т-03,2026-11-06T05:10:03,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1694
+Т-04,2026-11-06T05:10:29,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-04.jpg,,1661
+Т-05,2026-11-06T05:10:55,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-05.jpg,grandpa age 51;lunev age 25,4841
+Т-06,2026-11-06T05:11:40,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_451d74caf0584eef89c2c0e269cc9aee.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-07,2026-11-06T05:12:07,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-07.jpg,,1712
+Т-08,2026-11-06T05:12:31,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-08.jpg,,1658
+Т-06,2026-11-06T05:13:12,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_644094e6ad6b489e8ab77451ffe05d23.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-06,2026-11-06T05:13:43,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4862
+Т-09,2026-11-06T05:14:20,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3277
+Т-10,2026-11-06T05:14:48,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-10.jpg,,1658
+nika_13,2026-11-06T05:17:25,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_13.png,,1658
+Т-03,2026-11-06T05:17:50,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1726
+Т-06,2026-11-06T05:18:18,scene,gpt-image-2,medium,1536x1024,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_6b60d93d03334a8fb1c3055774e6275e.",game/img/Т-06.jpg,vitka age 14;nika age 13,
+Т-06,2026-11-06T05:18:49,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4862
+Т-01,2026-11-06T05:20:13,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7,4973
+Т-04,2026-11-06T05:20:40,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-04.jpg,,1687
+Т-09,2026-11-06T05:21:08,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3303
+mother_30,2026-11-06T15:26:21,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/mother_30.png,,1630
+lunev_40,2026-11-06T15:26:50,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/lunev_40.png,,1612
+vitka_14,2026-11-06T15:27:17,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/vitka_14.png,,1653
+Т-00,2026-11-06T15:27:50,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,,1742
+Т-02,2026-11-06T15:28:20,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02.jpg,,1677
+Т-02б,2026-11-06T15:28:52,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02б.jpg,lunev age 40,3403
+Т-03,2026-11-06T15:29:22,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-03.jpg,,1788
+Т-05,2026-11-06T15:29:52,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-05.jpg,grandpa age 51;lunev age 25,4870
+Т-02,2026-11-06T15:30:40,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-02.jpg,,1712
+Т-06,2026-11-06T15:31:14,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13,4905
+Т-07,2026-11-06T15:31:46,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-07.jpg,vitka age 14,3384
+Т-08,2026-11-06T15:32:13,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-08.jpg,,1722
+Т-09,2026-11-06T15:32:43,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-09.jpg,vitka age 18,3324
+Т-10,2026-11-06T15:33:09,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-10.jpg,,1684
+Т-07,2026-11-06T15:33:54,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-07.jpg,vitka age 14,3422
+nika_18,2026-11-06T15:44:31,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_18.png,,1659
+snag_ref,2026-11-06T15:45:04,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/snag_ref.png,,1537
+Т-00,2026-11-06T15:45:42,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,,1873
+Т-00,2026-11-06T15:46:23,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-00.jpg,the white hand-shaped snag,3450
+Т-01,2026-11-06T15:47:01,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-01.jpg,vitka age 8;nika age 7;the white hand-shaped snag,6548
+Т-06,2026-11-06T15:47:31,scene,gpt-image-2,medium,1536x1024,ok,game/img/Т-06.jpg,vitka age 14;nika age 13;the white hand-shaped snag,6480
+nika_18,2026-11-06T15:50:42,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_18.png,,1664
+nika_22,2026-11-06T15:51:09,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_22.png,,1664
+nika_56,2026-11-06T15:51:32,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_56.png,,1660
+nika_22,2026-11-06T16:25:20,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nika_22.png,,1673

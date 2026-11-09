@@ -14,7 +14,7 @@
 Если у сцены есть персонажи и их эталоны уже лежат на диске, запрос идёт в /v1/images/edits
 с эталонами как референсами; иначе — /v1/images/generations.
 
-Общие флаги: --model gpt-image-1, --quality medium, --size 1536x1024, --ref-size 1024x1536,
+Общие флаги: --model gpt-image-2, --quality medium, --size 1536x1024, --ref-size 1024x1536,
 --style N (манера рисовки, см. tools/artstyle.py), --force (перегенерировать существующие),
 --dry-run (печатает запросы, сеть не трогает, ключ не нужен).
 Журнал расходов: docs/generated/images_log.csv.
@@ -52,7 +52,7 @@ STYLE_TEST_DIR = ROOT / "game" / "img" / "style-test"
 STYLE_TEST_SCENE = "Т-01"
 
 API = "https://api.openai.com/v1/images"
-DEFAULT_MODEL = "gpt-image-1"
+DEFAULT_MODEL = "gpt-image-2"  # gpt-image-1 к 11.2026 снят с API
 MAX_REFS = 6           # больше референсов — дороже и хуже держит каждого
 LONG_SIDE = 1200       # сжатие результата для игры
 RETRY_PAUSES = (5, 15, 45)
@@ -168,7 +168,7 @@ def generate(args, key, kind, item_id, prompt, out, size, refs=(), compress=True
         endpoint = "edits"
         fields = [("model", args.model), ("prompt", prompt), ("size", size), ("quality", args.quality),
                   ("n", "1"), ("output_format", fmt)]
-        if args.fidelity != "none":
+        if args.fidelity != "none" and args.model.startswith("gpt-image-1"):  # gpt-image-2 параметр не принимает
             fields.append(("input_fidelity", args.fidelity))
         files = [("image[]", p) for _, p in refs]
     else:
@@ -221,7 +221,7 @@ def scene_refs(cast):
         cid, age = tok.split(":")
         p = ROOT / "game" / "img" / "ref" / f"{cid}_{age}.png"
         if p.exists():
-            refs.append((f"{cid} age {age}", p))
+            refs.append(("the white hand-shaped snag" if cid == "snag" else f"{cid} age {age}", p))
     return refs[:MAX_REFS]
 
 

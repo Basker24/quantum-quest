@@ -11,7 +11,7 @@ import csv
 import re
 import sys
 
-from artstyle import ERA_MEDIUM, REF_COMMON, PLACEHOLDER, COMMON
+from artstyle import ERA_MEDIUM, REF_COMMON, REF_MEDIUM, PLACEHOLDER, COMMON
 from qqparse import ROOT, load
 
 # ---------------------------------------------------------------- персонажи
@@ -21,14 +21,15 @@ from qqparse import ROOT, load
 CHARS = {
     "nika": dict(
         ru="Ника", born=1989, tier="main",
-        src="«лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); короткая стрижка, Витькина куртка (В1-05, В2-05); седая, коротко стриженная, очки на цепочке (В1-12)",
+        src="«лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); длинные волосы, Витькина куртка (В1-05; до 06.11.2026 была короткая стрижка), очень красивая с 18 лет (решение автора); седая, коротко стриженная, очки на цепочке (В1-12)",
         invented="серо-зелёные глаза, прямые тёмные брови, родинка над левым краем верхней губы, каштановые волосы",
         core="oval face with a narrow pointed chin, serious level gaze like a strict head teacher, straight dark eyebrows, grey-green eyes, a small mole above the left corner of the upper lip, chestnut hair, slim",
         ages={
             7: ("1996", "bw", "7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees", "a serious 7-year-old girl, chestnut bob, cherry-print panama hat"),
-            13: ("2002", "color", "13-year-old girl, chestnut hair in a low ponytail, metal braces visible when she smiles, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
-            22: ("2011–2014", "digital", "young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up", "a young woman of about 23, short chestnut pixie cut, strict calm face"),
-            56: ("2045", "phone", "woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "a woman doctor of 56, cropped grey hair, glasses on a chain"),
+            13: ("2002", "color", "13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand", "a 13-year-old girl, chestnut ponytail, braces"),
+            18: ("2007", "digital", "18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books", "a very pretty serious 18-year-old girl with chestnut hair tied back"),
+            22: ("2011–2014", "digital", "young woman of 22-25, extraordinarily beautiful, almost an ideal of beauty, fine symmetrical features, long thick glossy chestnut hair falling below the shoulder blades, an oversized men's jacket over her shoulders or a white lab coat, little make-up", "an extraordinarily beautiful young woman of about 23 with long chestnut hair, strict calm face"),
+            56: ("2045", "phone", "woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes", "an attractive elegant woman doctor of 56, cropped grey hair, glasses on a chain"),
         }),
     "vitka": dict(
         ru="Витька", born=1988, tier="main",
@@ -37,7 +38,7 @@ CHARS = {
         core="round freckled face, snub nose, light blue eyes, wide grin with a small gap between the front teeth, ears that stick out and go red, ginger hair, stocky build",
         ages={
             8: ("1996", "bw", "8-year-old boy, shaggy ginger hair, dense freckles, skinny, shorts and a stretched t-shirt", "a freckled 8-year-old boy with shaggy ginger hair"),
-            14: ("2002", "color", "14-year-old boy, ginger hair grown out, freckles, squinting, cheap cigarette, sports jacket", "a 14-year-old ginger freckled boy, squinting"),
+            14: ("2002", "color", "14-year-old boy, ginger hair grown out, freckles, squinting, navy tracksuit top with two white stripes", "a 14-year-old ginger freckled boy, squinting"),
             18: ("2006", "color", "18-year-old conscript, freshly shaved head with ginger stubble, red flushed face, freckles, white shirt", "a shaved-head ginger 18-year-old with a red face"),
             23: ("2011–2014", "digital", "man of 23-26, short ginger hair, freckles, stocky miner's build, track jacket or a cheap black suit", "a stocky ginger man of about 24, freckles, loud grin"),
             33: ("2021", "phone", "miner of 33, short ginger hair under a dirty helmet, freckles under coal dust, heavy jaw, ginger stubble", "a ginger miner of 33, freckles under coal dust"),
@@ -60,6 +61,7 @@ CHARS = {
         invented="круглое мягкое лицо, ямочка на подбородке, шатенка с химической завивкой в 90-е",
         core="small and short, soft round face, a dimple in the chin, grey eyes, light-brown hair",
         ages={
+            30: ("1996–2000", "bw", "woman of 30, small, light-brown permed hair, a dark work robe of a coal processing plant worker, tired kind face", "a small woman of 30 with permed light-brown hair"),
             41: ("2007", "digital", "woman of 41, light-brown hair under a headscarf, light jacket, small and tired", "a small woman of 41 in a headscarf"),
             54: ("2020", "phone", "woman of 54, small, black mourning headscarf, medical mask, grey eyes", "a small woman of 54 in a black headscarf and a medical mask"),
             95: ("2061", "future", "tiny very old woman of 95, white hair under a flowered headscarf, soft wrinkled round face, grey eyes", "a tiny very old woman in a flowered headscarf"),
@@ -81,6 +83,7 @@ CHARS = {
         core="narrow face, high forehead, pale short-sighted eyes, thin wire-rimmed glasses, thin build, habit of rubbing his eyes",
         ages={
             25: ("1981", "bw", "thin young man of 25, dark side-parted hair, wire glasses, cheap suit, holding a briefcase", "a thin young man of 25 in glasses with a briefcase"),
+            40: ("1996", "bw", "thin pale man of 40 who looks nearly sixty, greying dark hair, wire glasses, worn grey suit, no white coat, worn briefcase", "a thin pale man of about 40 in wire glasses and a grey suit"),
             60: ("2016–2017", "digital", "man of 60, hair gone completely white, wire glasses, tired eyes, good dark coat", "a white-haired man of 60 in wire glasses, tired eyes"),
             85: ("2041", "phone", "very old shrunken man of 85, wispy white hair, glasses hanging on a cord, thin as a teenager", "a very old thin man of 85, glasses on a cord"),
         }),
@@ -206,9 +209,14 @@ CHARS = {
         src="рыжий щенок (Т-01); вырос в «рыжего лопоухого кобеля» (Т-06)", invented="белая звёздочка на груди",
         core="ginger mongrel dog with floppy ears and a white star on the chest",
         ages={0: ("1996", "bw", "ginger mongrel puppy, floppy ears, white star on the chest", "a ginger puppy with floppy ears")}),
+    # Коряга-рука — единый символ во всех кадрах (решение автора 06.11.2026): эталон-предмет, подкладывается автоматически.
+    "snag": dict(ru="Коряга-рука", born=0, tier="main", object=True,
+        src="«белая и гладкая, растопыренная, как пятерня» (Т-00); «белая коряга, похожая на руку» (Я-01, В5, В7)", invented="наклон ствола",
+        core="a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up",
+        ages={0: ("all", "color", "a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up", "the white bone-smooth snag shaped like an open five-fingered hand")}),
 }
 
-AGE_LABEL = {("bublik", 0): "puppy"}
+AGE_LABEL = {("bublik", 0): "puppy", ("snag", 0): "ref"}
 
 # ---------------------------------------------------------------- кто в кадре
 CAST = {
@@ -216,6 +224,8 @@ CAST = {
     "Т-01": ["vitka:8", "nika:7", "bublik:puppy"],
     "Т-05": ["grandpa:51", "lunev:25"],
     "Т-06": ["vitka:14", "nika:13"],
+    "Т-02б": ["lunev:40"],
+    "Т-07": ["vitka:14"],
     "Т-09": ["vitka:18"],
     "Ф-04": ["father:34"],
     "В1-01": ["tanya:22"],
@@ -270,8 +280,8 @@ EXTRA = {
     "В7-11": "the man raising the tuning fork in the choir photo wears horn-rimmed glasses",
 }
 
-HANDS_RE = re.compile(r"\b(old man's|man's|a boy's|scarred old|hands? (with|holding|in)|his hands)\b[^,]*\bhands?\b|\bhands? (with|holding)\b", re.I)
-NO_SCAR_RE = re.compile(r"glove|mitten|scar|bandaged", re.I)
+HANDS_RE = re.compile(r"\bpalm\b|\b(old man's|man's|a boy's|scarred old|hands? (with|holding|in)|his hands)\b[^,]*\bhands?\b|\bhands? (with|holding)\b", re.I)
+NO_SCAR_RE = re.compile(r"glove|mitten|scar|bandage", re.I)
 
 
 def hands_note(age):
@@ -288,7 +298,7 @@ def label(cid, age):
 
 def parse_cast(token):
     cid, a = token.split(":")
-    age = 0 if a == "puppy" else int(a)
+    age = 0 if a in ("puppy", "ref") else int(a)
     return cid, age
 
 
@@ -296,11 +306,28 @@ def ref_file(cid, age):
     return f"game/img/ref/{cid}_{label(cid, age)}.png"
 
 
+MARK_RE = re.compile(r"mole|dimple|scar|birthmark|gap between|freckle", re.I)
+
+
+def marks(cid):
+    """Приметы (родинки, ямочки, шрамы, щербинка, веснушки) из core: обязательны в любом возрасте."""
+    return [p.strip() for p in CHARS[cid]["core"].split(",") if MARK_RE.search(p)]
+
+
 def ref_prompt(cid, age):
     c = CHARS[cid]
     years, era, look, _ = c["ages"][age]
-    return (f"{look}. Permanent features: {c['core']}. Drawing style: {PLACEHOLDER}. "
-            f"Medium: {ERA_MEDIUM[era]}. {REF_COMMON}")
+    if c.get("object"):
+        return (f"{look}. Object reference: the snag alone, whole, standing in shallow still water, seen from the side, "
+                f"plain light-grey background, nothing else. Drawing style: {PLACEHOLDER}. Medium: {REF_MEDIUM}. "
+                "full-bleed image, no text, no watermark")
+    m = marks(cid)
+    must = (f" Distinctive marks that MUST be clearly visible (they stay the same at every age): {'; '.join(m)}." if m else "")
+    common = REF_COMMON
+    if re.search(r"pretty|beautiful|attractive", look):  # Ника с 18 — «сильно симпатичнее» (решение автора 06.11.2026)
+        common = common.replace("ordinary unglamorous real-life face, not a model", "natural real-life beauty, no heavy make-up")
+    return (f"{look}. Permanent features: {c['core']}.{must} Drawing style: {PLACEHOLDER}. "
+            f"Medium: {REF_MEDIUM}. {common}")
 
 
 def main():
@@ -325,18 +352,27 @@ def main():
         base = base.rstrip(". ")
         for old, new in FIX.get(sid, []):
             base = base + new if old == "" else base.replace(old, new)
-        cast = CAST.get(sid, [])
+        cast = list(CAST.get(sid, []))
+        if re.search(r"\bsnag\b", base, re.I) and "snag:ref" not in cast:
+            cast.append("snag:ref")
         bits = []
         for tok in cast:
             cid, age = parse_cast(tok)
             c = CHARS[cid]
             short = c["ages"][age][3]
             name = c["ru"].split(",")[0].split(" (")[0]
-            bits.append(f"{short} ({cid})")
+            if c.get("object"):
+                bits.append(f"{short}, exactly the same snag as in its reference image (snag)")
+                continue
+            m = marks(cid)
+            bits.append(f"{short}" + (f", with {' and '.join(m)}" if m else "") + f" ({cid})")
         sc = G["scenes"].get(sid, {})
         sage = int(sc.get("age") or 30)
         if HANDS_RE.search(base) and not NO_SCAR_RE.search(base):
             bits.append(hands_note(sage))
+        if sage < 16 and HANDS_RE.search(base):
+            # без подсказки модель рисует детям взрослые руки; руки — только если сцена их называет (решение автора 06.11.2026)
+            bits.append(f"the narrator's hand is the small smooth hand of a {sage}-year-old child, not an adult's")
         if sid in EXTRA:
             bits.append(EXTRA[sid])
         prompt = base + (". In frame: " + "; ".join(bits) if bits else "")

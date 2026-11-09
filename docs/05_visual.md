@@ -12,7 +12,7 @@
    - часы «Штурманские» со звёздочкой, только если сцена гарантирует флаг (I3: `F_Т01 = ЧАСЫ` или Я-02 и дальше). Сборщик сам их не добавляет;
    - тельняшка и брезентовая штормовка в 2061 году, только там, где их называет текст сцены.
 2. **Сцены, где исходный промпт показывает героя**, исправлены в `scene_cast.csv` (FIX в `build_cast.py`): Я-02 — лицо мальчика отвёрнуто; Ф-03 — эмаль на памятнике выцвела до неузнаваемости; Ф-04 — старик в тельняшке превращён во взгляд от первого лица (видна только его рука в мокром полосатом рукаве). Сами сцены не тронуты, вопрос вынесен автору.
-3. **Не фотореализм, но фото.** Каждая картинка — **рисованная** (манера рисовки, §2), но выглядит как **снимок своей эпохи** (носитель, §3): рамка, зерно, глянец, цифровой шум, стерильность.
+3. **Не фотореализм, но фото.** Каждая картинка — **рисованная** (манера рисовки, §2), но выглядит как **снимок своей эпохи** (носитель, §3): зерно, глянец, цифровой шум, стерильность. **Без рамок и белых полей**: картинка занимает весь кадр (решение автора 05.11.2026). **Эталоны персонажей всегда цветные**; приметы (родинки, ямочки, шрамы, щербинка, веснушки) обязательны в любом возрасте и в каждой сцене (`marks()` в `tools/build_cast.py`).
 4. **Без текста.** Никаких подписей и водяных знаков. Надписи допускаются, только если они нужны сюжету и уже есть в промпте сцены: «JELLYFISH» (В5-02), «NAM UN DIVING» (В5-07), «Second Chance» и логотип «Орфея» (В2.2-04, В2.2-06), трафарет на гермодвери (В1-11). Подпись под фото выводит движок, а не картинка.
 5. **Реализм места.** Кузбасс: Кемерово, Рудничный, Томь, терриконы, хрущёвки, АБК, копры. Таиланд в В5. Шахты и аварии вымышленные (канон п. 21).
 6. **Без реальных людей и брендов.** Все лица вымышленные. Логотипов нет (футболка Сомчая — «faded red football shirt without logos»). «Нокии», «девятка», «Нива» — названия моделей допустимы как предметы, без логотипов.
@@ -42,7 +42,7 @@
 
 | эпоха | годы | фраза (EN) |
 |---|---|---|
-| bw | 1990-е (и фото деда 1981) | illustrated photograph, painted to look like an authentic 1990s black-and-white amateur snapshot from a Soviet film camera: grain, slight blur, white paper border |
+| bw | 1990-е (и фото деда 1981) | illustrated photograph, painted to look like an authentic 1990s black-and-white amateur snapshot from a Soviet film camera: grain, slight blur |
 | color | 2000-е | illustrated photograph, painted to look like a 2000s colour print from a photo lab: warm faded colours, flash, slight vignette, date-stamp feel |
 | digital | 2010-е | illustrated photograph, painted to look like an early 2010s cheap digital point-and-shoot shot: noise, oversaturated colours, harsh flash |
 | phone | 2020–2040-е | illustrated photograph, painted to look like a 2020s-2040s smartphone photo: natural light, slightly compressed, candid |
@@ -58,7 +58,7 @@
 
 | предмет | где | описание (EN) |
 |---|---|---|
-| Коряга-рука | Т-00, Т-01, Т-06, Я-01 | a white bleached snag sticking out of black still water, its branches spread like the fingers of a hand |
+| Коряга-рука | Т-00, Т-01, Т-06, Я-01 | эталон `game/img/ref/snag_ref.png` (персонаж `snag` в build_cast.py): подкладывается автоматически во все сцены, где в промпте есть «snag» |
 | Чёрная заводь | Т-00, Т-01, Т-06, Я-01, Ф-01 | a perfectly round pond of black tea-coloured still water on a stony Tom river bank, flat slate stones, willow bushes |
 | Панамка с вишнями | Т-01, Я-02 | a white cotton child's panama hat printed with small red cherries, soft brim |
 | Часы «Штурманские» | Т-02б, Я-02, В2.2-00, Ф-02 | an old Soviet men's wristwatch on a steel bracelet, black dial with a small red star, scratched glass, hands stopped at 04:12 |
@@ -79,7 +79,7 @@
 
 <!-- cards:begin -->
 ### `nika` — Ника (1989 г. р., главный)
-- Из текста: «лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); короткая стрижка, Витькина куртка (В1-05, В2-05); седая, коротко стриженная, очки на цепочке (В1-12).
+- Из текста: «лицо серьёзное, как у завуча», панамка с вишнями (Т-01); брекеты, Стругацкие (Т-06); длинные волосы, Витькина куртка (В1-05; до 06.11.2026 была короткая стрижка), очень красивая с 18 лет (решение автора); седая, коротко стриженная, очки на цепочке (В1-12).
 - (додумано) серо-зелёные глаза, прямые тёмные брови, родинка над левым краем верхней губы, каштановые волосы.
 - **Ядро сходства:** oval face with a narrow pointed chin, serious level gaze like a strict head teacher, straight dark eyebrows, grey-green eyes, a small mole above the left corner of the upper lip, chestnut hair, slim.
 - В кадрах: В1-05, В1-06, В1-12, В2-05, Т-01, Т-06, Я-02.
@@ -87,20 +87,21 @@
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 7 | 1996 | bw | 7-year-old girl, chestnut chin-length bob under a white child's panama hat printed with cherries, simple cotton sundress, scraped knees |
-| 13 | 2002 | color | 13-year-old girl, chestnut hair in a low ponytail, metal braces visible when she smiles, oversized t-shirt, a paperback book in hand |
-| 22 | 2011–2014 | digital | young woman of 22-25, chestnut pixie cut, an oversized men's jacket over her shoulders or a white lab coat, no make-up |
-| 56 | 2045 | phone | woman of 56, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
+| 13 | 2002 | color | 13-year-old girl, plain and ordinary-looking, not pretty, an awkward bony teenager with a serious strict face, chestnut hair in a low ponytail, metal braces, oversized t-shirt, a paperback book in hand |
+| 18 | 2007 | digital | 18-year-old girl, strikingly pretty in a natural way, serious level gaze, chestnut hair to the shoulders tied back, no braces any more, simple cardigan, a stack of university entrance books |
+| 22 | 2011–2014 | digital | young woman of 22-25, extraordinarily beautiful, almost an ideal of beauty, fine symmetrical features, long thick glossy chestnut hair falling below the shoulder blades, an oversized men's jacket over her shoulders or a white lab coat, little make-up |
+| 56 | 2045 | phone | woman of 56, still very attractive and elegant, fine features, short-cropped grey hair, reading glasses on a thin chain, white doctor's coat, tired lines around the eyes |
 
 ### `vitka` — Витька (1988 г. р., главный)
 - Из текста: «рыжий в крапинку», орёт громче всех (Т-01); краснеют уши (Т-06); бритый на проводах (Т-09); шахтёр (В1); поседел, белая рубаха поверх свитера (В6-08).
 - (додумано) светло-голубые глаза, курносый нос, широкая щербатая улыбка, оттопыренные уши, коренастый.
 - **Ядро сходства:** round freckled face, snub nose, light blue eyes, wide grin with a small gap between the front teeth, ears that stick out and go red, ginger hair, stocky build.
-- В кадрах: В1-05, В1-06, В1-09, В6-08, Т-01, Т-06, Т-09.
+- В кадрах: В1-05, В1-06, В1-09, В6-08, Т-01, Т-06, Т-07, Т-09.
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 8 | 1996 | bw | 8-year-old boy, shaggy ginger hair, dense freckles, skinny, shorts and a stretched t-shirt |
-| 14 | 2002 | color | 14-year-old boy, ginger hair grown out, freckles, squinting, cheap cigarette, sports jacket |
+| 14 | 2002 | color | 14-year-old boy, ginger hair grown out, freckles, squinting, navy tracksuit top with two white stripes |
 | 18 | 2006 | color | 18-year-old conscript, freshly shaved head with ginger stubble, red flushed face, freckles, white shirt |
 | 23 | 2011–2014 | digital | man of 23-26, short ginger hair, freckles, stocky miner's build, track jacket or a cheap black suit |
 | 33 | 2021 | phone | miner of 33, short ginger hair under a dirty helmet, freckles under coal dust, heavy jaw, ginger stubble |
@@ -127,6 +128,7 @@
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
+| 30 | 1996–2000 | bw | woman of 30, small, light-brown permed hair, a dark work robe of a coal processing plant worker, tired kind face |
 | 41 | 2007 | digital | woman of 41, light-brown hair under a headscarf, light jacket, small and tired |
 | 54 | 2020 | phone | woman of 54, small, black mourning headscarf, medical mask, grey eyes |
 | 95 | 2061 | future | tiny very old woman of 95, white hair under a flowered headscarf, soft wrinkled round face, grey eyes |
@@ -147,11 +149,12 @@
 - Из текста: «молодой и худой, с портфелем» (Т-05); всё время трёт глаза, серый костюм (Т-02б); поседел до белого (В2-07); маленький, как подросток, очки на шнурке (В2.1-07).
 - (додумано) узкое лицо, высокий лоб, светлые близорукие глаза, очки в тонкой оправе всю жизнь.
 - **Ядро сходства:** narrow face, high forehead, pale short-sighted eyes, thin wire-rimmed glasses, thin build, habit of rubbing his eyes.
-- В кадрах: В2-07, В2.1-01, В2.1-07, Т-05.
+- В кадрах: В2-07, В2.1-01, В2.1-07, Т-02б, Т-05.
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | 25 | 1981 | bw | thin young man of 25, dark side-parted hair, wire glasses, cheap suit, holding a briefcase |
+| 40 | 1996 | bw | thin pale man of 40 who looks nearly sixty, greying dark hair, wire glasses, worn grey suit, no white coat, worn briefcase |
 | 60 | 2016–2017 | digital | man of 60, hair gone completely white, wire glasses, tired eyes, good dark coat |
 | 85 | 2041 | phone | very old shrunken man of 85, wispy white hair, glasses hanging on a cord, thin as a teenager |
 
@@ -375,6 +378,16 @@
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
 | puppy | 1996 | bw | ginger mongrel puppy, floppy ears, white star on the chest |
+
+### `snag` — Коряга-рука (0 г. р., главный)
+- Из текста: «белая и гладкая, растопыренная, как пятерня» (Т-00); «белая коряга, похожая на руку» (Я-01, В5, В7).
+- (додумано) наклон ствола.
+- **Ядро сходства:** a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up.
+- В кадрах: .
+
+| возраст | годы сцен | эпоха эталона | облик (EN) |
+|---|---|---|---|
+| ref | all | color | a single dead tree snag, bleached bone-white and polished smooth by water, one thick trunk rising at a slight tilt and ending in five spread crooked branches, exactly like the open fingers of a hand reaching up |
 <!-- cards:end -->
 
 ## 6. Спорные кадры (зависят от флагов или требуют решения автора)
@@ -392,3 +405,16 @@
 2. **В7-10: два варианта картинки** — по `F_ПАРТНЁР`: `img/В7-10~НИКА.jpg` и `img/В7-10~ОЛЯ.jpg` (общий принцип: если кадр зависит от сюжета — несколько файлов `<ID>~<ЗНАЧЕНИЕ>.jpg`, у сцены в front matter `photo_by: <ФЛАГ>`; движок сначала ищет вариант, потом `<ID>.jpg`). TODO: поддержка `photo_by` в qqparse/engine и в gen_images.py.
 3. Додуманная внешность — **утверждена** (Ника: серо-зелёные глаза, родинка над губой, каштановые; Витька: голубые глаза, щель между зубами, лопоухий, коренастый; отец: усы в 1996, нос с давним переломом; мама: шатенка с химией в 90-е; Шадрин: серебряные волосы назад).
 4. **Правило: кто по сюжету.** В1-05: в момент кадра (до выбора) у гаражей и отец, и Палыч — в кадре оба: отец докуривает у гаража, Палыч курит у последнего гаража. Если состав кадра зависит от выбора/флага — делать варианты по п. 2.
+
+
+## Чек-лист проверки кадра (обязателен перед показом автору, решение 06.11.2026)
+
+Каждую сгенерированную картинку сверять с ТЕКСТОМ сцены, а не с общим впечатлением:
+1. **Стиль:** явно рисунок (тушь + акварель, манера 2), не фото. Одинаковый во всех кадрах.
+2. **Кто в кадре:** только те, кто есть в сцене в этот момент; лица по эталонам; возраст верный. Никаких «случайных» мам, взрослых в детской палате и т. п.
+3. **Чьи руки:** рука героя только если её называет photo_prompt; размер по возрасту героя; одна или две, но анатомически понятно, чья где. Рука другого человека не должна читаться как рука героя.
+4. **Место и география:** Томь — широкая река; Кемерово/Рудничный без гор; эпоха (машины, одежда, телефоны).
+5. **Детали из текста:** одежда, предметы, повреждения (бритая голова, забинтованная ладонь, ушанка), расположение (кто за рулём, где стоит герой).
+6. **Нет лишнего:** надписей, дат, рамок, белых полей; вещей, которых нет на всех путях (I3).
+7. **Модерация:** у несовершеннолетних нет сигарет, алкоголя у губ и т. п. — ни в сцене, ни в эталоне.
+Не прошёл хоть один пункт → правка промпта и перегенерация ДО показа.
