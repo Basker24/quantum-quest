@@ -18,7 +18,7 @@ Claude в новой сессии:
 |---|---|
 | Репозиторий | `Basker24/quantum-quest`, ветка `main` |
 | Игра онлайн (приватная) | https://claude.ai/artifact/B42euDmPxhkzjUEwHajnLP |
-| Игра онлайн (публичная копия, ZCode Sites) | https://quantum-quest-940t.zai-ai.site — постоянный адрес; обновляет ZCode (пересборка `game/` → редеплой; DLC — пунктом в меню; эталоны `img/ref/` в копию не входят) |
+| Игра онлайн (публичная копия, ZCode Sites) | https://quantum-quest-940t.zai-ai.site — постоянный адрес; обновляет ZCode (пересборка `game/` → редеплой; DLC — пунктом в меню; эталоны `img/ref/` в копию не входят). Нюанс: `play.html` собирается без viewport/charset (для артефакта это нормально), поэтому при деплое копии они добавляются в стадию автоматически — на артефакт не влияет |
 | Обновить игру онлайн | Artifact → publish с `url` выше, `file_path` = `game/play.html`, `files` = `{style.css, engine.js, graph.js}` из `game/` (+ `dev.js`, если нужен режим автора онлайн). Из новой сессии сначала `action: read` этого url |
 | Исходники сцен | `scenes/*.md` (формат — в шапке `tools/qqparse.py`), переменные и флаги — `scenes/_config.json` |
 | Сборка | `python3 tools/build.py` → `game/graph.js` и `game/play.html` |
