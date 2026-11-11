@@ -76,8 +76,22 @@ def read_csv(path):
 
 def log(row):
     new = not LOG_CSV.exists()
+    fields = ["id", "time", "kind", "model", "quality", "size", "status", "file", "refs", "tokens",
+              "input_tokens", "output_tokens"]
+    if LOG_CSV.exists():  # старый лог без новых колонок — дописываем шапку
+        with open(LOG_CSV, encoding="utf-8") as f:
+            old_fields = next(csv.reader(f), fields)
+        if old_fields != fields:
+            rows = list(csv.DictReader(open(LOG_CSV, encoding="utf-8")))
+            for r in rows:
+                r.setdefault("input_tokens", "")
+                r.setdefault("output_tokens", "")
+            with open(LOG_CSV, "w", newline="", encoding="utf-8") as f:
+                w = csv.DictWriter(f, fieldnames=fields)
+                w.writeheader()
+                w.writerows(rows)
     with open(LOG_CSV, "a", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["id", "time", "kind", "model", "quality", "size", "status", "file", "refs", "tokens"])
+        w = csv.DictWriter(f, fieldnames=fields)
         if new:
             w.writeheader()
         w.writerow(row)
@@ -168,7 +182,7 @@ def generate(args, key, kind, item_id, prompt, out, size, refs=(), compress=True
         endpoint = "edits"
         fields = [("model", args.model), ("prompt", prompt), ("size", size), ("quality", args.quality),
                   ("n", "1"), ("output_format", fmt)]
-        if args.fidelity != "none" and args.model.startswith("gpt-image-1"):  # gpt-image-2 параметр не принимает
+        if args.fidelity != "none" and args.model.startswith("gpt-image-1") and "mini" not in args.model:  # 2 и 1-mini не принимают
             fields.append(("input_fidelity", args.fidelity))
         files = [("image[]", p) for _, p in refs]
     else:
@@ -196,14 +210,19 @@ def generate(args, key, kind, item_id, prompt, out, size, refs=(), compress=True
         res = call(key, endpoint, body, ctype, args.timeout)
         raw = base64.b64decode(res["data"][0]["b64_json"])
         nbytes = save(raw, out, compress)
-        tokens = (res.get("usage") or {}).get("total_tokens", "")
+        usage = res.get("usage") or {}
+        tokens = usage.get("total_tokens", "")
+        in_tok = usage.get("input_tokens", "")
+        out_tok = usage.get("output_tokens", "")
         status = "ok"
-        print(f"  ok {item_id} → {rel} ({nbytes // 1024} КБ, {endpoint})")
+        print(f"  ok {item_id} → {rel} ({nbytes // 1024} КБ, {endpoint}, in={in_tok} out={out_tok} ток.)")
     except Exception as e:  # noqa: BLE001
         status, tokens = f"error: {e}", ""
+        in_tok = out_tok = ""
         print(f"  ОШИБКА {item_id}: {e}")
     log({"id": item_id, "time": t0, "kind": kind, "model": args.model, "quality": args.quality, "size": size,
-         "status": status, "file": str(rel), "refs": ";".join(lab for lab, _ in refs), "tokens": tokens})
+         "status": status, "file": str(rel), "refs": ";".join(lab for lab, _ in refs), "tokens": tokens,
+         "input_tokens": in_tok, "output_tokens": out_tok})
 
 
 def style_no(args):

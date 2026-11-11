@@ -28,9 +28,17 @@ STYLE_ANCHORS = {
     # 06.11.2026: пробная манера 6, ОТКЛОНЕНА автором: выходила то фото, то рисунок (нарушала канон п. 28). Не использовать.
     6: ("photo-overpaint", "it must read first of all as a real photograph: natural proportions, ordinary unglamorous faces, "
                            "real light; only a very light hand-painted watercolour overpaint in the tones and paper texture"),
+    # 11.11.2026: манера 7 утверждена автором по кадру Т-00 v3 (цветная живопись). Новые кадры — только в ней;
+    # старые Т-01…Т-10 в манере 2 остаются как есть (решение автора 12.11.2026).
+    7: ("oil-story-painting", "a rich hand-painted oil painting in the spirit of Russian realist painting and quiet magical "
+                              "realism: confident visible brushstrokes, layered paint, soft blended edges together with crisp "
+                              "focal details, luminous muted colours, deep shadows, warm accents of light; clearly a painting, "
+                              "never photorealistic, the same painted look in every picture, painted all the way to the edges "
+                              "of the frame"),
 }
-# Выбор автора (05.11.2026): 2 — ink-watercolor. Канон п. 28: рисованная манера поверх «фото эпохи».
-DEFAULT_STYLE = 2
+# Выбор автора: 7 — oil-story-painting (живопись, Т-00 v3, 11.11.2026). До этого 05.11.2026 была 2 — ink-watercolor.
+# Канон п. 28: рисованная манера поверх «фото эпохи» (носитель — только эффект: ч/б, зерно, чистота).
+DEFAULT_STYLE = 7
 
 ERA_MEDIUM = {
     "bw": "an illustrated photograph, hand-drawn but painted to look like a scanned 1990s black-and-white amateur snapshot shot by a family member on a cheap Soviet 'Smena' "
