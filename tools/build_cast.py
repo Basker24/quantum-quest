@@ -230,7 +230,7 @@ CAST = {
     "Ф-04": ["father:34"],
     "В1-01": ["tanya:22"],
     "В1-02": ["mikhalych:58"],
-    "В1-05": ["vitka:23", "nika:22", "seryoga:23", "palych:52"],
+    "В1-05": ["vitka:23", "nika:22", "seryoga:23", "palych:52", "father:45"],
     "В1-06": ["nika:22", "vitka:23"],
     "В1-09": ["vitka:33"],
     "В1-10": ["father:65"],

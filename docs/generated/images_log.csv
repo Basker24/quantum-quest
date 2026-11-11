@@ -116,3 +116,7 @@ nika_22,2026-11-06T16:25:20,ref,gpt-image-2,medium,1024x1536,ok,game/img/ref/nik
 В1-01,2026-11-11T20:43:22,scene,gpt-image-1-mini,medium,1536x1024,ok,game/img/В1-01.jpg,tanya age 22,3511,1943,1568
 В1-01,2026-11-11T20:43:51,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-01.jpg,tanya age 22,3085,1953,1132
 В1-04,2026-11-11T20:50:11,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-04.jpg,,1472,340,1132
+palych_52,2026-11-11T20:52:34,ref,gpt-image-2.6-sunburst,medium,1024x1536,ok,game/img/ref/palych_52.png,,1364,232,1132
+seryoga_23,2026-11-11T20:53:02,ref,gpt-image-2.6-sunburst,medium,1024x1536,ok,game/img/ref/seryoga_23.png,,1362,230,1132
+В1-05,2026-11-11T20:54:28,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-05.jpg,vitka age 23;nika age 22;seryoga age 23;palych age 52,7852,6720,1132
+В1-05,2026-11-11T20:56:14,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-05.jpg,vitka age 23;nika age 22;seryoga age 23;palych age 52;father age 45,9447,8315,1132
