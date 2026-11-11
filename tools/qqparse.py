@@ -382,8 +382,8 @@ def load():
         m["if"] = parse_expr(m["cond"], cfg)
     scenes, deaths = {}, {}
     for p in sorted(SCENES.glob("*.md")):
-        if p.name.startswith("_"):
-            continue
+        if p.name.startswith("_") or p.name.startswith("._"):
+            continue  # "_*" — служебные; "._*" — мусор AppleDouble с exFAT-диска
         sid, item = parse_file(p, cfg)
         target = deaths if sid.startswith("✝") else scenes
         if sid in target:
