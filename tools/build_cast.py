@@ -105,12 +105,12 @@ CHARS = {
         }),
     "ploy": dict(
         ru="Плой", born=1986, tier="main",
-        src="тайка из Нонтхабури, «стрижена почти налысо», смеётся глазами; белый открытый шлем, футболка дайв-школы (В5-03)",
-        invented="широкие скулы, тёмно-карие глаза, родинка на шее слева, жилистая",
-        core="Thai woman, very short almost shaved black hair, broad cheekbones, dark brown laughing eyes, a small mole on the left side of the neck, wiry athletic build",
+        src="тайка из Нонтхабури, очень красивая и сексуальная, ухоженная, выглядит моложе лет; стройная, 1,7 м, длинные прямые чёрные волосы, смеётся глазами; белый открытый шлем, футболка дайв-школы (В5-03; канон сменил автор 12.11.2026 — старый «налысо» отменён, тексты сцен правит Клод)",
+        invented="широкие скулы, тёмно-карие глаза, родинка на шее слева, миниатюрное сложение, почти плоская грудь, длинные ноги",
+        core="Thai woman, strikingly beautiful, sensual and perfectly groomed, looks younger than her age, slim fine-boned figure with long legs, 1.70 m tall, small almost flat chest, broad cheekbones, dark brown laughing eyes, long straight glossy black hair, a small mole on the left side of the neck, flawless sun-tanned skin",
         ages={
-            24: ("2010–2012", "digital", "Thai woman of 24-26, almost shaved head, dive school t-shirt, tanned", "a young Thai woman with almost shaved hair, dive t-shirt"),
-            36: ("2022", "phone", "Thai woman of 36, very short black hair, apron, laughing", "a Thai woman of 36 with very short hair, laughing"),
+            24: ("2010–2012", "digital", "full-length standing view of a strikingly beautiful sensual Thai woman of 24 who looks about nineteen, perfectly groomed: long straight glossy black hair, light natural make-up, manicured hands, flawless tanned skin; slim fine-boned 1.70 m figure, long legs, small almost flat chest, bare midriff: a small black bikini top, an open thin white shirt tied at the waist, very short denim shorts, flat sandals; broad cheekbones, dark brown laughing eyes, a small mole on the left side of the neck", "a strikingly beautiful sensual young Thai woman with long black hair, bikini top, open shirt, short shorts"),
+            36: ("2022", "phone", "the same strikingly beautiful perfectly groomed Thai woman of 36 who looks about twenty-eight, slim, 1.70 m tall, long straight glossy black hair, fitted tank top with an apron, laughing", "the same beautiful well-groomed Thai woman of 36 with long black hair, tank top, apron, laughing"),
         }),
     "dasha": dict(
         ru="Даша Веснина", born=2037, tier="main",
