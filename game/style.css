@@ -634,3 +634,29 @@ body[data-era="future"] .choice { border-radius: 14px; }
   #flow { width: min(1400px, calc(100vw - 48px)); max-width: none; margin-left: calc(50% - min(700px, calc(50vw - 24px))); }
 }
 .fnode .chip text { font-size: 10px; } .fnode .fd { font-size: 10.5px; }
+
+/* компактные капканы (телефон) */
+.choice.fold-btn { border-style: dashed; }
+.choice.fold-btn .lbl small { margin-left: 6px; opacity: .7; }
+.choice.mem-fold { color: #8fd3ff; }
+.choice.lock-fold { color: var(--dim); }
+
+/* тон жизни: едва заметная подсветка фона, у каждой жизни своя */
+body[data-life] { background-attachment: fixed; }
+body[data-life="В1"], body[data-life="В1.2"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(110,90,60,.10), transparent 60%); }   /* угольная пыль, лампа */
+body[data-life="В2"], body[data-life="В2.1"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(120,170,210,.08), transparent 60%); } /* лаборатория, экран */
+body[data-life="В2.2"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(80,120,118,.10), transparent 60%); }                       /* Томь, набережная */
+body[data-life="В3"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(150,170,180,.08), transparent 60%); }                       /* снег, гольцы */
+body[data-life="В4"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(150,40,40,.09), transparent 60%); }                         /* ночной город, давление */
+body[data-life="В5"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(40,130,140,.10), transparent 60%); }                        /* тёплая вода */
+body[data-life="В6"] { background-image: radial-gradient(140% 90% at 50% 50%, rgba(160,160,170,.07), transparent 70%); }                        /* туман */
+body[data-life="В7"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(217,164,65,.08), transparent 60%); }                        /* домашний свет */
+body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(188,214,255,.07), transparent 60%); } /* комета */
+
+/* мини-карта схемы */
+.flow-mini { position: absolute; right: 12px; bottom: 12px; z-index: 2; overflow: hidden; padding: 4px; opacity: .9;
+  background: rgba(11,15,20,.82); border: 1px solid #2c3d4f; border-radius: 6px; cursor: pointer; }
+.flow-mini svg { display: block; }
+.flow-mini rect.o { fill: #5c88a8; } .flow-mini rect.f { fill: #2f3b48; } .flow-mini rect.n { fill: var(--accent); }
+.flow-mini rect.vp { fill: rgba(143,211,255,.08); stroke: #8fd3ff; stroke-width: 1; }
+@media (max-width: 560px) { .flow-mini { transform: scale(.75); transform-origin: right bottom; } }

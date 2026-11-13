@@ -372,6 +372,7 @@
     if (S.pending) S.pending = null; // «После» прочитано: дальше обычный вход
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
+    document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     // счётчик секунд: первая сцена цепочки с clock заводит его, следующие продолжают, сцена без clock сбрасывает
     if (!restored) { if (sc.clock == null) delete S.st[CLK]; else if (S.st[CLK] == null) S.st[CLK] = sc.clock; }
@@ -645,6 +646,7 @@
       b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : lockReason(c.visible, st))}</small>`;
       nav.append(b);
     }
+    compactChoices(nav);
     saveMeta();
     if (devOn) devGoals(nav, sc);
     if (cold) { snd.cold(); buzz(8); }
@@ -750,6 +752,24 @@
     const t = (S.trail || [])[S.trail.length - 1];
     const setHere = new Set(t && t.scene === p.scene && t.choice === p.choice ? t.flags || [] : []);
     showAfter(c, after.filter((b) => ok(b.if, S.st)), () => enter(p.to), setHere, p.check || null);
+  }
+
+  // компактные капканы на телефоне: когда вариантов много, «Я помню…» и закрытые сворачиваются в одну строку
+  function compactChoices(nav) {
+    if (devOn || !matchMedia("(max-width: 560px)").matches) return;
+    const all = [...nav.querySelectorAll(".choice")];
+    if (all.length < 5) return;
+    const fold = (list, icon, label, cls) => {
+      if (list.length < 2) return;
+      const t = document.createElement("button");
+      t.className = "choice fold-btn " + cls;
+      t.innerHTML = `<span class="num mono">${icon}</span><span class="lbl">${label} <small class="mono">${list.length}</small></span>`;
+      nav.insertBefore(t, list[0]);
+      list.forEach((b) => (b.hidden = true));
+      t.onclick = () => { list.forEach((b) => (b.hidden = false)); t.remove(); list[0].focus && list[0].focus(); };
+    };
+    fold([...nav.querySelectorAll(".choice.echo:not([disabled]), .choice.meta-echo:not([disabled])")], "⟲", "Я помню…", "mem-fold");
+    if (nav.querySelectorAll(".choice:not([hidden])").length >= 5) fold([...nav.querySelectorAll(".choice.locked")], "·", "ещё закрыто", "lock-fold");
   }
 
   // плашка проверки (п. 4.3 разбора): исход решил стат-порог — словами, без цифр
@@ -1244,6 +1264,7 @@
     flowZoom = z;
     svg.setAttribute("width", flowSize.w * z); svg.setAttribute("height", flowSize.h * z);
     wrap.scrollLeft = ux * z - px; wrap.scrollTop = uy * z - py;
+    flowMini();
   }
   (function initFlowZoom() {
     const wrap = $("#flow-wrap");
@@ -1439,9 +1460,36 @@
     fg.hidden = !gp;
     if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }
     $("#flow-card").hidden = true;
+    // мини-карта: вся игра точками, рамка — что сейчас на экране
+    const mk = (flowMiniK = Math.min(96 / L.width, 230 / L.height));
+    let dots = "";
+    for (const [id, p] of Object.entries(pos)) dots += `<rect class="${open(id) ? "o" : "f"}${life.has(id) ? " n" : ""}" x="${(p.x * mk).toFixed(1)}" y="${(p.y * mk).toFixed(1)}" width="${Math.max(2, W * mk).toFixed(1)}" height="${Math.max(1.5, H * mk).toFixed(1)}"/>`;
+    $("#flow-mini").innerHTML = `<svg width="${(L.width * mk).toFixed(0)}" height="${(L.height * mk).toFixed(0)}" viewBox="0 0 ${(L.width * mk).toFixed(0)} ${(L.height * mk).toFixed(0)}">${dots}<rect class="vp" x="0" y="0" width="10" height="10"/></svg>`;
+    flowMini();
+    const jump = (q) => { const t = pos[q]; if (!t) return; const wrap = $("#flow-wrap"); wrap.scrollTo({ left: Math.max(0, (t.x + W / 2) * flowZoom - wrap.clientWidth / 2), top: Math.max(0, t.y * flowZoom - wrap.clientHeight / 3), behavior: REDUCED ? "auto" : "smooth" }); };
+    $("#z-anchor").onclick = () => jump("Я-01");
+    $("#z-here").onclick = () => jump(S && pos[S.scene] ? S.scene : "Т-01");
     const here = gp ? pos[gp.steps[0] && gp.steps[0].scene] : (S && pos[S.scene]) || pos["Т-01"];
     if (here) { const wrap = $("#flow-wrap"); requestAnimationFrame(() => { wrap.scrollLeft = Math.max(0, (here.x + W / 2) * flowZoom - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, here.y * flowZoom - wrap.clientHeight / 3); }); }
   }
+
+  let flowMiniK = 0.05;
+  function flowMini() {
+    const wrap = $("#flow-wrap"), vp = document.querySelector("#flow-mini .vp");
+    if (!vp || !flowSize.w) return;
+    const mk = flowMiniK, z = flowZoom;
+    vp.setAttribute("x", (wrap.scrollLeft / z * mk).toFixed(1)); vp.setAttribute("y", (wrap.scrollTop / z * mk).toFixed(1));
+    vp.setAttribute("width", Math.min(flowSize.w * mk, wrap.clientWidth / z * mk).toFixed(1)); vp.setAttribute("height", (wrap.clientHeight / z * mk).toFixed(1));
+  }
+  (function initFlowMini() {
+    const wrap = $("#flow-wrap"), mini = $("#flow-mini");
+    wrap.addEventListener("scroll", () => requestAnimationFrame(flowMini), { passive: true });
+    mini.addEventListener("click", (e) => {
+      const r = mini.querySelector("svg").getBoundingClientRect(), mk = flowMiniK * (r.width / (flowSize.w * flowMiniK));
+      const ux = (e.clientX - r.left) / mk, uy = (e.clientY - r.top) / mk;
+      wrap.scrollTo({ left: Math.max(0, ux * flowZoom - wrap.clientWidth / 2), top: Math.max(0, uy * flowZoom - wrap.clientHeight / 2), behavior: REDUCED ? "auto" : "smooth" });
+    });
+  })();
 
   // карточка узла по тапу
   function openFlowCard(id, isDeath) {
@@ -1765,6 +1813,7 @@
   let newArmed = null;
   function showTitle() {
     show("#title");
+    document.body.dataset.life = "";
     document.body.dataset.era = "none"; // на титуле — натриевый акцент, а не цвет эпохи последней сцены
     const ids = Object.keys(G.scenes), ends = ids.filter((id) => G.scenes[id].stage === "final"), deaths = Object.keys(G.deaths);
     const seenE = ends.filter((id) => meta.visited[id]).length, seenD = deaths.filter((id) => meta.journal[id]).length;
