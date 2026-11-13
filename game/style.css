@@ -660,3 +660,11 @@ body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-im
 .flow-mini rect.o { fill: #5c88a8; } .flow-mini rect.f { fill: #2f3b48; } .flow-mini rect.n { fill: var(--accent); }
 .flow-mini rect.vp { fill: rgba(143,211,255,.08); stroke: #8fd3ff; stroke-width: 1; }
 @media (max-width: 560px) { .flow-mini { transform: scale(.75); transform-origin: right bottom; } }
+
+/* доска улик в Тетради */
+#clues { margin-top: 22px; }
+.clues { display: grid; gap: 8px; margin: 8px 0; }
+.clue { border-left: 2px solid #3b4f63; padding: 4px 0 4px 10px; }
+.clue.used { border-left-color: #8fd3ff; }
+.clue b { display: block; font-weight: normal; }
+.clue small { color: var(--dim); font-size: 11px; }

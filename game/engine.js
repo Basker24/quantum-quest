@@ -1168,6 +1168,28 @@
   }
   function closePanel() { if ((back === "#scene" || back === "#death") && S) show(back); else showTitle(); }
 
+  // доска улик: что я знаю из смертей, пригодилось ли это, что Хор ещё не знает
+  function renderClues() {
+    const box = $("#clues"); if (!box) return;
+    const uses = {}; // смерть → варианты, которые открывает её память
+    for (const [sid, sc] of Object.entries(G.scenes)) for (const c of sc.choices || []) {
+      if (!c.visible) continue;
+      for (const id of [...seenIds(c.visible, true), ...seenIds(c.visible, false)]) (uses[id] = uses[id] || []).push([sid, c.id]);
+    }
+    const known = Object.keys(meta.journal || {}).filter((id) => G.deaths[id] && G.deaths[id].lesson);
+    if (!known.length) { box.innerHTML = ""; return; }
+    const used = (id) => (uses[id] || []).some(([sid, cid]) => meta.taken[sid] && meta.taken[sid][cid] != null);
+    const cross = (id) => (uses[id] || []).some(([sid]) => !sid.startsWith(id.slice(1).split("-")[0] + "-")); // память работает в другой жизни
+    const rows = known.map((id) => {
+      const d = G.deaths[id], u = used(id), x = cross(id), n = (uses[id] || []).length;
+      const st = u ? "пригодилось" : n ? "ещё не пригодилось" : "просто память";
+      return `<div class="clue${u ? " used" : ""}"><b>${esc(d.lesson)}</b><small class="mono">✝ ${esc(yearOf(d.date) || "")} · ${esc(d.title || "")} · ${st}${x ? " · ◌ и в другой жизни" : ""}</small></div>`;
+    }).join("");
+    const total = Object.keys(G.deaths).length, seenN = Object.keys(meta.journal || {}).length;
+    box.innerHTML = `<h3 class="memo-h">Что я знаю</h3><div class="clues">${rows}</div>
+      <p class="dim tiny mono">Хор знает ${seenN} смертей из ${total} · стихий ${kindsSeen().size} из ${C.stihii.length} · прожито жизней ${branchesLived().size} из 8</p>`;
+  }
+
   function renderPanels() {
     // Тетрадь Хора
     const list = $("#journal-list"); list.innerHTML = "";
@@ -1192,6 +1214,7 @@
       list.insertAdjacentHTML("beforeend", row(n++, `${esc(day)}${time ? "<br>" + esc(time.trim()) : ""}`, esc(d.epitaph), esc(d.mourner)) );
     }
     if (!any) list.innerHTML = `<p class="nb-empty">Тетрадь пока пустая.</p>`;
+    renderClues();
     $("#stihii").innerHTML = C.stihii.map((s) => `<span class="${seenSt.has(s) ? "on" : ""}" title="${s.toLowerCase()}">●</span>`).join(" ");
     // Я
     const me = $("#me-list"); me.innerHTML = "";
