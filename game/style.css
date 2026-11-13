@@ -691,3 +691,7 @@ body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-im
 .clue.used { border-left-color: #8fd3ff; }
 .clue b { display: block; font-weight: normal; }
 .clue small { color: var(--dim); font-size: 11px; }
+
+/* поделиться надгробием */
+.tomb-share { text-align: center; margin: 10px 0 0; font-size: 13px; }
+.tomb-share .share-row { color: var(--dim); }

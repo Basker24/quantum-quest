@@ -367,11 +367,36 @@
     setTimeout(step, REDUCED ? 50 : 600);
   }
 
+  // ---------- вехи для аналитики (без личных данных): Яндекс Метрика, если в _config.json задан metrika_id
+  function milestone(name) {
+    meta.milestones = meta.milestones || {};
+    const firstTime = !meta.milestones[name];
+    if (firstTime) { meta.milestones[name] = new Date().toISOString().slice(0, 10); saveMeta(); }
+    try { if (C.metrika_id && typeof window.ym === "function") window.ym(+C.metrika_id, "reachGoal", name, { first: firstTime }); } catch (e) { /* аналитика не должна ломать игру */ }
+  }
+  function milestoneFor(id, sc) {
+    if (id === "Т-02б") milestone("root");
+    else if (id === "Т-10") milestone("graduation");
+    else if (id === "Я-01") milestone("anchor");
+    else if (sc.stage === "final") milestone(id.startsWith("⊣") ? "deadend" : "final_" + id);
+    else if (/^В[\d.]+-01$/.test(id) || id === "В2.1-00" || id === "В2.2-00" || id === "В1.2-00") milestone("life_" + id.split("-")[0]);
+  }
+  (function loadMetrika() {
+    if (!C.metrika_id) return;
+    try {
+      window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); };
+      window.ym.l = +new Date();
+      const sc = document.createElement("script"); sc.async = true; sc.src = "https://mc.yandex.ru/metrika/tag.js"; document.head.append(sc);
+      window.ym(+C.metrika_id, "init", { clickmap: false, trackLinks: true, accurateTrackBounce: true, webvisor: false });
+    } catch (e) { /* без аналитики */ }
+  })();
+
   function enter(id, restored) {
     const sc = G.scenes[id];
     if (S.pending) S.pending = null; // «После» прочитано: дальше обычный вход
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
+    if (!restored) milestoneFor(id, sc);
     document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     // счётчик секунд: первая сцена цепочки с clock заводит его, следующие продолжают, сцена без clock сбрасывает
@@ -825,12 +850,70 @@
     step();
   }
 
+  // ---------- «поделиться надгробием»: PNG-карточка 1080×1350 без спойлеров сюжета (только эпитафия и «в том мире»)
+  function tombCanvas(d) {
+    const W = 1080, H = 1350, cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    const g = cv.getContext("2d");
+    const bg = g.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#15130f"); bg.addColorStop(1, "#0b0b0d");
+    g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    g.strokeStyle = "rgba(233,228,218,.18)"; g.lineWidth = 2; g.strokeRect(60, 60, W - 120, H - 120);
+    const serif = '"PT Serif", Georgia, serif', mono = '"PT Mono", Menlo, monospace';
+    const wrap = (text, x, y, maxW, lh, font, color) => {
+      g.font = font; g.fillStyle = color;
+      const words = String(text || "").split(/\s+/); let line = "";
+      for (const w of words) {
+        const t = line ? line + " " + w : w;
+        if (g.measureText(t).width > maxW && line) { g.fillText(line, x, y); y += lh; line = w; } else line = t;
+      }
+      if (line) { g.fillText(line, x, y); y += lh; }
+      return y;
+    };
+    g.textAlign = "center";
+    g.font = `34px ${mono}`; g.fillStyle = "#8d877c"; g.fillText(String(d.date || "").toUpperCase(), W / 2, 170);
+    g.font = `120px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText("✝", W / 2, 320);
+    g.font = `54px ${serif}`; g.fillText("Андрей Николаевич Самохин", W / 2, 420);
+    g.font = `38px ${mono}`; g.fillStyle = "#b9a27a"; g.fillText(`1989 — ${yearOf(d.date) || ""}`, W / 2, 480);
+    let y = wrap(d.epitaph, W / 2, 590, W - 260, 54, `italic 40px ${serif}`, "#e9e4da");
+    if (d.mourner) {
+      y += 30;
+      g.font = `28px ${mono}`; g.fillStyle = "#b2463a"; g.fillText("В ТОМ МИРЕ", W / 2, y); y += 54;
+      y = wrap(d.mourner, W / 2, y, W - 260, 46, `34px ${serif}`, "#c9c2b5");
+    }
+    g.font = `44px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText(C.title || "Тот, кто остался", W / 2, H - 230);
+    wrap("Каждый раз, когда я умираю, я снова стою за минуту до смерти и помню её.", W / 2, H - 175, W - 260, 38, `28px ${serif}`, "#8d877c");
+    g.font = `26px ${mono}`; g.fillStyle = "#6f8aa0"; g.fillText((C.share_url || "").replace(/^https?:\/\//, ""), W / 2, H - 95);
+    return cv;
+  }
+  if (DEBUG) window.__tombPng = (id) => tombCanvas(G.deaths[id]).toDataURL("image/png"); // для проверки карточки
+  function shareTomb(d) {
+    const box = $("#death-text").querySelector(".tomb-share");
+    const url = C.share_url || location.href;
+    const text = `${d.epitaph || ""} — «${C.title || "Тот, кто остался"}»`;
+    const cv = tombCanvas(d);
+    cv.toBlob(async (blob) => {
+      const file = blob && new File([blob], "nadgrobie.png", { type: "image/png" });
+      try {
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text, url }); return; }
+      } catch (e) { if (e && e.name === "AbortError") return; }
+      // запасной путь: картинку сохранить, ссылку отправить
+      const href = blob ? URL.createObjectURL(blob) : cv.toDataURL("image/png");
+      box.innerHTML = `<span class="mono share-row">
+        <a class="link" href="${href}" download="nadgrobie.png">сохранить картинку</a> ·
+        <a class="link" target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}">Telegram</a> ·
+        <a class="link" target="_blank" rel="noopener" href="https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}">ВКонтакте</a></span>`;
+      box.querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => e.stopPropagation()));
+    }, "image/png");
+  }
+
   // ---------- смерть: сама смерть → надгробие → шок пробуждения → (если можно глубже) лента отката
   function die(did) {
     const d = G.deaths[did];
     const first = Object.keys(S.lifeSeen).length === 0;
     const firstEver = Object.keys(meta.journal || {}).length === 0 && !meta.helpShown; // самая первая смерть игрока (Корень не в счёт)
     S.lifeSeen[did] = true;
+    milestone(Object.keys(meta.journal || {}).length === 0 ? "first_death" : "death");
     const j = meta.journal[did] || { times: 0, first: new Date().toISOString(), life: meta.lives };
     j.times++; meta.journal[did] = j; saveMeta();
     if (S.oneLife) store.del(SAVE); else save(); // «Одна жизнь»: закрыл вкладку на смерти — к развилке не вернуться
@@ -852,7 +935,9 @@
         <div class="tomb-years mono">1989 — ${esc(yearOf(d.date) || "")}</div>
         <p class="tomb-epitaph">${esc(d.epitaph || "")}</p>
         ${d.mourner ? `<p class="tomb-mourner"><span class="mono">в том мире</span> ${esc(d.mourner)}</p>` : ""}
-      </div>`);
+      </div>
+      <p class="tomb-share"><button class="link mono" id="btn-share-tomb">↗ поделиться надгробием</button></p>`);
+      $("#btn-share-tomb").onclick = (e) => { e.stopPropagation(); shareTomb(d); };
       // одна тихая строка поддержки — один раз за всю игру, после первого надгробия
       if (firstEver) {
         meta.helpShown = true; saveMeta();
@@ -1918,6 +2003,7 @@
     const live = savedLife();
     const cb = $("#btn-continue"), nb = $("#btn-new");
     $("#btn-one").hidden = !meta.visited["Ф-04"]; // «Одна жизнь» — после того, как хоть раз дошёл до Ф-04
+    $("#btn-dlc").hidden = !Object.keys(meta.visited || {}).some((id) => id.startsWith("Ф-") || id.startsWith("⊣")); // DLC — после первого финала или тупика, чтобы новичок не ушёл туда вместо игры
     cb.hidden = !live;
     nb.classList.toggle("ghost-choice", !!live);
     disarmNew();

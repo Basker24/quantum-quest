@@ -1,5 +1,7 @@
 {
   "title": "Тот, кто остался",
+  "share_url": "https://quantum-quest-940t.zai-ai.site",
+  "metrika_id": "",
   "start": "Т-00",
   "vars": {
     "ТЕЛ":   {"start": 20, "min": 0, "max": 100, "name": "Тело",
