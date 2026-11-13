@@ -1430,6 +1430,12 @@
         for (const o of c.outcomes) if (pos[o.to]) mark(o.to, tk && visited[o.to] ? "taken" : (sh || tk || devOn) ? "shown" : "fog");
       }
       for (const [t, s] of Object.entries(best)) {
+        if (!open(id)) continue; // из тумана не видно ничего
+        if (!open(t)) { // ребро уходит в облако и обрывается
+          const b = pos[t], x1 = a.x + W / 2, y1 = a.y + H, k = 0.3, ex = x1 + (b.x + W / 2 - x1) * k, ey = y1 + (b.y - y1) * k;
+          edges += `<path class="edge stub" d="M${x1} ${y1} Q${x1} ${(y1 + ey) / 2} ${ex.toFixed(1)} ${ey.toFixed(1)}"/>`;
+          continue;
+        }
         const g = gScenes.has(id) && gScenes.has(t) ? " guide" : "", now = life.has(id) && life.has(t) ? " now" : "";
         edges += `<path class="edge ${s}${now}${g}" d="${curve(a, pos[t])}"/>`;
       }
@@ -1438,6 +1444,7 @@
     for (const [id, p] of Object.entries(pos)) {
       const sc = G.scenes[id]; if (!sc) continue;
       const isOpen = open(id), here = S && S.scene === id;
+      if (!isOpen) continue; // туман: сцена не рисуется вовсе, её закрывает облачная пелена ниже
       const kind = p.kind, kick = kind === "final" ? "ФИНАЛ" : kind === "end" ? "⊣ ТУПИК" : kind === "anchor" ? "ЯКОРЬ" : "";
       const chs = sc.choices || [];
       const cw = 16, cg = 3, rowW = chs.length * cw + Math.max(0, chs.length - 1) * cg;
@@ -1468,13 +1475,23 @@
         deaths += `<line class="dlink${inJ ? " seen" : ""}" x1="${p.x + W}" y1="${p.y + 18}" x2="${dx}" y2="${dy}"/>`;
         deaths += `<g class="dnode${inJ ? " seen" : ""}${isOpen ? "" : " fog"}" data-death="${esc(d)}" transform="translate(${dx},${dy})"><title>${inJ ? esc("✝ " + (yearOf(dd.date) || "") + " · " + (dd.title || "")) : "смерть, которой ещё не было"}</title><circle r="7"/><text y="3.5" text-anchor="middle">${inJ ? "✝" : "?"}</text></g>`;
       });
-      // облака над неоткрытым
-      if (!isOpen && !devOn) {
-        const g = "d" + ((p.x + p.y) % 3 | 0);
-        fog += `<ellipse class="puff ${g}" cx="${p.x + W / 2}" cy="${p.y + H / 2}" rx="${W * 0.78}" ry="${H * 0.95}"/>`;
-      }
     }
-    const defs = `<defs><radialGradient id="fogpuff"><stop offset="0" stop-color="#8f9bab" stop-opacity=".30"/><stop offset=".6" stop-color="#7d8999" stop-opacity=".14"/><stop offset="1" stop-color="#7d8999" stop-opacity="0"/></radialGradient></defs>`;
+    // облачная пелена: сплошь по сетке, кроме мест рядом с открытыми сценами — по ней не понять, где и сколько сцен
+    const openPts = Object.entries(pos).filter(([id]) => open(id)).map(([, p]) => p);
+    const near = (x, y) => openPts.some((p) => x > p.x - 70 && x < p.x + W + 70 && y > p.y - 56 && y < p.y + H + 56);
+    if (!devOn) {
+      let k = 0;
+      for (let y = L.lifeTop + 6; y < L.height - 10; y += 70)
+        for (let x = L.AX + 10; x < L.width; x += 96) {
+          k++;
+          const jx = ((k * 37) % 41) - 20, jy = ((k * 53) % 29) - 14, cx = x + jx, cy = y + jy;
+          if (near(cx, cy)) continue;
+          const d = "d" + (k % 3);
+          fog += `<ellipse class="puff ${d}" cx="${cx}" cy="${cy}" rx="${88 + (k % 5) * 6}" ry="${54 + (k % 4) * 5}"/>`;
+          if (k % 3 === 0) fog += `<ellipse class="rim ${d}" cx="${cx + 18}" cy="${cy - 22}" rx="70" ry="34"/>`;
+        }
+    }
+    const defs = `<defs><radialGradient id="fogpuff"><stop offset="0" stop-color="#151a21" stop-opacity=".98"/><stop offset=".5" stop-color="#1a2029" stop-opacity=".92"/><stop offset=".8" stop-color="#232a34" stop-opacity=".5"/><stop offset="1" stop-color="#232a34" stop-opacity="0"/></radialGradient><radialGradient id="fogrim"><stop offset="0" stop-color="#5d6776" stop-opacity=".35"/><stop offset=".7" stop-color="#3a424e" stop-opacity=".18"/><stop offset="1" stop-color="#2c333d" stop-opacity="0"/></radialGradient></defs>`;
     $("#flow-canvas").innerHTML = `<svg width="${L.width * flowZoom}" height="${L.height * flowZoom}" viewBox="0 0 ${L.width} ${L.height}" role="img" aria-label="Схема всех развилок">${defs}<g class="lanes">${lanes}</g><g class="axis">${axis}</g><g class="edges">${edges}</g><g class="deaths">${deaths}</g><g class="nodes">${nodes}</g><g class="fog-layer">${fog}</g></svg>`;
     flowSize = { w: L.width, h: L.height };
     const lanesOpen = LANES.filter(([l]) => laneOpen[l]).length;
@@ -1486,7 +1503,7 @@
     // мини-карта: вся игра точками, рамка — что сейчас на экране
     const mk = (flowMiniK = Math.min(96 / L.width, 230 / L.height));
     let dots = "";
-    for (const [id, p] of Object.entries(pos)) dots += `<rect class="${open(id) ? "o" : "f"}${life.has(id) ? " n" : ""}" x="${(p.x * mk).toFixed(1)}" y="${(p.y * mk).toFixed(1)}" width="${Math.max(2, W * mk).toFixed(1)}" height="${Math.max(1.5, H * mk).toFixed(1)}"/>`;
+    for (const [id, p] of Object.entries(pos)) if (open(id)) dots += `<rect class="${open(id) ? "o" : "f"}${life.has(id) ? " n" : ""}" x="${(p.x * mk).toFixed(1)}" y="${(p.y * mk).toFixed(1)}" width="${Math.max(2, W * mk).toFixed(1)}" height="${Math.max(1.5, H * mk).toFixed(1)}"/>`;
     $("#flow-mini").innerHTML = `<svg width="${(L.width * mk).toFixed(0)}" height="${(L.height * mk).toFixed(0)}" viewBox="0 0 ${(L.width * mk).toFixed(0)} ${(L.height * mk).toFixed(0)}">${dots}<rect class="vp" x="0" y="0" width="10" height="10"/></svg>`;
     flowMini();
     const jump = (q) => { const t = pos[q]; if (!t) return; const wrap = $("#flow-wrap"); wrap.scrollTo({ left: Math.max(0, (t.x + W / 2) * flowZoom - wrap.clientWidth / 2), top: Math.max(0, t.y * flowZoom - wrap.clientHeight / 3), behavior: REDUCED ? "auto" : "smooth" }); };

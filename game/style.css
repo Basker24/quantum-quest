@@ -581,7 +581,7 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .flow-stage { position: relative; }
 .flow-hint { margin: 6px 0 0; }
 .flow-legend .lg.fin { border: 3px double #b9a27a; background: transparent; }
-.flow-legend .lg.fogd { background: radial-gradient(circle, rgba(143,155,171,.55), rgba(143,155,171,.05)); border-color: transparent; }
+.flow-legend .lg.fogd { background: radial-gradient(circle, #07090c 40%, rgba(74,83,97,.5)); border-color: #2c333d; }
 .lane-bg { fill: rgba(143,211,255,.025); stroke: rgba(143,211,255,.06); }
 .lane-bg.now { fill: rgba(217,164,65,.05); stroke: rgba(217,164,65,.18); }
 .lane-t { fill: #b6c8d8; font: 14px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
@@ -614,11 +614,13 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .dlink.seen { stroke: rgba(178,70,58,.6); }
 .fog-layer { pointer-events: none; }
 .puff { fill: url(#fogpuff); }
-.puff.d0 { animation: fogdrift 54s ease-in-out infinite alternate; }
-.puff.d1 { animation: fogdrift 73s ease-in-out -20s infinite alternate-reverse; }
-.puff.d2 { animation: fogdrift 91s ease-in-out -40s infinite alternate; }
+.rim { fill: url(#fogrim); }
+.edge.stub { stroke: #6a7c8f; stroke-opacity: .45; stroke-dasharray: 2 4; stroke-width: 1.4; }
+.puff.d0, .rim.d0 { animation: fogdrift 54s ease-in-out infinite alternate; }
+.puff.d1, .rim.d1 { animation: fogdrift 73s ease-in-out -20s infinite alternate-reverse; }
+.puff.d2, .rim.d2 { animation: fogdrift 91s ease-in-out -40s infinite alternate; }
 @keyframes fogdrift { from { transform: translate(-14px, -5px); } to { transform: translate(14px, 6px); } }
-@media (prefers-reduced-motion: reduce) { .puff { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .puff, .rim { animation: none !important; } }
 .flow-card { position: absolute; right: 10px; top: 22px; width: 300px; max-height: calc(100% - 40px); overflow: auto; z-index: 3;
   background: #10151b; border: 1px solid #2c3d4f; border-radius: 10px; padding: 14px 16px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: 15px; }
 .flow-card h3 { margin: 2px 28px 8px 0; font-size: 18px; line-height: 1.3; }
