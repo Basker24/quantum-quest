@@ -1394,6 +1394,60 @@
     return flowLayoutCache;
   }
 
+  // ---------- пелена тумана (v2.3.1): сеяные органичные клубы вместо сетки ----------
+  // ПРНГ с фиксированным зерном: картинка тумана каждый раз одна и та же, но решётки нет.
+  function fogRng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a |= 0; a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // Туман = тоновые банки + три стаи клубов с несоизмеримыми дрейфами + светлые вихряшки,
+  // у каждой свой цикл. Фаза берётся от часов: переоткрытие схемы не сбрасывает движение в ноль.
+  function makeFog(L, openPts, thin) {
+    const rnd = fogRng(20261113);
+    const inClearing = (x, y, pad) => openPts.some((p) => x > p.x - pad && x < p.x + L.W + pad && y > p.y - pad * 0.7 && y < p.y + L.H + pad * 0.7);
+    const g = ["", "", ""];
+    let bank = "", wisps = "";
+    for (let i = 0; i < 4; i++) { // банки — крупные пятна плотности, чтобы поле не было ровным
+      const cx = L.AX + rnd() * (L.width - L.AX), cy = rnd() * L.height, r = Math.max(L.width, L.height) * (0.26 + rnd() * 0.2);
+      bank += `<ellipse class="fbank" cx="${cx | 0}" cy="${cy | 0}" rx="${r | 0}" ry="${(r * (0.5 + rnd() * 0.3)) | 0}" opacity="${(0.6 + rnd() * 0.55).toFixed(2)}" transform="rotate(${(rnd() * 44 - 22) | 0} ${cx | 0} ${cy | 0})"/>`;
+    }
+    // рыхлая решётка: разброс точки сопоставим с шагом, ряды глазом не собираются; плотность режется по числу мест
+    const CAP = 520, cells = Math.ceil((L.width - L.AX) / 136) * Math.ceil(L.height / 100), k = Math.max(0.55, Math.min(1, Math.sqrt(CAP / Math.max(1, cells))));
+    const CX = 136 / k, CY = 100 / k;
+    let made = 0;
+    for (let gy = -0.5; gy * CY < L.height + CY * 0.6; gy++) {
+      for (let gx = -0.5; gx * CX < L.width - L.AX + CX * 0.6; gx++) {
+        const x = L.AX + 14 + (gx + rnd() * 1.7 - 0.85) * CX, y = -40 + (gy + rnd() * 1.7 - 0.85) * CY;
+        if (x < L.AX - 10 || x > L.width + 50 || y < -50 || y > L.height + 50 || made >= CAP) continue;
+        const pad = 46 + rnd() * 54; // у каждой поляны свой рваный край
+        if (inClearing(x, y, pad)) continue;
+        made++;
+        const rx = 64 + rnd() * 100, ry = rx * (0.5 + rnd() * 0.22), rot = rnd() * 48 - 24;
+        const fill = rnd() < 0.78 ? "fogpuff" : "fogpuffb", o = (thin * (0.5 + rnd() * 0.5)).toFixed(2);
+        g[(rnd() * 3) | 0] += `<ellipse class="puff" fill="url(#${fill})" opacity="${o}" cx="${x | 0}" cy="${y | 0}" rx="${rx | 0}" ry="${ry | 0}" transform="rotate(${rot | 0} ${x | 0} ${y | 0})"/>`;
+        if (rnd() < 0.34) { // светлый гребень сверху — лунная подсветка клубов
+          const cx2 = x + rnd() * 36 - 18, cy2 = y - 14 - rnd() * 24;
+          g[0] += `<ellipse class="rim" cx="${cx2 | 0}" cy="${cy2 | 0}" rx="${(rx * 0.6) | 0}" ry="${(ry * 0.5) | 0}" transform="rotate(${((rot + rnd() * 14 - 7) | 0)} ${cx2 | 0} ${cy2 | 0})"/>`;
+        }
+      }
+    }
+    for (let w = 0; w < 11; w++) { // вихряшки — каждая живёт собственным циклом
+      let x = 0, y = 0, ok = false;
+      for (let t = 0; t < 9 && !ok; t++) { x = L.AX + 30 + rnd() * (L.width - L.AX - 60); y = rnd() * L.height; ok = !inClearing(x, y, 34); }
+      if (!ok) continue;
+      wisps += `<g class="wisp" style="animation-duration:${(26 + rnd() * 36).toFixed(1)}s;animation-delay:${(-rnd() * 120).toFixed(1)}s;--wx:${(rnd() * 44 - 22) | 0}px;--wy:${(rnd() * 22 - 11) | 0}px"><ellipse class="rim" cx="${x | 0}" cy="${y | 0}" rx="${(26 + rnd() * 30) | 0}" ry="${(9 + rnd() * 13) | 0}" transform="rotate(${(rnd() * 50 - 25) | 0} ${x | 0} ${y | 0})"/></g>`;
+    }
+    const now = performance.now() / 1000, ph = (dur) => (-(now % dur)).toFixed(1);
+    const periods = [61, 83.7, 107.3];
+    return `<g class="fog-bank-g" style="animation-delay:${ph(173)}s">${bank}</g>` +
+      g.map((s, i) => `<g class="fog-g f${i}" style="animation-delay:${ph(periods[i])}s">${s}</g>`).join("") + wisps;
+  }
+
   function renderFlow() {
     const L = flowLayout(), { pos, kids, deathsOf, W, H } = L;
     const visited = meta.visited, taken = meta.taken, shown = meta.shown;
@@ -1480,22 +1534,18 @@
         deaths += `<g class="dnode${inJ ? " seen" : ""}${isOpen ? "" : " fog"}" data-death="${esc(d)}" transform="translate(${dx},${dy})"><title>${inJ ? esc("✝ " + (yearOf(dd.date) || "") + " · " + (dd.title || "")) : "смерть, которой ещё не было"}</title><circle r="7"/><text y="3.5" text-anchor="middle">${inJ ? "✝" : "?"}</text></g>`;
       });
     }
-    // облачная пелена: сплошь по сетке, кроме мест рядом с открытыми сценами — по ней не понять, где и сколько сцен
-    const openPts = Object.entries(pos).filter(([id]) => open(id)).map(([, p]) => p);
-    const near = (x, y) => openPts.some((p) => x > p.x - 70 && x < p.x + W + 70 && y > p.y - 56 && y < p.y + H + 56);
+    // пелена тумана: сеяные клубы, живущие своими циклами; открытым сценам — рваные поляны
     if (!devOn) {
-      let k = 0;
-      for (let y = L.lifeTop + 6; y < L.height - 10; y += 70)
-        for (let x = L.AX + 10; x < L.width; x += 96) {
-          k++;
-          const jx = ((k * 37) % 41) - 20, jy = ((k * 53) % 29) - 14, cx = x + jx, cy = y + jy;
-          if (near(cx, cy)) continue;
-          const d = "d" + (k % 3);
-          fog += `<ellipse class="puff ${d}" cx="${cx}" cy="${cy}" rx="${88 + (k % 5) * 6}" ry="${54 + (k % 4) * 5}"/>`;
-          if (k % 3 === 0) fog += `<ellipse class="rim ${d}" cx="${cx + 18}" cy="${cy - 22}" rx="70" ry="34"/>`;
-        }
+      const openPts = Object.entries(pos).filter(([id]) => open(id)).map(([, p]) => p);
+      const thin = 1 - 0.25 * (LANES.filter(([l]) => laneOpen[l]).length / LANES.length); // мир яснеет — туман редеет
+      fog = makeFog(L, openPts, thin);
     }
-    const defs = `<defs><radialGradient id="fogpuff"><stop offset="0" stop-color="#151a21" stop-opacity=".98"/><stop offset=".5" stop-color="#1a2029" stop-opacity=".92"/><stop offset=".8" stop-color="#232a34" stop-opacity=".5"/><stop offset="1" stop-color="#232a34" stop-opacity="0"/></radialGradient><radialGradient id="fogrim"><stop offset="0" stop-color="#5d6776" stop-opacity=".35"/><stop offset=".7" stop-color="#3a424e" stop-opacity=".18"/><stop offset="1" stop-color="#2c333d" stop-opacity="0"/></radialGradient></defs>`;
+    const defs = `<defs>` +
+      `<radialGradient id="fogpuff"><stop offset="0" stop-color="#93aec9" stop-opacity=".15"/><stop offset=".55" stop-color="#7e9bbd" stop-opacity=".085"/><stop offset="1" stop-color="#6f8dab" stop-opacity="0"/></radialGradient>` +
+      `<radialGradient id="fogpuffb"><stop offset="0" stop-color="#a9b4c6" stop-opacity=".14"/><stop offset=".6" stop-color="#96a3b6" stop-opacity=".07"/><stop offset="1" stop-color="#8a99ad" stop-opacity="0"/></radialGradient>` +
+      `<radialGradient id="fogrim"><stop offset="0" stop-color="#d5e4f4" stop-opacity=".11"/><stop offset=".6" stop-color="#b9cfe6" stop-opacity=".055"/><stop offset="1" stop-color="#a9c2dc" stop-opacity="0"/></radialGradient>` +
+      `<radialGradient id="fogbank"><stop offset="0" stop-color="#5f7896" stop-opacity=".13"/><stop offset=".7" stop-color="#51698a" stop-opacity=".06"/><stop offset="1" stop-color="#49607e" stop-opacity="0"/></radialGradient>` +
+      `</defs>`;
     $("#flow-canvas").innerHTML = `<svg width="${L.width * flowZoom}" height="${L.height * flowZoom}" viewBox="0 0 ${L.width} ${L.height}" role="img" aria-label="Схема всех развилок">${defs}<g class="lanes">${lanes}</g><g class="axis">${axis}</g><g class="edges">${edges}</g><g class="deaths">${deaths}</g><g class="nodes">${nodes}</g><g class="fog-layer">${fog}</g></svg>`;
     flowSize = { w: L.width, h: L.height };
     const lanesOpen = LANES.filter(([l]) => laneOpen[l]).length;

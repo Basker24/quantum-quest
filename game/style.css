@@ -253,7 +253,7 @@ body[data-era="future"] .choice { border-radius: 14px; }
 
 /* ===== Схема ветвлений ===== */
 #flow-wrap { overflow: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 10px; margin-top: 12px;
-  background: radial-gradient(circle at 1px 1px, rgba(143,211,255,.12) 1px, transparent 0) 0 0 / 22px 22px, #0b0f14; -webkit-overflow-scrolling: touch; }
+  background: radial-gradient(1100px 700px at 18% 8%, #111826 0%, #0b0f14 48%, #070a0f 100%); -webkit-overflow-scrolling: touch; }
 #flow-canvas svg { display: block; }
 .flow-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--dim); margin-top: 8px; }
 .flow-legend .lg { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; border: 1px solid #3a4a5a; }
@@ -613,14 +613,23 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .dlink { stroke: rgba(178,70,58,.18); stroke-width: 1; }
 .dlink.seen { stroke: rgba(178,70,58,.6); }
 .fog-layer { pointer-events: none; }
-.puff { fill: url(#fogpuff); }
 .rim { fill: url(#fogrim); }
+.fbank { fill: url(#fogbank); }
 .edge.stub { stroke: #6a7c8f; stroke-opacity: .45; stroke-dasharray: 2 4; stroke-width: 1.4; }
-.puff.d0, .rim.d0 { animation: fogdrift 54s ease-in-out infinite alternate; }
-.puff.d1, .rim.d1 { animation: fogdrift 73s ease-in-out -20s infinite alternate-reverse; }
-.puff.d2, .rim.d2 { animation: fogdrift 91s ease-in-out -40s infinite alternate; }
-@keyframes fogdrift { from { transform: translate(-14px, -5px); } to { transform: translate(14px, 6px); } }
-@media (prefers-reduced-motion: reduce) { .puff, .rim { animation: none !important; } }
+/* стаи тумана: периоды 61 / 83.7 / 107.3 с несоизмеримы, пути — рваные треугольники,
+   поэтому общая картина практически не зацикливается; фаза подставляется движком от часов */
+.fog-g { will-change: transform; }
+.fog-g.f0 { animation: fogdrift0 61s ease-in-out infinite; }
+.fog-g.f1 { animation: fogdrift1 83.7s ease-in-out infinite; }
+.fog-g.f2 { animation: fogdrift2 107.3s ease-in-out infinite; }
+.fog-bank-g { animation: fogbankdrift 173s ease-in-out infinite; }
+.wisp { animation: wispdrift 40s ease-in-out infinite alternate; }
+@keyframes fogdrift0 { 0% { transform: translate(-26px, 10px); } 37% { transform: translate(18px, -14px); } 71% { transform: translate(30px, 16px); } 100% { transform: translate(-26px, 10px); } }
+@keyframes fogdrift1 { 0% { transform: translate(20px, -12px) scale(1.012); } 43% { transform: translate(-14px, 6px) scale(1); } 78% { transform: translate(-30px, -10px) scale(1.02); } 100% { transform: translate(20px, -12px) scale(1.012); } }
+@keyframes fogdrift2 { 0% { transform: translate(8px, 16px) scale(1); } 31% { transform: translate(-20px, 2px) scale(1.012); } 64% { transform: translate(14px, -18px) scale(1.006); } 100% { transform: translate(8px, 16px) scale(1); } }
+@keyframes fogbankdrift { 0% { transform: translate(-14px, 6px) scale(1.01); } 50% { transform: translate(16px, -8px) scale(1); } 100% { transform: translate(-14px, 6px) scale(1.01); } }
+@keyframes wispdrift { 0% { transform: translate(calc(-1 * var(--wx, 20px)), calc(-1 * var(--wy, 8px))); } 100% { transform: translate(var(--wx, 20px), var(--wy, 8px)); } }
+@media (prefers-reduced-motion: reduce) { .fog-g, .fog-bank-g, .wisp { animation: none !important; } }
 .flow-card { position: absolute; right: 10px; top: 22px; width: 300px; max-height: calc(100% - 40px); overflow: auto; z-index: 3;
   background: #10151b; border: 1px solid #2c3d4f; border-radius: 10px; padding: 14px 16px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: 15px; }
 .flow-card h3 { margin: 2px 28px 8px 0; font-size: 18px; line-height: 1.3; }
