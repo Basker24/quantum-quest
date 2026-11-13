@@ -179,15 +179,15 @@
 | 68 | 2016 | phone | man of 68, expensive dark wool coat, white shirt, leather notebook and a gold pen |
 
 ### `ploy` — Плой (1986 г. р., главный)
-- Из текста: тайка из Нонтхабури, «стрижена почти налысо», смеётся глазами; белый открытый шлем, футболка дайв-школы (В5-03).
-- (додумано) широкие скулы, тёмно-карие глаза, родинка на шее слева, жилистая.
-- **Ядро сходства:** Thai woman, very short almost shaved black hair, broad cheekbones, dark brown laughing eyes, a small mole on the left side of the neck, wiry athletic build.
+- Из текста: тайка из Нонтхабури, очень красивая и сексуальная, ухоженная, выглядит моложе лет; стройная, 1,7 м, длинные прямые чёрные волосы, смеётся глазами; белый открытый шлем, футболка дайв-школы (В5-03; канон сменил автор 12.11.2026 — старый «налысо» отменён, тексты сцен правит Клод).
+- (додумано) широкие скулы, тёмно-карие глаза, родинка на шее слева, миниатюрное сложение, почти плоская грудь, длинные ноги.
+- **Ядро сходства:** Thai woman, strikingly beautiful, sensual and perfectly groomed, looks younger than her age, slim fine-boned figure with long legs, 1.70 m tall, small almost flat chest, broad cheekbones, dark brown laughing eyes, long straight glossy black hair, a small mole on the left side of the neck, flawless sun-tanned skin.
 - В кадрах: В5-03, В5-04, В5-05, В5-10.
 
 | возраст | годы сцен | эпоха эталона | облик (EN) |
 |---|---|---|---|
-| 24 | 2010–2012 | digital | Thai woman of 24-26, almost shaved head, dive school t-shirt, tanned |
-| 36 | 2022 | phone | Thai woman of 36, very short black hair, apron, laughing |
+| 24 | 2010–2012 | digital | full-length standing view of a strikingly beautiful sensual Thai woman of 24 who looks about nineteen, perfectly groomed: long straight glossy black hair, light natural make-up, manicured hands, flawless tanned skin; slim fine-boned 1.70 m figure, long legs, small almost flat chest, bare midriff: a small black bikini top, an open thin white shirt tied at the waist, very short denim shorts, flat sandals; broad cheekbones, dark brown laughing eyes, a small mole on the left side of the neck |
+| 36 | 2022 | phone | the same strikingly beautiful perfectly groomed Thai woman of 36 who looks about twenty-eight, slim, 1.70 m tall, long straight glossy black hair, fitted tank top with an apron, laughing |
 
 ### `dasha` — Даша Веснина (2037 г. р., главный)
 - Из текста: серьёзная, наушники, рисует круги один в другом (В2.2-05); позже короткая стрижка, тетрадь в клеёнке.
