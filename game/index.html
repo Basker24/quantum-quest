@@ -35,6 +35,7 @@
       <div class="menu">
         <button id="btn-continue" class="choice main-cta" hidden><span class="cta-l">Продолжить</span><small id="continue-sub" class="mono"></small></button>
         <button id="btn-new" class="choice main-cta"><span class="cta-l">Новая жизнь</span><small id="new-sub" class="mono">с лета 1996-го, мне семь</small></button>
+        <button id="btn-one" class="choice main-cta ghost-choice one-life" hidden><span class="cta-l">Одна жизнь</span><small id="one-sub" class="mono">как у всех людей: одна смерть, и отката нет</small></button>
         <p id="title-line" class="progress-line mono tiny"></p>
         <nav class="menu-list" aria-label="Разделы">
           <button id="btn-journal2" class="mitem"><span class="m-t">Тетрадь Хора</span><span class="m-s">все, кем я был и кто не вернулся</span><span class="m-n mono" id="m-journal"></span></button>
@@ -52,7 +53,11 @@
           <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button>
           <button id="btn-dev" class="set-btn" aria-pressed="false">режим автора: выкл</button>
           <button id="btn-about2" class="set-btn">об игре и помощь</button>
+          <button id="btn-export" class="set-btn">сохранить прогресс в файл</button>
+          <button id="btn-import" class="set-btn">загрузить из файла</button>
+          <input id="import-file" type="file" accept=".json,application/json" hidden>
         </div>
+        <p id="io-msg" class="io-msg mono tiny" hidden></p>
       </div>
       <p class="warn">В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело, в разделе «Об игре и помощь» есть телефоны, по которым ответят.</p>
     </div>

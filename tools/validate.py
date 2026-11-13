@@ -22,6 +22,32 @@ from collections import defaultdict
 from qqparse import ROOT, QQError, load
 
 G = CFG = None
+# мета-счётчики при «полном Журнале» (I2): сколько всего стихий у смертей и сколько ветвей-жизней.
+# Ставит set_meta_max(G); при пустом Журнале (I1, свидетели) kinds() и branches() равны 0.
+META_MAX = {"kinds": 99, "branches": 99}
+
+
+def branch_keys(ids):
+    """Ветви-жизни по ID сцен (как branchesLived в engine.js): В1, В2.1, В2.2, В3…В7; В2 — только без В2.x."""
+    import re
+    out = set()
+    for i in ids:
+        m = re.match(r"^В(\d)(?:\.(\d))?-", i)
+        if m:
+            out.add("В" + m.group(1) + ("." + m.group(2) if m.group(2) else ""))
+    if "В2.1" in out or "В2.2" in out:
+        out.discard("В2")
+    return out
+
+
+def set_meta_max(g):
+    META_MAX["kinds"] = len({d.get("stihia") for d in g["deaths"].values() if d.get("stihia")})
+    META_MAX["branches"] = len(branch_keys(g["scenes"]))
+
+
+def meta_dep(e):
+    """Условие зависит от мета-слоя (кроме seen — у него своя обработка)."""
+    return any(f"'{op}'" in str(e) for op in ("lived", "kinds", "branches", "one_life"))
 
 
 def ev(e, st, seen_life=frozenset(), meta=None):
@@ -44,6 +70,10 @@ def ev(e, st, seen_life=frozenset(), meta=None):
     if op == "or":
         return any(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "lived":
+        return bool(meta)
+    if op in ("kinds", "branches"):          # мета-гейт: полный Журнал — максимум, пустой — 0
+        return META_MAX[op] if meta else 0
+    if op == "one_life":                      # режим «Одна жизнь»: I2 — обе стороны, I1/свидетели — обычный режим
         return bool(meta)
     if op == "seen":
         if e.get("life") or meta is None:
@@ -98,6 +128,7 @@ def main():
         print("ОШИБКА ПАРСИНГА:", e)
         sys.exit(1)
     CFG = G["config"]
+    set_meta_max(G)
     S, D = G["scenes"], G["deaths"]
     ALL = list(CFG["vars"]) + list(CFG["flags"])
     errors, warns = [], []
@@ -479,7 +510,7 @@ def main():
                     lo, hi = aux[u]
                     opts.append(list(range(lo, hi + 1, 5)) or [lo])
             k = (sid, "текст", b["md"][:32])
-            metas = (None, frozenset(D)) if "lived" in str(b["if"]) else (None,)
+            metas = (None, frozenset(D)) if meta_dep(b["if"]) else (None,)
             for combo in product(*opts):
               for mm in metas:
                 r = ev(b["if"], dict(zip(used, combo)), frozenset(), mm)
@@ -493,6 +524,11 @@ def main():
         elif k not in cond_false:
             warns.append(f"I2: условие всегда истинно — {k[0]} [{k[1]}] {k[2]}")
     reached = {n[0] for n in EDGES}
+    from qqparse import lived_ids
+    for sid, sc in list(S.items()) + list(D.items()):
+        for lid in sorted(lived_ids(sc, set())):
+            if lid not in reached:
+                errors.append(f"lived: {sid} — lived({lid}): сцена {lid} недостижима из старта, условие не выполнится никогда")
     for sid in S:
         if sid not in reached:
             warns.append(f"R: сцена {sid} недостижима")

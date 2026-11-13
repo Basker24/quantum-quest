@@ -181,20 +181,31 @@ def kit(G):
                            tick=tick, apply=apply, st0=st0, key=key, options=options, step=step, live=live)
 
 
-def find_all(G, limit=LIMIT):
+def searcher(G, limit=LIMIT):
+    """search(target, via=None) → (путь, сколько состояний); via — сцена, через которую путь обязан пройти."""
     K = kit(G)
-    S, D, CFG, finals, can_reach, directions, tick, key = K.S, K.D, K.CFG, K.finals, K.can_reach, K.directions, K.tick, K.key
+    S, D, CFG, can_reach, directions, tick, key = K.S, K.D, K.CFG, K.can_reach, K.directions, K.tick, K.key
 
-    def search(target):
-        reach = can_reach(target)
-        dirs = directions(target)
+    def search(target, via=None):
+        # до via идём по сценам, из которых via достижима, после — по тем, из которых достижима цель
+        # (граф ацикличен: после via к ней не вернуться, поэтому ключ состояния тот же)
+        reach_t = can_reach(target)
+        dirs_t = directions(target)
+        if via is not None:
+            reach_v = can_reach(via) & reach_t if via in reach_t else set()
+            dirs_v = directions(via)
+            if not reach_v:
+                return None, 0
         visited = set()
         budget = [limit]
         path = []
 
-        def dfs(sid, st, seen):
+        def dfs(sid, st, seen, passed=via is None):
+            if sid == via:
+                passed = True
             if sid == target:
-                return True
+                return passed
+            reach, dirs = (reach_t, dirs_t) if passed else (reach_v, dirs_v)
             k = key(sid, st, seen)
             if k in visited or budget[0] <= 0:
                 return False
@@ -205,19 +216,19 @@ def find_all(G, limit=LIMIT):
             if not vis and "next" in sc:
                 if sc["next"] in reach:
                     path.append((sid, None, None))
-                    if dfs(sc["next"], tick(st, sid, 0, sc["next"]), frozenset()):
+                    if dfs(sc["next"], tick(st, sid, 0, sc["next"]), frozenset(), passed):
                         return True
                     path.pop()
                 return False
             for _, c, o in opts:
                 if o["to"] in D:
                     path.append((sid, c["id"], o["to"]))
-                    if dfs(sid, st, seen | {o["to"]}):
+                    if dfs(sid, st, seen | {o["to"]}, passed):
                         return True
                     path.pop()
                     continue
                 path.append((sid, c["id"], None))
-                if dfs(o["to"], K.step(sid, st, c, o), frozenset()):
+                if dfs(o["to"], K.step(sid, st, c, o), frozenset(), passed):
                     return True
                 path.pop()
             return False
@@ -225,7 +236,24 @@ def find_all(G, limit=LIMIT):
         found = dfs(CFG["start"], K.st0(), frozenset())
         return (list(path) if found else None), limit - budget[0]
 
-    return {t: search(t) for t in finals}
+    return K, search
+
+
+def find_all(G, limit=LIMIT):
+    K, search = searcher(G, limit)
+    return {t: search(t) for t in K.finals}
+
+
+# восемь жизней: первая сцена каждой ветви (В2.1 и В2.2 начинаются после общей части В2)
+LIVES = [("В1", "В1-01"), ("В2.1", "В2.1-00"), ("В2.2", "В2.2-00"), ("В3", "В3-01"),
+         ("В4", "В4-01"), ("В5", "В5-01"), ("В6", "В6-01"), ("В7", "В7-01")]
+ANCHOR = "Я-01"
+
+
+def find_lives(G, limit=LIMIT):
+    """По одному пути от старта до якоря Я-01 через каждую из восьми жизней."""
+    K, search = searcher(G, limit)
+    return {name: (via, search(ANCHOR, via)) for name, via in LIVES if via in K.S}
 
 
 def letter_of(sc, cid, st=None):
@@ -260,6 +288,21 @@ def main():
             steps.append([sid, cid, death])
         lines.append("")
         guides[t] = steps
+    lines += ["# Восемь жизней: по одному пути от старта до " + ANCHOR + " через каждую ветвь", ""]
+    for name, (via, (path, used)) in find_lives(G).items():
+        if path is None:
+            warns.append(f"жизнь {name} (через {via}): путь до {ANCHOR} не найден ({used} состояний)")
+            lines += [f"## {name} — через {via} «{S[via]['title']}»: путь до {ANCHOR} НЕ найден ({used} состояний)", ""]
+            continue
+        lines += [f"## {name} — через {via} «{S[via]['title']}»: {len(path)} шагов, {used} состояний", ""]
+        for sid, cid, death in path:
+            sc = S[sid]
+            if cid is None:
+                lines.append(f"- {sid} «{sc['title']}» → Дальше")
+                continue
+            c = next(c for c in sc["choices"] if c["id"] == cid)
+            lines.append(f"- {sid} «{sc['title']}» → [{cid}] {c['label']}" + (f" ✝ (смерть {death}, откат)" if death else ""))
+        lines.append("")
     out = ROOT / "docs" / "generated" / "witness.md"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     for w in warns:

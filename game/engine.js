@@ -12,6 +12,7 @@
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* без сохранений */ } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* без сохранений */ } },
   };
   // мета — сквозная для всех жизней: Хор, схема, увиденное
   let meta = Object.assign({ journal: {}, lives: 0, root: false, visited: {}, taken: {}, shown: {}, extra: {}, guide: {}, seenBlocks: {} }, store.get(META, {}));
@@ -35,6 +36,9 @@
       case "or": return e.a.some((x) => ev(x, st));
       case "seen": return e.life ? !!(S && S.lifeSeen[e.id]) : !!meta.journal[e.id];
       case "lived": return e.id in meta.vlife && meta.vlife[e.id] < (meta.lives || 0);
+      case "kinds": return kindsSeen().size;     // мета-гейт Ф-04 (канон п. 14): разные стихии в Журнале
+      case "branches": return branchesLived().size; // разные жизни-ветви, в которых я жил (В2.1 и В2.2 — две)
+      case "one_life": return !!(S && S.oneLife);   // режим «Одна жизнь»
       case "cmp": {
         const l = ev(e.l, st), r = ev(e.r, st);
         if (e.c === "==") return l === r;
@@ -46,6 +50,16 @@
     throw new Error("op " + e.op);
   }
   const ok = (e, st) => !e || ev(e, st);
+  // стихии смертей из Журнала (все жизни, включая эту)
+  const kindsSeen = () => new Set(Object.keys(meta.journal || {}).map((id) => (G.deaths[id] || {}).stihia).filter(Boolean));
+  // ветвь сцены: В1, В3…В7, В2.1, В2.2; общая часть В2 считается отдельно, только если ни в одну из двух не попал
+  const branchKey = (id) => { const m = /^В(\d)(?:\.(\d))?-/.exec(id); return m ? "В" + m[1] + (m[2] ? "." + m[2] : "") : null; };
+  function branchesLived() {
+    const out = new Set();
+    for (const id of Object.keys(meta.visited || {})) { const k = branchKey(id); if (k) out.add(k); }
+    if (out.has("В2.1") || out.has("В2.2")) out.delete("В2");
+    return out;
+  }
 
   function initState() {
     const st = {};
@@ -243,7 +257,7 @@
     return acc;
   }
   const lessonsFor = (e, life) => [...new Set(seenIds(e, life).filter((id) => (life ? S && S.lifeSeen[id] : meta.journal[id])).map((id) => (G.deaths[id] || {}).lesson).filter(Boolean))];
-  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || e.op === "lived" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
+  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || e.op === "lived" || e.op === "kinds" || e.op === "branches" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
   function flagsIn(e, acc = new Set()) {
@@ -309,9 +323,10 @@
   }
 
   // ---------- жизнь
-  function newLife() {
+  // oneLife — режим «Одна жизнь» (открывается после Ф-04): смерть окончательна, отката нет
+  function newLife(oneLife) {
     meta.lives = (meta.lives || 0) + 1; saveMeta();
-    S = { scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, awake: null, ghost: null, year: null, replay: false, past: {} };
+    S = { oneLife: oneLife === true, scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, lifeBlocks: {}, awake: null, ghost: null, year: null, replay: false, past: {} };
     enter(C.start);
   }
   const save = () => store.set(SAVE, S);
@@ -350,6 +365,7 @@
 
   function enter(id, restored) {
     const sc = G.scenes[id];
+    if (S.pending) S.pending = null; // «После» прочитано: дальше обычный вход
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
@@ -433,10 +449,17 @@
     const sb = meta.seenBlocks[S.scene], life = meta.lives || 0;
     const oldBlock = (b) => !sb || (b.key in sb && sb[b.key] < life); // старые сохранения без seenBlocks: всё считаем виденным
     if (lived && sb) for (const b of blocks) if (b.key && !b.own && !oldBlock(b) && !b.tag) b.tag = "◌ иначе, чем в прошлый раз";
-    const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; p._old = !!b.key && oldBlock(b); return p; });
+    // что из этой сцены уже показывалось в ЭТОЙ жизни (после отката сворачиваем только это; новые из-за других флагов абзацы — как обычно)
+    const legacy = !S.lifeBlocks; // старые сохранения без lifeBlocks: как раньше, всё считаем виденным
+    S.lifeBlocks = S.lifeBlocks || {};
+    const lb = S.lifeBlocks[S.scene], lkey = (b) => b.key || "~" + bkey(b.md);
+    const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; p._old = !!b.key && oldBlock(b); p._lifeSeen = legacy || !!(lb && lb[lkey(b)]); return p; });
     const sbNow = (meta.seenBlocks[S.scene] = meta.seenBlocks[S.scene] || {});
     for (const b of blocks) if (b.key && !(b.key in sbNow)) sbNow[b.key] = life;
     saveMeta();
+    const lbNow = (S.lifeBlocks[S.scene] = lb || {});
+    for (const b of blocks) if (!b.own) lbNow[lkey(b)] = 1;
+    save();
     // «последний откат, которого нет»: привычная лента, которая рассыпается
     els.filter((p) => p.classList.contains("norewind")).forEach((p) => {
       p.innerHTML = `<button class="choice nr-btn"><span class="mono">◀◀</span> Хор помнит…</button>`;
@@ -447,10 +470,11 @@
       };
     });
     const finish = () => { clearTimeout(typing); typing = null; els.forEach(reveal); renderChoices(sc); };
+    let queue = els;
     if (replay || lived) {
       const body = els.filter((p) => !p._own);
       // откат: свёрнуто всё, кроме последнего абзаца; быстрый ствол — только абзацы, виденные в прошлой жизни
-      const cand = body.slice(0, -1).filter((p) => replay || p._old);
+      const cand = body.slice(0, -1).filter((p) => (replay ? p._lifeSeen : p._old));
       // складки по сплошным кускам свёрнутого
       const runs = [];
       for (const p of body) { if (cand.includes(p)) { const r = runs[runs.length - 1]; if (r && r.end === body.indexOf(p) - 1) { r.ps.push(p); r.end++; } else runs.push({ ps: [p], end: body.indexOf(p) }); } }
@@ -468,10 +492,13 @@
         art.insertBefore(fold, hide[0]._tag || hide[0]);
       }
       art.onclick = null;
-      return finish();
+      // после отката, но в сцене есть абзацы, которых я в этой жизни ещё не видел: виденное сразу, новое печатается как обычно
+      if (!(replay && body.some((p) => !p._lifeSeen))) return finish();
+      els.filter((p) => p._own || cand.includes(p) || p._lifeSeen).forEach(reveal);
+      queue = els.filter((p) => p.classList.contains("pending"));
     }
     let i = 0;
-    const step = () => { if (i >= els.length) return finish(); reveal(els[i]); i++; typing = setTimeout(step, REDUCED ? 60 : 420); };
+    const step = () => { if (i >= queue.length) return finish(); reveal(queue[i]); i++; typing = setTimeout(step, REDUCED ? 60 : 420); };
     art.onclick = () => typing && finish();
     step();
   }
@@ -505,14 +532,19 @@
     if (!sc.photo) return;
     const img = new Image();
     img.alt = sc.photo_caption || "";
-    img.onload = () => { if (ph.dataset.sid === sid) ph.hidden = false; };
+    // кадр зависит от сюжета (05_visual.md §6): photo_by: ФЛАГ → сначала img/<ID>~<ЗНАЧЕНИЕ>.jpg, нет файла — img/<ID>.jpg
+    const fv = sc.photo_by && S && S.st ? S.st[sc.photo_by] : null;
+    const srcs = (fv != null && fv !== false && fv !== true ? [sid + "~" + fv] : []).concat([sid]).map((n) => "img/" + encodeURIComponent(n) + ".jpg");
+    ph._img = img; // только последний кадр управляет рамкой (повторный показ той же сцены)
+    img.onload = () => { if (ph._img === img) ph.hidden = false; };
     img.onerror = () => {
+      if (ph._img !== img) return img.remove();
+      if (srcs.length) { img.src = srcs.shift(); return; } // вариант не нарисован — базовый кадр
       img.remove();
-      if (ph.dataset.sid !== sid) return;
       ph.hidden = true;
       if (sc.photo_caption) { pc.textContent = sc.photo_caption; pc.hidden = false; }
     };
-    img.src = "img/" + encodeURIComponent(sid) + ".jpg";
+    img.src = srcs.shift();
     const cap = document.createElement("figcaption");
     cap.textContent = sc.photo_caption || "";
     ph.append(img, cap);
@@ -603,7 +635,7 @@
     for (const c of sc.choices || []) {
       const wip = isWip(c);
       if (devOn && !wip && c.visible && !ok(c.visible, st)) { nav.append(devLocked(c, st)); continue; }
-      if (!wip && (!c.visible || ok(c.visible, st) || /seen/.test(JSON.stringify(c.visible)))) continue;
+      if (!wip && (!c.visible || ok(c.visible, st) || /seen|one_life/.test(JSON.stringify(c.visible)))) continue;
       const b = document.createElement("button");
       b.className = "choice locked" + (wip ? " wip" : ""); b.disabled = true;
       b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : lockReason(c.visible, st))}</small>`;
@@ -639,12 +671,15 @@
   const LACK = { ТЕЛ: "силы", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "воли", ДАР: "дара" };
   const TOO = { ТЕЛ: "сил", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "упрямства", ДАР: "дара" };
   function lockReason(e, st) {
-    const need = new Set(), too = new Set(); let flags = false, bond = false, drift = false;
+    const need = new Set(), too = new Set(); let flags = false, bond = false, drift = false, kinds = false, lives = false;
     (function walk(x, neg) {
       if (!x || typeof x !== "object") return;
       if (x.op === "not") return walk(x.a, !neg);
       if (x.op === "and" || x.op === "or") { for (const y of x.a) if (!ev(y, st) !== neg || x.op === "or") walk(y, neg); return; }
       if (ev(x, st) !== neg) return; // эта часть условия выполнена
+      const mop = x.op === "cmp" ? (x.l.op === "kinds" || x.r.op === "kinds" ? "kinds" : x.l.op === "branches" || x.r.op === "branches" ? "branches" : null) : x.op;
+      if (mop === "kinds") { kinds = true; return; }
+      if (mop === "branches") { lives = true; return; }
       if (x.op === "cmp" && x.l.op === "var" && x.r.op === "num" && C.vars[x.l.n]) {
         const n = x.l.n, up = (x.c === ">=" || x.c === ">") !== neg;
         if (n === "ДРЕЙФ") drift = true; else if (n.startsWith("СВЯЗЬ")) bond = true;
@@ -657,6 +692,8 @@
     if (too.size) parts.push("слишком много " + [...too].map((n) => TOO[n] || n).join(" и "));
     if (bond) parts.push("не хватает близости");
     if (drift) parts.push("мир слишком сдвинулся");
+    if (kinds) parts.push("Хор ещё не знает столько смертей");
+    if (lives) parts.push("Хор ещё не прожил столько жизней");
     if (flags && !parts.length) parts.push("в этой жизни этого не было");
     return parts.join(" · ") || "закрыто";
   }
@@ -680,10 +717,35 @@
     const setHere = [...(c.fx || []), ...(o.fx || [])].filter(([k, n]) => k === "set" && C.flags[n]).map((x) => x[1]);
     (S.trail = S.trail || []).push({ scene: S.scene, choice: c.id, flags: setHere });
     const after = sc.after && sc.after[c.id];
-    if (after) return showAfter(c, after.filter((b) => ok(b.if, next)), () => { S.st = next; enter(o.to); }, new Set(setHere), check);
     S.st = next;
+    if (after) {
+      // состояние применено и сохранено уже здесь: закрыл вкладку на «После» — вернёшься сюда же, а не к развилке
+      S.pending = { scene: S.scene, choice: c.id, to: o.to, check };
+      save();
+      return showAfter(c, after.filter((b) => ok(b.if, next)), () => enter(o.to), new Set(setHere), check);
+    }
     S.check = check;
     enter(o.to);
+  }
+
+  // восстановление на экране «После»: тот же выбор, то же последствие, «Дальше» — в o.to
+  function resumeAfter() {
+    const p = S.pending, sc = G.scenes[p.scene], c = sc && (sc.choices || []).find((x) => x.id === p.choice);
+    const after = sc && sc.after && sc.after[p.choice];
+    if (!c || !after || !G.scenes[p.to]) { const to = p.to; S.pending = null; return enter(G.scenes[to] ? to : S.scene, !G.scenes[to]); }
+    S.scene = p.scene;
+    show("#scene");
+    document.body.dataset.drift = Math.min(4, Math.floor((S.st["ДРЕЙФ"] || 0) / 20));
+    document.body.dataset.era = sc.photo || "none";
+    snd.era(sc.photo || "none");
+    renderPhoto(sc);
+    $("#meta").textContent = [sc.date, sc.age != null ? `мне ${sc.age}` : "", DEBUG ? S.scene : ""].filter(Boolean).join(" · ");
+    $("#when").textContent = sc.date || "";
+    $("#text").innerHTML = ""; $("#text").onclick = null;
+    tagUsed = new Set();
+    const t = (S.trail || [])[S.trail.length - 1];
+    const setHere = new Set(t && t.scene === p.scene && t.choice === p.choice ? t.flags || [] : []);
+    showAfter(c, after.filter((b) => ok(b.if, S.st)), () => enter(p.to), setHere, p.check || null);
   }
 
   // плашка проверки (п. 4.3 разбора): исход решил стат-порог — словами, без цифр
@@ -739,10 +801,11 @@
   function die(did) {
     const d = G.deaths[did];
     const first = Object.keys(S.lifeSeen).length === 0;
+    const firstEver = Object.keys(meta.journal || {}).length === 0 && !meta.helpShown; // самая первая смерть игрока (Корень не в счёт)
     S.lifeSeen[did] = true;
     const j = meta.journal[did] || { times: 0, first: new Date().toISOString(), life: meta.lives };
     j.times++; meta.journal[did] = j; saveMeta();
-    save();
+    if (S.oneLife) store.del(SAVE); else save(); // «Одна жизнь»: закрыл вкладку на смерти — к развилке не вернуться
     show("#death");
     snd.stop(); buzz(40);
     $("#death-tc").textContent = (d.date || "").toUpperCase();
@@ -762,9 +825,34 @@
         <p class="tomb-epitaph">${esc(d.epitaph || "")}</p>
         ${d.mourner ? `<p class="tomb-mourner"><span class="mono">в том мире</span> ${esc(d.mourner)}</p>` : ""}
       </div>`);
-      setTimeout(() => { btn.hidden = false; holdToRewind(btn, art, () => awaken(did, first)); }, REDUCED ? 100 : 1400);
+      // одна тихая строка поддержки — один раз за всю игру, после первого надгробия
+      if (firstEver) {
+        meta.helpShown = true; saveMeta();
+        art.insertAdjacentHTML("beforeend", `<p class="help-line">Если тебе сейчас тяжело не только в игре — в разделе <button class="link" id="help-link">«Об игре и помощь»</button> есть телефоны, по которым ответят.</p>`);
+        $("#help-link").onclick = (e) => { e.stopPropagation(); openPanel("#about"); };
+      }
+      const lab = btn.querySelector(".hold-lbl");
+      if (lab) { lab.dataset.def = lab.dataset.def || lab.textContent; lab.textContent = S.oneLife ? "■ держи. Отката не будет" : lab.dataset.def; }
+      setTimeout(() => { btn.hidden = false; holdToRewind(btn, art, () => (S.oneLife ? oneLifeEnd(did) : awaken(did, first))); }, REDUCED ? 100 : 1400);
     };
     setTimeout(step, REDUCED ? 50 : 700);
+  }
+
+  // «Одна жизнь»: после надгробия нет ни шока, ни ленты, ни отката. Сохранение жизни стирается.
+  function oneLifeEnd(did) {
+    snd.rewStop();
+    store.del(SAVE);
+    const art = $("#death-text");
+    art.style.translate = art.style.filter = art.style.transition = "";
+    $("#death").classList.remove("spool");
+    $("#btn-death-next").hidden = true;
+    art.innerHTML = `<div class="onelife-end"><span class="mono nr-end">Отката нет.</span>
+      <p>Хор молчит. Этот я не встанет за минуту до смерти и ничего из неё не вынесет. Так умирают все остальные.</p></div>`;
+    const b = document.createElement("button");
+    b.className = "choice"; b.textContent = "В главное меню";
+    b.onclick = () => { S = null; showTitle(); };
+    art.querySelector(".onelife-end").append(b);
+    buzz([60, 80, 60]);
   }
 
   // «держи, чтобы перемотать»: ~700 мс, полоса заполняется, текст смерти уезжает вверх лентой.
@@ -999,6 +1087,7 @@
     // запоминаем, откуда пришли; из панели в панель — «назад» остаётся прежним
     if (!$("#scene").hidden) back = "#scene";
     else if (!$("#title").hidden) back = "#title";
+    else if (!$("#death").hidden) back = "#death"; // строка поддержки на экране смерти: вернуться к надгробию
     renderPanels();
     show(id);
     if (id === "#flow") renderFlow();
@@ -1053,7 +1142,7 @@
     }
     if (!n) list.innerHTML = `<p class="dim">Путеводитель пока пуст.</p>`;
   }
-  function closePanel() { if (back === "#scene" && S) show("#scene"); else showTitle(); }
+  function closePanel() { if ((back === "#scene" || back === "#death") && S) show(back); else showTitle(); }
 
   function renderPanels() {
     // Тетрадь Хора
@@ -1367,6 +1456,7 @@
       case "cmp": return `${exprStr(e.l)} ${e.c} ${exprStr(e.r)}`;
       case "seen": return (e.life ? "seen_life(" : "seen(") + e.id + ")";
       case "lived": return "lived(" + e.id + ")";
+      case "kinds": case "branches": case "one_life": return e.op + "()";
     }
     return e.op;
   };
@@ -1381,11 +1471,13 @@
       case "cmp": {
         if (e.l.op === "var" && e.r.op === "num") { const v = st[e.l.n] ?? 0; return [e.c === ">=" || e.c === ">" ? `${e.l.n} ${v}/${e.r.v}` : `${e.l.n} ${v}, нужно ${e.c} ${e.r.v}`]; }
         if (e.l.op === "var") return [`${e.l.n} = ${st[e.l.n] ?? "null"}, нужно ${e.c} ${exprStr(e.r)}`];
+        if ((e.l.op === "kinds" || e.l.op === "branches") && e.r.op === "num") return [`${e.l.op}() ${ev(e.l, st)}, нужно ${e.c} ${e.r.v}` + (e.l.op === "kinds" ? ` (${[...kindsSeen()].join(", ") || "—"})` : ` (${[...branchesLived()].join(", ") || "—"})`)];
         return [exprStr(e)];
       }
       case "truthy": return [`${e.n} не стоит`];
       case "seen": return [(e.life ? "не умирал здесь: " : "нет в Журнале: ") + e.id];
       case "lived": return ["не прожито: " + e.id];
+      case "one_life": return ["только в режиме «Одна жизнь»"];
       default: return ["нужно: " + exprStr(e)];
     }
   }
@@ -1497,7 +1589,7 @@
     if (!p) return false;
     meta.lives = (meta.lives || 0) + 1; saveMeta();
     const st = initState(); Object.assign(st, p.st);
-    S = { scene: sid, st, stack: [], trail: p.tr.map(([scene, choice, flags]) => ({ scene, choice, flags })), lifeSeen: {}, awake: null, ghost: null, year: null, replay: false, past: {}, rootShown: true, dev: { target: tid, tail: p.tail } };
+    S = { scene: sid, st, stack: [], trail: p.tr.map(([scene, choice, flags]) => ({ scene, choice, flags })), lifeSeen: {}, lifeBlocks: {}, awake: null, ghost: null, year: null, replay: false, past: {}, rootShown: true, dev: { target: tid, tail: p.tail } };
     // стек отката: последние шаги до сцены с их настоящими состояниями (отличия от состояния входа)
     for (const [ps, pc, diff, ti] of p.pre) {
       const s2 = clone(st); for (const [k, v] of Object.entries(diff)) s2[k] = v;
@@ -1540,12 +1632,13 @@
       : `впереди: ${ends.length} концовок · ${deaths.length} смертей · ${ids.length} сцен`;
     const live = savedLife();
     const cb = $("#btn-continue"), nb = $("#btn-new");
+    $("#btn-one").hidden = !meta.visited["Ф-04"]; // «Одна жизнь» — после того, как хоть раз дошёл до Ф-04
     cb.hidden = !live;
     nb.classList.toggle("ghost-choice", !!live);
     disarmNew();
     if (live) {
       const y = yearOf(live.sc.date);
-      $("#continue-sub").textContent = `жизнь ${lives || 1}${y ? " · " + y : ""} · «${(live.sc.title || live.sv.scene).replace(/^Демо\.\s*/, "")}»`;
+      $("#continue-sub").textContent = `${live.sv.oneLife ? "одна жизнь · " : ""}жизнь ${lives || 1}${y ? " · " + y : ""} · «${(live.sc.title || live.sv.scene).replace(/^Демо\.\s*/, "")}»`;
     }
     const jn = Object.keys(meta.journal || {}).length + (meta.root ? 1 : 0);
     $("#m-journal").textContent = jn ? `${jn} ${jn % 10 === 1 && jn % 100 !== 11 ? "строка" : jn % 10 >= 2 && jn % 10 <= 4 && (jn % 100 < 12 || jn % 100 > 14) ? "строки" : "строк"}` : "пусто";
@@ -1554,11 +1647,16 @@
     soundBtn();
     devTitle();
   }
+  let oneArmed = null;
   function disarmNew() {
     clearTimeout(newArmed); newArmed = null;
     $("#btn-new").classList.remove("armed");
     $("#btn-new .cta-l").textContent = "Новая жизнь";
     $("#new-sub").textContent = "с лета 1996-го, мне семь";
+    clearTimeout(oneArmed); oneArmed = null;
+    $("#btn-one").classList.remove("armed");
+    $("#btn-one .cta-l").textContent = "Одна жизнь";
+    $("#one-sub").textContent = "как у всех людей: одна смерть, и отката нет";
   }
 
   // ---------- кнопки
@@ -1570,11 +1668,60 @@
     $("#new-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и схема останутся";
     newArmed = setTimeout(disarmNew, 5000);
   };
-  $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; enter(S.scene, true); } };
+  // «Одна жизнь»: новая игра без отката; при живом сохранении — тоже второе нажатие
+  $("#btn-one").onclick = () => {
+    if (!savedLife() || oneArmed) { disarmNew(); return newLife(true); }
+    $("#btn-one").classList.add("armed");
+    $("#btn-one .cta-l").textContent = "Начать одну жизнь?";
+    $("#one-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и схема останутся";
+    oneArmed = setTimeout(disarmNew, 5000);
+  };
+  $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } };
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
   $("#btn-dlc").onclick = () => { location.href = "obyasnenie/obyasnenie.html"; };
+  // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно
+  const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k);
+  function ioMsg(html, bad) { const m = $("#io-msg"); m.hidden = !html; m.classList.toggle("bad", !!bad); m.innerHTML = html || ""; return m; }
+  $("#btn-export").onclick = () => {
+    const keys = {};
+    try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (ownKey(k)) keys[k] = localStorage.getItem(k); } } catch (e) { return ioMsg("Браузер не даёт прочитать сохранения.", true); }
+    if (!keys[META]) return ioMsg("Сохранять пока нечего: ни одной жизни ещё не прожито.");
+    const blob = new Blob([JSON.stringify({ game: IO_TAG, format: 1, saved: new Date().toISOString(), keys }, null, 1)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `tot-kto-ostalsya-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    ioMsg("Прогресс сохранён в файл. Его можно загрузить на другом устройстве.");
+  };
+  $("#btn-import").onclick = () => { const f = $("#import-file"); f.value = ""; f.click(); };
+  $("#import-file").onchange = () => {
+    const file = $("#import-file").files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onerror = () => ioMsg("Файл не читается.", true);
+    r.onload = () => {
+      let data = null;
+      try { data = JSON.parse(r.result); } catch (e) { /* ниже */ }
+      const keys = data && data.game === IO_TAG && data.keys && typeof data.keys === "object" ? data.keys : null;
+      let m2 = null;
+      try { m2 = keys && typeof keys[META] === "string" ? JSON.parse(keys[META]) : null; } catch (e) { m2 = null; }
+      if (!keys || !m2 || typeof m2 !== "object" || Object.keys(keys).some((k) => !ownKey(k) || typeof keys[k] !== "string")) return ioMsg("Это не файл сохранения этой игры.", true);
+      const jn = Object.keys(m2.journal || {}).length;
+      const msg = ioMsg(`В файле: прожито жизней ${esc(m2.lives || 0)}, строк в Тетради Хора ${esc(jn)}${data.saved ? ", сохранено " + esc(String(data.saved).slice(0, 10)) : ""}. Текущий прогресс на этом устройстве заменится. <br><button class="set-btn" id="io-yes">заменить</button><button class="set-btn" id="io-no">не надо</button>`);
+      msg.querySelector("#io-no").onclick = () => ioMsg("");
+      msg.querySelector("#io-yes").onclick = () => {
+        try {
+          const old = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (ownKey(k)) old.push(k); }
+          old.forEach((k) => localStorage.removeItem(k));
+          for (const [k, v] of Object.entries(keys)) localStorage.setItem(k, v);
+        } catch (e) { return ioMsg("Браузер не даёт записать сохранения.", true); }
+        location.reload();
+      };
+    };
+    r.readAsText(file);
+  };
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));

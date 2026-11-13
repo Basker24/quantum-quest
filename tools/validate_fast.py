@@ -22,10 +22,24 @@
 """
 import sys
 from collections import defaultdict
-from itertools import product
+from itertools import combinations, product
 
 from qqparse import ROOT, QQError, load
-from validate import ev, names, successors
+from qqparse import lived_ids
+from validate import ev, meta_dep, names, set_meta_max, successors
+
+
+def seen_ids(e, acc):
+    """ID смертей из seen()/seen_life() в условии."""
+    if isinstance(e, dict):
+        if e.get("op") == "seen":
+            acc.add(e["id"])
+        for v in e.values():
+            seen_ids(v, acc)
+    elif isinstance(e, list):
+        for v in e:
+            seen_ids(v, acc)
+    return acc
 
 
 def main(note=""):
@@ -35,6 +49,7 @@ def main(note=""):
         print("ОШИБКА ПАРСИНГА:", e)
         return 1
     CFG = G["config"]
+    set_meta_max(G)
     S, D = G["scenes"], G["deaths"]
     NUM, FL = list(CFG["vars"]), list(CFG["flags"])
     errors, warns = [], []
@@ -151,6 +166,33 @@ def main(note=""):
         one(e)
         return out
 
+    def blocks_i2(st, blocks, where):
+        """I2 для условных абзацев (текст сцены или «После X»): с seen — и без смерти, и после неё;
+        с мета-условиями (lived/kinds/branches/one_life) — и при пустом, и при полном Журнале."""
+        for b in blocks:
+            if "if" not in b:
+                continue
+            t, f = possible(st, b["if"])
+            ids = sorted(seen_ids(b["if"], set()))
+            if ids or meta_dep(b["if"]):
+                # каждая смерть из условия могла быть, а могла и не быть (по отдельности: «баня, но не пещера»);
+                # Журнал ⊇ этой жизни; «*» — непустой Журнал для lived/kinds/branches/one_life
+                for r in range(len(ids) + 1 if len(ids) <= 8 else 0):
+                    for X in combinations(ids, r):
+                        X = frozenset(X)
+                        for m in (X, X | {"*"}):
+                            t2, f2 = possible(st, b["if"], X, m)
+                            t, f = t or t2, f or f2
+                if len(ids) > 8:
+                    t2, f2 = possible(st, b["if"], frozenset(D))
+                    t3, f3 = possible(st, b["if"], frozenset(), frozenset(D))
+                    t, f = t or t2 or t3, f or f2 or f3
+            k = (where[0], where[1], b["md"][:32])
+            if t:
+                cond_true.add(k)
+            if f:
+                cond_false.add(k)
+
     st0 = new_state()
     for n in NUM:
         st0["num"][n] = (CFG["vars"][n]["start"],) * 2
@@ -165,20 +207,7 @@ def main(note=""):
         if sid not in STATE:
             continue
         st, sc = STATE[sid], S[sid]
-        for b in sc["text"]:
-            if "if" in b:
-                t, f = possible(st, b["if"])
-                if "seen" in str(b["if"]):        # смерть могла быть, а могла и не быть
-                    t2, f2 = possible(st, b["if"], frozenset(D))
-                    t, f = t or t2, f or f2
-                if "lived" in str(b["if"]):       # прожито в прошлой жизни — может быть и так, и так
-                    t2, f2 = possible(st, b["if"], frozenset(), frozenset(D))
-                    t, f = t or t2, f or f2
-                k = (sid, "текст", b["md"][:32])
-                if t:
-                    cond_true.add(k)
-                if f:
-                    cond_false.add(k)
+        blocks_i2(st, sc["text"], (sid, "текст"))
         targets = []
         clock = sc.get("clock")
         clks = st["clk"] or {None}
@@ -194,7 +223,7 @@ def main(note=""):
             nclk = {v - cost for v in fit} if clock is not None else {None}
             if "visible" in c:
                 t, f = possible(st, c["visible"], frozenset(D))   # эхо: могло быть видно после смерти
-                if "lived" in str(c["visible"]):
+                if meta_dep(c["visible"]):
                     t = t or possible(st, c["visible"], frozenset(), frozenset(D))[0]
                 t0, f0 = possible(st, c["visible"])
                 k = (sid, c["id"], "visible: " + c.get("visible_src", ""))
@@ -204,7 +233,7 @@ def main(note=""):
                     cond_false.add(k)
                 if not t:
                     continue
-                if not ("seen" in str(c["visible"]) or "lived" in str(c["visible"])):
+                if not ("seen" in str(c["visible"]) or meta_dep(c["visible"])):
                     cs = refine(st, c["visible"], True)
             rem = cs
             for o in c["outcomes"]:
@@ -230,6 +259,10 @@ def main(note=""):
                         errors.append(f"C6: смерть {o['to']} в стволе ({sid})")
                     continue
                 targets.append((o["to"], cur, c["fx"] + o.get("fx", []), nclk))
+                # I2 для «## После X»: абзацы показываются по состоянию ПОСЛЕ fx выбора и исхода (как в engine.js)
+                ab = (sc.get("after") or {}).get(c["id"])
+                if ab:
+                    blocks_i2(apply_fx(cur, c["fx"] + o.get("fx", [])), ab, (sid, "После " + c["id"]))
         for to, cur, fx, ck in targets:
             entry_from[to].add(sid)
             nxt = apply_fx(cur, fx)
@@ -282,6 +315,11 @@ def main(note=""):
     for sid in S:
         if sid not in STATE:
             warns.append(f"R: сцена {sid} недостижима")
+    # lived(ID): сцена должна быть достижима из старта, иначе условие не выполнится никогда
+    for sid, sc in list(S.items()) + list(D.items()):
+        for lid in sorted(lived_ids(sc, set())):
+            if lid not in STATE:
+                errors.append(f"lived: {sid} — lived({lid}): сцена {lid} недостижима из старта, условие не выполнится никогда")
     for did in D:
         if did not in reached_deaths:
             warns.append(f"R: смерть {did} недостижима")

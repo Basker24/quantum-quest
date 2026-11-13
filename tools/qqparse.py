@@ -11,6 +11,7 @@
     photo: bw               # bw | color | digital | phone | future
     photo_caption: ...
     photo_prompt: ...
+    photo_by: F_В109        # кадр по флагу: img/<ID>~<ЗНАЧЕНИЕ>.jpg, нет файла — img/<ID>.jpg
     clock: 60               # «время» в острой сцене (канон п. 30): запас секунд, тратят только выборы
     clock_label: до потери сознания    # что значит ноль
     ---
@@ -43,6 +44,10 @@ cause: F_ЗАКЛЕИЛ -> В1-07 (ловушка с причиной в про�
 Условия: && || ! ( ) >= <= > < == !=, числа, имена переменных/флагов, литералы enum,
 seen(✝ID) — видел в любой жизни (мета), seen_life(✝ID) — видел в этой жизни,
 lived(ID) — сцена ID прожита в одной из ПРОШЛЫХ жизней (мета, «встречи ветвей»).
+kinds() — сколько разных стихий (stihia у ✝) в Журнале за все жизни; branches() — в скольких
+разных ветвях я жил за все жизни (В1, В2.1, В2.2, В3…В7; общая часть В2 — только если ни в
+В2.1, ни в В2.2 не попал). Мета-гейт Ф-04 (канон п. 14): kinds() >= 5 && branches() >= 3.
+one_life() — идёт режим «Одна жизнь» (смерть без отката).
 Функций случайности в языке нет (канон, п. 1).
 
 «Время» (clock/cost): счётчик живёт в цепочке подряд идущих сцен с clock; первая сцена
@@ -64,7 +69,8 @@ class QQError(Exception):
 
 
 # ---------------------------------------------------------------- выражения
-TOK = re.compile(r"\s*(?:(\d+)|(&&|\|\||>=|<=|==|!=|[<>!()])|(seen_life|seen|lived)\s*\(([^)]*)\)|([^\s&|<>=!()]+))")
+TOK = re.compile(r"\s*(?:(\d+)|(&&|\|\||>=|<=|==|!=|[<>!()])|(seen_life|seen|lived|kinds|branches|one_life)\s*\(([^)]*)\)|([^\s&|<>=!()]+))")
+META_FN = ("kinds", "branches", "one_life")   # функции без аргументов (мета-счётчики и режим)
 
 
 def tokenize(src):
@@ -117,7 +123,13 @@ def parse_expr(src, cfg):
         if t[0] == "fn":
             take()
             if t[1] == "lived":
+                if not t[2]:
+                    raise QQError(f"lived() без ID сцены в «{src}»")
                 return {"op": "lived", "id": t[2]}
+            if t[1] in META_FN:
+                if t[2]:
+                    raise QQError(f"{t[1]}() без аргументов, а не «{t[1]}({t[2]})» в «{src}»")
+                return {"op": t[1]}
             return {"op": "seen", "id": t[2], "life": t[1] == "seen_life"}
         if t[0] == "name":
             take()
@@ -376,6 +388,30 @@ def parse_file(path, cfg):
     return sid, item
 
 
+def lived_ids(x, acc):
+    """Все ID из lived(ID) в сцене/условии."""
+    if isinstance(x, dict):
+        if x.get("op") == "lived":
+            acc.add(x["id"])
+        for v in x.values():
+            lived_ids(v, acc)
+    elif isinstance(x, list):
+        for v in x:
+            lived_ids(v, acc)
+    return acc
+
+
+def has_meta(e):
+    """Условие зависит от мета-слоя (Журнал, прошлые жизни, режим): seen без _life, lived, kinds, branches, one_life."""
+    if isinstance(e, dict):
+        if e.get("op") in ("lived",) + META_FN or (e.get("op") == "seen" and not e.get("life")):
+            return True
+        return any(has_meta(v) for v in e.values())
+    if isinstance(e, list):
+        return any(has_meta(v) for v in e)
+    return False
+
+
 def load():
     cfg = json.loads((SCENES / "_config.json").read_text(encoding="utf-8"))
     for m in cfg.get("meta_entries", []):
@@ -397,21 +433,15 @@ def load():
         for t in targets:
             if t not in scenes and t not in deaths:
                 raise QQError(f"{sid}: ссылка на несуществующую сцену {t}")
+    for sid, sc in scenes.items():
+        pb = sc.get("photo_by")
+        if pb and pb not in cfg["flags"]:
+            raise QQError(f"{sid}: photo_by: {pb} — нет такого флага в _config.json")
     for did, d in deaths.items():
         if "cause" in d and d["cause"]["scene"] not in scenes:
             raise QQError(f"{did}: cause ссылается на несуществующую сцену {d['cause']['scene']}")
-    # lived(ID) — только существующие сцены (смерти — через seen)
-    def lived_ids(x, acc):
-        if isinstance(x, dict):
-            if x.get("op") == "lived":
-                acc.add(x["id"])
-            for v in x.values():
-                lived_ids(v, acc)
-        elif isinstance(x, list):
-            for v in x:
-                lived_ids(v, acc)
-        return acc
-    for sid, sc in scenes.items():
+    # lived(ID) — только существующие сцены (смерти — через seen); достижимость проверяет validate
+    for sid, sc in list(scenes.items()) + list(deaths.items()):
         for lid in lived_ids(sc, set()):
             if lid not in scenes:
                 raise QQError(f"{sid}: lived({lid}) — нет такой сцены")

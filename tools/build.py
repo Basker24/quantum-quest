@@ -67,6 +67,8 @@ def expr_str(e):
         return ("seen_life" if e.get("life") else "seen") + f"({e['id']})"
     if op == "lived":
         return f"lived({e['id']})"
+    if op in ("kinds", "branches", "one_life"):
+        return op + "()"
     return op
 
 

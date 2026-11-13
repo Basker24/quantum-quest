@@ -566,3 +566,13 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .dj-goals { display: grid; gap: 8px; }
 .dj-goal small { padding-left: 0; word-break: break-word; }
 .choice.dev-locked .lbl { letter-spacing: normal; font-family: var(--serif); font-size: inherit; text-transform: none; }
+
+/* v1.10: «Одна жизнь», строка поддержки после первой смерти, перенос сохранений */
+.one-life .cta-l::before { content: "✝ "; color: var(--dim); }
+.io-msg { color: var(--dim); margin: 6px 0 0; }
+.io-msg .set-btn { margin: 6px 6px 0 0; }
+.io-msg.bad { color: #c96b5b; }
+.help-line { color: var(--dim); font-size: 13px; margin: 18px auto 0; max-width: 30em; text-align: center; opacity: .85; }
+.help-line .link { color: inherit; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.onelife-end { text-align: center; margin-top: 28px; }
+.onelife-end .nr-end { display: block; font-size: 18px; letter-spacing: .08em; margin-bottom: 18px; }

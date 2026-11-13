@@ -8,7 +8,15 @@ const { chromium } = require('playwright');
   p.on('pageerror', e => errs.push(e.message));
   await p.goto('file://' + require('path').resolve(__dirname, '../game/index.html') + '?debug');
   const meta = () => p.$eval('#meta', e => e.textContent);
-  const waitScene = async () => { await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 }); await p.click('#text').catch(() => {}); await p.waitForTimeout(700); };
+  const waitScene = async () => {
+    await p.waitForSelector('#scene:not([hidden]), #death:not([hidden])', { timeout: 20000 });
+    if (await p.$('#death:not([hidden])') && await p.waitForSelector('#death .root-tomb', { timeout: 15000 }).catch(() => null)) { // Корень (Т-02б): утопление без отката, «держи, чтобы вдохнуть»
+      await p.waitForSelector('#btn-death-next:not([hidden])', { timeout: 30000 });
+      await p.click('#btn-death-next'); console.log('   ✝ Корень');
+      await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 });
+    }
+    await p.click('#text').catch(() => {}); await p.waitForTimeout(700);
+  };
   const labels = () => p.$$eval('#choices button', bs => bs.map(x => (x.querySelector('.lbl') || x).innerText));
   let afters = 0, shots = 0;
   const pickText = async (re) => {
@@ -41,7 +49,7 @@ const { chromium } = require('playwright');
   for (const re of ['Дальше', 'блестит', 'шепчут', 'Дальше', 'Вмазать', 'рельсы', 'Читать', 'Переплыть', 'Сесть и ехать', 'баллоны', 'Проводить', 'физфак', 'Ходить ночами|Зубрить', 'Разжать'])
     await pickText(re);
   await die('lift');
-  for (const re of ['Я знаю', 'Пешком']) await pickText(re);
+  for (const re of ['Я помню|Я знаю', 'Пешком']) await pickText(re);
   if (await p.$('#death:not([hidden])')) { await die('garden'); await pickText('такси'); }
   for (const re of ['Докажите', 'гуляем', 'Отказать', 'Согласиться$|Согласиться', 'Рвануться']) await pickText(re);
   await waitScene();
