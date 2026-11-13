@@ -340,7 +340,10 @@
     const art = $("#death-text"); art.innerHTML = "";
     art.style.translate = art.style.filter = art.style.transition = "";
     const btn = $("#btn-death-next"); btn.hidden = true;
-    const lines = ["Воздух кончается раньше, чем темнота.", "Сверху, через воду, тонкий девчачий голос считает: «…сто девяносто… сто девяносто один…»", "Потом не остаётся ничего, даже счёта."];
+    const one = !!(S && S.oneLife); // «Одна жизнь»: вытащили за сорок секунд, дар не проснулся
+    const lines = one
+      ? ["Воздух кончается раньше, чем темнота.", "Сверху, через воду, тонкий девчачий голос считает: «…двадцать девять… тридцать…»", "Потом чья-то рука хватает меня за майку раньше, чем кончается счёт."]
+      : ["Воздух кончается раньше, чем темнота.", "Сверху, через воду, тонкий девчачий голос считает: «…сто девяносто… сто девяносто один…»", "Потом не остаётся ничего, даже счёта."];
     let i = 0;
     const step = () => {
       if (i < lines.length) { const p = document.createElement("p"); p.textContent = lines[i++]; art.append(p); setTimeout(step, REDUCED ? 100 : 1100); return; }
@@ -350,12 +353,13 @@
         <div class="tomb-years mono">1989 — 1996</div>
         <p class="tomb-epitaph">7 лет. Чёрная заводь. Утонул у коряги.</p>
       </div>
-      <p class="root-line mono">Ника считает: <b class="root-count">200</b></p>`);
+      <p class="root-line mono">Ника считает: <b class="root-count">${one ? 25 : 200}</b></p>`);
       const cnt = art.querySelector(".root-count"), tomb = art.querySelector(".root-tomb");
-      let n = 200;
+      let n = one ? 25 : 200;
+      const goal = one ? 40 : 252;
       const tick = () => {
         cnt.textContent = n;
-        if (n >= 252) { tomb.classList.add("crack"); buzz([30, 60, 30]); setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
+        if (n >= goal) { tomb.classList.add("crack"); buzz([30, 60, 30]); setTimeout(() => { const lab = btn.querySelector(".hold-lbl"); const old = lab && lab.textContent; if (lab) lab.textContent = "▶ держи, чтобы вдохнуть"; btn.hidden = false; holdToRewind(btn, art, () => { if (lab) lab.textContent = old; done(); }); }, REDUCED ? 100 : 1200); return; }
         n++; setTimeout(tick, REDUCED ? 5 : 70);
       };
       setTimeout(tick, REDUCED ? 50 : 900);
@@ -1233,7 +1237,7 @@
   function setFlowZoom(z, cx, cy) {
     const wrap = $("#flow-wrap"), svg = $("#flow-canvas svg");
     if (!svg) return;
-    z = Math.max(0.25, Math.min(2.5, z));
+    z = Math.max(0.1, Math.min(2.5, z));
     const r = wrap.getBoundingClientRect();
     const px = cx == null ? wrap.clientWidth / 2 : cx - r.left, py = cy == null ? wrap.clientHeight / 2 : cy - r.top;
     const ux = (wrap.scrollLeft + px) / flowZoom, uy = (wrap.scrollTop + py) / flowZoom;
@@ -1245,7 +1249,7 @@
     const wrap = $("#flow-wrap");
     $("#z-in").onclick = () => setFlowZoom(flowZoom * 1.25);
     $("#z-out").onclick = () => setFlowZoom(flowZoom / 1.25);
-    $("#z-fit").onclick = () => setFlowZoom(Math.min(wrap.clientWidth / flowSize.w, wrap.clientHeight / flowSize.h, 1));
+    $("#z-fit").onclick = () => { setFlowZoom(Math.min((wrap.clientWidth - 4) / flowSize.w, 1)); wrap.scrollLeft = 0; }; // по ширине: все дорожки видны, вниз — прокруткой
     wrap.addEventListener("wheel", (e) => { if (!e.ctrlKey) return; e.preventDefault(); setFlowZoom(flowZoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1), e.clientX, e.clientY); }, { passive: false });
     const pts = new Map(); let pinch = null, drag = null;
     wrap.addEventListener("pointerdown", (e) => {
@@ -1262,93 +1266,231 @@
     wrap.addEventListener("pointerup", up); wrap.addEventListener("pointercancel", up); wrap.addEventListener("pointerleave", up);
   })();
 
+  // ---------- полная схема: все сцены по дорожкам жизней и годам; неоткрытое — в тумане
+  const LANES = [["В1", "Как батя"], ["В1.2", "Участок"], ["В2.1", "Эталон"], ["В2", "Физфак"], ["В2.2", "Сорок два"], ["В3", "Партия"], ["В4", "Сварной"], ["В5", "Куда угодно"], ["В6", "Голоса"], ["В7", "Остаться"]];
+  const laneOf = (id) => (id.startsWith("⊣") ? "К" : id.split("-")[0]);
+  let flowLayoutCache = null;
+  function flowLayout() {
+    if (flowLayoutCache) return flowLayoutCache;
+    const ids = Object.keys(G.scenes);
+    const kids = {}, parents = {}, deathsOf = {};
+    for (const id of ids) {
+      const sc = G.scenes[id], out = new Set(sc.next ? [sc.next] : []);
+      for (const c of sc.choices || []) for (const o of c.outcomes) {
+        if (G.scenes[o.to]) out.add(o.to);
+        else if (G.deaths[o.to]) { const d = (deathsOf[id] = deathsOf[id] || []); if (!d.includes(o.to)) d.push(o.to); }
+      }
+      kids[id] = [...out];
+      for (const k of out) (parents[k] = parents[k] || []).push(id);
+    }
+    // топологический порядок (граф ацикличен)
+    const indeg = {}; ids.forEach((i) => (indeg[i] = 0)); ids.forEach((i) => kids[i].forEach((k) => indeg[k]++));
+    const q = ids.filter((i) => indeg[i] === 0).sort(), topo = {};
+    let n = 0;
+    while (q.length) { const v = q.shift(); topo[v] = n++; for (const k of kids[v]) if (--indeg[k] === 0) q.push(k); }
+    const W = 150, H = 58, ROW = 84, COL = 214, AX = 78, PAD = 30;
+    const laneIx = {}; LANES.forEach(([l], i) => (laneIx[l] = i));
+    const colX = (i) => AX + PAD + i * COL;
+    const midX = colX((LANES.length - 1) / 2);
+    const pos = {}, bands = [];
+    let y = PAD + 40;
+    const place = (id, x, yy, kind) => (pos[id] = { x, y: yy, kind });
+    // пролог и ствол — колонкой по центру
+    const trunk = ids.filter((id) => laneOf(id) === "Т").sort((a, b) => topo[a] - topo[b]);
+    for (const id of trunk) { place(id, midX, y, "scene"); bands.push({ y, label: id === "Т-00" ? "пролог" : yearOf(G.scenes[id].date) || "" }); y += ROW; }
+    y += 34;
+    const lifeTop = y;
+    // жизни: полосы лет, высота — по самой плотной колонке
+    const life = ids.filter((id) => laneIx[laneOf(id)] != null);
+    const byYear = {};
+    for (const id of life) { const yr = +(yearOf(G.scenes[id].date) || 2061); ((byYear[yr] = byYear[yr] || {})[laneOf(id)] = byYear[yr][laneOf(id)] || []).push(id); }
+    const years = Object.keys(byYear).map(Number).sort((a, b) => a - b);
+    let prev = null;
+    for (const yr of years) {
+      if (prev != null && yr - prev > 1) y += 12; // разрыв на пустых годах
+      const lanes = byYear[yr];
+      const rows = Math.max(...Object.values(lanes).map((l) => l.length));
+      bands.push({ y, label: String(yr) });
+      for (const [l, list] of Object.entries(lanes)) list.sort((a, b) => topo[a] - topo[b]).forEach((id, i) => place(id, colX(laneIx[l]), y + i * ROW, "scene"));
+      y += rows * ROW; prev = yr;
+    }
+    const lifeBottom = y;
+    // тупики — в конце своей дорожки
+    const ends = ids.filter((id) => laneOf(id) === "К").sort((a, b) => topo[a] - topo[b]);
+    const endRow = {};
+    for (const id of ends) {
+      const p = (parents[id] || [])[0], l = p ? laneOf(p) : "Я";
+      if (l === "Я") continue;
+      const k = (endRow[l] = (endRow[l] || 0) + 1) - 1;
+      place(id, colX(laneIx[l]), y + 10 + k * ROW, "end");
+    }
+    y += Math.max(1, ...Object.values(endRow)) * ROW + 40;
+    // якорь и финалы
+    bands.push({ y, label: "якорь" });
+    const anchor = ids.filter((id) => laneOf(id) === "Я").sort((a, b) => topo[a] - topo[b]);
+    for (const id of anchor) {
+      place(id, midX, y, "anchor");
+      // финалы и тупики прямо из якоря, кроме Я-03, — справа от него
+      let k = 0;
+      for (const t of kids[id]) if (!pos[t] && (laneOf(t) === "Ф" || laneOf(t) === "К") && id !== anchor[anchor.length - 1]) place(t, midX + COL * (1.2 + k++), y, laneOf(t) === "Ф" ? "final" : "end");
+      y += ROW + 6;
+    }
+    const last = anchor[anchor.length - 1];
+    const fin = (kids[last] || []).filter((t) => !pos[t]);
+    y += 20;
+    fin.forEach((t, i) => place(t, midX + (i - (fin.length - 1) / 2) * COL * 0.86, y, laneOf(t) === "Ф" ? "final" : "end"));
+    for (const id of ids) if (!pos[id]) place(id, midX + COL * 2, (y += ROW), laneOf(id) === "Ф" ? "final" : "scene"); // на всякий случай
+    y += ROW + PAD;
+    const width = colX(LANES.length - 1) + W + 70 + PAD;
+    flowLayoutCache = { pos, kids, parents, deathsOf, bands, W, H, ROW, COL, AX, PAD, colX, width, height: y, lifeTop, lifeBottom, laneIx };
+    return flowLayoutCache;
+  }
+
   function renderFlow() {
-    const { kids, rows } = layout();
+    const L = flowLayout(), { pos, kids, deathsOf, W, H } = L;
     const visited = meta.visited, taken = meta.taken, shown = meta.shown;
     const life = new Set(S ? [...S.stack.map((s) => s.scene), S.scene] : []);
-    const frontier = new Set();
-    for (const id of Object.keys(visited)) for (const k of kids[id] || []) if (!visited[k]) frontier.add(k);
     const gp = guideOn && G.guides && G.guides[guideOn];
     const gScenes = new Set(gp ? [...gp.steps.map((s) => s.scene), guideOn] : []);
     const gChoice = {}; if (gp) for (const s of gp.steps) if (s.choice && !s.death) gChoice[s.scene] = s.choice;
-    const showNode = (id) => visited[id] || frontier.has(id) || gScenes.has(id);
-    const W = 176, H = 92, GX = 26, GY = 70, PAD = 24;
-    const pos = {};
-    let maxW = 0, y = PAD;
-    const rankKeys = Object.keys(rows).map(Number).sort((a, b) => a - b);
-    for (const r of rankKeys) {
-      const list = rows[r].filter(showNode);
-      if (!list.length) continue;
-      // порядок по среднему x родителей
-      list.sort((a, b) => avgParentX(a) - avgParentX(b));
-      list.forEach((id, i) => (pos[id] = { i, n: list.length, y }));
-      maxW = Math.max(maxW, list.length);
-      y += H + GY;
-    }
-    function avgParentX(id) {
-      const xs = [];
-      for (const [p, ks] of Object.entries(kids)) if (ks.includes(id) && pos[p]) xs.push(pos[p].i - pos[p].n / 2);
-      return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0;
-    }
-    const width = Math.max(1, maxW) * (W + GX) - GX + PAD * 2;
-    const height = y - GY + PAD;
-    for (const p of Object.values(pos)) p.x = PAD + (width - PAD * 2 - (p.n * (W + GX) - GX)) / 2 + p.i * (W + GX);
-
-    let edges = "", nodes = "";
+    const open = (id) => devOn || visited[id] || gScenes.has(id);
+    const secretLocked = (id) => { const g = G.guides && G.guides[id]; return g && g.secret && !visited[id] && !(g.gate && visited[g.gate]); };
+    const laneOpen = {}; for (const id of Object.keys(visited)) laneOpen[laneOf(id)] = true;
+    let edges = "", nodes = "", deaths = "", fog = "", lanes = "", axis = "";
+    // фон дорожек и подписи
+    LANES.forEach(([l, name], i) => {
+      const x = L.colX(i) - 12, nowLane = S && laneOf(S.scene) === l;
+      lanes += `<rect class="lane-bg${nowLane ? " now" : ""}" x="${x}" y="${L.lifeTop - 46}" width="${W + 70}" height="${L.lifeBottom - L.lifeTop + 60}" rx="12"/>`;
+      const known = devOn || laneOpen[l];
+      lanes += `<text class="lane-t${known ? "" : " fogged"}" x="${x + 12}" y="${L.lifeTop - 24}">${known ? esc(l + " · " + name) : "жизнь ?"}</text>`;
+    });
+    for (const b of L.bands) axis += `<line class="yr-line" x1="${L.AX - 6}" x2="${L.width - 10}" y1="${b.y - 12}" y2="${b.y - 12}"/><text class="yr" x="${L.AX - 12}" y="${b.y + 8}" text-anchor="end">${esc(b.label)}</text>`;
+    // рёбра: одно на пару «узел → цель», состояние — лучшее из вариантов
+    const curve = (a, b) => {
+      const x1 = a.x + W / 2, y1 = a.y + H, x2 = b.x + W / 2, y2 = b.y;
+      if (Math.abs(b.y - a.y) < H) { const sx = a.x + W, ex = b.x; return `M${sx} ${a.y + H / 2} C${sx + 30} ${a.y + H / 2} ${ex - 30} ${b.y + H / 2} ${ex} ${b.y + H / 2}`; }
+      const my = (y1 + y2) / 2;
+      const bend = x1 === x2 && y2 - y1 > L.ROW ? -46 : 0; // через узел в той же колонке — в обход
+      return `M${x1} ${y1} C${x1 + bend} ${my} ${x2 + bend} ${my} ${x2} ${y2}`;
+    };
     let opened = 0, total = 0;
-    for (const [id, sc] of Object.entries(G.scenes)) total += (sc.choices || []).length;
-    for (const id of Object.keys(pos)) {
-      const p = pos[id], sc = G.scenes[id];
-      if (!visited[id] && !gScenes.has(id)) {
-        nodes += `<g class="fnode unk" transform="translate(${p.x},${p.y})"><rect width="${W}" height="${H}" rx="8"/><text x="${W / 2}" y="${H / 2 + 6}" text-anchor="middle" class="q">?</text></g>`;
-        continue;
+    for (const [id, sc] of Object.entries(G.scenes)) {
+      const a = pos[id]; if (!a) continue;
+      total += (sc.choices || []).length;
+      const best = {};
+      const mark = (t, s) => { const r = { fog: 0, shown: 1, taken: 2 }; if (best[t] == null || r[s] > r[best[t]]) best[t] = s; };
+      if (sc.next && pos[sc.next]) mark(sc.next, visited[id] && visited[sc.next] ? "taken" : open(id) ? "shown" : "fog");
+      for (const c of sc.choices || []) {
+        const tk = !!taken[id] && taken[id][c.id] != null, sh = !!(shown[id] && shown[id][c.id]);
+        if (tk) opened++;
+        for (const o of c.outcomes) if (pos[o.to]) mark(o.to, tk && visited[o.to] ? "taken" : (sh || tk || devOn) ? "shown" : "fog");
       }
+      for (const [t, s] of Object.entries(best)) {
+        const g = gScenes.has(id) && gScenes.has(t) ? " guide" : "", now = life.has(id) && life.has(t) ? " now" : "";
+        edges += `<path class="edge ${s}${now}${g}" d="${curve(a, pos[t])}"/>`;
+      }
+    }
+    // узлы
+    for (const [id, p] of Object.entries(pos)) {
+      const sc = G.scenes[id]; if (!sc) continue;
+      const isOpen = open(id), here = S && S.scene === id;
+      const kind = p.kind, kick = kind === "final" ? "ФИНАЛ" : kind === "end" ? "⊣ ТУПИК" : kind === "anchor" ? "ЯКОРЬ" : "";
       const chs = sc.choices || [];
-      const cw = 20, cg = 4, rowW = chs.length * cw + (chs.length - 1) * cg;
+      const cw = 16, cg = 3, rowW = chs.length * cw + Math.max(0, chs.length - 1) * cg;
       let chips = "";
       chs.forEach((c, i) => {
         const cx = (W - rowW) / 2 + i * (cw + cg);
-        const isTaken = taken[id] && taken[id][c.id];
-        const isShown = shown[id] && shown[id][c.id];
-        const deathSeen = c.outcomes.some((o) => o.to.startsWith("✝") && meta.journal[o.to]);
-        if (isTaken) opened++;
+        const tk = !!taken[id] && taken[id][c.id] != null, sh = !!(shown[id] && shown[id][c.id]);
+        const dead = c.outcomes.some((o) => o.to.startsWith("✝") && meta.journal[o.to]);
         const onGuide = gChoice[id] === c.id;
-        const cls = (deathSeen && isTaken ? "dead" : isTaken ? "taken" : isShown ? "shown" : "unk") + (onGuide ? " guide" : "");
-        const label = !onGuide && !isTaken && !isShown ? "?" : deathSeen && isTaken ? "✝" : LETTERS[i] || i + 1;
-        const tip = isShown || isTaken || onGuide ? esc(c.label) : "ещё не видел";
-        chips += `<g class="chip ${cls}" transform="translate(${cx},${H - 28})"><title>${tip}</title><rect width="${cw}" height="20" rx="4"/><text x="${cw / 2}" y="14" text-anchor="middle">${label}</text></g>`;
-        // рёбра от фишки к сцене
-        if (isTaken || isShown || onGuide) {
-          for (const o of c.outcomes) {
-            const t = o.to;
-            if (!pos[t]) continue;
-            if (onGuide && !(isTaken || isShown) && !gScenes.has(t)) continue;
-            const x1 = p.x + cx + cw / 2, y1 = p.y + H - 8, x2 = pos[t].x + W / 2, y2 = pos[t].y;
-            const my = (y1 + y2) / 2;
-            edges += `<path class="edge ${isTaken && visited[t] ? "taken" : "shown"} ${life.has(id) && life.has(t) ? "now" : ""} ${onGuide && gScenes.has(t) ? "guide" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
-          }
-        }
+        const see = isOpen && (tk || sh || onGuide || devOn);
+        const cls = !isOpen ? "unk" : (dead && tk ? "dead" : tk ? "taken" : sh || devOn ? "shown" : "unk") + (onGuide ? " guide" : "");
+        chips += `<g class="chip ${cls}" transform="translate(${cx},${H - 19})"><rect width="${cw}" height="14" rx="3"/><text x="${cw / 2}" y="11" text-anchor="middle">${see ? (dead && tk ? "✝" : LETTERS[i] || i + 1) : "?"}</text></g>`;
       });
-      if (sc.next && pos[sc.next]) {
-        const x1 = p.x + W / 2, y1 = p.y + H, x2 = pos[sc.next].x + W / 2, y2 = pos[sc.next].y, my = (y1 + y2) / 2;
-        edges += `<path class="edge taken ${life.has(id) && life.has(sc.next) ? "now" : ""} ${gScenes.has(id) && gScenes.has(sc.next) ? "guide" : ""}" d="M${x1} ${y1} C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+      const hideName = !isOpen || (kind === "final" && secretLocked(id) && !devOn);
+      const title = hideName ? "" : esc((sc.title || id).replace(/^Демо\.\s*/, ""));
+      const yr = kind === "final" || kind === "end" ? "" : esc(yearOf(sc.date) || "");
+      const cls = ["fnode", "k-" + kind, isOpen ? "" : "fog", life.has(id) ? "now" : "", here ? "here" : "", gScenes.has(id) ? "guide" : ""].join(" ").replace(/\s+/g, " ").trim();
+      nodes += `<g class="${cls}" data-id="${esc(id)}" tabindex="0" role="button" transform="translate(${p.x},${p.y})"><title>${hideName ? "ещё не прожито" : title}</title>
+        <rect width="${W}" height="${H}" rx="${kind === "scene" ? 7 : 3}"/>${kind === "final" ? `<rect class="inner" x="3" y="3" width="${W - 6}" height="${H - 6}" rx="2"/>` : ""}
+        ${kick ? `<text x="10" y="13" class="fk">${kick}</text>` : ""}
+        <text x="10" y="${kick ? 29 : 19}" class="ft">${hideName ? "?" : title.length > 21 ? title.slice(0, 20) + "…" : title}</text>
+        ${yr && kind === "scene" ? `<text x="10" y="${isOpen ? 33 : 40}" class="fd">${yr}${isOpen && sc.age != null ? " · мне " + sc.age : ""}</text>` : ""}
+        ${chips}${here ? `<g class="here-flag" transform="translate(0,-8)"><rect width="64" height="15" rx="3"/><text x="32" y="11" text-anchor="middle">я здесь</text></g>` : ""}</g>`;
+      // смерти — кружки справа
+      (deathsOf[id] || []).forEach((d, k) => {
+        const inJ = meta.journal[d], dx = p.x + W + 14 + (k % 2) * 18, dy = p.y + 10 + Math.floor(k / 2) * 18;
+        const dd = G.deaths[d];
+        deaths += `<line class="dlink${inJ ? " seen" : ""}" x1="${p.x + W}" y1="${p.y + 18}" x2="${dx}" y2="${dy}"/>`;
+        deaths += `<g class="dnode${inJ ? " seen" : ""}${isOpen ? "" : " fog"}" data-death="${esc(d)}" transform="translate(${dx},${dy})"><title>${inJ ? esc("✝ " + (yearOf(dd.date) || "") + " · " + (dd.title || "")) : "смерть, которой ещё не было"}</title><circle r="7"/><text y="3.5" text-anchor="middle">${inJ ? "✝" : "?"}</text></g>`;
+      });
+      // облака над неоткрытым
+      if (!isOpen && !devOn) {
+        const g = "d" + ((p.x + p.y) % 3 | 0);
+        fog += `<ellipse class="puff ${g}" cx="${p.x + W / 2}" cy="${p.y + H / 2}" rx="${W * 0.78}" ry="${H * 0.95}"/>`;
       }
-      const title = esc((sc.title || id).replace(/^Демо\.\s*/, ""));
-      nodes += `<g class="fnode ${gScenes.has(id) ? "guide" : ""} ${life.has(id) ? "now" : ""} ${S && S.scene === id ? "here" : ""} fe-${sc.photo || "none"}" transform="translate(${p.x},${p.y})">
-        <rect width="${W}" height="${H}" rx="8"/>
-        <text x="12" y="22" class="ft">${title.length > 22 ? title.slice(0, 21) + "…" : title}</text>
-        <text x="12" y="40" class="fd">${esc(yearOf(sc.date) || "")}${sc.age != null ? " · " + sc.age : ""}</text>
-        ${chips}</g>`;
     }
-    $("#flow-canvas").innerHTML = `<svg width="${width * flowZoom}" height="${height * flowZoom}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема ветвлений">${edges}${nodes}</svg>`;
-    flowSize = { w: width, h: height };
-    $("#flow-count").textContent = `${progressLine()} · развилок: ${opened} из ${total} · жизней: ${meta.lives || 0}`;
+    const defs = `<defs><radialGradient id="fogpuff"><stop offset="0" stop-color="#8f9bab" stop-opacity=".30"/><stop offset=".6" stop-color="#7d8999" stop-opacity=".14"/><stop offset="1" stop-color="#7d8999" stop-opacity="0"/></radialGradient></defs>`;
+    $("#flow-canvas").innerHTML = `<svg width="${L.width * flowZoom}" height="${L.height * flowZoom}" viewBox="0 0 ${L.width} ${L.height}" role="img" aria-label="Схема всех развилок">${defs}<g class="lanes">${lanes}</g><g class="axis">${axis}</g><g class="edges">${edges}</g><g class="deaths">${deaths}</g><g class="nodes">${nodes}</g><g class="fog-layer">${fog}</g></svg>`;
+    flowSize = { w: L.width, h: L.height };
+    const lanesOpen = LANES.filter(([l]) => laneOpen[l]).length;
+    $("#flow-count").textContent = `${progressLine()} · развилок: ${opened} из ${total} · дорожек открыто: ${lanesOpen} из ${LANES.length}`;
     const fg = $("#flow-guide");
     fg.hidden = !gp;
     if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }
-    const here = gp ? pos[gp.steps[0] && gp.steps[0].scene] : S && pos[S.scene];
-    if (here) { const wrap = $("#flow-wrap"); wrap.scrollLeft = Math.max(0, (here.x + W / 2) * flowZoom - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, here.y * flowZoom - 120); }
+    $("#flow-card").hidden = true;
+    const here = gp ? pos[gp.steps[0] && gp.steps[0].scene] : (S && pos[S.scene]) || pos["Т-01"];
+    if (here) { const wrap = $("#flow-wrap"); requestAnimationFrame(() => { wrap.scrollLeft = Math.max(0, (here.x + W / 2) * flowZoom - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, here.y * flowZoom - wrap.clientHeight / 3); }); }
   }
+
+  // карточка узла по тапу
+  function openFlowCard(id, isDeath) {
+    const card = $("#flow-card");
+    let h = "";
+    if (isDeath) {
+      const d = G.deaths[id], inJ = meta.journal[id];
+      h = inJ ? `<p class="mono kicker">смерть · ${esc(yearOf(d.date) || "")}</p><h3>✝ ${esc(d.title || "")}</h3>${d.epitaph ? `<p class="dim">${esc(d.epitaph)}</p>` : ""}${d.lesson ? `<p class="mono tiny">⟲ ${esc(d.lesson)}</p>` : ""}`
+        : `<p class="mono kicker">смерть</p><h3>✝ ?</h3><p class="dim">Смерть, которой ещё не было.</p>`;
+    } else {
+      const sc = G.scenes[id], L = flowLayout(), kind = L.pos[id] && L.pos[id].kind;
+      const isOpen = devOn || meta.visited[id];
+      const g = G.guides && G.guides[id], locked = g && g.secret && !meta.visited[id] && !(g.gate && meta.visited[g.gate]);
+      if (!isOpen) {
+        h = `<p class="mono kicker">${kind === "final" ? "финал" : kind === "end" ? "тупик" : esc(yearOf(sc.date) || "")}</p><h3>?</h3><p class="dim">${kind === "final" && locked ? "Этот финал ещё скрыт." : "Ещё не прожито."}</p>${(sc.choices || []).length ? `<p class="mono tiny dim">развилок: ${(sc.choices || []).length}</p>` : ""}`;
+      } else {
+        const tk = meta.taken[id] || {}, sh = meta.shown[id] || {};
+        const rows = (sc.choices || []).map((c, i) => {
+          const see = devOn || tk[c.id] != null || sh[c.id];
+          const dead = c.outcomes.some((o) => o.to.startsWith("✝") && meta.journal[o.to]);
+          const st = tk[c.id] != null ? (dead ? "✝" : "✓") : sh[c.id] ? "·" : "?";
+          return `<li><span class="mono">${LETTERS[i] || i + 1} ${st}</span> ${see ? md(c.label) : "— — —"}</li>`;
+        }).join("");
+        const ds = L.deathsOf[id] || [], dj = ds.filter((d) => meta.journal[d]);
+        h = `<p class="mono kicker">${kind === "final" ? "финал · " : kind === "end" ? "тупик · " : ""}${esc(sc.date || "")}${sc.age != null ? " · мне " + sc.age : ""}${devOn ? " · " + esc(id) : ""}</p><h3>${esc(sc.title || id)}</h3>${rows ? `<ul class="fc-ch">${rows}</ul>` : ""}${ds.length ? `<p class="mono tiny">${dj.length ? "в Журнале: " + dj.map((d) => "✝ " + esc(G.deaths[d].title || d)).join(", ") : ""}${ds.length - dj.length ? `${dj.length ? " · " : ""}ещё не найдено смертей: ${ds.length - dj.length}` : ""}</p>` : ""}`;
+      }
+    }
+    card.innerHTML = `<button class="close ghost fc-x" aria-label="Закрыть">×</button>${h}`;
+    card.hidden = false;
+    card.querySelector(".fc-x").onclick = () => (card.hidden = true);
+  }
+  (function initFlowTap() {
+    const wrap = $("#flow-wrap");
+    let st = null, moved = false;
+    wrap.addEventListener("pointerdown", (e) => { st = { x: e.clientX, y: e.clientY }; moved = false; });
+    wrap.addEventListener("pointermove", (e) => { if (st && Math.hypot(e.clientX - st.x, e.clientY - st.y) > 6) moved = true; });
+    wrap.addEventListener("click", (e) => {
+      if (moved) return;
+      const d = e.target.closest("[data-death]"), n = e.target.closest("[data-id]");
+      if (d) openFlowCard(d.dataset.death, true);
+      else if (n) openFlowCard(n.dataset.id);
+      else $("#flow-card").hidden = true;
+    });
+    wrap.addEventListener("keydown", (e) => {
+      const n = e.target.closest && e.target.closest("[data-id]");
+      if (n && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openFlowCard(n.dataset.id); }
+      if (e.key === "Escape") $("#flow-card").hidden = true;
+    });
+  })();
 
   // ---------- живой фон
   const cv = $("#bg"), cx = cv.getContext && cv.getContext("2d");

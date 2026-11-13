@@ -576,3 +576,61 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .help-line .link { color: inherit; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .onelife-end { text-align: center; margin-top: 28px; }
 .onelife-end .nr-end { display: block; font-size: 18px; letter-spacing: .08em; margin-bottom: 18px; }
+
+/* ---------- полная схема в тумане (v2.1) */
+.flow-stage { position: relative; }
+.flow-hint { margin: 6px 0 0; }
+.flow-legend .lg.fin { border: 3px double #b9a27a; background: transparent; }
+.flow-legend .lg.fogd { background: radial-gradient(circle, rgba(143,155,171,.55), rgba(143,155,171,.05)); border-color: transparent; }
+.lane-bg { fill: rgba(143,211,255,.025); stroke: rgba(143,211,255,.06); }
+.lane-bg.now { fill: rgba(217,164,65,.05); stroke: rgba(217,164,65,.18); }
+.lane-t { fill: #b6c8d8; font: 14px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.lane-t.fogged { fill: #5a6b7c; }
+.yr { fill: #7b8fa3; font: 12px var(--mono); }
+.yr-line { stroke: rgba(143,211,255,.05); }
+.fnode { cursor: pointer; }
+.fnode:focus { outline: none; }
+.fnode:focus rect { stroke: var(--accent); }
+.fnode .fk { fill: #b9a27a; font: 9px var(--mono); letter-spacing: .12em; }
+.fnode .ft { font: 13px var(--serif); }
+.fnode.k-final rect { fill: #17150f; stroke: #b9a27a; stroke-width: 1.2; }
+.fnode.k-final rect.inner { fill: none; stroke: rgba(185,162,122,.45); }
+.fnode.k-end rect { fill: #160f0f; stroke: #6d3a34; stroke-dasharray: 6 3; }
+.fnode.k-anchor rect { fill: #13171c; stroke: #8fd3ff; stroke-width: 1.4; }
+.fnode.fog rect { fill: rgba(70,82,96,.10); stroke: rgba(120,135,150,.22); stroke-dasharray: none; filter: none; }
+.fnode.fog.k-end rect { stroke-dasharray: 6 3; }
+.fnode.fog .ft { fill: #56677a; font: 20px var(--mono); }
+.fnode.fog .fd, .fnode.fog .fk { fill: #4d5d6e; }
+.fnode.fog .chip rect { stroke: rgba(120,135,150,.35); stroke-dasharray: 2 2; }
+.fnode.fog .chip text { fill: #4d5d6e; }
+.here-flag rect { fill: var(--accent); } .here-flag text { fill: #0b0f14; font: 10px var(--mono); }
+.edge.fog { stroke: #6a7c8f; stroke-opacity: .5; stroke-dasharray: 2 5; stroke-width: 1.4; }
+.dnode circle { fill: #10161d; stroke: rgba(178,70,58,.35); }
+.dnode text { fill: #6b4a46; font: 9px var(--mono); }
+.dnode.seen circle { fill: var(--blood); stroke: var(--blood); } .dnode.seen text { fill: #fff; }
+.dnode.fog circle { stroke: rgba(120,135,150,.22); } .dnode.fog text { fill: #44525f; }
+.dnode { cursor: pointer; }
+.dlink { stroke: rgba(178,70,58,.18); stroke-width: 1; }
+.dlink.seen { stroke: rgba(178,70,58,.6); }
+.fog-layer { pointer-events: none; }
+.puff { fill: url(#fogpuff); }
+.puff.d0 { animation: fogdrift 54s ease-in-out infinite alternate; }
+.puff.d1 { animation: fogdrift 73s ease-in-out -20s infinite alternate-reverse; }
+.puff.d2 { animation: fogdrift 91s ease-in-out -40s infinite alternate; }
+@keyframes fogdrift { from { transform: translate(-14px, -5px); } to { transform: translate(14px, 6px); } }
+@media (prefers-reduced-motion: reduce) { .puff { animation: none !important; } }
+.flow-card { position: absolute; right: 10px; top: 22px; width: 300px; max-height: calc(100% - 40px); overflow: auto; z-index: 3;
+  background: #10151b; border: 1px solid #2c3d4f; border-radius: 10px; padding: 14px 16px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: 15px; }
+.flow-card h3 { margin: 2px 28px 8px 0; font-size: 18px; line-height: 1.3; }
+.flow-card .kicker { margin: 0; color: var(--dim); font-size: 11px; }
+.flow-card .fc-x { position: absolute; right: 6px; top: 4px; }
+.fc-ch { list-style: none; padding: 0; margin: 6px 0; }
+.fc-ch li { margin: 6px 0; line-height: 1.35; }
+.fc-ch li .mono { color: #8fd3ff; margin-right: 6px; font-size: 12px; }
+@media (max-width: 899px) {
+  .flow-card { position: fixed; left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 46vh; border-radius: 14px 14px 0 0; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+}
+@media (min-width: 960px) {
+  #flow { width: min(1400px, calc(100vw - 48px)); max-width: none; margin-left: calc(50% - min(700px, calc(50vw - 24px))); }
+}
+.fnode .chip text { font-size: 10px; } .fnode .fd { font-size: 10.5px; }
