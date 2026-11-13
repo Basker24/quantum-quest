@@ -25,6 +25,8 @@ G = CFG = None
 # мета-счётчики при «полном Журнале» (I2): сколько всего стихий у смертей и сколько ветвей-жизней.
 # Ставит set_meta_max(G); при пустом Журнале (I1, свидетели) kinds() и branches() равны 0.
 META_MAX = {"kinds": 99, "branches": 99}
+# Для свидетелей: мета-гейт (kinds/branches) считается пройденным, остальная мета (seen/lived/one_life) — ложь.
+GATES = frozenset({"__gates__"})
 
 
 def branch_keys(ids):
@@ -70,11 +72,11 @@ def ev(e, st, seen_life=frozenset(), meta=None):
     if op == "or":
         return any(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "lived":
-        return bool(meta)
+        return bool(meta) and meta is not GATES
     if op in ("kinds", "branches"):          # мета-гейт: полный Журнал — максимум, пустой — 0
         return META_MAX[op] if meta else 0
     if op == "one_life":                      # режим «Одна жизнь»: I2 — обе стороны, I1/свидетели — обычный режим
-        return bool(meta)
+        return bool(meta) and meta is not GATES
     if op == "seen":
         if e.get("life") or meta is None:
             return e["id"] in seen_life

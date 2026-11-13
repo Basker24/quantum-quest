@@ -20,7 +20,7 @@ import sys
 from collections import defaultdict
 
 from qqparse import CLOCK_KEY, ROOT, load
-from validate import ev
+from validate import ev, GATES
 
 LIMIT = 1500000
 
@@ -158,12 +158,12 @@ def kit(G):
         """Варианты в порядке перебора: (score, c, o); смерти — в конце, только ещё не виденные в этой сцене."""
         sc = S[sid]
         left = st.get(CLOCK_KEY)
-        vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen, frozenset())]
+        vis = [c for c in sc.get("choices", []) if not c.get("visible") or ev(c["visible"], st, seen, GATES)]
         opts = []
         for c in vis:
             if left is not None and c.get("cost", 0) > left:
                 continue                          # не успеть
-            o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen, frozenset()))
+            o = next(o for o in c["outcomes"] if not o.get("if") or ev(o["if"], st, seen, GATES))
             if o["to"] in D:
                 if o["to"] not in seen:
                     opts.append((-1000, c, o))   # смерть — только если ничего другого не вышло

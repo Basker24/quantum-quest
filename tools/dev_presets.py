@@ -143,7 +143,7 @@ def presets(G, limit=LIMIT, sweep_limit=SWEEP):
             st, seen = K.step(sid, st, c, o), frozenset()
         return out, st
 
-    from validate import ev
+    from validate import ev, GATES
 
     def end_of(st, tail):
         """Проигрывает хвост от состояния входа: куда он приводит (проверка пресета)."""
@@ -168,7 +168,7 @@ def presets(G, limit=LIMIT, sweep_limit=SWEEP):
         return sid
 
     def K_ev(e, st, seen):
-        return ev(e, st, seen, frozenset())
+        return ev(e, st, seen, GATES)
 
     def sweep(t, n):
         """Один обход к цели t: после успеха продолжает перебор, пока ниже есть сцены без пресета.
