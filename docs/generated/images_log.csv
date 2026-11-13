@@ -127,3 +127,35 @@ seryoga_23,2026-11-11T20:53:02,ref,gpt-image-2.6-sunburst,medium,1024x1536,ok,ga
 В1-11,2026-11-11T21:24:30,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-11.jpg,,1476,344,1132
 В1-11,2026-11-11T21:26:03,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-11.jpg,,1514,382,1132
 В1-13,2026-11-11T21:33:11,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В1-13.jpg,,1511,379,1132
+В5-01,2026-11-11T22:38:28,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В5-01.jpg,,1530,398,1132
+В5-02,2026-11-11T22:50:22,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В5-02.jpg,,1483,351,1132
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+ref_ploy_24_mini_bikini_v1,2026-11-11T23:38:33,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_01dc40c58d6a4b64b28c59842bc52a66. safety_violations=[sexual].",game/img/style-test/ref_ploy_24_mini_bikini_v1.jpg,ploy_24,,,
+ref_ploy_24_mini_bikini_v2,2026-11-11T23:39:32,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_687397ab4a20468da601c4eddbb550fa. safety_violations=[sexual].",game/img/style-test/ref_ploy_24_mini_bikini_v2.jpg,ploy_24,,,
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
+ref_ploy_24_mini_bikini_v3,2026-11-11T23:40:15,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_64362fd1cabf40b39952242b1a144efc. safety_violations=[sexual].",game/img/style-test/ref_ploy_24_mini_bikini_v3.jpg,ploy_24,,,
+ref_ploy_24_mini_bikini_v4,2026-11-11T23:40:59,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_496b96961b854c71bca85263b7982567. safety_violations=[sexual].",game/img/style-test/ref_ploy_24_mini_bikini_v4.jpg,ploy_24,,,
+ref_ploy_24_mini_bikini_v5,2026-11-11T23:42:22,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ref_ploy_24_mini_bikini_v5.jpg,,,,
+ref_ploy_24_micro_bikini_v6,2026-11-11T23:49:11,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_f7d718be02eb4d34a6442e438c278486. safety_violations=[sexual].",game/img/style-test/ref_ploy_24_micro_bikini_v6.jpg,,,,
+probe_ploy_beach_minibikini_v7,2026-11-11T23:53:17,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_beach_minibikini_v7.jpg,,,,
+probe_ploy_lounger_cream_v8,2026-11-11T23:58:24,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_lounger_cream_v8.jpg,,,,
+probe_ploy_lounger_cream_v9,2026-11-12T00:04:21,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_826d3f4212b2490a8587a633c330d502. safety_violations=[sexual].",game/img/style-test/ploy_lounger_cream_v9.jpg,,,,
+probe_ploy_lounger_cream_v9,2026-11-12T00:05:26,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_7cc4d1c56ebe442a95f0098510ddc01c. safety_violations=[sexual].",game/img/style-test/ploy_lounger_cream_v9.jpg,,,,
+probe_ploy_lounger_cream_v9,2026-11-12T00:06:22,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_lounger_cream_v9.jpg,,,,
+probe_ploy_beach_photo_v10,2026-11-12T00:08:59,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_7fb5aad76bff4671ab10dd6a3c2d2b44. safety_violations=[sexual].",game/img/style-test/ploy_beach_photo_v10.jpg,,,,
+probe_ploy_beach_photo_v10,2026-11-12T00:09:49,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_d48d465484d740209747278a9e307a1b. safety_violations=[sexual].",game/img/style-test/ploy_beach_photo_v10.jpg,,,,
+probe_ploy_beach_photo_v10,2026-11-12T00:10:59,probe,gpt-image-2,medium,1024x1536,"error: HTTP 400: Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID req_64059ef9e2244883b4606c3046138895. safety_violations=[sexual].",game/img/style-test/ploy_beach_photo_v10.jpg,,,,
+probe_ploy_stand_cream_frame_v11,2026-11-12T00:19:02,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_stand_cream_frame_v11.jpg,,,,
+probe_ploy_towel_cream_frame_v12,2026-11-12T00:24:20,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_towel_cream_frame_v12.jpg,,,,
+id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens

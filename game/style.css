@@ -23,6 +23,18 @@ button { font: inherit; color: inherit; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
 .screen { padding-top: 24px; }
 
+/* промо-арт на экранах (ZCode, 13.11.2026) */
+.title-art { width: 100%; aspect-ratio: 3 / 2; border-radius: 12px; margin-bottom: 16px;
+  background: url("img/promo_menu_main_landscape.jpg") center / cover no-repeat;
+  box-shadow: 0 14px 44px rgba(0,0,0,.55); }
+@media (orientation: portrait) {
+  .title-art { aspect-ratio: 2 / 3; background-image: url("img/promo_menu_main_portrait.jpg"); } }
+.band { width: 100%; aspect-ratio: 21 / 9; border-radius: 10px; margin-bottom: 14px;
+  background-size: cover; background-position: center 35%; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
+.band-two-times { background-image: url("img/promo_menu_two_times.jpg"); }
+.band-night { background-image: url("img/promo_menu_night.jpg"); }
+
+
 /* верхняя полоса */
 #bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; justify-content: space-between; align-items: center;
   padding: 10px 0; background: linear-gradient(var(--bg) 70%, transparent); font-family: var(--mono); font-size: 13px; color: var(--dim); }
