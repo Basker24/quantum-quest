@@ -12,6 +12,7 @@
     photo_caption: ...
     photo_prompt: ...
     photo_by: F_В109        # кадр по флагу: img/<ID>~<ЗНАЧЕНИЕ>.jpg, нет файла — img/<ID>.jpg
+    photo_by: F_А, F_Б      # по нескольким флагам: img/<ID>~<ЗНАЧ_А>~<ЗНАЧ_Б>.jpg → ~<ЗНАЧ_А> → ~<ЗНАЧ_Б> → <ID>.jpg; bool-флаг даёт значение ДА
     clock: 60               # «время» в острой сцене (канон п. 30): запас секунд, тратят только выборы
     clock_label: до потери сознания    # что значит ноль
     ---
@@ -435,8 +436,9 @@ def load():
                 raise QQError(f"{sid}: ссылка на несуществующую сцену {t}")
     for sid, sc in scenes.items():
         pb = sc.get("photo_by")
-        if pb and pb not in cfg["flags"]:
-            raise QQError(f"{sid}: photo_by: {pb} — нет такого флага в _config.json")
+        for f in ([x.strip() for x in str(pb).split(",") if x.strip()] if pb else []):
+            if f not in cfg["flags"]:
+                raise QQError(f"{sid}: photo_by: {f} — нет такого флага в _config.json")
     for did, d in deaths.items():
         if "cause" in d and d["cause"]["scene"] not in scenes:
             raise QQError(f"{did}: cause ссылается на несуществующую сцену {d['cause']['scene']}")

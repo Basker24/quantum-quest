@@ -538,8 +538,12 @@
     const img = new Image();
     img.alt = sc.photo_caption || "";
     // кадр зависит от сюжета (05_visual.md §6): photo_by: ФЛАГ → сначала img/<ID>~<ЗНАЧЕНИЕ>.jpg, нет файла — img/<ID>.jpg
-    const fv = sc.photo_by && S && S.st ? S.st[sc.photo_by] : null;
-    const srcs = (fv != null && fv !== false && fv !== true ? [sid + "~" + fv] : []).concat([sid]).map((n) => "img/" + encodeURIComponent(n) + ".jpg");
+    // несколько флагов через запятую: сначала все значения вместе, потом поменьше, в порядке записи; bool-флаг = «ДА»
+    const vals = !sc.photo_by || !S || !S.st ? [] : String(sc.photo_by).split(",").map((f) => f.trim()).filter(Boolean)
+      .map((f) => S.st[f]).map((v) => (v === true ? "ДА" : v == null || v === false ? null : String(v))).filter(Boolean);
+    const combos = [];
+    for (let k = vals.length; k >= 1; k--) (function rec(start, acc) { if (acc.length === k) return combos.push(acc.join("~")); for (let i = start; i < vals.length; i++) rec(i + 1, acc.concat(vals[i])); })(0, []);
+    const srcs = combos.map((c) => sid + "~" + c).concat([sid]).map((n) => "img/" + encodeURIComponent(n) + ".jpg");
     ph._img = img; // только последний кадр управляет рамкой (повторный показ той же сцены)
     img.onload = () => { if (ph._img === img) ph.hidden = false; };
     img.onerror = () => {
