@@ -319,6 +319,7 @@
     document.body.dataset.screen = id.slice(1);
     bgMode(id === "#title" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
     snd.screen(id);
+    if (window.QQM) QQM.screen(id); // меню-тема на титуле
     window.scrollTo(0, 0);
   }
 
@@ -409,6 +410,7 @@
     if (S.pending) S.pending = null; // «После» прочитано: дальше обычный вход
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
+    if (window.QQM) QQM.scene(id); // фоновой трек зоны (кроссфейд)
     if (!restored) milestoneFor(id, sc);
     document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
@@ -932,6 +934,7 @@
     if (S.oneLife) store.del(SAVE); else save(); // «Одна жизнь»: закрыл вкладку на смерти — к развилке не вернуться
     show("#death");
     snd.stop(); buzz(40);
+    if (window.QQM) QQM.stinger(); // стингер смерти поверх приглушённого фона
     $("#death-tc").textContent = (d.date || "").toUpperCase();
     const art = $("#death-text"); art.innerHTML = "";
     art.style.translate = art.style.filter = art.style.transition = "";
@@ -2106,7 +2109,7 @@
     };
     r.readAsText(file);
   };
-  function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } }
+  function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   showTitle();

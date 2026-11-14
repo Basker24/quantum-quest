@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Quest — музыка (пробы)</title>
+<style>
+  :root { --bg:#0d0f14; --card:#161a22; --text:#d8dee9; --dim:#8a93a6; --accent:#c9a227; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 64px; background:var(--bg); color:var(--text);
+         font-family:-apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif; line-height:1.5; }
+  .wrap { max-width:720px; margin:0 auto; }
+  h1 { font-size:1.45rem; margin:0 0 4px; font-weight:700; }
+  h3 { color:var(--dim); margin:26px 0 10px; font-size:.95rem; text-transform:uppercase; letter-spacing:.06em; }
+  .sub { color:var(--dim); font-size:.9rem; margin-bottom:24px; }
+  .sub a { color:var(--accent); text-decoration:none; }
+  .card { background:var(--card); border-radius:14px; padding:16px 16px 12px; margin-bottom:12px;
+          box-shadow:0 2px 10px rgba(0,0,0,.35); }
+  .tag { display:inline-block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+         color:var(--accent); border:1px solid rgba(201,162,39,.35); border-radius:20px;
+         padding:2px 10px; margin-bottom:8px; }
+  .card h2 { font-size:1rem; margin:0 0 4px; }
+  .scenes { color:var(--dim); font-size:.82rem; margin:0 0 8px; }
+  .desc { font-size:.9rem; margin:0 0 10px; color:#b9c2d0; }
+  audio { width:100%; height:36px; }
+  .meta { color:var(--dim); font-size:.75rem; margin-top:6px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎵 Quantum Quest — музыка по зонам</h1>
+  <p class="sub">Все зоны — вариации тем Николая (o2 pt1-2, Only Space, Big Nothing) через Suno Cover V6.
+  В игре: <a href="/">играть</a> — трек ветки играет непрерывно через её сцены, рвётся стингером на смерти,
+  после отката возвращается; между ветками — кроссфейд.</p>
+
+  <h3>Лицо игры</h3>
+  <div class="card">
+    <span class="tag">З1 · меню · титул · заводь-ночь · Я-01</span>
+    <h2>Заводь-ночь 2061</h2>
+    <audio controls preload="none" src="music/suno_z1_v1.mp3"></audio>
+    <p class="meta">вариант 1 · 54 с · G минор 144 BPM · хрома 0.94</p>
+    <audio controls preload="none" src="music/suno_z1_v2.mp3"></audio>
+    <p class="meta">вариант 2 (дубль того же запроса)</p>
+  </div>
+
+  <h3>Ствол 1996–2007</h3>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">Заводь · под водой</span>
+      <h2>Т-01 · Т-02 · Т-02б</h2>
+      <p class="desc">Приглушённый подводный свет, гул, музыкальная шкатулка, счёт до 252.</p>
+      <audio controls preload="none" src="music/suno_z2.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">Двор 90-х</span>
+      <h2>Т-03…Т-10</h2>
+      <p class="desc">Солнце, река, велосипед — детство без тревоги.</p>
+      <audio controls preload="none" src="music/suno_z3.mp3"></audio>
+    </div>
+  </div>
+
+  <h3>Восемь жизней</h3>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">В1 «Лампа»</span>
+      <h2>Шахта «Глубокая»</h2>
+      <p class="desc">Пульс, металл, тикающий метроном 04:12.</p>
+      <audio controls preload="none" src="music/suno_z5.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В2 «Протокол»</span>
+      <h2>Лаборатория, ТГУ</h2>
+      <p class="desc">Холодный секвенсор, стеклянные пэды, научное напряжение.</p>
+      <audio controls preload="none" src="music/suno_z14.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В3 «Партия»</span>
+      <h2>Север: Шория, Якутия</h2>
+      <p class="desc">Флейта над струнами, ледяные колокольчики, ветер.</p>
+      <audio controls preload="none" src="music/suno_z6.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В4 «Барабан»</span>
+      <h2>Улица, казино Шадрина</h2>
+      <p class="desc">Расстроенная шкатулка, шёпоты в стыке, дрейф.</p>
+      <audio controls preload="none" src="music/suno_z8.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В5 «Тёплая вода»</span>
+      <h2>Море: Ко Тао, Плой</h2>
+      <p class="desc">Нейлон-гитара, мариамба, полнолуние и невидимая медуза.</p>
+      <audio controls preload="none" src="music/suno_z7.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В6 «Хор»</span>
+      <h2>Скит старца Серафима</h2>
+      <p class="desc">Монашеский хор-гул, далёкие колокола, священный ужас.</p>
+      <audio controls preload="none" src="music/suno_z15.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">В7 «Обычная жизнь»</span>
+      <h2>Рудничный: дом, баня, дети</h2>
+      <p class="desc">Тихий фортепианный вечер, кухня, тонкая трещина под теплом.</p>
+      <audio controls preload="none" src="music/suno_z16.mp3"></audio>
+    </div>
+  </div>
+
+  <h3>Якорь, смерти, тупики, финалы</h3>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">Якорь · Я-01…Я-03</span>
+      <h2>Шов: петля замыкается</h2>
+      <p class="desc">Струны над гитарой, колокола, ночь и полдень разом.</p>
+      <audio controls preload="none" src="music/suno_z9.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">Стингер · все смерти</span>
+      <h2>Смерть и откат</h2>
+      <p class="desc">Резкий холод, 10 секунд, фон приглушается.</p>
+      <audio controls preload="none" src="music/suno_z4.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">Тупики · К-01…К-12</span>
+      <h2>Никто не пришёл к заводи</h2>
+      <p class="desc">Умирающая шкатулка, пустая комната, обрыв на полуслове.</p>
+      <audio controls preload="none" src="music/suno_z10.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">Ф-02 · Ф-03 · Ф-04</span>
+      <h2>Финалы светлые</h2>
+      <p class="desc">Свет, «пошли домой», утро над рекой.</p>
+      <audio controls preload="none" src="music/suno_z11.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">Ф-01 · Ф-05 · Ф-06</span>
+      <h2>Финалы вечные</h2>
+      <p class="desc">Бесконечный дрейф: гитара над эфирными пэдами, без разрешения.</p>
+      <audio controls preload="none" src="music/suno_z12.mp3"></audio>
+    </div>
+    <div class="card">
+      <span class="tag">DLC «Объяснение»</span>
+      <h2>Ночь без откатов</h2>
+      <p class="desc">Тиканье часов, ночная спешка, трое к рассвету.</p>
+      <audio controls preload="none" src="music/suno_z13.mp3"></audio>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
