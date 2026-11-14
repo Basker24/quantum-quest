@@ -1600,7 +1600,7 @@
     const endRow = {};
     for (const id of ends) {
       const p = (parents[id] || [])[0], l = p ? laneOf(p) : "Я";
-      if (l === "Я") continue;
+      if (l === "Я" || laneIx[l] == null) continue; // тупики якоря и арок после него ставятся ниже
       const k = (endRow[l] = (endRow[l] || 0) + 1) - 1;
       place(id, colX(laneIx[l]), y + 10 + k * ROW, "end");
     }
@@ -1621,9 +1621,16 @@
     if (aLanes.length) {
       bands.push({ y: y + 10, label: "после" });
       y += 30;
-      const ax = (i) => midX + (i - (aLanes.length - 1) / 2) * COL;
-      let deep = 0;
-      aLanes.forEach((l, i) => {
+      // прямые двери «Тальника» в финал (Вбок → Ф-01) — колонка по центру, прямо под «Тальником»; арки — по бокам
+      const direct = (kids[last] || []).filter((t) => !pos[t] && (laneOf(t) === "Ф" || laneOf(t) === "К"));
+      const mid = direct.length ? Math.floor(aLanes.length / 2) : -1;
+      const nCol = aLanes.length + (direct.length ? 1 : 0);
+      const ax = (i) => midX + (i - (nCol - 1) / 2) * COL;
+      const colOf = (i) => (mid >= 0 && i >= mid ? i + 1 : i);
+      direct.forEach((t, k) => place(t, ax(mid), y + k * ROW, laneOf(t) === "Ф" ? "final" : "end"));
+      let deep = direct.length;
+      aLanes.forEach((l, j) => {
+        const i = colOf(j);
         const list = ids.filter((id) => laneOf(id) === l).sort((a, b) => topo[a] - topo[b]);
         list.forEach((id, k) => place(id, ax(i), y + k * ROW, "scene"));
         let k = list.length;
