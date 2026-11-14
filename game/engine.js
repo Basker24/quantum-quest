@@ -320,6 +320,7 @@
     document.body.dataset.screen = id.slice(1);
     bgMode(id === "#intro" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
     snd.screen(id);
+    if (id !== "#title") { const f = document.getElementById("cta-float"); if (f) f.classList.add("off"); }
     if (window.QQM) { QQM.setMuted(!snd.on()); QQM.screen(id); } // меню-тема на титуле; сначала узнать, включён ли звук
     window.scrollTo(0, 0);
   }
@@ -2060,6 +2061,7 @@
     devTitle();
     syncStill();
     bootTitle();
+    if (window.qqFloat) qqFloat();
   }
   let oneArmed = null;
   function disarmNew() {
@@ -2195,6 +2197,19 @@
     }
     frame.addEventListener("click", () => dark());
     window.addEventListener("resize", () => cur && light(cur));
+    // плавающая главная кнопка (телефон): видна, пока настоящая за краем экрана
+    const fl = $("#cta-float");
+    if (fl && "IntersectionObserver" in window) {
+      let real = null, seen = false;
+      const io = new IntersectionObserver((es) => { for (const e of es) if (e.target === real) { seen = e.isIntersecting; upd(); } });
+      const upd = () => fl.classList.toggle("off", !real || seen || $("#title").hidden);
+      fl.onclick = () => real && real.click();
+      window.qqFloat = () => {
+        const c = $("#btn-continue"); const n = c && !c.hidden ? c : $("#btn-new");
+        if (real !== n) { if (real) io.unobserve(real); real = n; seen = false; io.observe(real); }
+        fl.querySelector(".cf-l").textContent = real.querySelector(".cta-l").textContent; upd();
+      };
+    }
     const help = $("#warn-help"); if (help) help.onclick = (e) => { e.preventDefault(); e.stopPropagation(); $("#btn-about2").click(); };
   })();
   function bootTitle() { // первый вход за сессию: лампа щёлкает, картина проявляется
