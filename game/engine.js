@@ -1331,7 +1331,15 @@
     const gs = G.guides || {};
     meta.guideFold = meta.guideFold || {};
     let n = 0;
+    const focus = guideFocus && gs[guideFocus] && meta.visited[guideFocus] ? guideFocus : null;
+    $("#guide").classList.toggle("one", !!focus);
+    if (focus) {
+      const all = document.createElement("button"); all.className = "choice ghost-choice gall"; all.textContent = "← Все пути";
+      all.onclick = () => { guideFocus = null; renderGuide(); $("#guide").scrollTop = 0; window.scrollTo(0, 0); };
+      list.append(all);
+    }
     for (const [fid, g] of Object.entries(gs)) {
+      if (focus && fid !== focus) continue;
       const done = !!meta.visited[fid];
       const locked = g.secret && !done && !(g.gate && meta.visited[g.gate]);
       const cut = done || devOn ? null : guideProgress(g);
@@ -1339,14 +1347,14 @@
       n++;
       const going = cut != null;
       const max = going ? 2 : 3; // начатая дорога: подсказка и путь до сегодня, без будущих развилок
-      if (guideFocus === fid) { meta.guideFold[fid] = false; if (!meta.guide[fid]) meta.guide[fid] = 1; }
+      if (focus === fid) { meta.guideFold[fid] = false; meta.guide[fid] = 3; }
       const lvl = Math.min(meta.guide[fid] || 0, max), fold = !!meta.guideFold[fid];
       const card = document.createElement("div");
-      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "") + (guideFocus === fid ? " focus" : "");
+      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "") + (focus === fid ? " focus" : "");
       let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${esc(g.title)}</b><span class="mono dim">${esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : `<span class="gdone gnow mono">иду сюда</span>`}</div>`;
       const steps = g.steps.filter((x) => x.choice);
       const shown = going ? g.steps.filter((x) => x.choice && !x.death).slice(0, cut) : steps; // начатая: ровно мои выборы
-      const stepList = (arr) => `<ol class="gsteps">${arr.map((x) => `<li${x.death ? ' class="gdeath"' : ""}><span class="mono dim">${esc(x.year)}</span> ${esc(x.title)} → «${esc(x.label)}»${x.death ? " <i>умереть и вернуться</i>" : ""}</li>`).join("")}</ol>`;
+      const stepList = (arr) => `<ol class="gsteps">${arr.map((x) => `<li${x.death ? ' class="gdeath"' : ""}><span class="mono dim">${esc(x.year)}</span> ${esc(x.title)} → ${/^«/.test(x.label) ? esc(x.label) : "«" + esc(x.label) + "»"}${x.death ? " <i>умереть и вернуться</i>" : ""}</li>`).join("")}</ol>`;
       if (!fold) {
         if (lvl >= 1) h += `<p class="ghint">${md(g.hint)}</p>`;
         if (!going && lvl >= 2) h += `<ul class="gforks">${g.forks.map((f) => `<li>${md(f)}</li>`).join("")}</ul>`;
@@ -1368,8 +1376,7 @@
       if (fl) fl.onclick = () => { guideOn = fid; guideCut = going ? cut : null; openPanel("#flow"); };
       list.append(card);
     }
-    const fc = list.querySelector(".gcard.focus");
-    if (fc) { guideFocus = null; requestAnimationFrame(() => fc.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" })); }
+    if (focus) requestAnimationFrame(() => { $("#guide").scrollTop = 0; window.scrollTo(0, 0); });
     if (!n) list.innerHTML = `<p class="dim">Пока ни одной дороги. Проживи — и она появится здесь: финал, до которого дошёл, или тот, к которому идёшь.</p>`;
   }
   function closePanel() { if ((back === "#scene" || back === "#death") && S) show(back); else showTitle(); }
@@ -2219,7 +2226,7 @@
   };
   $("#btn-continue").onclick = () => leaveTitle(() => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } });
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"], ["#btn-lore2", "#lore"]])
-    $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; openPanel(panel); };
+    $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; guideFocus = null; openPanel(panel); };
   $("#btn-quit").onclick = showTitle;
   $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = "obyasnenie/obyasnenie.html"; };
   // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно

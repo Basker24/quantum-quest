@@ -1031,3 +1031,18 @@ body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; d
     -webkit-mask-image: linear-gradient(#000 calc(100% - 46px), transparent); mask-image: linear-gradient(#000 calc(100% - 46px), transparent); }
   body[data-screen="title"] #title .still { background: #0a0908; }
 }
+
+/* «Пути» по клику на предмет: только дорога этого финала */
+#guide.one > .dim.tiny { display: none; }
+#guide .gall { margin: 0 0 14px; width: auto; }
+
+/* портрет на почти квадратном экране (Fold, планшет): картину не раздувать по ширине — режется окно и низ стола.
+   Рамка не шире 112 % высоты-в-пропорции; по бокам — размытое продолжение той же картины */
+@media not all and (min-width: 900px) and (orientation: landscape) {
+  body[data-screen="title"] #title .still-crop {
+    --fw: clamp(calc(var(--vh) * var(--ar)), 100vw, calc(var(--vh) * var(--ar) * 1.12));
+    left: clamp(min(0px, calc(100vw - var(--fw))), calc(50vw - var(--fw) * var(--fx)), max(0px, calc((100vw - var(--fw)) / 2)));
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent), linear-gradient(#000 calc(100% - 46px), transparent);
+    -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent), linear-gradient(#000 calc(100% - 46px), transparent); mask-composite: intersect; }
+  body[data-screen="title"] #title .still-amb { display: block; position: absolute; inset: 0; height: calc(100svh - 150px); }
+}
