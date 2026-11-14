@@ -1164,5 +1164,7 @@
     "phone": "смартфон, 2020–2040-е",
     "future": "слишком чистая картинка будущего, 2050–2061"
   },
-  "img_remote": "https://raw.githubusercontent.com/Basker24/quantum-quest/main/game/img/"
+  "img_remote": "https://raw.githubusercontent.com/Basker24/quantum-quest/main/game/img/",
+  "stats_url": "",
+  "stats_key": ""
 }

@@ -86,6 +86,7 @@
         <nav id="dev-menu" class="menu-list dev-menu" aria-label="Режим автора" hidden>
           <button id="btn-devjump" class="mitem"><span class="m-t">⚙ Прыжок в сцену</span><span class="m-s">любая сцена со статами под выбранную историю</span></button>
           <button id="btn-devstate" class="mitem"><span class="m-t">⚙ Состояние</span><span class="m-s">все переменные и флаги: где ставятся и читаются</span></button>
+          <button id="btn-devplayers" class="mitem"><span class="m-t">⚙ Статистика игроков</span><span class="m-s">где бросают, редкие выборы, финалы, смерти</span></button>
           <button id="btn-devstats" class="mitem"><span class="m-t">⚙ Справка по статам</span><span class="m-s">все проверки каждой характеристики по годам</span></button>
         </nav>
         <div class="settings mono tiny">
@@ -99,7 +100,7 @@
           <input id="import-file" type="file" accept=".json,application/json" hidden>
         </div>
         <p id="io-msg" class="io-msg mono tiny" hidden></p>
-        <p id="consent" class="consent mono tiny" hidden>Можно я посчитаю, где игроки бросают игру? Обезличенно, через Яндекс Метрику. <button class="link" id="consent-yes">разрешить</button> · <button class="link" id="consent-no">нет</button></p>
+        <p id="consent" class="consent mono tiny" hidden>Разрешить анонимную статистику? Без имени и почты: общие счётчики игроков («эту смерть получили…») и Яндекс Метрика. <button class="link" id="consent-yes">разрешить</button> · <button class="link" id="consent-no">нет</button></p>
       </div>
       <details class="warn"><summary><span class="age mono">16+</span> Тяжёлые темы: смерть, суицид, война. Если тебе тяжело — <button class="link" id="warn-help">телефоны помощи</button>. <span class="warn-more">подробнее</span></summary><p>В игре есть смерть, в том числе ребёнка, мысли о самоубийстве, психическое расстройство и отказ от лечения, азартная игра со смертельным исходом, шахтные катастрофы и вымышленная война. Если тебе сейчас тяжело, в разделе «Об игре и помощь» есть телефоны, по которым ответят.</p></details>
     </div>
@@ -176,6 +177,7 @@
       <div id="stihii" class="mono"></div>
       <div class="nb-head"><span>№</span><span>когда</span><span>где и как</span><span>кто плакал</span></div>
       <div id="journal-list"></div>
+      <div id="chorus-all" class="chorus-all" hidden></div>
       <div id="clues"></div>
     </div>
   </section>
@@ -253,6 +255,13 @@
     <p class="mono tiny"><button id="dv-to-jump" class="link">прыжок в сцену</button> · <button id="dv-to-stats" class="link">справка по статам</button></p>
     <div id="devstate-body"></div>
   </section>
+  <section id="devplayers" class="screen panel dev-panel" hidden>
+    <button class="close ghost">×</button>
+    <p class="mono kicker">Режим автора</p>
+    <h2>Статистика игроков</h2>
+    <p class="dim tiny">Общие анонимные счётчики (Supabase): только игроки, разрешившие статистику. Схема — <code>tools/stats_schema.sql</code>.</p>
+    <div id="devplayers-body"></div>
+  </section>
   <section id="devstats" class="screen panel dev-panel" hidden>
     <button class="close ghost">×</button>
     <p class="mono kicker">Режим автора</p>
@@ -276,9 +285,10 @@
     <p>Если тебе сейчас плохо и хочется поговорить: телефон доверия для взрослых <b>8-800-333-44-34</b>, детский телефон доверия <b>8-800-2000-122</b> (оба бесплатно, по России), экстренные службы — <b>112</b>, международный каталог служб помощи — <b>findahelpline.com</b>.</p>
     <p>Голоса, дар и откаты в игре вымышлены. В жизни не отменяй лекарства без врача.</p>
     <p>Все персонажи, шахты, организации, «Орфей», «второй шанс», «Ставка» и все события после 2026 года вымышлены. Совпадения с реальными людьми, предприятиями и государствами случайны.</p>
-    <p id="privacy-note" class="tiny">Игра не просит имени, почты и регистрации. Прогресс хранится только в твоём браузере и в файле, который ты сам сохраняешь. Аналитика (Яндекс Метрика) включается только если ты её разрешишь: тогда Яндекс получит обезличенные сведения о посещении — идентификатор cookie, IP-адрес, тип устройства и браузера, какие главы и финалы открыты. Это нужно, чтобы понять, где игроки бросают игру. Выключить можно кнопкой «аналитика» в меню или очисткой данных сайта.</p>
+    <p id="privacy-note" class="tiny">Игра не просит имени, почты и регистрации. Прогресс хранится только в твоём браузере и в файле, который ты сам сохраняешь. Статистика включается только если ты её разрешишь. Тогда игра отправляет на наш сервер (Supabase) случайный номер без имени и почты и отметки: какие смерти, финалы и выборы у тебя были и на какой сцене ты сейчас — из этого складываются общие цифры вроде «эту смерть получили 312 из 1 840 игроков». А Яндекс Метрика получает обезличенные сведения о посещении — идентификатор cookie, IP-адрес, тип устройства и браузера, какие главы и финалы открыты. Это нужно, чтобы понять, где игроки бросают игру. Чужие общие цифры видны и без разрешения. Выключить можно кнопкой «аналитика» в меню или очисткой данных сайта.</p>
   </section>
 </div>
 <script src="music.js"></script>
+<script src="stats.js"></script>
 <script src="graph.js"></script>
 <script src="engine.js"></script>

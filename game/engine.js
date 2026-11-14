@@ -340,7 +340,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -425,13 +425,19 @@
     } catch (e) { /* без аналитики */ }
   }
   loadMetrika();
+  // общая статистика игроков (stats.js): отправляем только после согласия, читаем всегда
+  const QS = window.QQS || null;
+  if (QS) { QS.init(C, () => meta.analytics === true); QS.start(); }
+  const pct = (n, t) => (t ? Math.max(1, Math.round((100 * n) / t)) : 0);
+  const plural = (n, a, b, c) => (n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c);
+  const fmtN = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   function analyticsUi() {
-    const has = !!C.metrika_id, b = $("#btn-analytics"), c = $("#consent");
+    const has = !!(C.metrika_id || C.stats_url), b = $("#btn-analytics"), c = $("#consent");
     if (b) { b.hidden = !has; b.textContent = "аналитика: " + (meta.analytics === true ? "вкл" : "выкл"); b.setAttribute("aria-pressed", String(meta.analytics === true)); }
     if (c) c.hidden = !has || meta.analytics != null;
     const pn = $("#privacy-note"); if (pn) pn.hidden = !has;
   }
-  const setAnalytics = (on) => { meta.analytics = on; saveMeta(); if (on) loadMetrika(); else if (window.__ymLoaded) location.reload(); analyticsUi(); };
+  const setAnalytics = (on) => { meta.analytics = on; saveMeta(); if (on) { loadMetrika(); if (QS) QS.start(); } else if (window.__ymLoaded) location.reload(); analyticsUi(); };
   $("#consent-yes").onclick = () => setAnalytics(true);
   $("#consent-no").onclick = () => setAnalytics(false);
   $("#btn-analytics").onclick = () => setAnalytics(meta.analytics !== true);
@@ -443,6 +449,7 @@
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
     if (window.QQM) QQM.scene(id); // фоновой трек зоны (кроссфейд)
+    if (QS && !restored) QS.seen(id);
     if (!restored) milestoneFor(id, sc);
     document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
@@ -488,9 +495,27 @@
 
   // ---------- сцена
   let typing = null;
+  function statsLine(sc) {
+    if (!QS) return;
+    const sid = S.scene, sf = S.splitFor; S.splitFor = null;
+    const put = (html) => { if (S && S.scene === sid && !$("#scene").hidden) $("#text").insertAdjacentHTML("afterbegin", `<p class="stat-line mono">${html}</p>`); };
+    if (sf) QS.split(sf.scene).then((r) => { // «так же выбрали 64%»
+      if (!r) return; const all = Object.values(r).reduce((a, b) => a + b, 0), mine = r[sf.scene + "/" + sf.cid] || 0;
+      if (all >= 10 && mine) put(`так же, как я, выбрали ${pct(mine, all)}% игроков`);
+    });
+    if (sc.stage === "final") {
+      const deaths = Object.values(meta.journal || {}).reduce((a, j) => a + (j.times || 0), 0);
+      QS.final(sid, meta.lives || 0, deaths);
+      QS.finalStats(sid).then((r) => {
+        if (!r || !r.total || r.total < 5 || !r.n) return;
+        put(`сюда дошли ${pct(r.n, r.total)}% игроков${r.lives ? ` · в среднем за ${r.lives} ${plural(Math.round(r.lives), "жизнь", "жизни", "жизней")} и ${r.deaths} ${plural(+r.deaths, "смерть", "смерти", "смертей")}` : ""}`);
+      });
+    }
+  }
   function render(sc) {
     { const l = leftOf(sc); if (l != null && snd.on()) snd.clock(l); else snd.clockStop(); } // часы острой сцены
     show("#scene");
+    statsLine(sc);
     const st = S.st;
     document.body.dataset.drift = Math.min(4, Math.floor((st["ДРЕЙФ"] || 0) / 20));
     document.body.dataset.era = sc.photo || "none";
@@ -794,6 +819,7 @@
     meta.taken[S.scene] = meta.taken[S.scene] || {};
     if (!meta.taken[S.scene][c.id]) meta.taken[S.scene][c.id] = meta.lives || 0;
     saveMeta();
+    if (QS && visible(sc, st).length >= 2) { QS.choice(S.scene, c.id); S.splitFor = { scene: S.scene, cid: c.id }; }
     if (o.to.startsWith("✝")) { S.deathIf = [o.if, c.visible].filter(Boolean); return die(o.to); }
     const check = statCheck(c, o, st);
     const next = clone(st);
@@ -967,6 +993,8 @@
     milestone(Object.keys(meta.journal || {}).length === 0 ? "first_death" : "death");
     const j = meta.journal[did] || { times: 0, first: new Date().toISOString(), life: meta.lives };
     j.times++; meta.journal[did] = j; saveMeta();
+    if (QS) QS.death(did);
+    S.splitFor = null;
     if (S.oneLife) store.del(SAVE); else save(); // «Одна жизнь»: закрыл вкладку на смерти — к развилке не вернуться
     show("#death");
     snd.stop(); buzz(40);
@@ -990,6 +1018,12 @@
       </div>
       <p class="tomb-share"><button class="link mono" id="btn-share-tomb">↗ поделиться надгробием</button></p>`);
       $("#btn-share-tomb").onclick = (e) => { e.stopPropagation(); shareTomb(d); };
+      if (QS) QS.counts("death", [did]).then((r) => { // «эту смерть получили x из y игроков»
+        const n = r && r.n && r.n[did], t = r && r.total; if (!n || !t || t < 5) return;
+        const share = art.querySelector(".tomb-share"); if (!share) return;
+        const rare = n / t < 0.05;
+        share.insertAdjacentHTML("beforebegin", `<p class="tomb-stat mono">эту смерть получили ${fmtN(n)} из ${fmtN(t)} ${plural(t, "игрока", "игроков", "игроков")}${rare ? " · <b>редкая</b>" : ""}</p>`);
+      });
       // одна тихая строка поддержки — один раз за всю игру, после первого надгробия
       if (firstEver) {
         meta.helpShown = true; saveMeta();
@@ -1261,6 +1295,7 @@
     if (id === "#journal") snd.chorus();
     if (id === "#devstate") renderDevState();
     if (id === "#devstats") renderDevStats();
+    if (id === "#devplayers") renderDevPlayers();
     if (id === "#devjump") renderDevJump();
   }
 
@@ -1378,6 +1413,19 @@
     }
     if (!any) list.innerHTML = `<p class="nb-empty">Тетрадь пока пустая.</p>`;
     renderClues();
+    if (QS) {
+      const mine = Object.keys(meta.journal || {}).filter((id) => G.deaths[id]);
+      Promise.all([QS.chorus(), mine.length ? QS.counts("death", mine) : null]).then(([ch, cn]) => {
+        const box = $("#chorus-all"); if (!box) return;
+        let h = "";
+        if (ch && ch.deaths && ch.players >= 5) h += `<p>Общий Хор: все игроки вместе умерли ${fmtN(ch.deaths)} ${plural(ch.deaths, "раз", "раза", "раз")}.</p>`;
+        if (cn && cn.total >= 5 && cn.n) {
+          const [rid, rn] = mine.map((id) => [id, cn.n[id] || 0]).filter(([, n]) => n).sort((a, b) => a[1] - b[1])[0] || [];
+          if (rid) h += `<p>Моя самая редкая смерть: ✝ ${esc(G.deaths[rid].title || rid)}, ${esc(yearOf(G.deaths[rid].date) || "")} — её нашли ${pct(rn, cn.total)}% игроков.</p>`;
+        }
+        box.innerHTML = h; box.hidden = !h;
+      });
+    }
     $("#stihii").innerHTML = C.stihii.map((s) => `<span class="${seenSt.has(s) ? "on" : ""}" title="${s.toLowerCase()}">●</span>`).join(" ");
     // Я
     const me = $("#me-list"); me.innerHTML = "";
@@ -2058,7 +2106,7 @@
   }
   function devTitle() { devApply(); }
   $("#btn-dev").onclick = () => { devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
-  for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
+  for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-devplayers", "#devplayers"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
     $(btn).onclick = () => openPanel(panel);
   $("#devjump-q").oninput = () => { jumpPick = null; renderDevJump(); };
 
@@ -2180,6 +2228,24 @@
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
+  // ---------- режим автора: статистика всех игроков (где бросают, редкие выборы, финалы, смерти)
+  function renderDevPlayers() {
+    const box = $("#devplayers-body");
+    if (!QS || !QS.readable()) { box.innerHTML = `<p class="dim">Статистика не подключена: в <code>scenes/_config.json</code> нет <code>stats_url</code>/<code>stats_key</code>.</p>`; return; }
+    box.innerHTML = `<p class="dim">Загружаю…</p>`;
+    QS.admin().then((r) => {
+      if (!r) { box.innerHTML = `<p class="dim">Сервер не ответил.</p>`; return; }
+      const nm = (id) => { const s = G.scenes[id] || G.deaths[id]; return esc(id) + (s && s.title ? " · " + esc(s.title) : ""); };
+      const tbl = (rows, f) => rows && rows.length ? `<ul>${rows.map(f).join("")}</ul>` : `<p class="dim">пока пусто</p>`;
+      const ch = (k) => { const [sid, cid] = String(k).split("/"); const c = ((G.scenes[sid] || {}).choices || []).find((x) => x.id === cid); return nm(sid) + " → " + esc(c ? c.label : cid); };
+      box.innerHTML = `<p>Игроков: <b>${fmtN(r.players || 0)}</b></p>
+        <h3>Где бросают (последняя сцена, не заходили 3+ дня)</h3>${tbl(r.dropoff, (x) => `<li>${nm(x.scene)} — ${x.n}</li>`)}
+        <h3>Финалы</h3>${tbl(r.finals, (x) => `<li>${nm(x.final)} — ${x.n} · жизней ${x.lives} · смертей ${x.deaths}</li>`)}
+        <h3>Самые редкие выборы</h3>${tbl(r.choices, (x) => `<li>${ch(x.key)} — ${x.n}</li>`)}
+        <h3>Смерти</h3>${tbl(r.deaths, (x) => `<li>${nm(x.key)} — ${x.n}</li>`)}`;
+    });
+  }
+
   // ---------- натюрморт в меню: пункт ↔ предмет на столе
   // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
   let leaving = false;
