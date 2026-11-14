@@ -2107,7 +2107,7 @@
     if (devOn) { devLoad(); window.QQDEV = { jump: devJump, load: devLoad }; }
   }
   function devTitle() { devApply(); }
-  $("#btn-dev").onclick = () => { devOn = false; store.set(DEVKEY, false); devApply(); buzz(10); };
+  $("#btn-dev").onclick = () => { if (!devOn && !devUnlocked()) return; devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
   for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-devplayers", "#devplayers"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
     $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; openPanel(panel); };
   $("#devjump-q").oninput = () => { jumpPick = null; renderDevJump(); };
@@ -2121,13 +2121,13 @@
   };
   let newArmed = null;
   // ---------- разблокировки (решение автора 14.11): DLC — пройти горноспасательскую жизнь до конца,
-  // письмо деда — 60 % финалов; режим автора — только кодом «регент» (или ?dev)
+  // письмо деда — 60 % финалов; режим автора — 90 % финалов, код «регент» или ?dev
   const ENDS = () => Object.keys(G.scenes).filter((id) => G.scenes[id].stage === "final");
   const endsDone = () => ENDS().filter((id) => meta.visited[id]).length;
   const need = (p) => Math.ceil(ENDS().length * p);
   function dlcUnlocked() { return !!(meta.unlock && meta.unlock.dlc); }
   function loreUnlocked() { return endsDone() >= need(0.6) || !!(meta.unlock && meta.unlock.lore); }
-  function devUnlocked() { return devOn; } // режим автора включается и выключается только кодом
+  function devUnlocked() { return endsDone() >= need(0.9) || !!(meta.unlock && meta.unlock.dev); } // 90 % финалов (или код «регент»)
   function lockItem(btn, open, cond) { // пункт виден всегда; закрытый — с условием открытия и не нажимается
     if (!btn) return;
     btn.classList.toggle("locked", !open); btn.setAttribute("aria-disabled", String(!open));
@@ -2139,7 +2139,11 @@
     lockItem($("#btn-dlc"), devOn || dlcUnlocked(), "откроется, когда пройдёшь жизнь горноспасателя до конца");
     lockItem($("#btn-lore2"), devOn || loreUnlocked(), `откроется, когда увидишь ${need(0.6)} ${fin(need(0.6))} из ${all} (сейчас ${done})`);
     const ml = $("#m-lore"); if (ml) ml.textContent = loreUnlocked() ? "" : `${done}/${need(0.6)}`;
-    const db = $("#btn-dev"); if (db) db.hidden = !devOn; // видна, только когда режим автора включён кодом — чтобы выключить
+    const db = $("#btn-dev");
+    if (db) { // кнопка видна всегда: до 90 % финалов закрыта с условием, после — обычный переключатель
+      const ok = devOn || devUnlocked(); db.hidden = false; db.disabled = !ok;
+      if (!ok) db.textContent = `🔒 режим автора: ${need(0.9)} ${fin(need(0.9))} из ${all}`;
+    }
     const hs = document.querySelector('.hs[data-btn="btn-dlc"]'); if (hs) hs.hidden = false;
   }
   // DLC открывается, если финал/тупик достигнут в жизни горноспасателя (F_В105 = ВГСЧ)
@@ -2276,7 +2280,7 @@
 
   // ---------- чит-коды (только в режиме автора). Список придумаем с автором; пока служебные для проверки замков.
   const CHEATS = {
-    "регент": ["режим автора", () => { devOn = !devOn; store.set(DEVKEY, devOn); devApply(); }],
+    "регент": ["режим автора", () => { devOn = !devOn; store.set(DEVKEY, devOn); if (devOn) { meta.unlock = meta.unlock || {}; meta.unlock.dev = true; } devApply(); }],
     "252": ["открыто: дополнение и письмо деда", () => { meta.unlock = { dlc: true, lore: true }; }],
     "закрыть": ["замки снова закрыты (кроме ?dev)", () => { meta.unlock = {}; }],
     "сверим часы": ["все концы отмечены пройденными", () => { for (const id of ENDS()) meta.visited[id] = meta.visited[id] || 1; }],
