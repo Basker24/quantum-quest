@@ -29,15 +29,14 @@ window.QQM = (function () {
     { re: /^В1/,       file: "suno_z5.mp3" },  // шахта «Глубокая»
     { re: /^В2/,       file: "suno_z14.mp3" }, // лаборатория «Протокол»
     { re: /^В3/,       file: "suno_z6.mp3" },  // север
-    { re: /^В4-06/,    file: "suno_z8a_casino.mp3" }, // В4-06 «Барабан» (ночь 01:30) — казино Шадрина (дуга)
     { re: /^В4/,       file: "suno_z8.mp3" },  // улица, казино
     { re: /^В5/,       file: "suno_z7.mp3" },  // море, Плой
     { re: /^В6/,       file: "suno_z15.mp3" }, // скит, Хор
     { re: /^В7/,       file: "suno_z16.mp3" }, // обычная жизнь
-    { re: /^Я/,        file: "suno_z9b_wave2.mp3" }, // якорь 2061 — вторая волна o2 (замена по автору 14.11)
-    { re: /^Ф-02/,     file: "suno_z11b_dissolve.mp3" }, // светлые финалы — растворение o2-финала (замена по автору 14.11)
-    { re: /^Ф-03/,     file: "suno_z11b_dissolve.mp3" },
-    { re: /^Ф-04/,     file: "suno_z11b_dissolve.mp3" },
+    { re: /^Я/,        file: "suno_z9.mp3" },  // якорь 2061
+    { re: /^Ф-02/,     file: "suno_z11.mp3" }, // светлые финалы
+    { re: /^Ф-03/,     file: "suno_z11.mp3" },
+    { re: /^Ф-04/,     file: "suno_z11.mp3" },
     { re: /^Ф/,        file: "suno_z12.mp3" }, // вечные финалы
   ];
 
