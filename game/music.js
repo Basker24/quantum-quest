@@ -84,7 +84,7 @@ window.QQM = (function () {
     bg = make(file);
     bg.volume = 0;
     const p = bg.play();
-    if (p && p.catch) p.catch(() => { /* автоплей до первого клика — попробуем позже */ });
+    if (p && p.catch) p.catch(() => { /* автоплей до первого клика — разблокируется в tryStart */ });
     fade(bg, 0, VOL, XFADE);
     bg.addEventListener("error", () => {
       // файла ещё нет (конвейер не дотащил) — тихо уходим в меню-тему
@@ -116,7 +116,24 @@ window.QQM = (function () {
     if (bg) bg.volume = muted ? 0 : VOL;
     if (stingerEl) stingerEl.volume = muted ? 0 : 0.85;
     if (!muted && !bg) screen("#title");
+    if (!muted) tryStart();
   }
 
-  return { scene, screen, stinger, setMuted, trackFor };
+  // браузеры не дают играть звук до первого касания: на любое взаимодействие пробуем
+  // запустить задуманный трек (обычно — меню-тема на титуле). После успеха слушатели снимаем.
+  let unlocked = false;
+  function tryStart() {
+    if (unlocked || muted || !bg || !bg.paused) return;
+    const p = bg.play();
+    if (p && p.then) p.then(() => {
+      unlocked = true;
+      ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+        document.removeEventListener(ev, tryStart, true));
+    }).catch(() => { /* ещё нет жеста — ждём следующий */ });
+  }
+  ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+    document.addEventListener(ev, tryStart, { capture: true }));
+
+  return { scene, screen, stinger, setMuted, trackFor,
+    debug: () => ({ file: current, paused: bg ? bg.paused : null, time: bg ? bg.currentTime : null, unlocked, muted }) };
 })();
