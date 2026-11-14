@@ -3,7 +3,8 @@
 // Смерть: стингер one-shot поверх приглушённого фона. Звук: синк с кнопкой «звук» движка.
 window.QQM = (function () {
   "use strict";
-  const DIR = "music/";
+  // DLC лежит в подпапке obyasnenie/ — оттуда музыка на уровень выше
+  const DIR = location.pathname.includes("obyasnenie") ? "../music/" : "music/";
   const TITLE = "suno_z1_v1.mp3";
   const FALLBACK = "suno_z1_v1.mp3";
   const STINGER = "suno_z4.mp3";
@@ -14,8 +15,10 @@ window.QQM = (function () {
   // карта зон: префикс ID сцены -> файл (файлы кладёт конвейер music/suno_zN.mp3)
   const ZONES = [
     { re: /^⊣/,        file: "suno_z10.mp3" }, // тупиковые финалы
-    { re: /^Т-01/,     file: "suno_z2.mp3" },  // Чёрная заводь, нырок
+    { re: /^Т-00/,     file: "suno_z1_v1.mp3" }, // пролог «Сухое русло» — та же тема, что в меню (решение автора)
+    { re: /^Т-01/,     file: "suno_z2.mp3" }, // Чёрная заводь, нырок
     { re: /^Т-02/,     file: "suno_z2.mp3" },  // под водой, Корень
+    { re: /^DLC/,      file: "suno_z13.mp3" }, // DLC «Объяснение» — ночь без откатов
     { re: /^Т/,        file: "suno_z3.mp3" },  // двор 90-х
     { re: /^В1/,       file: "suno_z5.mp3" },  // шахта «Глубокая»
     { re: /^В2/,       file: "suno_z14.mp3" }, // лаборатория «Протокол»

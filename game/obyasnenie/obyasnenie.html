@@ -269,9 +269,11 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
 
 <div class="ov" id="ov" hidden><div class="ovbox" id="ovbox"></div></div>
 
+<script src="../music.js"></script>
 <script src="core.js"></script>
 <script>
 (function(){
+if (window.QQM) QQM.scene("DLC-ночь"); // фоновая тема дополнения
 const NS='http://www.w3.org/2000/svg', L=G.LOC, hm=G.hm, KEY='obyasnenie-n1-beta', BEST='obyasnenie-n1-best';
 let S, tab='world', token=null, anim=null, shownT=null;
 const $=id=>document.getElementById(id);
