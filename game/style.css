@@ -868,17 +868,22 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
   #title .title-wrap { max-width: 620px; margin-left: auto; margin-right: auto; margin-top: -4vw; }
 }
 
-/* --- широкий экран: текст слева, высокая картина справа выходит из темноты --- */
+/* --- широкий экран: картина на весь экран (слева тёмная стена — под меню), стол и окно справа --- */
 @media (min-width: 900px) and (orientation: landscape) {
-  body[data-screen="title"] #title { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 4.5vw, 84px); min-height: 100vh; }
-  #title .title-wrap { order: 1; display: flex; flex-direction: column; justify-content: center; gap: 18px;
-    width: min(440px, 36vw); min-height: 100vh; margin: 0; padding: 32px 0 28px; box-sizing: border-box; }
-  .still { order: 2; position: relative; z-index: 1; flex: none; }
-  .still-crop { height: min(100vh, 1200px); aspect-ratio: 2 / 3;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 90%, transparent), linear-gradient(transparent 0, #000 5%, #000 95%, transparent);
-    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 90%, transparent), linear-gradient(transparent 0, #000 5%, #000 95%, transparent);
-    -webkit-mask-composite: source-in; mask-composite: intersect; }
-  #title .mitem .m-s { display: none; } /* описание пункта — на бирке у предмета */
+  body[data-screen="title"] #title { min-height: 100vh; }
+  #title .title-wrap { display: flex; flex-direction: column; justify-content: center; gap: 18px; position: relative; z-index: 2;
+    width: min(440px, 34vw); min-height: 100vh; margin: 0 0 0 max(4.5vw, 32px); padding: 32px 0 28px; box-sizing: border-box; }
+  .still { position: fixed; inset: 0; z-index: 1; overflow: hidden; }
+  .still-amb { display: none; }
+  /* «cover» вручную: рамка всегда 3:2, поэтому проценты предметов точные */
+  .still-crop { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: max(100vw, 150vh); height: auto; aspect-ratio: 3 / 2; -webkit-mask-image: none; mask-image: none; }
+  .still::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: linear-gradient(90deg, rgba(6,5,4,.72) 0, rgba(6,5,4,.42) 26%, rgba(6,5,4,0) 46%); }
+  .hs { left: var(--lx); top: var(--ly); width: var(--lw); height: var(--lh); }
+  .still-glow { --gx: 51%; --gy: 43%; }
+  .still-dust { transform: translate(38%, -1%); }
+  .still-comet { left: 93%; top: 11%; }
+  #title .mitem .m-s { display: none; } /* описание пункта — в подписи у предмета */
   #title .title-head .sub { display: none; }
   #title h1 { font-size: clamp(48px, 4.4vw, 68px); margin: 8px 0 14px; white-space: nowrap; }
 }
