@@ -86,7 +86,7 @@ window.QQM = (function () {
   // титульный экран и меню; титры — «Свеча в чужих окнах»
   function screen(screenId) {
     if (screenId === "#title" || screenId === "#intro") { lastScene = null; if (!muted) switchTo(TITLE); }
-    if (screenId === "#credits") { lastScene = null; if (!muted) switchTo("suno_z13_v10_credits.mp3"); }
+    if (screenId === "#credits") { lastScene = null; if (!muted) switchTo("qq_sacrifice_v10.mp3"); } // титры = «Свеча в чужих окнах»
   }
 
   function switchTo(file) {
