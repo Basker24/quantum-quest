@@ -1,4 +1,4 @@
-<title>Объяснение</title>
+<title>Трое до рассвета</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -199,7 +199,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
   <div class="tbox">
     <a href="../index.html" style="display:inline-block;margin-bottom:14px;font-family:var(--f-m);font-size:13px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px" onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='var(--dim)'">← в основную игру</a>
     <div class="night">Первое дополнение к игре «Тот, кто остался»</div>
-    <h1>ОБЪЯСНЕНИЕ</h1>
+    <h1>ТРОЕ ДО РАССВЕТА</h1>
     <p class="tag">Умереть ты не можешь. Успеть ты можешь не всё.</p>
 
     <div class="tsec">
@@ -212,7 +212,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
     <div class="tsec">
       <h3>Одна из жизней Андрея Самохина</h3>
       <p>В основной игре «Тот, кто остался» Андрей в семь лет тонет в Чёрной заводи и выживает. С тех пор он слышит Хор: память о своих смертях в соседних мирах. Детство у него одно, а дальше жизнь расходится на много веток.</p>
-      <p>«Объяснение» — одна из этих веток, отдельная история. Андрею тридцать четыре, он живёт в Кемерове, и умереть у него не получается. Каждый раз, когда он погибает, он продолжает жить в мире, где ему повезло. Там сторож вовремя включил насос, а водитель успел затормозить. Люди видят только, как ему повезло. Как он умер, помнит один Андрей.</p>
+      <p>«Трое до рассвета» — одна из этих веток, отдельная история. Андрею тридцать четыре, он живёт в Кемерове, и умереть у него не получается. Каждый раз, когда он погибает, он продолжает жить в мире, где ему повезло. Там сторож вовремя включил насос, а водитель успел затормозить. Люди видят только, как ему повезло. Как он умер, помнит один Андрей.</p>
     </div>
 
     <div class="tsec">
@@ -239,7 +239,7 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
     <div class="lives" id="lives"></div>
     <div class="right">
       <div class="gauge" title="Сколько чудес вокруг тебя заметили. С 2 о тебе говорят и люди медлят, с 4 тебе не помогают, с 6 рядом участковый и умирать нельзя">
-        <div class="lbl"><span id="nrep">Невероятность</span><b id="nval">0</b></div>
+        <div class="lbl"><span id="nrep">Молва</span><b id="nval">0</b></div>
         <div class="gbar"><i id="nfill" style="width:0%"></i><u style="left:25%"></u><u style="left:50%"></u><u style="left:75%"></u></div>
       </div>
       <button class="hbtn" id="b-world">Мир<span class="badge" id="ebadge" hidden>0</span></button>
@@ -277,7 +277,7 @@ if (window.QQM) QQM.scene("DLC-ночь"); // фоновая тема допол
 const NS='http://www.w3.org/2000/svg', L=G.LOC, hm=G.hm, KEY='obyasnenie-n1-beta', BEST='obyasnenie-n1-best';
 let S, tab='world', token=null, anim=null, shownT=null;
 const $=id=>document.getElementById(id);
-const RULES='<div class="rules"><ol><li>Ты не можешь умереть. Когда ты погибаешь, ты продолжаешь жить в мире, где тебе повезло. На то, чтобы прийти в себя, уходит 15 минут. Время назад не отматывается.</li><li>Ты помнишь, как умер. Люди вокруг видели только, как тебе повезло.</li><li>Везение случается в ту же секунду, когда ты погибаешь, и всегда там, куда ты не смотрел.</li><li>Какое будет везение, зависит от того, что уже есть в мире. Если заранее что-то поменять, та же смерть закончится по-другому.</li><li>То, что тебя спасло, остаётся в мире насовсем. Иногда это помогает другим, иногда мешает.</li><li>Каждое чудо замечают. Невероятность растёт, и люди меняются. С 2 про тебя говорят, и любой разговор или просьба занимают на 5 минут больше. С 4 тебе перестают помогать: сторож, грузчики, Гоша и медсестра откажут. С 6 приходит участковый, полчаса расспрашивает и потом не отходит от тебя, при нём умирать нельзя.</li><li>Если кто-то умер не по твоей воле, это навсегда.</li><li>Чтобы пойти куда-то, нажми на место на карте. Цифра рядом показывает, сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
+const RULES='<div class="rules"><ol><li>Ты не можешь умереть. Когда ты погибаешь, ты продолжаешь жить в мире, где тебе повезло. На то, чтобы прийти в себя, уходит 15 минут. Время назад не отматывается.</li><li>Ты помнишь, как умер. Люди вокруг видели только, как тебе повезло.</li><li>Везение случается в ту же секунду, когда ты погибаешь, и всегда там, куда ты не смотрел.</li><li>Какое будет везение, зависит от того, что уже есть в мире. Если заранее что-то поменять, та же смерть закончится по-другому.</li><li>То, что тебя спасло, остаётся в мире насовсем. Иногда это помогает другим, иногда мешает.</li><li>Каждое чудо замечают. Молва растёт, и люди меняются. С 2 про тебя говорят, и любой разговор или просьба занимают на 5 минут больше. С 4 тебе перестают помогать: сторож, грузчики, Гоша и медсестра откажут. С 6 приходит участковый, полчаса расспрашивает и потом не отходит от тебя, при нём умирать нельзя.</li><li>Если кто-то умер не по твоей воле, это навсегда.</li><li>Чтобы пойти куда-то, нажми на место на карте. Цифра рядом показывает, сколько минут идти. Действия можно выбирать клавишами 1–9.</li></ol></div>';
 
 /* ---------- HUD */
 function lifeState(k){
@@ -297,7 +297,7 @@ function hud(){
   $('clock').innerHTML=hm(t)+'<small>до рассвета '+hm(Math.max(0,G.DAWN-t))+'</small>';
   const names={misha:'Витька',liza:'Ника',danya:'Даня'};
   $('lives').innerHTML=['misha','liza','danya'].map(k=>{const s=lifeState(k);return '<div class="life '+s.cls+(s.urgent?' urgent':'')+'"><img src="'+k+'.jpg" alt=""><div class="tx"><div class="nm">'+names[k]+'</div><div class="st">'+s.txt+'</div></div></div>'}).join('');
-  $('nval').textContent=S.N; $('nfill').style.width=Math.min(100,S.N/8*100)+'%'; $('nrep').textContent=['Невероятность','Про тебя говорят','Тебе не верят','Участковый рядом'][G.rep(S)];
+  $('nval').textContent=S.N; $('nfill').style.width=Math.min(100,S.N/8*100)+'%'; $('nrep').textContent=['Молва','Про тебя говорят','Тебе не верят','Участковый рядом'][G.rep(S)];
   const b=$('ebadge'); b.hidden=!S.edits.length; b.textContent=S.edits.length;
 }
 
@@ -427,8 +427,8 @@ function death(r,fresh){
   const fl=document.createElement('div');fl.className='redflash';document.body.appendChild(fl);setTimeout(()=>fl.remove(),800);
   $('ovbox').innerHTML='<div class="tc">✝ '+hm(r.at)+' · '+L[S.loc].n.toUpperCase()+'</div><div class="dead">Ты умер</div><div class="dtext">'+r.d.die+'</div>'+
     '<div class="alive">Но ты жив.</div><p class="because">Есть мир, где тебе повезло, и дальше ты живёшь в нём. Вот что там случилось.</p><p class="why">'+r.r.why+'</p><p class="mem">Как ты умер, помнишь только ты.</p>'+
-    (e?'<div class="stamp"><b class="lb">Теперь в мире</b><div class="h"><span>'+e.t+'</span><span class="c">Невероятность +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
-      :'<div class="stamp zero"><b class="lb">В мире ничего не поменялось</b><div class="h"><span>Тебя спасло то, что уже было</span><span class="c">Невероятность +0</span></div><div class="s">Ты потерял пятнадцать минут.</div></div>')+
+    (e?'<div class="stamp"><b class="lb">Теперь в мире</b><div class="h"><span>'+e.t+'</span><span class="c">Молва +'+e.c+'</span></div><div class="s">'+e.s+'</div></div>'
+      :'<div class="stamp zero"><b class="lb">В мире ничего не поменялось</b><div class="h"><span>Тебя спасло то, что уже было</span><span class="c">Молва +0</span></div><div class="s">Ты потерял пятнадцать минут.</div></div>')+
     (r.seen.length?'<div class="seen"><b>Что видели люди</b>'+r.seen.join('<br><br>')+'</div>':'')+
     '<button class="big" id="wake">Дальше · '+hm(S.t)+'</button>';
   $('ov').hidden=false; const b=$('wake'); setTimeout(()=>b.focus(),50);
@@ -445,7 +445,7 @@ function ending(){
   if(isBest)try{localStorage.setItem(BEST,JSON.stringify({score,n,N:S.N,d:S.deaths}))}catch(e){}
   $('ovbox').innerHTML='<div class="end"><div class="tc" style="color:var(--amber)">05:00 · РАССВЕТ</div><h2>'+title+'</h2></div>'+
     '<div class="endtrio">'+['misha','liza','danya'].map(k=>'<div class="'+(ok(k)?'':'dead')+'"><img src="'+k+'.jpg" alt=""><b>'+names[k]+'</b><span>'+(ok(k)?'жив'+(k==='liza'?'а':''):'погиб'+(k==='liza'?'ла':'')+' в '+hm(S[k].at))+'</span></div>').join('')+'</div>'+
-    '<div class="stats"><div><b>'+S.deaths+'</b><span>твоих смертей</span></div><div><b>'+S.N+'</b><span>невероятность</span></div><div><b>'+S.wit.length+'</b><span>свидетелей чуда</span></div></div>'+
+    '<div class="stats"><div><b>'+S.deaths+'</b><span>твоих смертей</span></div><div><b>'+S.N+'</b><span>молва</span></div><div><b>'+S.wit.length+'</b><span>свидетелей чуда</span></div></div>'+
     '<p class="verdict">'+verdict+'</p>'+(isBest?'<p class="mono" style="margin:0;color:var(--amber);font-size:12px">Новый лучший результат</p>':'')+
     '<div class="tbtns"><button class="big" id="again">Ещё одна ночь</button><button class="big ghost" id="tomenu">В меню</button></div>';
   $('ov').hidden=false;
@@ -464,7 +464,7 @@ function showTitle(){
   const t=$('title'); t.hidden=false; t.style.backgroundImage='url(map.jpg)';
   $('t-cont').hidden=!(S&&S.t>G.T0&&!S.over);
   let best=null; try{best=JSON.parse(localStorage.getItem(BEST)||'null')}catch(e){}
-  $('t-best').textContent=best?'Лучшая ночь: спасено '+best.n+' из 3 · невероятность '+best.N+' · смертей '+best.d:'';
+  $('t-best').textContent=best?'Лучшая ночь: спасено '+best.n+' из 3 · молва '+best.N+' · смертей '+best.d:'';
 }
 $('t-new').onclick=()=>{S=G.fresh();persist();$('title').hidden=true;render()};
 $('t-cont').onclick=()=>{$('title').hidden=true;render()};
