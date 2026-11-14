@@ -786,18 +786,13 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 .hs.on i { transform: scale(1.3); }
 .still.lit .hs:not(.on) i { opacity: 0; }
 
-/* подпись — музейная бирка: выносная линия, кикер моноширинным, строка курсивом */
-.still-cap { position: absolute; left: var(--cx, 50%); top: var(--cy, 50%); z-index: 4; margin: 0; pointer-events: none; width: max-content; max-width: 230px;
-  padding-left: 46px; transform: translate(0, -50%); opacity: 0; clip-path: inset(0 100% 0 0); transition: opacity .2s, clip-path .45s ease; }
-.still-cap::before { content: ""; position: absolute; left: 6px; top: 50%; width: 34px; height: 1px; background: rgba(217,164,65,.7); }
-.still-cap.left { padding-left: 0; padding-right: 46px; transform: translate(-100%, -50%); text-align: right; }
-.still-cap.left::before { left: auto; right: 6px; }
-.still-cap b { display: block; font-family: var(--mono); font-weight: 400; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; text-shadow: 0 1px 8px #000; }
-.still-cap strong { display: block; font-family: var(--caption); font-weight: 400; font-size: 21px; line-height: 1.2; color: #f4ead6; text-shadow: 0 1px 12px #000, 0 0 3px #000; }
-.still-cap strong::before { content: "→ "; color: var(--accent); }
-.still-cap span { display: block; margin-top: 3px; font-family: var(--caption); font-style: italic; font-size: 14px; line-height: 1.35; color: #d6cfc2; text-shadow: 0 1px 10px #000, 0 0 2px #000; }
-.still-cap span:empty { display: none; }
-.still.lit .still-cap { opacity: 1; clip-path: inset(0 0 0 0); }
+/* подпись: куда ведёт предмет; движок ставит её над/под предметом и не выпускает за края картины */
+.still-cap { position: absolute; left: 0; top: 0; z-index: 4; margin: 0; pointer-events: none; white-space: nowrap;
+  padding: 6px 12px; border-radius: 3px; background: rgba(10,9,8,.78); border-left: 2px solid var(--accent); backdrop-filter: blur(4px);
+  font-family: var(--caption); font-size: 17px; line-height: 1.2; color: #f4ead6; opacity: 0; transition: opacity .25s ease; }
+.still-cap::before { content: "→ "; color: var(--accent); }
+.still.lit .still-cap.show { opacity: 1; }
+@media (hover: none) { .still-cap { display: none; } }
 
 /* заголовок: «кто остался» и его бледные копии из соседних миров */
 #title h1 { font-weight: 700; letter-spacing: -.025em; line-height: .92; text-shadow: 0 2px 24px rgba(0,0,0,.6); }
@@ -866,7 +861,6 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
   #title .title-head .hook { font-size: 17px; line-height: 1.45; margin: 0; }
   #title .title-head .sub { display: none; }
   #title .main-cta .cta-l { font-size: 22px; }
-  .still-cap { max-width: 170px; } .still-cap span { display: none; } .still-cap strong { font-size: 18px; }
   #title .mitem.flash { background: linear-gradient(90deg, rgba(217,164,65,.22), transparent 85%); }
 }
 @media (min-width: 680px) and (max-width: 899px), (min-width: 680px) and (orientation: portrait) {

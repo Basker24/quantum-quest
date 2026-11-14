@@ -2151,7 +2151,7 @@
     setTimeout(() => { leaving = false; go(); t.classList.remove("leaving"); }, 520);
   }
   (function initStill() {
-    const still = $("#still"), frame = $("#still-frame");
+    const still = $("#still"), frame = $("#still-frame"), cap = $("#still-cap");
     if (!still) return;
     const hs = [...still.querySelectorAll(".hs")];
     let cur = null, idleT = null;
@@ -2163,6 +2163,14 @@
       const x = hr.left - fr.left + hr.width / 2, y = hr.top - fr.top + hr.height / 2, fw = frame.clientWidth, fh = frame.clientHeight;
       frame.style.setProperty("--sx", x + "px"); frame.style.setProperty("--sy", y + "px");
       frame.style.setProperty("--sr", Math.round(Math.max(44, Math.max(hr.width, hr.height) * 0.5)) + "px"); // луч — по размеру предмета
+      if (cap) { // подпись: над предметом, если влезает, иначе под ним; по горизонтали — в пределах картины
+        cap.textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent.trim();
+        const cw = cap.offsetWidth, ch = cap.offsetHeight, pad = 10;
+        let cy = hr.top - fr.top - ch - 8; if (cy < pad) cy = hr.bottom - fr.top + 8;
+        cy = Math.max(pad, Math.min(fh - ch - pad, cy));
+        const cx = Math.max(pad, Math.min(fw - cw - pad, x - cw / 2));
+        cap.style.left = cx + "px"; cap.style.top = cy + "px"; cap.classList.add("show");
+      }
       still.classList.add("lit");
       hs.forEach((x) => x.classList.toggle("on", x === h));
       document.querySelectorAll("#title [data-thing]").forEach((b) => b.classList.toggle("on", b.id === bid));
