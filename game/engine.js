@@ -2151,7 +2151,7 @@
     setTimeout(() => { leaving = false; go(); t.classList.remove("leaving"); }, 520);
   }
   (function initStill() {
-    const still = $("#still"), frame = $("#still-frame"), cap = $("#still-cap");
+    const still = $("#still"), frame = $("#still-frame");
     if (!still) return;
     const hs = [...still.querySelectorAll(".hs")];
     let cur = null, idleT = null;
@@ -2163,14 +2163,6 @@
       const x = hr.left - fr.left + hr.width / 2, y = hr.top - fr.top + hr.height / 2, fw = frame.clientWidth, fh = frame.clientHeight;
       frame.style.setProperty("--sx", x + "px"); frame.style.setProperty("--sy", y + "px");
       frame.style.setProperty("--sr", Math.round(Math.max(44, Math.max(hr.width, hr.height) * 0.5)) + "px"); // луч — по размеру предмета
-      const left = x > fw * 0.55; // бирка уходит туда, где больше места
-      cap.classList.toggle("left", left);
-      frame.style.setProperty("--cx", (left ? x - hr.width / 2 : x + hr.width / 2) + "px"); frame.style.setProperty("--cy", Math.max(40, Math.min(fh - 40, y)) + "px");
-      cap.querySelector("b").textContent = btn.dataset.thing || ""; // предмет
-      cap.querySelector("strong").textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent; // куда ведёт
-      const sub = btn.querySelector(".m-s, small");
-      cap.querySelector("span").textContent = sub ? sub.textContent : "";
-      cap.classList.remove("left-anim"); void cap.offsetWidth; // заново «дописать» бирку
       still.classList.add("lit");
       hs.forEach((x) => x.classList.toggle("on", x === h));
       document.querySelectorAll("#title [data-thing]").forEach((b) => b.classList.toggle("on", b.id === bid));
@@ -2186,14 +2178,10 @@
     for (const h of hs) {
       h.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(h.dataset.btn); });
       h.addEventListener("pointerleave", (e) => { if (!mouse(e)) return; idleT = setTimeout(dark, 250); });
-      h.addEventListener("click", (e) => {
+      h.addEventListener("click", (e) => { // предмет — та же кнопка, что и пункт меню
         e.stopPropagation();
-        const btn = document.getElementById(h.dataset.btn); if (!btn || btn.hidden) return;
-        if (e.pointerType === "mouse") return btn.click(); // мышь: предмет — та же кнопка
-        // касание: зажечь предмет и показать его пункт в меню (а открыть — тапом по пункту)
-        light(h.dataset.btn);
-        btn.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" });
-        btn.classList.add("flash"); setTimeout(() => btn.classList.remove("flash"), 1300);
+        const btn = document.getElementById(h.dataset.btn);
+        if (btn && !btn.hidden) btn.click();
       });
     }
     frame.addEventListener("click", () => dark());
