@@ -33,7 +33,7 @@ const fins = ids.filter((i) => G.scenes[i].stage === "final").sort(ord);
 const F = fins.filter((i) => i.startsWith("Ф")).map((i) => ["r", i, G.scenes[i].title + (NOTE[i] ? " · " + NOTE[i] : "")]);
 F.push(["r", "Ф7", "Наследство · кода В7"]);
 // чья это жизнь: тупики входят из якоря, поэтому ветвь задана явно (по старой схеме); новые — по сцене-родителю
-const DEADEND = { "⊣К-01": "В1.2", "⊣К-02": "В1", "⊣К-03": "В2.1", "⊣К-04": "В3", "⊣К-06": "В4", "⊣К-07": "В5", "⊣К-08": "В6", "⊣К-10": "В7", "⊣К-11": "В7", "⊣К-12": "дрейф ≥ 90", "⊣К-13": "после якоря, П1", "⊣К-14": "после якоря, П2" };
+const DEADEND = { "⊣К-01": "В1.2", "⊣К-02": "В1", "⊣К-03": "В2.1", "⊣К-04": "В3", "⊣К-06": "В4", "⊣К-07": "В5", "⊣К-08": "В6", "⊣К-10": "В7", "⊣К-11": "В7", "⊣К-12": "дрейф ≥ 90", "⊣К-13": "после якоря, П1", "⊣К-14": "после якоря, П2", "⊣К-15": "В7, «Разведка»" };
 for (const i of fins.filter((i) => i.startsWith("⊣"))) { const p = DEADEND[i] || parentBranch(i) || "якорь"; F.push(["rk", i, G.scenes[i].title + " · " + p]); }
 const put = (name, val) => { const g = grab(name); html = html.slice(0, g.i) + `const ${name}=${JSON.stringify(val)};` + html.slice(g.j); };
 put("trunk", trunk); put("B", B); put("F", F);
