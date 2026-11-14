@@ -318,6 +318,8 @@ def parse_choices(section, cfg, sid):
             if not m:
                 raise QQError(f"{sid}/{ch['id']}: «cost: N» — число секунд")
             ch["cost"] = int(m.group(1))
+        elif s.startswith("hint:"):
+            ch["hint"] = s[5:].strip()  # подпись под вариантом: во что игрок идёт (жанр и вопрос жизни), без спойлеров
         elif s.startswith("locked:"):
             ch["locked"] = s[7:].strip()  # подсказка у закрытого варианта вместо автоматической причины
         elif s.startswith("tags:"):

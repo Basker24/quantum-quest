@@ -771,7 +771,7 @@
       const b = document.createElement("button");
       b.className = "choice";
       b.style.setProperty("--i", i);
-      b.innerHTML = `<span class="num mono">${LETTERS[i] || i + 1}</span><span class="lbl">${md(c.label)}</span>`;
+      b.innerHTML = `<span class="num mono">${LETTERS[i] || i + 1}</span><span class="lbl">${md(c.label)}</span>${c.hint ? `<small class="hint">${esc(c.hint)}</small>` : ""}`;
       if (ghost && ghost === c.id && top && top.scene === S.scene) {
         b.classList.add("ghosted");
         b.insertAdjacentHTML("beforeend", `<small>в другом мире я выбрал это</small>`);
@@ -815,7 +815,7 @@
       if (!wip && (!c.visible || ok(c.visible, st) || /seen|one_life/.test(JSON.stringify(c.visible)))) continue;
       const b = document.createElement("button");
       b.className = "choice locked" + (wip ? " wip" : ""); b.disabled = true;
-      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : c.locked || lockReason(c.visible, st))}</small>`;
+      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : c.locked || lockReason(c.visible, st))}</small>${c.hint ? `<small class="hint">${esc(c.hint)}</small>` : ""}`;
       nav.append(b);
     }
     compactChoices(nav);
