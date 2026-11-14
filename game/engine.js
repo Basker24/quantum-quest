@@ -898,8 +898,7 @@
       g.font = `28px ${mono}`; g.fillStyle = "#b2463a"; g.fillText("В ТОМ МИРЕ", W / 2, y); y += 54;
       y = wrap(d.mourner, W / 2, y, W - 260, 46, `34px ${serif}`, "#c9c2b5");
     }
-    g.font = `44px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText(C.title || "Тот, кто остался", W / 2, H - 230);
-    wrap("Каждый раз, когда я умираю, я снова стою за минуту до смерти и помню её.", W / 2, H - 175, W - 260, 38, `28px ${serif}`, "#8d877c");
+    g.font = `44px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText(C.title || "Тот, кто остался", W / 2, H - 190);
     g.font = `26px ${mono}`; g.fillStyle = "#6f8aa0"; g.fillText((C.share_url || "").replace(/^https?:\/\//, ""), W / 2, H - 95);
     return cv;
   }
