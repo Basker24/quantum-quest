@@ -31,7 +31,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .title-art { aspect-ratio: 2 / 3; background-image: url("img/promo_menu_main_portrait.jpg"); } }
 .band { width: 100%; aspect-ratio: 21 / 9; border-radius: 10px; margin-bottom: 14px;
   background-size: cover; background-position: center 35%; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
-.band-two-times { background-image: url("img/promo_menu_two_times.jpg"); }
+.band-two-times { background-image: url("img/promo_menu_two_times.jpg"); aspect-ratio: 3 / 2; background-position: center; } /* «Два времени»: оба мира целиком — дети 1996-го и старцы у заводи 2061-го */
 .band-night { background-image: url("img/promo_menu_night.jpg"); }
 
 
