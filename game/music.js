@@ -77,7 +77,7 @@ window.QQM = (function () {
 
   // титульный экран и меню
   function screen(screenId) {
-    if (screenId === "#title") { lastScene = null; if (!muted) switchTo(TITLE); }
+    if (screenId === "#title" || screenId === "#intro") { lastScene = null; if (!muted) switchTo(TITLE); }
   }
 
   function switchTo(file) {

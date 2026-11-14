@@ -22,6 +22,7 @@
   meta.vlife = meta.vlife || {};
   for (const id of Object.keys(meta.visited || {})) if (!(id in meta.vlife)) meta.vlife[id] = 0;
   let guideOn = null; // финал, чей путь подсвечен на схеме
+  let guideCut = null; // начатая дорога: подсвечивать только первые N шагов (дальше — туман)
   const saveMeta = () => store.set(META, meta);
   let S = null; // текущая жизнь
 
@@ -311,13 +312,13 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
     $("#bar").hidden = id !== "#scene";
     document.body.dataset.screen = id.slice(1);
-    bgMode(id === "#title" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
+    bgMode(id === "#title" || id === "#intro" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
     snd.screen(id);
     if (window.QQM) { QQM.setMuted(!snd.on()); QQM.screen(id); } // меню-тема на титуле; сначала узнать, включён ли звук
     window.scrollTo(0, 0);
@@ -707,7 +708,7 @@
       j.className = "choice ghost-choice"; j.textContent = "Открыть Хор";
       j.onclick = () => openPanel("#journal");
       const f = document.createElement("button");
-      f.className = "choice ghost-choice"; f.textContent = "Открыть схему";
+      f.className = "choice ghost-choice"; f.textContent = "Открыть «Мою жизнь»";
       f.onclick = () => openPanel("#flow");
       const b = document.createElement("button");
       b.className = "choice"; b.textContent = "Новая жизнь";
@@ -1238,38 +1239,59 @@
   }
 
   // ---------- путеводитель: три ступени подсказок к каждому финалу
+  // «Пути»: только финалы, где я был, и те, к которым идёт эта жизнь — шаги ровно до сегодняшней сцены
+  function guideProgress(g) {
+    if (!S || !g.found) return null;
+    const tr = (S.trail || []).filter((t) => !String(t.scene).startsWith("✝"));
+    if (![...tr.map((t) => t.scene), S.scene].some((id) => !id.startsWith("Т-"))) return null; // пока я в стволе, дорога ни к чему не выбрана
+    const nd = g.steps.filter((x) => x.choice && !x.death); // шаги дороги без «умереть и вернуться»
+    if (tr.length >= nd.length) return null;
+    for (let i = 0; i < tr.length; i++) if (tr[i].scene !== nd[i].scene || tr[i].choice !== nd[i].choice) return null; // свернул с этой дороги
+    if (nd[tr.length].scene !== S.scene) return null;
+    return tr.length; // столько моих выборов совпало с дорогой; дальше — не прожито
+  }
   function renderGuide() {
     const list = $("#guide-list"); list.innerHTML = "";
     const gs = G.guides || {};
+    meta.guideFold = meta.guideFold || {};
     let n = 0;
     for (const [fid, g] of Object.entries(gs)) {
-      n++;
       const done = !!meta.visited[fid];
       const locked = g.secret && !done && !(g.gate && meta.visited[g.gate]);
-      const lvl = meta.guide[fid] || 0;
+      const cut = done || devOn ? null : guideProgress(g);
+      if (!done && !devOn && (cut == null || locked)) continue; // чужие и непрожитые дороги не показываю
+      n++;
+      const going = cut != null;
+      const max = going ? 2 : 3; // начатая дорога: подсказка и путь до сегодня, без будущих развилок
+      const lvl = Math.min(meta.guide[fid] || 0, max), fold = !!meta.guideFold[fid];
       const card = document.createElement("div");
-      card.className = "gcard" + (done ? " done" : "") + (locked ? " locked" : "");
-      let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${locked ? "Секрет" : esc(g.title)}</b><span class="mono dim">${locked ? "????" : esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : ""}</div>`;
-      if (locked) h += `<p class="dim tiny">Это утро откроется, когда ты хотя бы раз дойдёшь до тальника у заводи.</p>`;
-      else {
+      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "");
+      let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${esc(g.title)}</b><span class="mono dim">${esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : `<span class="gdone gnow mono">иду сюда</span>`}</div>`;
+      const steps = g.steps.filter((x) => x.choice);
+      const shown = going ? g.steps.filter((x) => x.choice && !x.death).slice(0, cut) : steps; // начатая: ровно мои выборы
+      const stepList = (arr) => `<ol class="gsteps">${arr.map((x) => `<li${x.death ? ' class="gdeath"' : ""}><span class="mono dim">${esc(x.year)}</span> ${esc(x.title)} → «${esc(x.label)}»${x.death ? " <i>умереть и вернуться</i>" : ""}</li>`).join("")}</ol>`;
+      if (!fold) {
         if (lvl >= 1) h += `<p class="ghint">${md(g.hint)}</p>`;
-        if (lvl >= 2) h += `<ul class="gforks">${g.forks.map((f) => `<li>${md(f)}</li>`).join("")}</ul>`;
-        if (lvl >= 3) h += `<ol class="gsteps">${g.steps.filter((s) => s.choice).map((s) => `<li${s.death ? ' class="gdeath"' : ""}><span class="mono dim">${esc(s.year)}</span> ${esc(s.title)} → «${esc(s.label)}»${s.death ? " <i>умереть и вернуться</i>" : ""}</li>`).join("")}</ol>`;
-        if (!g.found) h += `<p class="dim tiny">Дорога сюда пока не построена.</p>`;
-        const labels = ["Подсказка: каким стать", "Главные развилки", "Весь путь"];
-        h += `<div class="gbtns">`;
-        if (lvl < 3 && g.found) h += `<button class="choice ghost-choice gmore">${labels[lvl]}</button>`;
-        if (lvl >= 3) h += `<button class="choice ghost-choice gflow">Показать на схеме</button>`;
-        h += `</div>`;
+        if (!going && lvl >= 2) h += `<ul class="gforks">${g.forks.map((f) => `<li>${md(f)}</li>`).join("")}</ul>`;
+        if (going && lvl >= 2) h += (shown.length ? stepList(shown) : "") + `<p class="dim tiny">…и я здесь: ${esc((G.scenes[S.scene] && G.scenes[S.scene].title) || S.scene)}. Дальше — не прожито.</p>`;
+        if (!going && lvl >= 3) h += stepList(steps);
       }
+      const labels = going ? ["Подсказка: каким стать", "Путь до сегодня"] : ["Подсказка: каким стать", "Главные развилки", "Весь путь"];
+      h += `<div class="gbtns">`;
+      if (!fold && lvl < max) h += `<button class="choice ghost-choice gmore">${labels[lvl]}</button>`;
+      if (lvl >= 1) h += `<button class="choice ghost-choice gfold">${fold ? "Развернуть" : "Свернуть"}</button>`;
+      if (!fold && lvl >= max) h += `<button class="choice ghost-choice gflow">Показать в «Моей жизни»</button>`;
+      h += `</div>`;
       card.innerHTML = h;
       const more = card.querySelector(".gmore");
       if (more) more.onclick = () => { meta.guide[fid] = lvl + 1; saveMeta(); renderGuide(); };
+      const fb = card.querySelector(".gfold");
+      if (fb) fb.onclick = () => { meta.guideFold[fid] = !fold; saveMeta(); renderGuide(); };
       const fl = card.querySelector(".gflow");
-      if (fl) fl.onclick = () => { guideOn = fid; openPanel("#flow"); };
+      if (fl) fl.onclick = () => { guideOn = fid; guideCut = going ? cut : null; openPanel("#flow"); };
       list.append(card);
     }
-    if (!n) list.innerHTML = `<p class="dim">Путеводитель пока пуст.</p>`;
+    if (!n) list.innerHTML = `<p class="dim">Пока ни одной дороги. Проживи — и она появится здесь: финал, до которого дошёл, или тот, к которому идёшь.</p>`;
   }
   function closePanel() { if ((back === "#scene" || back === "#death") && S) show(back); else showTitle(); }
 
@@ -1545,8 +1567,22 @@
     }
     const now = performance.now() / 1000, ph = (dur) => (-(now % dur)).toFixed(1);
     const periods = [61, 83.7, 107.3];
-    return `<g class="fog-bank-g" style="animation-delay:${ph(173)}s">${bank}</g>` +
-      g.map((s, i) => `<g class="fog-g f${i}" style="animation-delay:${ph(periods[i])}s">${s}</g>`).join("") + wisps;
+    // слои отдаются как отдельные картинки (см. fogHtml): анимация <g> внутри SVG в Chrome
+    // перерисовывает весь холст каждый кадр — на большой схеме это мигало
+    return [{ cls: "fog-bank-g", delay: ph(173), svg: bank }]
+      .concat(g.map((sv, i) => ({ cls: "fog-g f" + i, delay: ph(periods[i]), svg: sv + (i === 0 ? wisps : "") })));
+  }
+  let fogUrls = [];
+  function fogHtml(L, layers, defs) {
+    for (const u of fogUrls) URL.revokeObjectURL(u);
+    fogUrls = [];
+    const imgs = layers.map((ly) => {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${L.width}" height="${L.height}" viewBox="0 0 ${L.width} ${L.height}">${defs}<style>.rim{fill:url(#fogrim)}.fbank{fill:url(#fogbank)}</style>${ly.svg}</svg>`;
+      const u = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+      fogUrls.push(u);
+      return `<img class="fog-img ${ly.cls}" style="animation-delay:${ly.delay}s" src="${u}" alt="" draggable="false">`;
+    }).join("");
+    return `<div class="fog-html" aria-hidden="true">${imgs}</div>`;
   }
 
   function renderFlow() {
@@ -1554,12 +1590,14 @@
     const visited = meta.visited, taken = meta.taken, shown = meta.shown;
     const life = new Set(S ? [...S.stack.map((s) => s.scene), S.scene] : []);
     const gp = guideOn && G.guides && G.guides[guideOn];
-    const gScenes = new Set(gp ? [...gp.steps.map((s) => s.scene), guideOn] : []);
-    const gChoice = {}; if (gp) for (const s of gp.steps) if (s.choice && !s.death) gChoice[s.scene] = s.choice;
+    const gNd = gp ? gp.steps.filter((x) => x.choice && !x.death) : [];
+    const gSteps = gp ? (guideCut != null ? gNd.slice(0, guideCut + 1) : gp.steps) : []; // начатая дорога: мои выборы и сцена, где я стою
+    const gScenes = new Set(gp ? [...gSteps.map((s) => s.scene), ...(guideCut != null ? [] : [guideOn])] : []);
+    const gChoice = {}; if (gp) for (const s of gSteps.slice(0, guideCut != null ? guideCut : undefined)) if (s.choice && !s.death) gChoice[s.scene] = s.choice;
     const open = (id) => devOn || visited[id] || gScenes.has(id);
     const secretLocked = (id) => { const g = G.guides && G.guides[id]; return g && g.secret && !visited[id] && !(g.gate && visited[g.gate]); };
     const laneOpen = {}; for (const id of Object.keys(visited)) laneOpen[laneOf(id)] = true;
-    let edges = "", nodes = "", deaths = "", fog = "", lanes = "", axis = "";
+    let edges = "", nodes = "", deaths = "", fog = null, lanes = "", axis = "";
     // фон дорожек и подписи
     LANES.forEach(([l, name], i) => {
       const x = L.colX(i) - 12, nowLane = S && laneOf(S.scene) === l;
@@ -1647,13 +1685,13 @@
       `<radialGradient id="fogrim"><stop offset="0" stop-color="#d5e4f4" stop-opacity=".11"/><stop offset=".6" stop-color="#b9cfe6" stop-opacity=".055"/><stop offset="1" stop-color="#a9c2dc" stop-opacity="0"/></radialGradient>` +
       `<radialGradient id="fogbank"><stop offset="0" stop-color="#5f7896" stop-opacity=".13"/><stop offset=".7" stop-color="#51698a" stop-opacity=".06"/><stop offset="1" stop-color="#49607e" stop-opacity="0"/></radialGradient>` +
       `</defs>`;
-    $("#flow-canvas").innerHTML = `<svg width="${L.width * flowZoom}" height="${L.height * flowZoom}" viewBox="0 0 ${L.width} ${L.height}" role="img" aria-label="Схема всех развилок">${defs}<g class="lanes">${lanes}</g><g class="axis">${axis}</g><g class="edges">${edges}</g><g class="deaths">${deaths}</g><g class="nodes">${nodes}</g><g class="fog-layer">${fog}</g></svg>`;
+    $("#flow-canvas").innerHTML = `<svg width="${L.width * flowZoom}" height="${L.height * flowZoom}" viewBox="0 0 ${L.width} ${L.height}" role="img" aria-label="Моя жизнь: схема всех развилок">${defs}<g class="lanes">${lanes}</g><g class="axis">${axis}</g><g class="edges">${edges}</g><g class="deaths">${deaths}</g><g class="nodes">${nodes}</g></svg>${fog ? fogHtml(L, fog, defs) : ""}`;
     flowSize = { w: L.width, h: L.height };
     const lanesOpen = LANES.filter(([l]) => laneOpen[l]).length;
     $("#flow-count").textContent = `${progressLine()} · развилок: ${opened} из ${total} · дорожек открыто: ${lanesOpen} из ${LANES.length}`;
     const fg = $("#flow-guide");
     fg.hidden = !gp;
-    if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; renderFlow(); }; }
+    if (gp) { fg.innerHTML = `Подсвечен путь к «${esc(gp.title)}». <button class="link" id="btn-guide-off">убрать</button>`; $("#btn-guide-off").onclick = () => { guideOn = null; guideCut = null; renderFlow(); }; }
     $("#flow-card").hidden = true;
     // мини-карта: вся игра точками, рамка — что сейчас на экране
     const mk = (flowMiniK = Math.min(96 / L.width, 230 / L.height));
@@ -2052,7 +2090,7 @@
     if (!savedLife() || newArmed) { disarmNew(); return newLife(); }
     $("#btn-new").classList.add("armed");
     $("#btn-new .cta-l").textContent = "Начать заново?";
-    $("#new-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и схема останутся";
+    $("#new-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и «Моя жизнь» останутся";
     newArmed = setTimeout(disarmNew, 5000);
   };
   // «Одна жизнь»: новая игра без отката; при живом сохранении — тоже второе нажатие
@@ -2060,11 +2098,11 @@
     if (!savedLife() || oneArmed) { disarmNew(); return newLife(true); }
     $("#btn-one").classList.add("armed");
     $("#btn-one .cta-l").textContent = "Начать одну жизнь?";
-    $("#one-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и схема останутся";
+    $("#one-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и «Моя жизнь» останутся";
     oneArmed = setTimeout(disarmNew, 5000);
   };
   $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } };
-  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
+  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
   $("#btn-dlc").onclick = () => { location.href = "obyasnenie/obyasnenie.html"; };
@@ -2112,5 +2150,29 @@
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
-  showTitle();
+  // вступление: теория и крючок до меню, каждый запуск (тесты и режим автора — сразу в меню)
+  function showIntro() {
+    const n = document.querySelectorAll("#intro .islide").length;
+    let k = 0;
+    const seen = !!meta.introSeen;
+    $("#intro-skip").hidden = !seen;
+    const go = (i) => {
+      k = i;
+      document.querySelectorAll("#intro .islide").forEach((el) => (el.hidden = +el.dataset.k !== k));
+      document.querySelectorAll("#intro .idots i").forEach((el, j) => el.classList.toggle("on", j === k));
+      document.body.classList.toggle("itext", k > 0); // на текстовых слайдах фон-картинка приглушена, чтобы не лезла под буквы
+      $("#intro-next .cta-l").textContent = k === 0 ? "Начать" : k === n - 1 ? "В меню" : "Дальше";
+      window.scrollTo(0, 0);
+    };
+    const done = () => { document.body.classList.remove("itext"); meta.introSeen = true; saveMeta(); document.removeEventListener("keydown", key); showTitle(); };
+    const next = () => { if (k === 0 && window.QQM) QQM.setMuted(!snd.on()); if (k < n - 1) go(k + 1); else done(); }; // первый тап — жест: браузер разрешает музыку
+    const key = (e) => { if ($("#intro").hidden) return; if (e.key === "Enter" || e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); } else if (e.key === "ArrowLeft" && k > 0) go(k - 1); else if (e.key === "Escape" && seen) done(); };
+    $("#intro-next").onclick = next;
+    $("#intro-skip").onclick = done;
+    document.addEventListener("keydown", key);
+    show("#intro");
+    go(0);
+  }
+  $("#btn-intro-again").onclick = () => showIntro();
+  if (/[?&](debug|dev|nointro)\b/.test(location.search)) showTitle(); else showIntro();
 })();
