@@ -919,3 +919,15 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 }
 #title .set-btn.wipe { color: #b2685a; }
 #title .set-btn.wipe:hover { color: #e08070; }
+
+/* «Я»: подсказка к характеристике — все ступени, кратко что это и на что влияет */
+#me-list .row.stat { position: relative; cursor: help; flex-wrap: wrap; }
+#me-list .row.stat b { border-bottom: 1px dotted rgba(233,228,218,.3); }
+#me-list .stat-tip { display: none; flex-basis: 100%; margin: 8px 0 2px; padding: 10px 12px; border-left: 2px solid var(--accent);
+  background: rgba(217,164,65,.06); border-radius: 3px; font-size: 14px; line-height: 1.45; }
+#me-list .stat-tip p { margin: 0 0 6px; } #me-list .stat-tip p:last-child { margin: 0; }
+#me-list .st-tiers { font-size: 12px; color: var(--dim); }
+#me-list .st-tiers i { font-style: normal; opacity: .5; margin: 0 5px; }
+#me-list .st-tiers .on { color: var(--accent); }
+#me-list .row.stat.open .stat-tip { display: block; }
+@media (hover: hover) { #me-list .row.stat:hover .stat-tip, #me-list .row.stat:focus-visible .stat-tip { display: block; } }

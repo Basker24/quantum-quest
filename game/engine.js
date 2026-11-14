@@ -1381,9 +1381,13 @@
     // Я
     const me = $("#me-list"); me.innerHTML = "";
     if (S) for (const [k, v] of Object.entries(C.vars)) {
-      if (v.hidden) continue;
-      me.insertAdjacentHTML("beforeend", `<div class="row"><span>${esc(v.name)}</span><b>${esc(tier(k, S.st[k]))}</b></div>`);
+      if (v.hidden && !v.show) continue;
+      const cur = tier(k, S.st[k]);
+      const tiers = (v.tiers || []).map(([, t]) => `<span class="${t === cur ? "on" : ""}">${esc(t)}</span>`).join("<i>›</i>");
+      me.insertAdjacentHTML("beforeend", `<div class="row stat" tabindex="0"><span>${esc(v.name)}</span><b>${esc(cur)}</b>
+        <div class="stat-tip" role="tooltip">${tiers ? `<p class="st-tiers mono">${tiers}</p>` : ""}${v.desc ? `<p>${esc(v.desc)}</p>` : ""}${v.affects ? `<p class="dim">Влияет: ${esc(v.affects)}.</p>` : ""}</div></div>`);
     }
+    me.querySelectorAll(".row.stat").forEach((r) => (r.onclick = () => { const was = r.classList.contains("open"); me.querySelectorAll(".row.stat.open").forEach((x) => x.classList.remove("open")); r.classList.toggle("open", !was); }));
     if (S) {
       // «Что со мной было»: поднятые флаги словами героя
       const items = [];
