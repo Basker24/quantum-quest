@@ -518,7 +518,7 @@
       const cls = [b.drift ? "drift" : "", b.kind || "", talk ? "talk" : ""];
       if (first && !b.kind && !talk) { cls.push("first"); first = false; }
       let tag = echoTag(b.if);
-      if (b.drift) tag = "≈ в другом мире всё было не так" + (tag ? " · " + tag : ""); // сдвиг мира от ДРЕЙФа (I4)
+      if (b.drift || b.fate) tag = "≈ в другом мире всё было не так" + (tag ? " · " + tag : ""); // сдвиг мира от ДРЕЙФа (I4)
       blocks.push({ md: b.md, cls: cls.join(" ").trim(), tag: tag !== lastTag ? tag : "", key: bkey(b.md) });
       lastTag = tag;
     }
