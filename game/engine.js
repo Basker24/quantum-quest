@@ -501,14 +501,14 @@
     const put = (html) => { if (S && S.scene === sid && !$("#scene").hidden) $("#text").insertAdjacentHTML("afterbegin", `<p class="stat-line mono">${html}</p>`); };
     if (sf) QS.split(sf.scene).then((r) => { // «так же выбрали 64%»
       if (!r) return; const all = Object.values(r).reduce((a, b) => a + b, 0), mine = r[sf.scene + "/" + sf.cid] || 0;
-      if (all >= 10 && mine) put(`в первый раз так же выбрали ${pct(mine, all)}% игроков`);
+      if (all >= 10 && mine) put(`в первый раз так же выбрали ${pct(mine, all)}% игроков${devOn ? ` · ${mine} из ${all}` : ""}`);
     });
     if (sc.stage === "final") {
       const deaths = Object.values(meta.journal || {}).reduce((a, j) => a + (j.times || 0), 0);
       QS.final(sid, meta.lives || 0, deaths);
       QS.finalStats(sid).then((r) => {
         if (!r || !r.total || r.total < 5 || !r.n) return;
-        put(`сюда дошли ${pct(r.n, r.total)}% игроков${r.lives ? ` · в среднем за ${r.lives} ${plural(Math.round(r.lives), "жизнь", "жизни", "жизней")} и ${r.deaths} ${plural(+r.deaths, "смерть", "смерти", "смертей")}` : ""}`);
+        put(`сюда дошли ${pct(r.n, r.total)}% игроков${devOn ? ` (${r.n} из ${r.total})` : ""}${r.lives ? ` · в среднем за ${r.lives} ${plural(Math.round(r.lives), "жизнь", "жизни", "жизней")} и ${r.deaths} ${plural(+r.deaths, "смерть", "смерти", "смертей")}` : ""}`);
       });
     }
   }
@@ -1023,7 +1023,7 @@
         const n = r && r.n && r.n[did], t = r && r.total; if (!n || !t || t < 5) return;
         const share = art.querySelector(".tomb-share"); if (!share) return;
         const rare = n / t < 0.05;
-        share.insertAdjacentHTML("beforebegin", `<p class="tomb-stat mono">эту смерть получили ${fmtN(n)} из ${fmtN(t)} ${plural(t, "игрока", "игроков", "игроков")}${rare ? " · <b>редкая</b>" : ""}</p>`);
+        share.insertAdjacentHTML("beforebegin", `<p class="tomb-stat mono">эту смерть получили ${pct(n, t)}% игроков${rare ? " · <b>редкая</b>" : ""}${devOn ? ` · ${fmtN(n)} из ${fmtN(t)}` : ""}</p>`); // числа — только автору
       });
       // одна тихая строка поддержки — один раз за всю игру, после первого надгробия
       if (firstEver) {
@@ -1419,10 +1419,10 @@
       Promise.all([QS.chorus(), mine.length ? QS.counts("death", mine) : null]).then(([ch, cn]) => {
         const box = $("#chorus-all"); if (!box) return;
         let h = "";
-        if (ch && ch.deaths && ch.players >= 5) h += `<p>Общий Хор: все игроки вместе умерли ${fmtN(ch.deaths)} ${plural(ch.deaths, "раз", "раза", "раз")}.</p>`;
+        if (ch && ch.deaths && ch.players >= 5) { const avg = Math.round(ch.deaths / ch.players); h += `<p>Общий Хор: в среднем каждый из нас умирал ${avg} ${plural(avg, "раз", "раза", "раз")}.${devOn ? ` <span class="mono">(${fmtN(ch.deaths)} смертей, ${fmtN(ch.players)} игроков)</span>` : ""}</p>`; }
         if (cn && cn.total >= 5 && cn.n) {
           const [rid, rn] = mine.map((id) => [id, cn.n[id] || 0]).filter(([, n]) => n).sort((a, b) => a[1] - b[1])[0] || [];
-          if (rid) h += `<p>Моя самая редкая смерть: ✝ ${esc(G.deaths[rid].title || rid)}, ${esc(yearOf(G.deaths[rid].date) || "")} — её нашли ${pct(rn, cn.total)}% игроков.</p>`;
+          if (rid) h += `<p>Моя самая редкая смерть: ✝ ${esc(G.deaths[rid].title || rid)}, ${esc(yearOf(G.deaths[rid].date) || "")} — её нашли ${pct(rn, cn.total)}% игроков${devOn ? ` (${rn} из ${cn.total})` : ""}.</p>`;
         }
         box.innerHTML = h; box.hidden = !h;
       });
