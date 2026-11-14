@@ -340,7 +340,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -2354,5 +2354,14 @@
     document.body.classList.add("itext"); // фон-картинка приглушена, чтобы не лезла под буквы
   }
   $("#btn-intro-again").onclick = () => showIntro();
-  if (/[?&](debug|dev|nointro)\b/.test(location.search)) showTitle(); else showIntro();
+  // самый первый запуск: сначала просьба о статистике, потом вступление
+  function askStats(next) {
+    if (!(C.metrika_id || C.stats_url) || meta.analytics != null) return next();
+    show("#askstats");
+    document.body.classList.add("itext");
+    const done = (on) => { setAnalytics(on); next(); };
+    $("#ask-yes").onclick = () => done(true);
+    $("#ask-no").onclick = () => done(false);
+  }
+  if (/[?&](debug|dev|nointro)\b/.test(location.search)) showTitle(); else askStats(showIntro);
 })();
