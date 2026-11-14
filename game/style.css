@@ -917,3 +917,5 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
   .cta-float .mono { color: var(--accent); font-size: 18px; }
   .cta-float.off { opacity: 0; transform: translateY(12px); pointer-events: none; }
 }
+#title .set-btn.wipe { color: #b2685a; }
+#title .set-btn.wipe:hover { color: #e08070; }

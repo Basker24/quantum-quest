@@ -229,7 +229,7 @@
         }
       },
       // «холодок»: очень тихий низкий тон + при ДАРе 60+ хор-шёпоты (qqm_chill через QQM)
-      cold() { if (!live()) return; tone(98, { a: 0.5, d: 1.6, g: 0.05 }); tone(73.4, { a: 0.7, d: 1.8, g: 0.035 }); if (window.QQM) QQM.chill(); },
+      cold() { if (!live()) return; tone(98, { a: 0.5, d: 1.6, g: 0.05 }); tone(73.4, { a: 0.7, d: 1.8, g: 0.035 }); if (window.QQM && S && (S.st["ДАР"] || 0) >= 60) QQM.chill(); },
       clockT: null,
       // тикающие часы острой сцены: осталось secondsLeft — тики ускоряются к нулю и громче
       clock(secondsLeft) {
@@ -378,9 +378,8 @@
     let i = 0;
     const step = () => {
       if (i < lines.length) { const p = document.createElement("p"); p.textContent = lines[i++]; art.append(p); setTimeout(step, REDUCED ? 100 : 1100); return; }
+      snd.creak(); // скрип крышки надгробия
       art.insertAdjacentHTML("beforeend", `<div class="tomb root-tomb">
-      snd.creak();
-      snd.creak(); // скрип крышки
         <div class="tomb-cross">✝</div>
         <div class="tomb-name">Андрей Николаевич Самохин</div>
         <div class="tomb-years mono">1989 — 1996</div>
@@ -616,7 +615,9 @@
       .map((f) => S.st[f]).map((v) => (v === true ? "ДА" : v == null || v === false ? null : String(v))).filter(Boolean);
     const combos = [];
     for (let k = vals.length; k >= 1; k--) (function rec(start, acc) { if (acc.length === k) return combos.push(acc.join("~")); for (let i = start; i < vals.length; i++) rec(i + 1, acc.concat(vals[i])); })(0, []);
-    const srcs = combos.map((c) => sid + "~" + c).concat([sid]).map((n) => "img/" + encodeURIComponent(n) + ".jpg");
+    const remote = C.img_remote || ""; // живые картинки: то, что ZCode уже запушил, но ещё не попало в сборку
+    const srcs = combos.map((c) => sid + "~" + c).concat([sid]).map((n) => encodeURIComponent(n) + ".jpg")
+      .flatMap((f) => remote ? ["img/" + f, remote + f] : ["img/" + f]);
     ph._img = img; // только последний кадр управляет рамкой (повторный показ той же сцены)
     img.onload = () => { if (ph._img === img) ph.hidden = false; };
     img.onerror = () => {
@@ -1245,6 +1246,7 @@
 
   // ---------- панели
   function openPanel(id) {
+    if (id === "#journal") snd.paper(); // шелест страниц
     // запоминаем, откуда пришли; из панели в панель — «назад» остаётся прежним
     if (!$("#scene").hidden) back = "#scene";
     else if (!$("#title").hidden) back = "#title";
@@ -2170,7 +2172,6 @@
   };
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
-  function journalPanelOpen() { snd.paper(); }
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   // ---------- натюрморт в меню: пункт ↔ предмет на столе
   // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
@@ -2250,6 +2251,23 @@
   function syncStill() { // предметы спрятанных пунктов не светятся
     document.querySelectorAll("#still .hs").forEach((h) => { const b = document.getElementById(h.dataset.btn); h.hidden = !b || b.hidden; });
   }
+
+  // ---------- сброс всего прогресса (Хор, «Моя жизнь», сохранения, вступление): как будто играешь впервые
+  function wipeAll() {
+    try { for (const k of Object.keys(localStorage)) if (k.startsWith("qq_")) localStorage.removeItem(k); } catch (e) { /* хранилище недоступно */ }
+    try { sessionStorage.clear(); } catch (e) { /* ничего */ }
+    location.replace(location.pathname + location.search.replace(/([?&])reset(=[^&]*)?&?/, "$1").replace(/[?&]$/, "") + location.hash);
+  }
+  if (/[?&]reset\b/.test(location.search)) { wipeAll(); return; }
+  (function initWipe() {
+    const b = $("#btn-wipe"); if (!b) return;
+    let armed = null;
+    b.onclick = () => {
+      if (armed) { clearTimeout(armed); return wipeAll(); }
+      b.textContent = "точно? нажми ещё раз — всё сотрётся";
+      armed = setTimeout(() => { armed = null; b.textContent = "начать всё заново (стереть прогресс)"; }, 5000);
+    };
+  })();
 
   // вступление: теория и крючок до меню, каждый запуск (тесты и режим автора — сразу в меню)
   function showIntro() {
