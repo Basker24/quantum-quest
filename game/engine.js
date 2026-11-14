@@ -757,7 +757,7 @@
   const LACK = { ТЕЛ: "силы", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "воли", ДАР: "дара" };
   const TOO = { ТЕЛ: "сил", РАЗ: "ума", ЭМП: "чуткости", ВОЛ: "упрямства", ДАР: "дара" };
   function lockReason(e, st) {
-    const need = new Set(), too = new Set(); let flags = false, bond = false, drift = false, kinds = false, lives = false;
+    const need = new Set(), too = new Set(); let flags = false, bond = false, drift = false, driftLow = false, kinds = false, lives = false;
     (function walk(x, neg) {
       if (!x || typeof x !== "object") return;
       if (x.op === "not") return walk(x.a, !neg);
@@ -768,7 +768,7 @@
       if (mop === "branches") { lives = true; return; }
       if (x.op === "cmp" && x.l.op === "var" && x.r.op === "num" && C.vars[x.l.n]) {
         const n = x.l.n, up = (x.c === ">=" || x.c === ">") !== neg;
-        if (n === "ДРЕЙФ") drift = true; else if (n.startsWith("СВЯЗЬ")) bond = true;
+        if (n === "ДРЕЙФ") { if (up) driftLow = true; else drift = true; } else if (n.startsWith("СВЯЗЬ")) bond = true;
         else (up ? need : too).add(n);
       } else flags = true;
     })(e, false);
@@ -778,6 +778,7 @@
     if (too.size) parts.push("слишком много " + [...too].map((n) => TOO[n] || n).join(" и "));
     if (bond) parts.push("не хватает близости");
     if (drift) parts.push("мир слишком сдвинулся");
+    if (driftLow) parts.push("мир ещё слишком на месте");
     if (kinds) parts.push("Хор ещё не знает столько смертей");
     if (lives) parts.push("Хор ещё не прожил столько жизней");
     if (flags && !parts.length) parts.push("в этой жизни этого не было");
