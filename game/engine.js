@@ -343,7 +343,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#credits", "#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -778,6 +778,12 @@
       b.className = "choice"; b.textContent = "Новая жизнь";
       b.onclick = newLife;
       nav.append(b, j, f);
+      if (sc.stage === "final" && !S.scene.startsWith("⊣")) { // настоящий финал — титры
+        const c = document.createElement("button");
+        c.className = "choice ghost-choice"; c.textContent = "Титры";
+        c.onclick = () => showCredits("#scene");
+        nav.append(c);
+      }
     }
     renderDebug();
   }
@@ -2311,6 +2317,27 @@
       if (!c) { m.textContent = "такого кода нет"; return; }
       c[1](); saveMeta(); m.textContent = "✓ " + c[0] + (k === "регент" ? (devOn ? ": вкл" : ": выкл") : ""); $("#cheat-in").value = ""; showTitle();
     };
+  })();
+
+  // ---------- титры: медленно ползут снизу вверх; тап — пауза; «×» или конец — назад
+  let crBack = "#title";
+  function showCredits(from) {
+    crBack = from || "#title";
+    show("#credits");
+    const roll = $("#cr-roll"), inner = roll.querySelector(".cr-in");
+    roll.classList.remove("paused");
+    inner.style.animation = "none"; void inner.offsetWidth; // перезапуск
+    const dist = inner.offsetHeight + roll.clientHeight * 0.55;
+    inner.style.setProperty("--cr-from", Math.round(roll.clientHeight * 0.55) + "px");
+    inner.style.setProperty("--cr-to", -inner.offsetHeight + "px");
+    inner.style.animation = REDUCED ? "none" : `crRoll ${Math.max(40, Math.round(dist / 38))}s linear forwards`;
+    inner.onanimationend = () => closeCredits();
+  }
+  function closeCredits() { if (crBack === "#scene" && S) show("#scene"); else showTitle(); }
+  (function initCredits() {
+    const b = $("#btn-credits"); if (b) b.onclick = () => showCredits("#title");
+    $("#credits-close").onclick = (e) => { e.stopPropagation(); closeCredits(); };
+    $("#cr-roll").onclick = () => $("#cr-roll").classList.toggle("paused");
   })();
 
   // ---------- первый экран: картина и одна главная кнопка (первый запуск — «Новая жизнь», дальше — «Продолжить»)

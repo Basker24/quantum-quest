@@ -111,7 +111,7 @@
           <button id="btn-devstats" class="mitem"><span class="m-t">⚙ Справка по статам</span><span class="m-s">все проверки каждой характеристики по годам</span></button>
         </nav>
         <div class="settings mono tiny">
-          <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-about2" class="set-btn">об игре и помощь</button><span class="dot-sep" aria-hidden="true">·</span><details class="more"><summary class="set-btn">ещё…</summary><div class="more-pop">
+          <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-about2" class="set-btn">об игре и помощь</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-credits" class="set-btn">титры</button><span class="dot-sep" aria-hidden="true">·</span><details class="more"><summary class="set-btn">ещё…</summary><div class="more-pop">
             <button id="btn-export" class="set-btn">сохранить прогресс в файл</button>
             <button id="btn-import" class="set-btn">загрузить из файла</button>
             <form id="cheat-form" class="cheat mono" autocomplete="off"><input id="cheat-in" type="text" placeholder="код" aria-label="Код" spellcheck="false"><button class="set-btn" type="submit">ввести</button><span id="cheat-msg" class="tiny"></span></form>
@@ -268,6 +268,50 @@
         <li><b>Моя жизнь</b> — схема всех развилок: прожитое видно, остальное в тумане.</li>
       </ul>
     </div>
+  </section>
+
+  <!-- титры -->
+  <section id="credits" class="screen" hidden>
+    <button class="close ghost" id="credits-close" aria-label="закрыть титры">×</button>
+    <div class="cr-roll" id="cr-roll">
+      <div class="cr-in">
+        <p class="cr-kick mono">28.07.2061 · 04:12 · Кемерово</p>
+        <h1 class="cr-title"><span>Тот,</span><br>кто остался</h1>
+        <p class="cr-sub">текстовый квест о квантовом бессмертии<br>Кузбасс, 1996–2061</p>
+
+        <h3>Автор</h3>
+        <p class="cr-name">basker</p>
+        <p>идея · мир · сюжет · канон · каждое решение</p>
+
+        <h3>Идея</h3>
+        <p>Что, если квантовое бессмертие — не мысленный опыт физиков,<br>а семейное наследство?</p>
+        <p>Мальчик из Кемерова тонет в семь лет — и не может умереть.<br>Ни тогда, ни потом. Только помнить.</p>
+        <p>Дед-физик, который проверил Эверетта на себе.<br>Отец-шахтёр, который просыпается в 04:12 и не знает почему.<br>И одна жизнь, разошедшаяся на восемь.</p>
+
+        <h3>Как сделана игра</h3>
+        <p>Мир, сюжет, персонажи, канон и все решения — <b>basker</b>.</p>
+        <p>Сценарий и проза написаны с ИИ-соавтором под постоянной редактурой автора:<br>каждую сцену он прочитал, каждую ошибку вернул.</p>
+        <p>Движок, «Моя жизнь», «Пути», Тетрадь Хора, проверки сюжета —<br>ИИ-ассистент по заданиям автора.</p>
+        <p>Иллюстрации созданы нейросетью по описаниям автора<br>и отобраны вручную. Музыка — нейросетевая, по заданиям автора.</p>
+        <p class="cr-small">Сюжетный граф: 144 сцены, 76 смертей, 16 финалов.<br>Ни одного броска кубика: только «если — тогда — иначе».</p>
+
+        <h3>На плечах</h3>
+        <p>Хью Эверетт — многомировая интерпретация, 1957</p>
+        <p>Ханс Моравек, Макс Тегмарк — квантовое самоубийство и квантовое бессмертие</p>
+        <p class="cr-small">Физика в игре — художественная. Эверетт, Моравек и Тегмарк<br>ни за что в этой истории не отвечают.</p>
+
+        <h3>Шрифты</h3>
+        <p class="cr-small">PT Serif, PT Mono — ParaType · Marck Script — Denis Masharov<br>SIL Open Font License</p>
+
+        <h3>Кузбасс</h3>
+        <p class="cr-small">Все персонажи, шахты, организации и события после 2026 года вымышлены.<br>Реальны только Томь, терриконы и то, как пахнет у подъезда после смены.</p>
+
+        <p class="cr-end">Спасибо, что дожил до конца.</p>
+        <p class="cr-hand">Сверим часы.</p>
+        <p class="cr-kick mono">© 2026 basker</p>
+      </div>
+    </div>
+    <p class="cr-hint mono tiny" aria-hidden="true">коснись — пауза</p>
   </section>
 
   <!-- лор голосом деда: открывается при 60 % финалов -->
