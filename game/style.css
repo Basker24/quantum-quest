@@ -1050,3 +1050,10 @@ body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; d
 /* палец: первый тап по предмету — подпись-кнопка «куда ведёт», тап по ней — переход */
 .still-cap.tap.go { pointer-events: auto; cursor: pointer; padding: 10px 16px; font-size: 18px; box-shadow: 0 8px 26px rgba(0,0,0,.55); }
 .still-cap.tap.go::after { content: "  ›"; color: var(--accent); }
+
+/* письмо деда: строки ложатся на линейки тетради (шаг 28px) — все высоты и отступы кратны шагу */
+.lore-letter { padding-top: 28px; padding-bottom: 28px; background-position: 0 6px; }
+.lore-letter > * { margin: 0 0 28px; line-height: 28px; }
+.lore-letter p { line-height: 28px; font-size: 18px; }
+.lore-letter h2, .lore-letter h3 { font-size: 22px; line-height: 28px; margin: 28px 0 28px; }
+.lore-letter .kicker { margin: 0; line-height: 28px; }
