@@ -737,7 +737,7 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 
 .still { position: relative; }
 .still-amb { position: fixed; inset: -8%; z-index: 0; pointer-events: none;
-  background: url("img/promo_menu_main_portrait.jpg") center / cover no-repeat;
+  background: url("img/promo_menu_notes_portrait.jpg") center / cover no-repeat;
   filter: blur(52px) saturate(1.1) brightness(.3); transform: scale(1.1); }
 .still-crop { position: relative; overflow: hidden; }
 .still-frame { position: relative; width: 100%; height: 100%; }
@@ -1001,3 +1001,33 @@ body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; d
 #title .sheet h1 { white-space: normal; }
 #title .cta-float { display: none !important; }
 @media (prefers-reduced-motion: reduce) { #title .hero-cue { animation: none; } }
+
+/* ================= предметы финалов на столе (решение автора 14.11) =================
+   стол завален листами дедовых записок; под семью листами — бугорки. Прожил финал — бумага исчезает, остаётся предмет */
+.still-items { position: absolute; inset: 0; z-index: 2; pointer-events: none; animation: stillDrift 38s ease-in-out infinite alternate; transform-origin: 40% 60%; }
+.still-items .mi { position: absolute; left: var(--pl); top: var(--pt); width: var(--pw); height: var(--ph); display: block; transition: filter .6s ease; }
+.still-items .mi img { display: block; width: 100%; height: 100%; animation: miIn 1.4s ease-out both; }
+@keyframes miIn { from { opacity: 0; } to { opacity: 1; } }
+.still.lit .still-items .mi:not(.on) { filter: brightness(.46) saturate(.4) sepia(.16); }
+.hs-item { z-index: 4; }
+.hs-item i { display: none; } /* без маячков: бугорок под листом сам зовёт посмотреть */
+.hs-item.shut { cursor: help; }
+.still-cap.shut { border-left-color: rgba(233,228,218,.35); color: #cfc6b4; font-style: italic; }
+.still-cap.shut::before { content: "⌁ "; color: rgba(233,228,218,.45); }
+@media (hover: none) { .still-cap.tap { display: block; } }
+@media (min-width: 900px) and (orientation: landscape) {
+  .still-items .mi { left: var(--ll); top: var(--lt); width: var(--lw); height: var(--lh); }
+}
+.gcard.focus { box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(255,190,100,.18); }
+@media (prefers-reduced-motion: reduce) { .still-items, .still-items .mi img { animation: none !important; } }
+#title.boot .still-items { animation: stillIn 1.6s ease both, stillDrift 38s ease-in-out 1.6s infinite alternate; } /* дрейф — в такт с картиной */
+
+/* портрет: картина кончается над главной кнопкой (под ней тёмная полоса), иначе передний ряд стола прячется под кнопкой */
+@media not all and (min-width: 900px) and (orientation: landscape) {
+  body[data-screen="title"] #title .still-crop {
+    --fx: .5; --fy: .62; --vh: calc(100svh - 150px);
+    --fw: max(100vw, calc(var(--vh) * var(--ar))); --fh: calc(var(--fw) / var(--ar));
+    top: clamp(calc(var(--vh) - var(--fh)), calc(var(--vh) / 2 - var(--fh) * var(--fy)), 0px);
+    -webkit-mask-image: linear-gradient(#000 calc(100% - 46px), transparent); mask-image: linear-gradient(#000 calc(100% - 46px), transparent); }
+  body[data-screen="title"] #title .still { background: #0a0908; }
+}

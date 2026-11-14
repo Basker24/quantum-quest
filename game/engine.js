@@ -22,6 +22,7 @@
   meta.vlife = meta.vlife || {};
   for (const id of Object.keys(meta.visited || {})) if (!(id in meta.vlife)) meta.vlife[id] = 0;
   let guideOn = null; // финал, чей путь подсвечен на схеме
+  let guideFocus = null; // финал, к чьей карточке «Пути» прокручиваются (клик по предмету на столе)
   let guideCut = null; // начатая дорога: подсвечивать только первые N шагов (дальше — туман)
   const saveMeta = () => store.set(META, meta);
   let S = null; // текущая жизнь
@@ -1336,9 +1337,10 @@
       n++;
       const going = cut != null;
       const max = going ? 2 : 3; // начатая дорога: подсказка и путь до сегодня, без будущих развилок
+      if (guideFocus === fid) { meta.guideFold[fid] = false; if (!meta.guide[fid]) meta.guide[fid] = 1; }
       const lvl = Math.min(meta.guide[fid] || 0, max), fold = !!meta.guideFold[fid];
       const card = document.createElement("div");
-      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "");
+      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "") + (guideFocus === fid ? " focus" : "");
       let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${esc(g.title)}</b><span class="mono dim">${esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : `<span class="gdone gnow mono">иду сюда</span>`}</div>`;
       const steps = g.steps.filter((x) => x.choice);
       const shown = going ? g.steps.filter((x) => x.choice && !x.death).slice(0, cut) : steps; // начатая: ровно мои выборы
@@ -1364,6 +1366,8 @@
       if (fl) fl.onclick = () => { guideOn = fid; guideCut = going ? cut : null; openPanel("#flow"); };
       list.append(card);
     }
+    const fc = list.querySelector(".gcard.focus");
+    if (fc) { guideFocus = null; requestAnimationFrame(() => fc.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" })); }
     if (!n) list.innerHTML = `<p class="dim">Пока ни одной дороги. Проживи — и она появится здесь: финал, до которого дошёл, или тот, к которому идёшь.</p>`;
   }
   function closePanel() { if ((back === "#scene" || back === "#death") && S) show(back); else showTitle(); }
@@ -2178,7 +2182,7 @@
     $("#m-guide").textContent = `${seenE}/${ends.length}`;
     soundBtn();
     devTitle();
-    syncStill();
+    renderStillItems(); syncStill();
     bootTitle();
     placeHero();
   }
@@ -2319,18 +2323,20 @@
   (function initStill() {
     const still = $("#still"), frame = $("#still-frame"), cap = $("#still-cap");
     if (!still) return;
-    const hs = [...still.querySelectorAll(".hs")];
-    let cur = null, idleT = null;
+    let hs = [...still.querySelectorAll(".hs")];
+    let cur = null, idleT = null, tapT = null;
     const light = (bid) => {
-      const btn = document.getElementById(bid), h = hs.find((x) => x.dataset.btn === bid);
-      if (!btn || !h || btn.hidden || h.hidden) return dark();
+      const fid = bid && bid.startsWith("fin:") ? bid.slice(4) : null;
+      const btn = fid ? null : document.getElementById(bid), h = fid ? hs.find((x) => x.dataset.fid === fid) : hs.find((x) => x.dataset.btn === bid);
+      if ((!fid && (!btn || btn.hidden)) || !h || h.hidden) return dark();
       cur = bid;
       const fr = frame.getBoundingClientRect(), hr = h.getBoundingClientRect();
       const x = hr.left - fr.left + hr.width / 2, y = hr.top - fr.top + hr.height / 2, fw = frame.clientWidth, fh = frame.clientHeight;
       frame.style.setProperty("--sx", x + "px"); frame.style.setProperty("--sy", y + "px");
       frame.style.setProperty("--sr", Math.round(Math.max(44, Math.max(hr.width, hr.height) * 0.5)) + "px"); // луч — по размеру предмета
       if (cap) { // подпись: над предметом, если влезает, иначе под ним; по горизонтали — в пределах картины
-        cap.textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent.trim();
+        cap.textContent = fid ? itemCaption(fid) : (btn.querySelector(".m-t, .cta-l") || btn).textContent.trim();
+        cap.classList.toggle("shut", !!fid && !itemOpen(fid));
         const cw = cap.offsetWidth, ch = cap.offsetHeight, pad = 10;
         let cy = hr.top - fr.top - ch - 8; if (cy < pad) cy = hr.bottom - fr.top + 8;
         cy = Math.max(pad, Math.min(fh - ch - pad, cy));
@@ -2340,8 +2346,9 @@
       still.classList.add("lit");
       hs.forEach((x) => x.classList.toggle("on", x === h));
       document.querySelectorAll("#title [data-thing]").forEach((b) => b.classList.toggle("on", b.id === bid));
+      still.querySelectorAll(".mi").forEach((m) => m.classList.toggle("on", m.dataset.fid === fid));
     };
-    const dark = () => { cur = null; still.classList.remove("lit"); hs.forEach((x) => x.classList.remove("on")); document.querySelectorAll("#title [data-thing].on").forEach((b) => b.classList.remove("on")); };
+    const dark = () => { cur = null; clearTimeout(tapT); still.classList.remove("lit"); cap && cap.classList.remove("tap"); still.querySelectorAll(".mi.on").forEach((m) => m.classList.remove("on")); hs.forEach((x) => x.classList.remove("on")); document.querySelectorAll("#title [data-thing].on").forEach((b) => b.classList.remove("on")); };
     const mouse = (e) => e.pointerType === "mouse" || e.pointerType === "pen";
     for (const b of document.querySelectorAll("#title [data-thing]")) {
       b.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(b.id); });
@@ -2349,15 +2356,24 @@
       b.addEventListener("focus", () => { if (b.matches(":focus-visible")) light(b.id); });
       b.addEventListener("blur", () => { idleT = setTimeout(dark, 250); });
     }
-    for (const h of hs) {
-      h.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(h.dataset.btn); });
+    const bindHs = (h) => {
+      if (h.__b) return; h.__b = 1;
+      const key = () => (h.dataset.fid ? "fin:" + h.dataset.fid : h.dataset.btn);
+      h.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(key()); });
       h.addEventListener("pointerleave", (e) => { if (!mouse(e)) return; idleT = setTimeout(dark, 250); });
       h.addEventListener("click", (e) => { // предмет — та же кнопка, что и пункт меню
         e.stopPropagation();
+        if (h.dataset.fid) { // предмет финала: открыт — его дорога в «Путях»; под листом — только подпись
+          if (openItem(h.dataset.fid)) return;
+          light(key()); if (cap) { cap.classList.add("tap"); clearTimeout(tapT); tapT = setTimeout(dark, 1600); }
+          return;
+        }
         const btn = document.getElementById(h.dataset.btn);
         if (btn && !btn.hidden && !btn.classList.contains("locked")) btn.click();
       });
-    }
+    };
+    hs.forEach(bindHs);
+    window.qqStillBind = () => { hs = [...still.querySelectorAll(".hs")]; hs.forEach(bindHs); };
     frame.addEventListener("click", () => dark());
     window.addEventListener("resize", () => cur && light(cur));
     // плавающая главная кнопка (телефон): видна, пока настоящая за краем экрана
@@ -2381,8 +2397,46 @@
     if (!first || REDUCED) return;
     const t = $("#title"); t.classList.add("boot"); setTimeout(() => t.classList.remove("boot"), 2600);
   }
+  // ---------- предметы финалов на столе (решение автора 14.11): под каждым листом дедовых записок что-то лежит.
+  // Прожил финал — лист «изучен», бумага исчезает, и на столе остаётся предмет. Клик по нему — его дорога в «Путях».
+  const STILL_ITEMS = {"Ф-01": {"n": "float", "w": [4.167, 62.598, 18.88, 23.438, 13.61, 74.32, 13.67, 15.62], "p": [0.488, 82.227, 28.32, 15.625, 14.65, 90.04, 20.51, 10.42]}, "Ф-02": {"n": "glasses", "w": [58.268, 72.461, 18.88, 21.484, 67.71, 83.2, 13.67, 13.67], "p": [36.133, 82.682, 31.25, 16.276, 51.76, 90.82, 23.44, 11.07]}, "Ф-03": {"n": "carnation", "w": [79.557, 69.141, 19.531, 19.531, 89.32, 78.91, 14.32, 11.72], "p": [62.988, 74.219, 28.32, 14.323, 77.15, 81.38, 20.51, 9.11]}, "Ф-04": {"n": "beercap", "w": [22.461, 76.172, 16.276, 19.531, 30.6, 85.94, 11.07, 11.72], "p": [19.043, 77.148, 26.367, 14.974, 32.23, 84.64, 18.55, 9.77]}, "Ф-05": {"n": "cartridge", "w": [3.581, 75.684, 18.229, 20.508, 12.7, 85.94, 13.02, 12.7], "p": [53.223, 84.961, 28.32, 14.974, 67.38, 92.45, 20.51, 9.77]}, "Ф-06": {"n": "dvushka", "w": [80.078, 59.082, 16.927, 18.555, 88.54, 68.36, 11.72, 10.74], "p": [35.156, 74.544, 23.438, 13.672, 46.88, 81.38, 15.62, 8.46]}, "⊣": {"n": "candle", "w": [32.682, 52.246, 16.927, 21.484, 41.15, 62.99, 11.72, 13.67], "p": [18.555, 52.409, 27.344, 14.974, 32.23, 59.9, 19.53, 9.77]}};
+  const ITEM_NAME = { "Ф-01": "поплавок", "Ф-02": "очки для чтения", "Ф-03": "сухая гвоздика", "Ф-04": "пробка от «Жигулёвского»", "Ф-05": "гильза", "Ф-06": "двушка", "⊣": "огарок свечи" };
+  const itemOpen = (fid) => fid === "⊣" ? ENDS().some((id) => id.startsWith("⊣") && meta.visited[id]) : !!meta.visited[fid];
+  function renderStillItems() {
+    const box = $("#still-items"), frame = $("#still-frame"); if (!box || !frame) return;
+    frame.querySelectorAll(".hs-item").forEach((x) => x.remove());
+    let h = "";
+    for (const [fid, it] of Object.entries(STILL_ITEMS)) {
+      if (!itemOpen(fid)) continue;
+      const [l, t, w, hh] = it.w, [pl, pt, pw, ph] = it.p;
+      h += `<picture class="mi" style="--ll:${l}%;--lt:${t}%;--lw:${w}%;--lh:${hh}%;--pl:${pl}%;--pt:${pt}%;--pw:${pw}%;--ph:${ph}%" data-fid="${fid}"><source media="(min-width: 900px) and (orientation: landscape)" srcset="img/menu_items/wide_${it.n}.png"><img src="img/menu_items/vert_${it.n}.png" alt="" decoding="async"></picture>`;
+    }
+    box.innerHTML = h;
+    const cap = $("#still-cap");
+    for (const [fid, it] of Object.entries(STILL_ITEMS)) {
+      const b = document.createElement("button");
+      const open = itemOpen(fid);
+      b.className = "hs hs-item" + (open ? " open" : " shut"); b.type = "button"; b.tabIndex = -1; b.setAttribute("aria-hidden", "true"); b.dataset.fid = fid;
+      const [, , , , cx, cy, hw, hh] = it.w, [, , , , px, py, pw, ph] = it.p;
+      b.style.cssText = `--px:${px}%;--py:${py}%;--w:${pw}%;--h:${ph}%;--lx:${cx}%;--ly:${cy}%;--lw:${hw}%;--lh:${hh}%`;
+      b.innerHTML = "<i></i>";
+      frame.insertBefore(b, cap);
+    }
+    if (window.qqStillBind) qqStillBind();
+  }
+  function itemCaption(fid) {
+    if (!itemOpen(fid)) return "ещё не прожито";
+    if (fid === "⊣") { const all = ENDS().filter((id) => id.startsWith("⊣")); return `${ITEM_NAME[fid]} · тупики: ${all.filter((id) => meta.visited[id]).length} из ${all.length}`; }
+    return `${ITEM_NAME[fid]} · «${(G.scenes[fid] && G.scenes[fid].title) || fid}»`;
+  }
+  function openItem(fid) {
+    if (!itemOpen(fid)) return false;
+    guideFocus = fid === "⊣" ? null : fid;
+    openPanel("#guide");
+    return true;
+  }
   function syncStill() { // предметы спрятанных пунктов не светятся
-    document.querySelectorAll("#still .hs").forEach((h) => { const b = document.getElementById(h.dataset.btn); h.hidden = !b || b.hidden; });
+    document.querySelectorAll("#still .hs:not(.hs-item)").forEach((h) => { const b = document.getElementById(h.dataset.btn); h.hidden = !b || b.hidden; });
   }
 
   // ---------- сброс всего прогресса (Хор, «Моя жизнь», сохранения, вступление): как будто играешь впервые
