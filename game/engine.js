@@ -2028,6 +2028,7 @@
     const b = $("#btn-dev"); b.textContent = devOn ? "режим автора: вкл" : "режим автора: выкл"; b.setAttribute("aria-pressed", String(devOn));
     $("#dev-menu").hidden = !devOn;
     $("#btn-dev-bar").hidden = !devOn;
+    const dlc = $("#btn-dlc"); if (dlc) dlc.hidden = !(devOn || dlcUnlocked()); // режим автора открывает DLC сразу
     if (devOn) { devLoad(); window.QQDEV = { jump: devJump, load: devLoad }; }
   }
   function devTitle() { devApply(); }
@@ -2044,6 +2045,7 @@
     return { sv, sc };
   };
   let newArmed = null;
+  function dlcUnlocked() { return Object.keys(meta.visited || {}).some((id) => id.startsWith("Ф-") || id.startsWith("⊣")); }
   function showTitle() {
     show("#title");
     document.body.dataset.life = "";
@@ -2057,7 +2059,7 @@
     const live = savedLife();
     const cb = $("#btn-continue"), nb = $("#btn-new");
     $("#btn-one").hidden = !meta.visited["Ф-04"]; // «Одна жизнь» — после того, как хоть раз дошёл до Ф-04
-    $("#btn-dlc").hidden = !Object.keys(meta.visited || {}).some((id) => id.startsWith("Ф-") || id.startsWith("⊣")); // DLC — после первого финала или тупика, чтобы новичок не ушёл туда вместо игры
+    $("#btn-dlc").hidden = !(devOn || dlcUnlocked()); // DLC — после первого финала/тупика; в режиме автора видно сразу (решение автора 14.11)
     cb.hidden = !live;
     nb.classList.toggle("ghost-choice", !!live);
     disarmNew();
