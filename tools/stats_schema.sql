@@ -35,9 +35,9 @@ create index if not exists qq_events_kind_key on public.qq_events (kind, key);
 create or replace function public.qq_hit(p uuid, k text, key text)
 returns void language plpgsql security definer set search_path = public as $$
 begin
-  insert into qq_events(player, kind, key) values (p, k, left(key, 80)) on conflict do nothing;
+  insert into qq_events as e(player, kind, key) values (p, k, left(qq_hit.key, 80)) on conflict on constraint qq_events_pkey do nothing;
   if k = 'death' then
-    insert into qq_counters(key, n) values ('deaths', 1) on conflict (key) do update set n = qq_counters.n + 1;
+    insert into qq_counters as c(key, n) values ('deaths', 1) on conflict on constraint qq_counters_pkey do update set n = c.n + 1;
   end if;
 end $$;
 
@@ -106,3 +106,5 @@ revoke all on function public.qq_hit, public.qq_seen, public.qq_final, public.qq
   public.qq_final_stats, public.qq_chorus, public.qq_admin from public;
 grant execute on function public.qq_hit, public.qq_seen, public.qq_final, public.qq_counts, public.qq_split,
   public.qq_final_stats, public.qq_chorus, public.qq_admin to anon, authenticated;
+
+revoke all on table public.qq_events, public.qq_progress, public.qq_finals, public.qq_counters from anon, authenticated;

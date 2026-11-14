@@ -18,7 +18,7 @@ window.QQS = (function () {
     try {
       const r = await fetch(C.stats_url.replace(/\/$/, "") + "/rest/v1/rpc/" + fn, {
         method: "POST", signal: ctl.signal,
-        headers: { "Content-Type": "application/json", apikey: C.stats_key, Authorization: "Bearer " + C.stats_key },
+        headers: Object.assign({ "Content-Type": "application/json", apikey: C.stats_key }, /^sb_/.test(C.stats_key) ? {} : { Authorization: "Bearer " + C.stats_key }), // новые publishable-ключи — только в apikey
         body: JSON.stringify(args || {}),
       });
       if (!r.ok) return null;
