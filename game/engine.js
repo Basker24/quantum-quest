@@ -343,7 +343,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#credits", "#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#childhood", "#credits", "#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -359,10 +359,68 @@
 
   // ---------- жизнь
   // oneLife — режим «Одна жизнь» (открывается после Ф-04): смерть окончательна, отката нет
+  // решение автора 14.11: после двух прожитых концовок детство можно не проживать заново —
+  // «как в прошлый раз» (сразу к выпускному с той же сборкой героя) или «одним листом» (все выборы детства на одном экране)
+  const CHILD_END = "Т-10";
+  const childhoodReady = () => !!(meta.childhood && meta.childhood.st) && endsDone() >= 2;
   function newLife(oneLife) {
+    oneLife = oneLife === true;
+    if (!oneLife && childhoodReady()) return showChildhood();
+    startLife(oneLife);
+  }
+  function startLife(oneLife, st, trail) {
     meta.lives = (meta.lives || 0) + 1; saveMeta();
-    S = { oneLife: oneLife === true, scene: C.start, st: initState(), stack: [], trail: [], lifeSeen: {}, lifeBlocks: {}, awake: null, ghost: null, year: null, replay: false, past: {} };
+    S = { oneLife: oneLife === true, scene: C.start, st: st || initState(), stack: [], trail: trail || [], lifeSeen: {}, lifeBlocks: {}, awake: null, ghost: null, year: null, replay: false, past: {} };
+    if (st) { S.rootShown = true; return enter(CHILD_END); }
     enter(C.start);
+  }
+  // проиграть детство по выборам без экранов: ствол линейный, смертей в нём нет
+  function playChildhood(pick) {
+    const st = initState(), trail = [], rows = [];
+    let id = C.start, guard = 0;
+    while (id && id !== CHILD_END && guard++ < 50) {
+      const sc = G.scenes[id]; if (!sc) break;
+      const vis = visible(sc, st);
+      if (!vis.length) { id = sc.next; continue; }
+      const c = vis.find((x) => x.id === pick[id]) || vis[0];
+      rows.push({ id, sc, vis, c });
+      const o = c.outcomes.find((x) => ok(x.if, st));
+      applyFx(c.fx, st); if (o.fx) applyFx(o.fx, st);
+      trail.push({ scene: id, choice: c.id, flags: [...(c.fx || []), ...(o.fx || [])].filter(([k, n]) => k === "set" && C.flags[n]).map((x) => x[1]) });
+      id = o.to;
+    }
+    return { st, trail, rows };
+  }
+  function showChildhood() {
+    show("#childhood");
+    const last = {}; for (const t of meta.childhood.trail || []) last[t.scene] = t.choice;
+    const pick = { ...last };
+    const lastRun = playChildhood(last);
+    const who = (st) => ["ТЕЛ", "РАЗ", "ЭМП", "ВОЛ", "ДАР"].map((k) => `${C.vars[k].name || k}: ${tier(k, st[k])}`).join(" · ");
+    $("#ch-last").textContent = who(lastRun.st);
+    $("#ch-anew").onclick = () => startLife(false);
+    $("#ch-same").onclick = () => startLife(false, clone(meta.childhood.st), clone(meta.childhood.trail || []));
+    const sheet = $("#ch-sheet"), box = $("#ch-rows");
+    $("#ch-list").onclick = () => { sheet.hidden = false; draw(); sheet.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" }); };
+    function draw() {
+      const run = playChildhood(pick);
+      box.innerHTML = "";
+      for (const r of run.rows) {
+        const row = document.createElement("div"); row.className = "ch-row";
+        row.innerHTML = `<p class="mono tiny dim">${esc(yearOf(r.sc.date) || "")}${r.sc.age != null ? " · мне " + r.sc.age : ""}</p><h4>${esc(r.sc.title)}</h4>`;
+        const opts = document.createElement("div"); opts.className = "ch-opts";
+        for (const c of r.vis) {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "ch-opt" + (c.id === r.c.id ? " on" : "");
+          b.textContent = c.label;
+          b.onclick = () => { pick[r.id] = c.id; draw(); };
+          opts.append(b);
+        }
+        row.append(opts); box.append(row);
+      }
+      $("#ch-who").textContent = who(run.st);
+      $("#ch-go").onclick = () => startLife(false, clone(run.st), clone(run.trail));
+    }
   }
   const save = () => store.set(SAVE, S);
   const visible = (sc, st) => (sc.choices || []).filter((c) => ok(c.visible, st));
@@ -464,6 +522,7 @@
     meta.visited[id] = true;
     if (!(id in meta.vlife)) meta.vlife[id] = meta.lives || 0;
     if (id === "Т-02б") meta.root = true;
+    if (id === CHILD_END && !restored && S && !S.oneLife) meta.childhood = { st: clone(S.st), trail: clone(S.trail || []) }; // для «детство как в прошлый раз»
     for (const m of C.meta_entries || []) if (m.scene === id && ok(m.if, S.st)) meta.extra[m.id] = true;
     saveMeta();
     if (!restored && visible(sc, S.st).length >= 2) S.stack.push({ scene: id, st: clone(S.st), seal: sealOf(sc), taken: null, trail: S.trail.length });

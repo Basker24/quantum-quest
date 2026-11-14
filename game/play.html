@@ -271,6 +271,23 @@
     </div>
   </section>
 
+  <!-- новая жизнь после двух концовок: прожить детство заново, как в прошлый раз или одним листом -->
+  <section id="childhood" class="screen panel" hidden>
+    <p class="mono kicker">Новая жизнь</p>
+    <h2>Детство</h2>
+    <p class="dim">Детство ты уже прожил, и не раз. Можно прожить его заново, а можно сразу к выпускному.</p>
+    <div class="ch-choices">
+      <button id="ch-anew" class="choice main-cta" type="button"><span class="cta-l">Прожить детство заново</span><small class="mono">с лета 1996-го, мне семь</small></button>
+      <button id="ch-same" class="choice main-cta ghost-choice" type="button"><span class="cta-l">Детство как в прошлый раз</span><small class="mono" id="ch-last"></small></button>
+      <button id="ch-list" class="choice main-cta ghost-choice" type="button"><span class="cta-l">Детство одним листом</span><small class="mono">все выборы детства на одном экране, без текста</small></button>
+    </div>
+    <div id="ch-sheet" class="ch-sheet" hidden>
+      <div id="ch-rows"></div>
+      <p class="mono tiny" id="ch-who"></p>
+      <button id="ch-go" class="choice main-cta" type="button"><span class="cta-l">К выпускному</span><span class="cta-arr mono" aria-hidden="true">→</span><small class="mono">лето 2007-го, мне восемнадцать</small></button>
+    </div>
+  </section>
+
   <!-- титры -->
   <section id="credits" class="screen" hidden>
     <button class="close ghost" id="credits-close" aria-label="закрыть титры">×</button>
