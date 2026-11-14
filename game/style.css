@@ -953,3 +953,17 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 #ask-yes { border: 0; border-left: 3px solid var(--accent); background: linear-gradient(90deg, rgba(217,164,65,.22), rgba(217,164,65,.05) 80%); }
 #ask-yes .cta-l { color: #f4ead6; font-family: var(--caption); font-size: 22px; }
 #ask-no .cta-l { font-size: 18px; }
+
+/* закрытые пункты: видны, но не нажимаются; условие открытия вместо описания */
+#title .mitem.locked { cursor: default; opacity: .62; }
+#title .mitem.locked:hover { background: none; padding-left: 0; }
+#title .mitem.locked .m-t { color: #8f887b !important; }
+#title .mitem.locked .m-s { display: block !important; color: #8a7a5c; font-style: italic; }
+#title .set-btn:disabled { opacity: .55; cursor: default; }
+/* письмо деда */
+.lore-letter h3 { font-family: var(--caption); margin: 1.4em 0 .4em; }
+.lore-letter p { line-height: 1.6; }
+/* чит-коды */
+.cheat { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 0; }
+.cheat input { flex: 1; min-width: 140px; background: #121214; border: 1px solid #3a3424; color: #c9b27a; border-radius: 4px; padding: 6px 8px; font: inherit; }
+#cheat-msg { color: #c9b27a; flex-basis: 100%; }

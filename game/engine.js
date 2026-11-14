@@ -340,7 +340,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -450,7 +450,7 @@
     S.scene = id;
     if (window.QQM) QQM.scene(id); // фоновой трек зоны (кроссфейд)
     if (QS && !restored) QS.seen(id);
-    if (!restored) milestoneFor(id, sc);
+    if (!restored) { milestoneFor(id, sc); noteUnlocks(id); }
     document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
     // счётчик секунд: первая сцена цепочки с clock заводит его, следующие продолжают, сцена без clock сбрасывает
@@ -2103,13 +2103,13 @@
     const b = $("#btn-dev"); b.textContent = devOn ? "режим автора: вкл" : "режим автора: выкл"; b.setAttribute("aria-pressed", String(devOn));
     $("#dev-menu").hidden = !devOn;
     $("#btn-dev-bar").hidden = !devOn;
-    const dlc = $("#btn-dlc"); if (dlc) dlc.hidden = !(devOn || dlcUnlocked()); // режим автора открывает DLC сразу
+    applyLocks();
     if (devOn) { devLoad(); window.QQDEV = { jump: devJump, load: devLoad }; }
   }
   function devTitle() { devApply(); }
-  $("#btn-dev").onclick = () => { devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
+  $("#btn-dev").onclick = () => { if (!devOn && !devUnlocked()) return; devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
   for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-devplayers", "#devplayers"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
-    $(btn).onclick = () => openPanel(panel);
+    $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; openPanel(panel); };
   $("#devjump-q").oninput = () => { jumpPick = null; renderDevJump(); };
 
   // ---------- титул: продолжение, прогресс, счётчики разделов
@@ -2120,7 +2120,33 @@
     return { sv, sc };
   };
   let newArmed = null;
-  function dlcUnlocked() { return Object.keys(meta.visited || {}).some((id) => id.startsWith("Ф-") || id.startsWith("⊣")); }
+  // ---------- разблокировки (решение автора 14.11): DLC — пройти горноспасательскую жизнь до конца,
+  // письмо деда — 60 % концов, режим автора — 90 % концов (или ?dev)
+  const ENDS = () => Object.keys(G.scenes).filter((id) => G.scenes[id].stage === "final");
+  const endsDone = () => ENDS().filter((id) => meta.visited[id]).length;
+  const need = (p) => Math.ceil(ENDS().length * p);
+  function dlcUnlocked() { return !!(meta.unlock && meta.unlock.dlc); }
+  function loreUnlocked() { return endsDone() >= need(0.6) || !!(meta.unlock && meta.unlock.lore); }
+  function devUnlocked() { return endsDone() >= need(0.9) || !!store.get(DEVKEY, false) || !!(meta.unlock && meta.unlock.dev); }
+  function lockItem(btn, open, cond) { // пункт виден всегда; закрытый — с условием открытия и не нажимается
+    if (!btn) return;
+    btn.classList.toggle("locked", !open); btn.setAttribute("aria-disabled", String(!open));
+    const s = btn.querySelector(".m-s"); if (s) { if (!s.dataset.orig) s.dataset.orig = s.textContent; s.textContent = open ? s.dataset.orig : "🔒 " + cond; }
+  }
+  function applyLocks() {
+    const done = endsDone(), all = ENDS().length;
+    lockItem($("#btn-dlc"), devOn || dlcUnlocked(), "откроется, когда пройдёшь жизнь горноспасателя до конца");
+    lockItem($("#btn-lore2"), devOn || loreUnlocked(), `откроется, когда пройдёшь ${need(0.6)} концов из ${all} (сейчас ${done})`);
+    const ml = $("#m-lore"); if (ml) ml.textContent = loreUnlocked() ? "" : `${done}/${need(0.6)}`;
+    const db = $("#btn-dev");
+    if (db) { const ok = devUnlocked(); db.disabled = !ok && !devOn; db.title = ok ? "" : `откроется, когда пройдёшь ${need(0.9)} концов из ${all}`; if (!ok && !devOn) db.textContent = `🔒 режим автора: ${need(0.9)} концов из ${all}`; }
+    const hs = document.querySelector('.hs[data-btn="btn-dlc"]'); if (hs) hs.hidden = false;
+  }
+  // DLC открывается, если финал/тупик достигнут в жизни горноспасателя (F_В105 = ВГСЧ)
+  function noteUnlocks(id) {
+    if (!S || G.scenes[id].stage !== "final") return;
+    if (S.st && S.st["F_В105"] === "ВГСЧ") { meta.unlock = meta.unlock || {}; if (!meta.unlock.dlc) { meta.unlock.dlc = true; saveMeta(); } }
+  }
   function showTitle() {
     show("#title");
     document.body.dataset.life = "";
@@ -2134,7 +2160,7 @@
     const live = savedLife();
     const cb = $("#btn-continue"), nb = $("#btn-new");
     $("#btn-one").hidden = !meta.visited["Ф-04"]; // «Одна жизнь» — после того, как хоть раз дошёл до Ф-04
-    $("#btn-dlc").hidden = !(devOn || dlcUnlocked()); // DLC — после первого финала/тупика; в режиме автора видно сразу (решение автора 14.11)
+    applyLocks();
     cb.hidden = !live;
     nb.classList.toggle("ghost-choice", !!live);
     disarmNew();
@@ -2182,10 +2208,10 @@
     oneArmed = setTimeout(disarmNew, 5000);
   };
   $("#btn-continue").onclick = () => leaveTitle(() => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } });
-  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
-    $(btn).onclick = () => openPanel(panel);
+  for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"], ["#btn-lore2", "#lore"]])
+    $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; openPanel(panel); };
   $("#btn-quit").onclick = showTitle;
-  $("#btn-dlc").onclick = () => { location.href = "obyasnenie/obyasnenie.html"; };
+  $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = "obyasnenie/obyasnenie.html"; };
   // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно
   const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k);
   function ioMsg(html, bad) { const m = $("#io-msg"); m.hidden = !html; m.classList.toggle("bad", !!bad); m.innerHTML = html || ""; return m; }
@@ -2248,6 +2274,22 @@
     });
   }
 
+  // ---------- чит-коды (только в режиме автора). Список придумаем с автором; пока служебные для проверки замков.
+  const CHEATS = {
+    "252": ["всё открыто: DLC, письмо деда, режим автора", () => { meta.unlock = { dlc: true, lore: true, dev: true }; }],
+    "закрыть": ["замки снова закрыты (кроме ?dev)", () => { meta.unlock = {}; }],
+    "сверим часы": ["все концы отмечены пройденными", () => { for (const id of ENDS()) meta.visited[id] = meta.visited[id] || 1; }],
+  };
+  (function initCheats() {
+    const f = $("#cheat-form"); if (!f) return;
+    f.onsubmit = (e) => {
+      e.preventDefault();
+      const k = $("#cheat-in").value.trim().toLowerCase(), c = CHEATS[k], m = $("#cheat-msg");
+      if (!c) { m.textContent = "такого кода нет"; return; }
+      c[1](); saveMeta(); m.textContent = "✓ " + c[0]; $("#cheat-in").value = ""; showTitle();
+    };
+  })();
+
   // ---------- натюрморт в меню: пункт ↔ предмет на столе
   // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
   let leaving = false;
@@ -2297,7 +2339,7 @@
       h.addEventListener("click", (e) => { // предмет — та же кнопка, что и пункт меню
         e.stopPropagation();
         const btn = document.getElementById(h.dataset.btn);
-        if (btn && !btn.hidden) btn.click();
+        if (btn && !btn.hidden && !btn.classList.contains("locked")) btn.click();
       });
     }
     frame.addEventListener("click", () => dark());
