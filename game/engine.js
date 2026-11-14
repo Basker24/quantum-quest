@@ -1308,7 +1308,7 @@
     const seenS = ids.filter((id) => meta.visited[id]).length;
     const seenE = ends.filter((id) => meta.visited[id]).length;
     const deaths = Object.keys(G.deaths), seenD = deaths.filter((id) => meta.journal[id]).length;
-    return `Открыто сцен: ${seenS} из ${ids.length} · концовок: ${seenE} из ${ends.length} · смертей: ${seenD} из ${deaths.length}`;
+    return `Открыто сцен: ${seenS} из ${ids.length} · финалов: ${seenE} из ${ends.length} · смертей: ${seenD} из ${deaths.length}`;
   }
 
   // ---------- путеводитель: три ступени подсказок к каждому финалу
@@ -2107,7 +2107,7 @@
     if (devOn) { devLoad(); window.QQDEV = { jump: devJump, load: devLoad }; }
   }
   function devTitle() { devApply(); }
-  $("#btn-dev").onclick = () => { if (!devOn && !devUnlocked()) return; devOn = !devOn; store.set(DEVKEY, devOn); devApply(); buzz(10); };
+  $("#btn-dev").onclick = () => { devOn = false; store.set(DEVKEY, false); devApply(); buzz(10); };
   for (const [btn, panel] of [["#btn-devjump", "#devjump"], ["#btn-devstate", "#devstate"], ["#btn-devstats", "#devstats"], ["#btn-devplayers", "#devplayers"], ["#btn-dev-bar", "#devstate"], ["#dv-to-jump", "#devjump"], ["#dv-to-stats", "#devstats"], ["#dv-to-state", "#devstate"]])
     $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; openPanel(panel); };
   $("#devjump-q").oninput = () => { jumpPick = null; renderDevJump(); };
@@ -2121,13 +2121,13 @@
   };
   let newArmed = null;
   // ---------- разблокировки (решение автора 14.11): DLC — пройти горноспасательскую жизнь до конца,
-  // письмо деда — 60 % концов, режим автора — 90 % концов (или ?dev)
+  // письмо деда — 60 % финалов; режим автора — только кодом «регент» (или ?dev)
   const ENDS = () => Object.keys(G.scenes).filter((id) => G.scenes[id].stage === "final");
   const endsDone = () => ENDS().filter((id) => meta.visited[id]).length;
   const need = (p) => Math.ceil(ENDS().length * p);
   function dlcUnlocked() { return !!(meta.unlock && meta.unlock.dlc); }
   function loreUnlocked() { return endsDone() >= need(0.6) || !!(meta.unlock && meta.unlock.lore); }
-  function devUnlocked() { return endsDone() >= need(0.9) || !!store.get(DEVKEY, false) || !!(meta.unlock && meta.unlock.dev); }
+  function devUnlocked() { return devOn; } // режим автора включается и выключается только кодом
   function lockItem(btn, open, cond) { // пункт виден всегда; закрытый — с условием открытия и не нажимается
     if (!btn) return;
     btn.classList.toggle("locked", !open); btn.setAttribute("aria-disabled", String(!open));
@@ -2135,11 +2135,11 @@
   }
   function applyLocks() {
     const done = endsDone(), all = ENDS().length;
+    const fin = (n) => (n % 10 === 1 && n % 100 !== 11 ? "финал" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "финала" : "финалов");
     lockItem($("#btn-dlc"), devOn || dlcUnlocked(), "откроется, когда пройдёшь жизнь горноспасателя до конца");
-    lockItem($("#btn-lore2"), devOn || loreUnlocked(), `откроется, когда пройдёшь ${need(0.6)} концов из ${all} (сейчас ${done})`);
+    lockItem($("#btn-lore2"), devOn || loreUnlocked(), `откроется, когда увидишь ${need(0.6)} ${fin(need(0.6))} из ${all} (сейчас ${done})`);
     const ml = $("#m-lore"); if (ml) ml.textContent = loreUnlocked() ? "" : `${done}/${need(0.6)}`;
-    const db = $("#btn-dev");
-    if (db) { const ok = devUnlocked(); db.disabled = !ok && !devOn; db.title = ok ? "" : `откроется, когда пройдёшь ${need(0.9)} концов из ${all}`; if (!ok && !devOn) db.textContent = `🔒 режим автора: ${need(0.9)} концов из ${all}`; }
+    const db = $("#btn-dev"); if (db) db.hidden = !devOn; // видна, только когда режим автора включён кодом — чтобы выключить
     const hs = document.querySelector('.hs[data-btn="btn-dlc"]'); if (hs) hs.hidden = false;
   }
   // DLC открывается, если финал/тупик достигнут в жизни горноспасателя (F_В105 = ВГСЧ)
@@ -2155,8 +2155,8 @@
     const seenE = ends.filter((id) => meta.visited[id]).length, seenD = deaths.filter((id) => meta.journal[id]).length;
     const lives = meta.lives || 0;
     $("#title-line").textContent = lives
-      ? `прожито жизней: ${lives} · концовок ${seenE} из ${ends.length} · смертей ${seenD} из ${deaths.length}`
-      : `впереди: ${ends.length} концовок · ${deaths.length} смертей · ${ids.length} сцен`;
+      ? `прожито жизней: ${lives} · финалов ${seenE} из ${ends.length} · смертей ${seenD} из ${deaths.length}`
+      : `впереди: ${ends.length} финалов · ${deaths.length} смертей · ${ids.length} сцен`;
     const live = savedLife();
     const cb = $("#btn-continue"), nb = $("#btn-new");
     $("#btn-one").hidden = !meta.visited["Ф-04"]; // «Одна жизнь» — после того, как хоть раз дошёл до Ф-04
@@ -2276,7 +2276,8 @@
 
   // ---------- чит-коды (только в режиме автора). Список придумаем с автором; пока служебные для проверки замков.
   const CHEATS = {
-    "252": ["всё открыто: DLC, письмо деда, режим автора", () => { meta.unlock = { dlc: true, lore: true, dev: true }; }],
+    "регент": ["режим автора", () => { devOn = !devOn; store.set(DEVKEY, devOn); devApply(); }],
+    "252": ["открыто: дополнение и письмо деда", () => { meta.unlock = { dlc: true, lore: true }; }],
     "закрыть": ["замки снова закрыты (кроме ?dev)", () => { meta.unlock = {}; }],
     "сверим часы": ["все концы отмечены пройденными", () => { for (const id of ENDS()) meta.visited[id] = meta.visited[id] || 1; }],
   };
@@ -2286,7 +2287,7 @@
       e.preventDefault();
       const k = $("#cheat-in").value.trim().toLowerCase(), c = CHEATS[k], m = $("#cheat-msg");
       if (!c) { m.textContent = "такого кода нет"; return; }
-      c[1](); saveMeta(); m.textContent = "✓ " + c[0]; $("#cheat-in").value = ""; showTitle();
+      c[1](); saveMeta(); m.textContent = "✓ " + c[0] + (k === "регент" ? (devOn ? ": вкл" : ": выкл") : ""); $("#cheat-in").value = ""; showTitle();
     };
   })();
 

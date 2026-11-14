@@ -967,3 +967,5 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 .cheat { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 0; }
 .cheat input { flex: 1; min-width: 140px; background: #121214; border: 1px solid #3a3424; color: #c9b27a; border-radius: 4px; padding: 6px 8px; font: inherit; }
 #cheat-msg { color: #c9b27a; flex-basis: 100%; }
+#title .more-pop .cheat { padding: 4px 6px 8px; }
+#title .more-pop .cheat input { min-width: 120px; }

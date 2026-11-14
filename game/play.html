@@ -94,15 +94,14 @@
         <button id="btn-one" data-thing="часы" class="choice main-cta ghost-choice one-life" hidden><span class="cta-l">Одна жизнь</span><small id="one-sub" class="mono">как у всех людей: одна смерть, и отката нет</small></button>
         <p id="title-line" class="progress-line mono tiny"></p>
         <nav class="menu-list" aria-label="Разделы">
+          <button id="btn-howto2" data-thing="настольная лампа" class="mitem"><span class="m-t">О чём игра</span><span class="m-s">Эверетт, квантовое бессмертие и правила дара</span></button>
           <button id="btn-journal2" data-thing="камертон" class="mitem"><span class="m-t">Тетрадь Хора</span><span class="m-s">все, кем я был и кто не вернулся</span><span class="m-n mono" id="m-journal"></span></button>
           <button id="btn-flow2" data-thing="окно" class="mitem"><span class="m-t">Моя жизнь</span><span class="m-s">все развилки: что прожито, а что ещё в тумане</span><span class="m-n mono" id="m-flow"></span></button>
           <button id="btn-guide2" data-thing="шахтёрская лампа" class="mitem"><span class="m-t">Пути</span><span class="m-s">дороги к финалам, где я уже был или куда иду</span><span class="m-n mono" id="m-guide"></span></button>
           <button id="btn-lore2" class="mitem"><span class="m-t">Письмо деда</span><span class="m-s">что на самом деле происходит. Все разгадки</span><span class="m-n mono" id="m-lore"></span></button>
-          <button id="btn-howto2" data-thing="настольная лампа" class="mitem"><span class="m-t">О чём игра</span><span class="m-s">Эверетт, квантовое бессмертие и правила дара</span></button>
           <button id="btn-dlc" data-thing="письмо «Коле»" class="mitem"><span class="m-t">Дополнение · «Объяснение»</span><span class="m-s">ночь без откатов: успеть спасти троих, расплачиваясь невероятностью</span><span class="m-n mono">DLC</span></button>
         </nav>
         <nav id="dev-menu" class="menu-list dev-menu" aria-label="Режим автора" hidden>
-          <form id="cheat-form" class="cheat mono" autocomplete="off"><input id="cheat-in" type="text" placeholder="чит-код" aria-label="Чит-код" spellcheck="false"><button class="set-btn" type="submit">ввести</button><span id="cheat-msg" class="tiny"></span></form>
           <button id="btn-devjump" class="mitem"><span class="m-t">⚙ Прыжок в сцену</span><span class="m-s">любая сцена со статами под выбранную историю</span></button>
           <button id="btn-devstate" class="mitem"><span class="m-t">⚙ Состояние</span><span class="m-s">все переменные и флаги: где ставятся и читаются</span></button>
           <button id="btn-devplayers" class="mitem"><span class="m-t">⚙ Статистика игроков</span><span class="m-s">где бросают, редкие выборы, финалы, смерти</span></button>
@@ -112,7 +111,8 @@
           <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-about2" class="set-btn">об игре и помощь</button><span class="dot-sep" aria-hidden="true">·</span><details class="more"><summary class="set-btn">ещё…</summary><div class="more-pop">
             <button id="btn-export" class="set-btn">сохранить прогресс в файл</button>
             <button id="btn-import" class="set-btn">загрузить из файла</button>
-            <button id="btn-dev" class="set-btn" aria-pressed="false">режим автора: выкл</button>
+            <form id="cheat-form" class="cheat mono" autocomplete="off"><input id="cheat-in" type="text" placeholder="код" aria-label="Код" spellcheck="false"><button class="set-btn" type="submit">ввести</button><span id="cheat-msg" class="tiny"></span></form>
+            <button id="btn-dev" class="set-btn" aria-pressed="false" hidden>режим автора: выкл</button>
             <button id="btn-analytics" class="set-btn" aria-pressed="false" hidden>аналитика: выкл</button>
             <button id="btn-wipe" class="set-btn wipe">начать всё заново (стереть прогресс)</button>
           </div></details>
@@ -266,7 +266,7 @@
     </div>
   </section>
 
-  <!-- лор голосом деда: открывается при 60 % концов -->
+  <!-- лор голосом деда: открывается при 60 % финалов -->
   <section id="lore" class="screen panel" hidden>
     <button class="close ghost">×</button>
     <div class="notebook lore-letter">
