@@ -2335,7 +2335,7 @@
   }
   function closeCredits() { if (crBack === "#scene" && S) show("#scene"); else showTitle(); }
   (function initCredits() {
-    const b = $("#btn-credits"); if (b) b.onclick = () => showCredits("#title");
+    const b = $("#btn-credits"); if (b) b.onclick = () => { const d = b.closest("details"); if (d) d.open = false; showCredits("#title"); };
     $("#credits-close").onclick = (e) => { e.stopPropagation(); closeCredits(); };
     $("#cr-roll").onclick = () => $("#cr-roll").classList.toggle("paused");
   })();
