@@ -263,11 +263,11 @@ def parse_blocks(body, cfg):
 
     for line in body.splitlines():
         s = line.strip()
-        if "::" in s and not s.startswith("::") and re.search(r"::(if|drift|fate|end|chorus|norewind)\b", s):
+        if "::" in s and not s.startswith("::") and re.search(r"::(if|drift|fate|body|end|chorus|norewind)\b", s):
             raise QQError(f"директива не в начале строки: «{s[:60]}…»")
         if s.startswith("::end") and s != "::end":
             raise QQError(f"текст после ::end в той же строке: «{s[:60]}»")
-        if s.startswith("::if ") or s.startswith("::drift ") or s.startswith("::fate "):
+        if s.startswith(("::if ", "::drift ", "::fate ", "::body ")):
             if cond is not None:
                 raise QQError(f"вложенный ::if не поддерживается: «{s[:60]}» (объедини условия через &&)")
             flush()
@@ -275,6 +275,8 @@ def parse_blocks(body, cfg):
             cond = {"if": parse_expr(expr, cfg)}
             if kind == "drift":
                 cond["drift"] = True
+            elif kind == "body":  # тело помнит смерть этой жизни: метка «◌ тело помнит»
+                cond["body"] = True
             elif kind == "fate":  # тяжёлое последствие прошлого выбора: метка «в другом мире всё было не так»
                 cond["fate"] = True
         elif s == "::end":
