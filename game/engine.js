@@ -2154,26 +2154,13 @@
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   // вступление: теория и крючок до меню, каждый запуск (тесты и режим автора — сразу в меню)
   function showIntro() {
-    const n = document.querySelectorAll("#intro .islide").length;
-    let k = 0;
-    const seen = !!meta.introSeen;
-    $("#intro-skip").hidden = !seen;
-    const go = (i) => {
-      k = i;
-      document.querySelectorAll("#intro .islide").forEach((el) => (el.hidden = +el.dataset.k !== k));
-      document.querySelectorAll("#intro .idots i").forEach((el, j) => el.classList.toggle("on", j === k));
-      document.body.classList.toggle("itext", k > 0); // на текстовых слайдах фон-картинка приглушена, чтобы не лезла под буквы
-      $("#intro-next .cta-l").textContent = k === 0 ? "Начать" : k === n - 1 ? "В меню" : "Дальше";
-      window.scrollTo(0, 0);
-    };
     const done = () => { document.body.classList.remove("itext"); meta.introSeen = true; saveMeta(); document.removeEventListener("keydown", key); showTitle(); };
-    const next = () => { if (k === 0 && window.QQM) QQM.setMuted(!snd.on()); if (k < n - 1) go(k + 1); else done(); }; // первый тап — жест: браузер разрешает музыку
-    const key = (e) => { if ($("#intro").hidden) return; if (e.key === "Enter" || e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); } else if (e.key === "ArrowLeft" && k > 0) go(k - 1); else if (e.key === "Escape" && seen) done(); };
-    $("#intro-next").onclick = next;
-    $("#intro-skip").onclick = done;
+    const key = (e) => { if ($("#intro").hidden) return; if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); done(); } };
+    $("#intro-next .cta-l").textContent = "В меню";
+    $("#intro-next").onclick = done; // этот тап — жест: браузер разрешает музыку, тема меню стартует сразу
     document.addEventListener("keydown", key);
     show("#intro");
-    go(0);
+    document.body.classList.add("itext"); // фон-картинка приглушена, чтобы не лезла под буквы
   }
   $("#btn-intro-again").onclick = () => showIntro();
   if (/[?&](debug|dev|nointro)\b/.test(location.search)) showTitle(); else showIntro();

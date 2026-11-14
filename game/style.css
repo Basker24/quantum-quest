@@ -724,3 +724,11 @@ body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-im
 #intro.itext ~ * #bg, body.itext #bg { opacity: .22 !important; transition: opacity .8s; }
 #bar .ghost { white-space: nowrap; }
 @media (max-width: 360px) { #bar .ghost { padding: 4px 10px; } }
+/* вступление — один экран: кнопка всегда под рукой, текст плотнее */
+#intro { padding: 40px 0 0; justify-content: flex-start; }
+#intro .islide p { font-size: 17px; line-height: 1.55; margin-bottom: .8em; }
+#intro .islide .ilead { font-size: 20px; line-height: 1.4; }
+#intro .islide .rules { margin: 0; }
+#intro .islide .rules li { margin-bottom: .5em; }
+.intro-nav { position: sticky; bottom: 0; margin-top: 8px; padding: 28px 0 20px; background: linear-gradient(transparent, var(--bg) 45%); }
+@media (max-width: 480px) { #intro .islide p { font-size: 16px; } #intro .islide .ilead { font-size: 18px; } #intro { padding-top: 28px; } }
