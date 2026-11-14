@@ -969,3 +969,35 @@ body[data-screen="title"] #app { max-width: none; padding: 0; }
 #cheat-msg { color: #c9b27a; flex-basis: 100%; }
 #title .more-pop .cheat { padding: 4px 6px 8px; }
 #title .more-pop .cheat input { min-width: 120px; }
+
+/* ================= титул v4: неподвижная картина, меню наезжает листом (решение автора 14.11) ================= */
+body[data-screen="title"] #app { max-width: none; padding: 0; }
+body[data-screen="title"] #title .still { position: fixed; inset: 0; width: auto; height: auto; z-index: 0; overflow: hidden; display: block; }
+body[data-screen="title"] #title .still::after { display: none; }
+body[data-screen="title"] #title .still-amb { display: none; }
+/* «cover» вручную: рамка в пропорциях картины, со сдвигом к предметам, но без пустых полос */
+body[data-screen="title"] #title .still-crop {
+  --ar: .6667; --fx: .46; --fy: .55;
+  --fw: max(100vw, calc(100vh * var(--ar))); --fh: calc(var(--fw) / var(--ar));
+  position: absolute; width: var(--fw); height: var(--fh); aspect-ratio: auto; max-height: none; margin: 0; transform: none;
+  left: clamp(calc(100vw - var(--fw)), calc(50vw - var(--fw) * var(--fx)), 0px);
+  top: clamp(calc(100vh - var(--fh)), calc(50vh - var(--fh) * var(--fy)), 0px);
+  -webkit-mask-image: none; mask-image: none; }
+@media (min-width: 900px) and (orientation: landscape) {
+  body[data-screen="title"] #title .still-crop { --ar: 1.5; --fx: .62; --fy: .5; right: auto; }
+}
+body[data-screen="title"] #title .still-frame, body[data-screen="title"] #title .still-frame > picture img, body[data-screen="title"] #title .still-spot img { width: 100%; height: 100%; object-fit: fill; }
+body[data-screen="title"] #title { display: block; min-height: 0; }
+body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; display: block; width: auto; min-height: 0; margin: 0 !important; padding: 0 !important; gap: 0; pointer-events: none; }
+#title .hero { height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0 16px 28px; box-sizing: border-box; }
+#title .hero-cta { width: min(420px, 100%); pointer-events: auto; }
+#title .hero-cta .main-cta { width: 100%; box-shadow: 0 14px 40px rgba(0,0,0,.6); background: linear-gradient(90deg, rgba(58,42,20,.92), rgba(20,16,12,.9) 80%); backdrop-filter: blur(6px); }
+#title .hero-cue { margin: 14px 0 0; font-size: 11px; letter-spacing: .2em; color: rgba(233,228,218,.55); text-shadow: 0 1px 8px #000; animation: cue 2.6s ease-in-out infinite; }
+@keyframes cue { 0%, 100% { transform: translateY(0); opacity: .55; } 50% { transform: translateY(5px); opacity: .9; } }
+#title .sheet { pointer-events: auto; position: relative; max-width: 560px; margin: 0 auto; padding: 48px max(20px, env(safe-area-inset-left, 0px)) 56px; display: flex; flex-direction: column; gap: 18px;
+  background: linear-gradient(rgba(9,8,8,0), rgba(9,8,8,.88) 70px, rgba(9,8,8,.94)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px 14px 0 0; min-height: 70vh; }
+#title .sheet .title-head .sub { display: block; }
+#title .sheet h1 { white-space: normal; }
+#title .cta-float { display: none !important; }
+@media (prefers-reduced-motion: reduce) { #title .hero-cue { animation: none; } }

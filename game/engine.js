@@ -2180,7 +2180,7 @@
     devTitle();
     syncStill();
     bootTitle();
-    if (window.qqFloat) qqFloat();
+    placeHero();
   }
   let oneArmed = null;
   function disarmNew() {
@@ -2294,6 +2294,17 @@
       c[1](); saveMeta(); m.textContent = "✓ " + c[0] + (k === "регент" ? (devOn ? ": вкл" : ": выкл") : ""); $("#cheat-in").value = ""; showTitle();
     };
   })();
+
+  // ---------- первый экран: картина и одна главная кнопка (первый запуск — «Новая жизнь», дальше — «Продолжить»)
+  function placeHero() {
+    const hero = $("#hero-cta"), menu = $("#title .menu"); if (!hero || !menu) return;
+    const cont = $("#btn-continue"), nw = $("#btn-new");
+    const main = cont && !cont.hidden ? cont : nw;
+    // вернуть обе кнопки в меню на свои места, потом главную — на картину
+    if (cont.parentElement !== menu) menu.prepend(cont);
+    if (nw.parentElement !== menu) cont.after(nw);
+    hero.append(main);
+  }
 
   // ---------- натюрморт в меню: пункт ↔ предмет на столе
   // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
