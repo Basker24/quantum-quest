@@ -22,27 +22,39 @@
   .card h2 { font-size:1rem; margin:0 0 4px; }
   .scenes { color:var(--dim); font-size:.82rem; margin:0 0 8px; }
   .desc { font-size:.9rem; margin:0 0 10px; color:#b9c2d0; }
-  audio { width:100%; height:36px; }
+  .made { font-size:.8rem; margin:8px 0 10px; color:var(--text); }
+  .made b { color:var(--accent); font-weight:600; }
   .meta { color:var(--dim); font-size:.75rem; margin-top:6px; }
   .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+
+  /* кастомный плеер: перемотка по нажатию на прогресс */
+  .player { display:flex; align-items:center; gap:10px; }
+  .pp { flex:0 0 34px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(201,162,39,.5);
+        background:transparent; color:var(--accent); font-size:14px; cursor:pointer; padding:0; }
+  .bar { flex:1; height:22px; display:flex; align-items:center; cursor:pointer; }
+  .track { width:100%; height:6px; border-radius:3px; background:#2a3140; position:relative; }
+  .fill { position:absolute; left:0; top:0; height:100%; width:0; border-radius:3px; background:var(--accent); }
+  .time { flex:0 0 auto; font-size:.72rem; color:var(--dim); font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>🎵 Quantum Quest — музыка по зонам</h1>
   <p class="sub">Все зоны — вариации тем Николая (o2 pt1-2, Only Space, Big Nothing) через Suno Cover V6.
-  В игре: <a href="/">играть</a> — трек ветки играет непрерывно через её сцены, рвётся стингером на смерти,
-  после отката возвращается; между ветками — кроссфейд.</p>
+  Под каждым треком — <b>«Сделана из»</b>. Прогресс-бар кликабелен: нажми в любое место — перемотает.
+  В игре: <a href="/">играть</a> — трек ветки играет непрерывно через её сцены, рвётся стингером на смерти, между ветками — кроссфейд.</p>
 
   <h3>Лицо игры</h3>
   <div class="card">
     <span class="tag">З1 · меню · титул · заводь-ночь · Я-01</span>
     <h2>Заводь-ночь 2061</h2>
-    <audio controls preload="none" src="music/suno_z1_v1.mp3"></audio>
+    <p class="desc">Колокол, хор, туман — тревожная торжественность.</p>
+    <p class="made">Сделана из: <b>o2 pt1-2</b> — тема 30–60 с</p>
+    <div class="player" data-src="music/suno_z1_v1.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     <p class="meta">вариант 1 · 54 с · G минор 144 BPM · хрома 0.94</p>
-    <audio controls preload="none" src="music/suno_z1_v2.mp3"></audio>
-    <p class="meta">вариант 2 (дубль того же запроса)</p>
+    <div class="player" data-src="music/suno_z1_v2.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+    <p class="meta">вариант 2 — дубль того же запроса</p>
   </div>
 
   <h3>Ствол 1996–2007</h3>
@@ -51,13 +63,15 @@
       <span class="tag">Заводь · под водой</span>
       <h2>Т-01 · Т-02 · Т-02б</h2>
       <p class="desc">Приглушённый подводный свет, гул, музыкальная шкатулка, счёт до 252.</p>
-      <audio controls preload="none" src="music/suno_z2.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — интро 0–30 с</p>
+      <div class="player" data-src="music/suno_z2.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">Двор 90-х</span>
       <h2>Т-03…Т-10</h2>
       <p class="desc">Солнце, река, велосипед — детство без тревоги.</p>
-      <audio controls preload="none" src="music/suno_z3.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — интро 0–30 с</p>
+      <div class="player" data-src="music/suno_z3.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
   </div>
 
@@ -67,43 +81,50 @@
       <span class="tag">В1 «Лампа»</span>
       <h2>Шахта «Глубокая»</h2>
       <p class="desc">Пульс, металл, тикающий метроном 04:12.</p>
-      <audio controls preload="none" src="music/suno_z5.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — кульминация 140–170 с</p>
+      <div class="player" data-src="music/suno_z5.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В2 «Протокол»</span>
       <h2>Лаборатория, ТГУ</h2>
       <p class="desc">Холодный секвенсор, стеклянные пэды, научное напряжение.</p>
-      <audio controls preload="none" src="music/suno_z14.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — кульминация 140–170 с</p>
+      <div class="player" data-src="music/suno_z14.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В3 «Партия»</span>
       <h2>Север: Шория, Якутия</h2>
       <p class="desc">Флейта над струнами, ледяные колокольчики, ветер.</p>
-      <audio controls preload="none" src="music/suno_z6.mp3"></audio>
+      <p class="made">Сделана из: <b>Only Space</b> — 30–60 с</p>
+      <div class="player" data-src="music/suno_z6.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В4 «Барабан»</span>
       <h2>Улица, казино Шадрина</h2>
       <p class="desc">Расстроенная шкатулка, шёпоты в стыке, дрейф.</p>
-      <audio controls preload="none" src="music/suno_z8.mp3"></audio>
+      <p class="made">Сделана из: <b>Big Nothing</b> — пик 130–160 с</p>
+      <div class="player" data-src="music/suno_z8.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В5 «Тёплая вода»</span>
       <h2>Море: Ко Тао, Плой</h2>
       <p class="desc">Нейлон-гитара, мариамба, полнолуние и невидимая медуза.</p>
-      <audio controls preload="none" src="music/suno_z7.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — тема 30–60 с</p>
+      <div class="player" data-src="music/suno_z7.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В6 «Хор»</span>
       <h2>Скит старца Серафима</h2>
       <p class="desc">Монашеский хор-гул, далёкие колокола, священный ужас.</p>
-      <audio controls preload="none" src="music/suno_z15.mp3"></audio>
+      <p class="made">Сделана из: <b>Big Nothing</b> — пик 130–160 с</p>
+      <div class="player" data-src="music/suno_z15.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">В7 «Обычная жизнь»</span>
       <h2>Рудничный: дом, баня, дети</h2>
       <p class="desc">Тихий фортепианный вечер, кухня, тонкая трещина под теплом.</p>
-      <audio controls preload="none" src="music/suno_z16.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — интро 0–30 с</p>
+      <div class="player" data-src="music/suno_z16.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
   </div>
 
@@ -113,47 +134,115 @@
       <span class="tag">Якорь · Я-01…Я-03</span>
       <h2>Шов: петля замыкается</h2>
       <p class="desc">Струны над гитарой, колокола, ночь и полдень разом.</p>
-      <audio controls preload="none" src="music/suno_z9.mp3"></audio>
+      <p class="made">Сделана из: <b>Only Space</b> — 30–60 с</p>
+      <div class="player" data-src="music/suno_z9.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">Стингер · все смерти</span>
       <h2>Смерть и откат</h2>
       <p class="desc">Резкий холод, 10 секунд, фон приглушается.</p>
-      <audio controls preload="none" src="music/suno_z4.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — тема 30–60 с (стингер-обработка)</p>
+      <div class="player" data-src="music/suno_z4.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">Тупики · К-01…К-12</span>
       <h2>Никто не пришёл к заводи</h2>
       <p class="desc">Умирающая шкатулка, пустая комната, обрыв на полуслове.</p>
-      <audio controls preload="none" src="music/suno_z10.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — интро 0–30 с</p>
+      <div class="player" data-src="music/suno_z10.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">Ф-02 · Ф-03 · Ф-04</span>
       <h2>Финалы светлые</h2>
       <p class="desc">Свет, «пошли домой», утро над рекой.</p>
-      <audio controls preload="none" src="music/suno_z11.mp3"></audio>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — тема 30–60 с</p>
+      <div class="player" data-src="music/suno_z11.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
       <span class="tag">Ф-01 · Ф-05 · Ф-06</span>
       <h2>Финалы вечные</h2>
       <p class="desc">Бесконечный дрейф: гитара над эфирными пэдами, без разрешения.</p>
-      <audio controls preload="none" src="music/suno_z12.mp3"></audio>
+      <p class="made">Сделана из: <b>Only Space</b> — 30–60 с</p>
+      <div class="player" data-src="music/suno_z12.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
     </div>
     <div class="card">
-      <span class="tag">DLC «Объяснение»</span>
-      <h2>Ночь без откатов</h2>
-      <p class="desc">Тиканье часов, ночная спешка, трое к рассвету.</p>
-      <audio controls preload="none" src="music/suno_z13.mp3"></audio>
-    <p class="meta">тёмная (o2-основа) · 299 с · бас 91%, яркость 1281 Гц</p>
-    <audio controls preload="none" src="music/suno_z13_bn.mp3"></audio>
-    <p class="meta">вариант из «Big Nothing» · 300 с · монотонный пульс 81 BPM — выбрать ушами</p>
-    <audio controls preload="none" src="music/suno_z13_bnchorus.mp3"></audio>
-    <p class="meta">v3: припев «Big Nothing» как референс, без клавиш (negativeTags) · 233 с</p>
-    <audio controls preload="none" src="music/suno_z13_bn_intro50.mp3"></audio>
-    <p class="meta">вариант Б: только идеальное вступление, луп 50 с</p>
+      <span class="tag">DLC «Объяснение» · в игре</span>
+      <h2>Ночь без откатов — тёмная</h2>
+      <p class="desc">Бас 91%, яркость 1281 Гц — тёмное ровное давление.</p>
+      <p class="made">Сделана из: <b>o2 pt1-2</b> — тема 30–60 с</p>
+      <div class="player" data-src="music/suno_z13.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+      <p class="meta">299 с</p>
+    </div>
+  </div>
+
+  <h3>DLC — варианты на выбор (уши автора)</h3>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">Вариант · Big Nothing</span>
+      <h2>Куплет → пульс 81 BPM</h2>
+      <p class="desc">Монотонный драйв с клавишными вставками.</p>
+      <p class="made">Сделана из: <b>Big Nothing</b> — куплет 20–50 с</p>
+      <div class="player" data-src="music/suno_z13_bn.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+      <p class="meta">300 с</p>
+    </div>
+    <div class="card">
+      <span class="tag">Вариант · BN припев, без клавиш</span>
+      <h2>Припев → главный рифф</h2>
+      <p class="desc">Референс — припев 130–160 с, клавиши запрещены (negativeTags), вес мотива 0.9.</p>
+      <p class="made">Сделана из: <b>Big Nothing</b> — припев 130–160 с</p>
+      <div class="player" data-src="music/suno_z13_bnchorus.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+      <p class="meta">233 с</p>
+    </div>
+    <div class="card">
+      <span class="tag">Вариант Б · луп вступления</span>
+      <h2>Только идеальное вступление</h2>
+      <p class="desc">Первые 50 с версии Big Nothing, мягкие фейды для бесшовного цикла.</p>
+      <p class="made">Сделана из: <b>Big Nothing</b> — куплет, первые 50 с той же генерации</p>
+      <div class="player" data-src="music/suno_z13_bn_intro50.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+      <p class="meta">50 с · прокрутится ~6 раз за сессию DLC</p>
     </div>
   </div>
 
 </div>
+<script>
+(function () {
+  let active = null, activeBtn = null;
+  const fmt = (s) => { s = Math.floor(s || 0); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  document.querySelectorAll(".player").forEach((box) => {
+    const pp = box.querySelector(".pp"), bar = box.querySelector(".bar"),
+          fill = box.querySelector(".fill"), tm = box.querySelector(".time");
+    let audio = null;
+    const ensure = () => {
+      if (!audio) {
+        audio = new Audio(box.dataset.src);
+        audio.preload = "none";
+        audio.addEventListener("timeupdate", tick);
+        audio.addEventListener("loadedmetadata", tick);
+        audio.addEventListener("ended", () => { pp.textContent = "▶"; fill.style.width = "0"; });
+      }
+      return audio;
+    };
+    const tick = () => {
+      const d = audio.duration || 0;
+      fill.style.width = (d ? audio.currentTime / d * 100 : 0) + "%";
+      tm.textContent = fmt(audio.currentTime) + (d ? " / " + fmt(d) : "");
+    };
+    pp.addEventListener("click", () => {
+      const a = ensure();
+      if (a.paused) {
+        if (active && active !== a) { active.pause(); if (activeBtn) activeBtn.textContent = "▶"; }
+        a.play(); pp.textContent = "⏸"; active = a; activeBtn = pp;
+      } else { a.pause(); pp.textContent = "▶"; }
+    });
+    bar.addEventListener("click", (e) => {
+      const a = ensure();
+      const r = bar.getBoundingClientRect();
+      const k = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      const apply = () => { a.currentTime = k * (a.duration || 0); tick(); };
+      if (a.readyState >= 1) apply(); else { a.addEventListener("loadedmetadata", apply, { once: true }); a.load(); }
+    });
+  });
+})();
+</script>
 </body>
 </html>
