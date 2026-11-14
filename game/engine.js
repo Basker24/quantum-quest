@@ -778,7 +778,7 @@
     if (too.size) parts.push("слишком много " + [...too].map((n) => TOO[n] || n).join(" и "));
     if (bond) parts.push("не хватает близости");
     if (drift) parts.push("мир слишком сдвинулся");
-    if (driftLow) parts.push("мир ещё слишком на месте");
+    if (driftLow) parts.push("мир ещё не сдвинулся");
     if (kinds) parts.push("Хор ещё не знает столько смертей");
     if (lives) parts.push("Хор ещё не прожил столько жизней");
     if (flags && !parts.length) parts.push("в этой жизни этого не было");
