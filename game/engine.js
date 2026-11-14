@@ -372,7 +372,7 @@
     meta.milestones = meta.milestones || {};
     const firstTime = !meta.milestones[name];
     if (firstTime) { meta.milestones[name] = new Date().toISOString().slice(0, 10); saveMeta(); }
-    try { if (C.metrika_id && typeof window.ym === "function") window.ym(+C.metrika_id, "reachGoal", name, { first: firstTime }); } catch (e) { /* аналитика не должна ломать игру */ }
+    try { if (C.metrika_id && meta.analytics === true && typeof window.ym === "function") window.ym(+C.metrika_id, "reachGoal", name, { first: firstTime }); } catch (e) { /* аналитика не должна ломать игру */ }
   }
   function milestoneFor(id, sc) {
     if (id === "Т-02б") milestone("root");
@@ -381,15 +381,28 @@
     else if (sc.stage === "final") milestone(id.startsWith("⊣") ? "deadend" : "final_" + id);
     else if (/^В[\d.]+-01$/.test(id) || id === "В2.1-00" || id === "В2.2-00" || id === "В1.2-00") milestone("life_" + id.split("-")[0]);
   }
-  (function loadMetrika() {
-    if (!C.metrika_id) return;
+  function loadMetrika() {
+    if (!C.metrika_id || meta.analytics !== true || window.__ymLoaded) return; // только после согласия игрока (152-ФЗ)
+    window.__ymLoaded = true;
     try {
       window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); };
       window.ym.l = +new Date();
       const sc = document.createElement("script"); sc.async = true; sc.src = "https://mc.yandex.ru/metrika/tag.js"; document.head.append(sc);
       window.ym(+C.metrika_id, "init", { clickmap: false, trackLinks: true, accurateTrackBounce: true, webvisor: false });
     } catch (e) { /* без аналитики */ }
-  })();
+  }
+  loadMetrika();
+  function analyticsUi() {
+    const has = !!C.metrika_id, b = $("#btn-analytics"), c = $("#consent");
+    if (b) { b.hidden = !has; b.textContent = "аналитика: " + (meta.analytics === true ? "вкл" : "выкл"); b.setAttribute("aria-pressed", String(meta.analytics === true)); }
+    if (c) c.hidden = !has || meta.analytics != null;
+    const pn = $("#privacy-note"); if (pn) pn.hidden = !has;
+  }
+  const setAnalytics = (on) => { meta.analytics = on; saveMeta(); if (on) loadMetrika(); else if (window.__ymLoaded) location.reload(); analyticsUi(); };
+  $("#consent-yes").onclick = () => setAnalytics(true);
+  $("#consent-no").onclick = () => setAnalytics(false);
+  $("#btn-analytics").onclick = () => setAnalytics(meta.analytics !== true);
+  analyticsUi();
 
   function enter(id, restored) {
     const sc = G.scenes[id];

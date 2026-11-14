@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Тот, кто остался</title>
 <meta name="theme-color" content="#0d0d0f">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Mono&family=PT+Serif+Caption&family=Marck+Script&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -56,11 +55,13 @@
           <button id="btn-about2" class="set-btn">об игре и помощь</button>
           <button id="btn-export" class="set-btn">сохранить прогресс в файл</button>
           <button id="btn-import" class="set-btn">загрузить из файла</button>
+          <button id="btn-analytics" class="set-btn" aria-pressed="false" hidden>аналитика: выкл</button>
           <input id="import-file" type="file" accept=".json,application/json" hidden>
         </div>
         <p id="io-msg" class="io-msg mono tiny" hidden></p>
+        <p id="consent" class="consent mono tiny" hidden>Можно я посчитаю, где игроки бросают игру? Обезличенно, через Яндекс Метрику. <button class="link" id="consent-yes">разрешить</button> · <button class="link" id="consent-no">нет</button></p>
       </div>
-      <p class="warn">16+. В игре есть сцены смерти, утраты и опасности. Если тебе сейчас тяжело, в разделе «Об игре и помощь» есть телефоны, по которым ответят.</p>
+      <p class="warn">16+. В игре есть смерть, в том числе ребёнка, мысли о самоубийстве, психическое расстройство и отказ от лечения, азартная игра со смертельным исходом, шахтные катастрофы и вымышленная война. Если тебе сейчас тяжело, в разделе «Об игре и помощь» есть телефоны, по которым ответят.</p>
     </div>
   </section>
 
@@ -229,7 +230,10 @@
     <button class="close ghost">×</button>
     <h2>Об игре и помощь</h2>
     <p>Это история об одной обычной жизни, в которой нельзя умереть. Смерть в игре не наказание и не совет. Это память о тех, кто не вернулся, и о тех, кто их ждал.</p>
-    <p>Если тебе сейчас плохо и хочется поговорить: детский телефон доверия <b>8-800-2000-122</b> (бесплатно, по России), международный каталог служб помощи — <b>findahelpline.com</b>.</p>
+    <p>Если тебе сейчас плохо и хочется поговорить: телефон доверия для взрослых <b>8-800-333-44-34</b>, детский телефон доверия <b>8-800-2000-122</b> (оба бесплатно, по России), экстренные службы — <b>112</b>, международный каталог служб помощи — <b>findahelpline.com</b>.</p>
+    <p>Голоса, дар и откаты в игре вымышлены. В жизни не отменяй лекарства без врача.</p>
+    <p>Все персонажи, шахты, организации, «Орфей», «второй шанс», «Ставка» и все события после 2026 года вымышлены. Совпадения с реальными людьми, предприятиями и государствами случайны.</p>
+    <p id="privacy-note" class="tiny">Игра не просит имени, почты и регистрации. Прогресс хранится только в твоём браузере и в файле, который ты сам сохраняешь. Аналитика (Яндекс Метрика) включается только если ты её разрешишь: тогда Яндекс получит обезличенные сведения о посещении — идентификатор cookie, IP-адрес, тип устройства и браузера, какие главы и финалы открыты. Это нужно, чтобы понять, где игроки бросают игру. Выключить можно кнопкой «аналитика» в меню или очисткой данных сайта.</p>
   </section>
 </div>
 <script src="graph.js"></script>

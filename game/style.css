@@ -695,3 +695,6 @@ body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-im
 /* поделиться надгробием */
 .tomb-share { text-align: center; margin: 10px 0 0; font-size: 13px; }
 .tomb-share .share-row { color: var(--dim); }
+
+/* согласие на аналитику */
+.consent { margin: 10px 0 0; color: var(--dim); }

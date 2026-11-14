@@ -1,0 +1,7 @@
+Шрифты в этой папке распространяются по лицензии SIL Open Font License, Version 1.1.
+https://openfontlicense.org/open-font-license-official-text/
+
+PT Serif, PT Serif Caption, PT Mono — Copyright (c) 2010 ParaType Inc., ParaType Ltd. (http://www.paratype.com/public), with Reserved Font Names "PT Sans", "PT Serif" and "ParaType".
+Marck Script — Copyright (c) 2011 Denis Masharov, with Reserved Font Name "Marck Script".
+
+Файлы скачаны из Google Fonts без изменений (подмножества cyrillic, cyrillic-ext, latin).
