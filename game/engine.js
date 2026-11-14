@@ -318,7 +318,7 @@
     for (const s of screens) $(s).hidden = s !== id;
     $("#bar").hidden = id !== "#scene";
     document.body.dataset.screen = id.slice(1);
-    bgMode(id === "#title" || id === "#intro" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
+    bgMode(id === "#intro" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
     snd.screen(id);
     if (window.QQM) { QQM.setMuted(!snd.on()); QQM.screen(id); } // меню-тема на титуле; сначала узнать, включён ли звук
     window.scrollTo(0, 0);
@@ -1818,21 +1818,6 @@
     cx.strokeStyle = g; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(kx, ky); cx.lineTo(kx - w * 0.55, ky + h * 0.22); cx.stroke();
     cx.lineWidth = 1; cx.beginPath(); cx.moveTo(kx, ky); cx.lineTo(kx - w * 0.5, ky + h * 0.27); cx.stroke();
     cx.fillStyle = "rgba(240,248,255,.9)"; cx.beginPath(); cx.arc(kx, ky, 2.4, 0, Math.PI * 2); cx.fill();
-    // заводь и круги
-    const wide = w >= 960, px = wide ? w * 0.3 : w * 0.5, py = h * (wide ? 0.88 : 0.94), rx = Math.min(w * (wide ? 0.26 : 0.46), 340), ry = rx * 0.18;
-    cx.fillStyle = "#050506"; cx.beginPath(); cx.ellipse(px, py, rx, ry, 0, 0, Math.PI * 2); cx.fill();
-    for (let k = 0; k < 3; k++) {
-      const ph = ((t / 4.5) + k / 3) % 1;
-      cx.strokeStyle = `rgba(110,150,148,${0.35 * (1 - ph)})`; cx.lineWidth = 1;
-      cx.beginPath(); cx.ellipse(px + rx * 0.35, py - ry * 0.1, rx * 0.12 + ph * rx * 0.55, ry * 0.12 + ph * ry * 0.55, 0, 0, Math.PI * 2); cx.stroke();
-    }
-    // коряга-рука
-    cx.strokeStyle = "rgba(232,226,210,.8)"; cx.lineCap = "round";
-    const bx = px + rx * 0.35, by = py - ry * 0.15;
-    const sway = Math.sin(t * 0.7) * 1.5;
-    const br = (x1, y1, x2, y2, lw) => { cx.lineWidth = lw; cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2 + sway, y2); cx.stroke(); };
-    br(bx, by, bx - 6, by - 46, 4); br(bx - 5, by - 40, bx - 20, by - 62, 2.5); br(bx - 5, by - 42, bx - 4, by - 70, 2.2);
-    br(bx - 5, by - 40, bx + 10, by - 64, 2.2); br(bx - 3, by - 30, bx + 16, by - 44, 1.8);
   }
   function drawDust(t, w, h) {
     const era = document.body.dataset.era;
@@ -2073,6 +2058,8 @@
     $("#m-guide").textContent = `${seenE}/${ends.length}`;
     soundBtn();
     devTitle();
+    syncStill();
+    bootTitle();
   }
   let oneArmed = null;
   function disarmNew() {
@@ -2089,7 +2076,7 @@
   // ---------- кнопки
   // при живом сохранении «Новая жизнь» просит второе нажатие: первое только предупреждает
   $("#btn-new").onclick = () => {
-    if (!savedLife() || newArmed) { disarmNew(); return newLife(); }
+    if (!savedLife() || newArmed) { disarmNew(); return leaveTitle(() => newLife()); }
     $("#btn-new").classList.add("armed");
     $("#btn-new .cta-l").textContent = "Начать заново?";
     $("#new-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и «Моя жизнь» останутся";
@@ -2097,13 +2084,13 @@
   };
   // «Одна жизнь»: новая игра без отката; при живом сохранении — тоже второе нажатие
   $("#btn-one").onclick = () => {
-    if (!savedLife() || oneArmed) { disarmNew(); return newLife(true); }
+    if (!savedLife() || oneArmed) { disarmNew(); return leaveTitle(() => newLife(true)); }
     $("#btn-one").classList.add("armed");
     $("#btn-one .cta-l").textContent = "Начать одну жизнь?";
     $("#one-sub").textContent = "нажми ещё раз: эта жизнь оборвётся, Хор и «Моя жизнь» останутся";
     oneArmed = setTimeout(disarmNew, 5000);
   };
-  $("#btn-continue").onclick = () => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } };
+  $("#btn-continue").onclick = () => leaveTitle(() => { S = store.get(SAVE, null); if (S) { S.year = S.year || null; if (S.pending) resumeAfter(); else enter(S.scene, true); } });
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"]])
     $(btn).onclick = () => openPanel(panel);
   $("#btn-quit").onclick = showTitle;
@@ -2152,6 +2139,74 @@
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
+  // ---------- натюрморт в меню: пункт ↔ предмет на столе
+  // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
+  let leaving = false;
+  function leaveTitle(go) {
+    if (leaving) return;
+    const t = $("#title");
+    if (REDUCED || t.hidden) return go();
+    leaving = true; t.classList.add("leaving");
+    setTimeout(() => { leaving = false; go(); t.classList.remove("leaving"); }, 520);
+  }
+  (function initStill() {
+    const still = $("#still"), frame = $("#still-frame"), cap = $("#still-cap");
+    if (!still) return;
+    const hs = [...still.querySelectorAll(".hs")];
+    let cur = null, idleT = null;
+    const light = (bid) => {
+      const btn = document.getElementById(bid), h = hs.find((x) => x.dataset.btn === bid);
+      if (!btn || !h || btn.hidden || h.hidden) return dark();
+      cur = bid;
+      const x = h.offsetLeft + h.offsetWidth / 2, y = h.offsetTop + h.offsetHeight / 2, fw = frame.clientWidth, fh = frame.clientHeight;
+      frame.style.setProperty("--sx", x + "px"); frame.style.setProperty("--sy", y + "px");
+      frame.style.setProperty("--sr", Math.round(Math.max(48, Math.min(fw, fh) * 0.12)) + "px");
+      const left = x > fw * 0.55; // бирка уходит туда, где больше места
+      cap.classList.toggle("left", left);
+      frame.style.setProperty("--cx", (left ? x - 8 : x + 8) + "px"); frame.style.setProperty("--cy", Math.max(40, Math.min(fh - 40, y)) + "px");
+      cap.querySelector("b").textContent = btn.dataset.thing || "";
+      const sub = btn.querySelector(".m-s, small");
+      cap.querySelector("span").textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent + (sub && sub.textContent ? " — " + sub.textContent : "");
+      cap.classList.remove("left-anim"); void cap.offsetWidth; // заново «дописать» бирку
+      still.classList.add("lit");
+      hs.forEach((x) => x.classList.toggle("on", x === h));
+      document.querySelectorAll("#title [data-thing]").forEach((b) => b.classList.toggle("on", b.id === bid));
+    };
+    const dark = () => { cur = null; still.classList.remove("lit"); hs.forEach((x) => x.classList.remove("on")); document.querySelectorAll("#title [data-thing].on").forEach((b) => b.classList.remove("on")); };
+    const mouse = (e) => e.pointerType === "mouse" || e.pointerType === "pen";
+    for (const b of document.querySelectorAll("#title [data-thing]")) {
+      b.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(b.id); });
+      b.addEventListener("pointerleave", (e) => { if (!mouse(e)) return; idleT = setTimeout(dark, 250); });
+      b.addEventListener("focus", () => { if (b.matches(":focus-visible")) light(b.id); });
+      b.addEventListener("blur", () => { idleT = setTimeout(dark, 250); });
+    }
+    for (const h of hs) {
+      h.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(h.dataset.btn); });
+      h.addEventListener("pointerleave", (e) => { if (!mouse(e)) return; idleT = setTimeout(dark, 250); });
+      h.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const btn = document.getElementById(h.dataset.btn); if (!btn || btn.hidden) return;
+        if (e.pointerType === "mouse") return btn.click(); // мышь: предмет — та же кнопка
+        // касание: зажечь предмет и показать его пункт в меню (а открыть — тапом по пункту)
+        light(h.dataset.btn);
+        btn.scrollIntoView({ block: "center", behavior: REDUCED ? "auto" : "smooth" });
+        btn.classList.add("flash"); setTimeout(() => btn.classList.remove("flash"), 1300);
+      });
+    }
+    frame.addEventListener("click", () => dark());
+    window.addEventListener("resize", () => cur && light(cur));
+    const help = $("#warn-help"); if (help) help.onclick = (e) => { e.preventDefault(); e.stopPropagation(); $("#btn-about2").click(); };
+  })();
+  function bootTitle() { // первый вход за сессию: лампа щёлкает, картина проявляется
+    let first = true;
+    try { first = !sessionStorage.getItem("qq_boot"); sessionStorage.setItem("qq_boot", "1"); } catch (e) { first = false; }
+    if (!first || REDUCED) return;
+    const t = $("#title"); t.classList.add("boot"); setTimeout(() => t.classList.remove("boot"), 2600);
+  }
+  function syncStill() { // предметы спрятанных пунктов не светятся
+    document.querySelectorAll("#still .hs").forEach((h) => { const b = document.getElementById(h.dataset.btn); h.hidden = !b || b.hidden; });
+  }
+
   // вступление: теория и крючок до меню, каждый запуск (тесты и режим автора — сразу в меню)
   function showIntro() {
     const done = () => { document.body.classList.remove("itext"); meta.introSeen = true; saveMeta(); document.removeEventListener("keydown", key); showTitle(); };
