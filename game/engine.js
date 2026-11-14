@@ -289,7 +289,7 @@
     return acc;
   }
   const lessonsFor = (e, life) => [...new Set(seenIds(e, life).filter((id) => (life ? S && S.lifeSeen[id] : meta.journal[id])).map((id) => (G.deaths[id] || {}).lesson).filter(Boolean))];
-  const hasMeta = (e) => !!e && typeof e === "object" && ((e.op === "seen" && !e.life) || e.op === "lived" || e.op === "kinds" || e.op === "branches" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
+  const hasMeta = (e) => !!e && typeof e === "object" && !(e.op === "and" && e.a.some((x) => x.op === "one_life") && !(S && S.oneLife)) && ((e.op === "seen" && !e.life) || e.op === "lived" || e.op === "kinds" || e.op === "branches" || ["a", "l", "r"].some((k) => (Array.isArray(e[k]) ? e[k].some(hasMeta) : hasMeta(e[k]))));
 
   // ---------- метка «↩ год · сцена»: абзац зависит от флага, который поставил мой выбор в этой жизни
   function flagsIn(e, acc = new Set()) {
@@ -489,6 +489,8 @@
   // общая статистика игроков (stats.js): отправляем только после согласия, читаем всегда
   const QS = window.QQS || null;
   if (QS) { QS.init(C, () => meta.analytics === true); QS.start(); }
+  // «Одна жизнь» считается отдельно (решение автора 14.11): её ключи с приставкой «1|»
+  const qk = (x) => (S && S.oneLife ? "1|" + x : x);
   const pct = (n, t) => (t ? Math.max(1, Math.round((100 * n) / t)) : 0);
   const plural = (n, a, b, c) => (n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c);
   const fmtN = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -510,7 +512,7 @@
     if (id === "Т-02б" && !restored && S && !S.rootShown) { S.rootShown = true; save(); return rootDeath(() => enter(id)); }
     S.scene = id;
     if (window.QQM) QQM.scene(id); // фоновой трек зоны (кроссфейд)
-    if (QS && !restored) QS.seen(id);
+    if (QS && !restored) QS.seen(qk(id));
     if (!restored) { milestoneFor(id, sc); noteUnlocks(id); }
     document.body.dataset.life = id.startsWith("⊣") ? "К" : id.split("-")[0]; // тон жизни (тихий фон)
     S.trail = S.trail || []; // старые сохранения: следа выборов ещё не было
@@ -567,8 +569,8 @@
     });
     if (sc.stage === "final") {
       const deaths = Object.values(meta.journal || {}).reduce((a, j) => a + (j.times || 0), 0);
-      QS.final(sid, meta.lives || 0, deaths);
-      QS.finalStats(sid).then((r) => {
+      QS.final(qk(sid), meta.lives || 0, deaths);
+      QS.finalStats(qk(sid)).then((r) => {
         if (!r || !r.total || r.total < 5 || !r.n) return;
         put(`сюда дошли ${pct(r.n, r.total)}% игроков${devOn ? ` (${r.n} из ${r.total})` : ""}${r.lives ? ` · в среднем за ${r.lives} ${plural(Math.round(r.lives), "жизнь", "жизни", "жизней")} и ${r.deaths} ${plural(+r.deaths, "смерть", "смерти", "смертей")}` : ""}`);
       });
@@ -889,7 +891,7 @@
     meta.taken[S.scene] = meta.taken[S.scene] || {};
     if (!meta.taken[S.scene][c.id]) meta.taken[S.scene][c.id] = meta.lives || 0;
     saveMeta();
-    if (QS && visible(sc, st).length >= 2) { if (firstHere) QS.choice(S.scene, c.id); S.splitFor = { scene: S.scene, cid: c.id }; } // в зачёт — только первый выбор игрока
+    if (QS && visible(sc, st).length >= 2) { if (firstHere) QS.choice(qk(S.scene), c.id); S.splitFor = { scene: qk(S.scene), cid: c.id }; } // в зачёт — только первый выбор игрока
     if (o.to.startsWith("✝")) { S.deathIf = [o.if, c.visible].filter(Boolean); return die(o.to); }
     const check = statCheck(c, o, st);
     const next = clone(st);
@@ -1063,7 +1065,7 @@
     milestone(Object.keys(meta.journal || {}).length === 0 ? "first_death" : "death");
     const j = meta.journal[did] || { times: 0, first: new Date().toISOString(), life: meta.lives };
     j.times++; meta.journal[did] = j; saveMeta();
-    if (QS) QS.death(did);
+    if (QS) QS.death(qk(did));
     S.splitFor = null;
     if (S.oneLife) store.del(SAVE); else save(); // «Одна жизнь»: закрыл вкладку на смерти — к развилке не вернуться
     show("#death");
