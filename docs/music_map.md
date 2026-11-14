@@ -101,10 +101,13 @@
 **Промпт:** Nocturnal urban urgency with warm heart: ticking clock pulse, low suspense bass, muted night city textures, fleeting piano runs, soft hopeful strings underneath, no mysticism, real night streets. Race against time to save three lives. G minor, 108 bpm, urgent, focused, human.
 
 ---
-## Как генерируются вариации
-- **Сервис:** Meta MusicGen (melody) — открытая нейросеть. Бесплатные пути:
-  1. Локально на маке (выбрано: без лимитов, без очередей, мелодия сохраняется).
-  2. Веб: https://huggingface.co/spaces/facebook/MusicGen — вкладка Melody, загрузить wav, вставить промпт (анонимно, с очередью ZeroGPU).
-  3. Альтернативы онлайн (для ручных экспериментов): Suno (free 50 кредитов/день, загрузка аудио — платно), Sonauto (полностью бесплатный, но без загрузки мелодии), MusicGeneratorAI / Soundverse (audio→style, free-лимиты).
-- **Выход:** 12–30 сек лупы для зон; стингер — 8 сек.
-- **Правило связности:** единая G-минорная мелодия из исходника; меняются темп, инструменты, текстуры.
+## РЕАЛИЗАЦИЯ (14.11.2026, факт)
+
+- **Метод:** Suno Cover V6 через шлюз sunoapi.org (ключ в `Z/secrets/sunoapi_key.txt`). Референс — 30-сек фрагмент темы, опубликованный на сайте (`game/music/ref_*.mp3`), параметры: `audioWeight 0.75–0.8`, `styleWeight 0.6–0.8`, instrumental.
+- MusicGen melody (локально и через HF Space) отбракован: мотив не переносит, выдаёт шум (spectral flatness 0.136 против 0.008 у оригинала, хрома-связь 0.25). EQ-ремиксы (librosa/ffmpeg) — как запасной «тёплый» вариант, не используются.
+- **Треки:** `game/music/suno_z1_v1/v2 … suno_z16.mp3` — 16 зон, каждая ветка жизни имеет свой трек (В2 «Протокол» z14, В6 «Хор» z15, В7 «Обычная жизнь» z16 — отдельные от соседей).
+- **Движок:** `game/music.js` (QQM): карта «префикс сцены → файл», кроссфейд 2,5 с между ветками, луп, стингер смерти (z4, one-shot поверх приглушённого фона), мьют синк с кнопкой «звук», фоллбэк на меню-тему при 404.
+- **Хуки в engine.js:** `enter()` → QQM.scene(id); `show("#title")` → QQM.screen; `die()` → QQM.stinger(); `soundBtn()` → QQM.setMuted.
+- **Правила циклов:** фон ветки играет непрерывно через все её сцены, рвётся только смертью; после отката возвращается. Треки-лупы Suno имеют fade-концы — при лупе «дыхание» громкости, при вердикте подрезать ffmpeg'ом.
+- **Плеер вердиктов:** `/music.html`. Деплой: `build_stage_qq.sh` (music.js добавлен в cache-bust).
+
