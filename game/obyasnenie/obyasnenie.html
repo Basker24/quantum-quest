@@ -220,9 +220,9 @@ button:focus-visible,.loc:focus-visible{outline:2px solid var(--amber);outline-o
       <p>До рассвета в квартале должны умереть трое: друзья детства Витька и Ника и соседский мальчишка Даня. Хор подсказал Андрею, кто и когда. У него четыре часа, весь квартал и смерть, которой можно пользоваться. Только каждое чудесное спасение кто-то видит, и про Андрея начинают говорить.</p>
     </div>
     <div class="trio">
-      <div><img src="misha.jpg" alt=""><span><b>Витька, друг</b><span>газ · 02:45</span></span></div>
-      <div><img src="liza.jpg" alt=""><span><b>Ника, подруга</b><span>свет · 03:00</span></span></div>
-      <div><img src="danya.jpg" alt=""><span><b>Даня, 7 лет</b><span>вода · 03:40</span></span></div>
+      <div><img src="misha.jpg" alt=""><span><b>Витька, друг</b><span>до 02:45</span></span></div>
+      <div><img src="liza.jpg" alt=""><span><b>Ника, подруга</b><span>до 03:00</span></span></div>
+      <div><img src="danya.jpg" alt=""><span><b>Даня, 7 лет</b><span>до 03:40</span></span></div>
     </div>
     <div class="tbtns">
       <button class="big" id="t-new">Начать ночь</button>
@@ -287,7 +287,7 @@ function lifeState(k){
   else if(k==='liza'&&G.lizaSafe(S)){cls='saved';txt='в безопасности'}
   else if(k==='liza'&&!G.powered(S,S.t)){txt='без света '+p.unp+' мин'}
   else if(k==='liza'&&!G.gridOn(S,S.t)){cls='saved';txt='на генераторе'}
-  else txt={misha:'газ · 02:45',liza:'свет · 03:00',danya:'вода · 03:40'}[k];
+  else txt={misha:'до 02:45',liza:'до 03:00',danya:'до 03:40'}[k];
   const dl={misha:165,liza:S.subEarly?S.t+20:200,danya:220}[k];
   const urgent=p.st==='danger'&&cls!=='saved'&&dl-S.t<=30;
   return {cls,txt,urgent};
