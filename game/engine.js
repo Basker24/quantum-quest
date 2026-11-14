@@ -134,6 +134,7 @@
       if (!ctx) return;
       if (ambNodes) { const old = ambNodes; ramp(old.g.gain, 0, 1.2); setTimeout(() => old.stop.forEach((x) => { try { x.stop(); } catch (e) {} }), 1400); ambNodes = null; }
       const era = wantEra;
+      return; // фон эпохи (шипение плёнки, гул) выключен по решению автора: музыка его заменяет
       if (!["bw", "color", "digital"].includes(era)) return; // phone/future/none — почти тишина
       const g = ctx.createGain(); g.gain.value = 0; g.connect(amb);
       const src = ctx.createBufferSource(); src.buffer = buf(era); src.loop = true;

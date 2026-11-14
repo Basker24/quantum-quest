@@ -17,7 +17,8 @@ window.QQM = (function () {
     { re: /^⊣/,        file: "suno_z10.mp3" }, // тупиковые финалы
     { re: /^Т-00/,     file: "suno_z1_v1.mp3" }, // пролог «Сухое русло» — та же тема, что в меню (решение автора)
     { re: /^Т-01/,     file: "suno_z2.mp3" }, // Чёрная заводь, нырок
-    { re: /^Т-02/,     file: "suno_z2_under.mp3" },  // под водой: глухой lowpass-вариант z2
+    { re: /^Т-02б/,    file: "suno_z2.mp3" },  // вытащили: снова над водой
+    { re: /^Т-02/,     file: "suno_z2_under.mp3" },  // под водой: глухой вариант z2 (громкость выровнена)  // под водой: глухой lowpass-вариант z2
     { re: /^DLC/,      file: "suno_z13.mp3" }, // DLC «Объяснение» — ночь без откатов
     { re: /^Т/,        file: "suno_z3.mp3" },  // двор 90-х
     { re: /^В1/,       file: "suno_z5.mp3" },  // шахта «Глубокая»
@@ -81,7 +82,7 @@ window.QQM = (function () {
   }
 
   function switchTo(file) {
-    if (file === current) return;
+    if (file === current) { if (bg && !stingerEl && bg.volume < VOL * 0.9) fade(bg, bg.volume, VOL, 1200); if (bg && bg.paused && !blocked) { const p = bg.play(); if (p && p.catch) p.catch(() => { blocked = true; }); } return; }
     current = file;
     const old = bg;
     if (old) {
@@ -111,12 +112,12 @@ window.QQM = (function () {
         stingerEl = new Audio(DIR + STINGER);
         stingerEl.loop = false;
         stingerEl.volume = 0.85;
-        stingerEl.addEventListener("ended", () => {
-          if (bg) fade(bg, bg.volume, VOL, 1500);
-          stingerEl = null;
-        });
+        const back = () => { clearTimeout(guard); if (bg && !muted) fade(bg, bg.volume, VOL, 1500); stingerEl = null; };
+        const guard = setTimeout(back, 11500); // страховка: фон вернётся в любом случае
+        stingerEl.addEventListener("ended", back);
+        stingerEl.addEventListener("error", back);
         const p = stingerEl.play();
-        if (p && p.catch) p.catch(() => {});
+        if (p && p.catch) p.catch(back);
       }, 850);
     } catch (e) { /* тишина лучше падения */ }
   }
