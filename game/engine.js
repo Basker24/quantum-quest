@@ -804,6 +804,8 @@
       nav.append(b);
     });
     // Хор знает о чём-то, но не говорит, о какой кнопке
+    // детство (канон п. 6: смертей нет): опасный вариант с тегом «близко» тоже даёт холодок — так игрок учит язык дара до первой смерти
+    if (!cold && sc.stage === "trunk" && vis.some((c) => (c.tags || []).includes("близко"))) { const k = document.createElement("p"); k.className = "cold-line mono"; k.textContent = "❄ холодок в затылке: здесь что-то не так"; nav.insertBefore(k, nav.querySelector(".choice")); }
     if (cold && dar < 60) { const k = document.createElement("p"); k.className = "cold-line mono"; k.textContent = "❄ холодок в затылке: здесь что-то не так"; nav.insertBefore(k, nav.querySelector(".choice")); }
     else if (knows && !cold) { const k = document.createElement("p"); k.className = "chorus-knows mono"; k.textContent = "◌ Хор о чём-то знает"; nav.insertBefore(k, nav.querySelector(".choice")); }
     // закрытые варианты: текст не показываем, только чего не хватило
