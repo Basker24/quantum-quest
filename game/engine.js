@@ -2351,10 +2351,11 @@
       if (cap) { // подпись: над предметом, если влезает, иначе под ним; по горизонтали — в пределах картины
         cap.textContent = fid ? itemCaption(fid) : (btn.querySelector(".m-t, .cta-l") || btn).textContent.trim();
         cap.classList.toggle("shut", !!fid && !itemOpen(fid));
-        const cw = cap.offsetWidth, ch = cap.offsetHeight, pad = 10;
+        const cw = cap.offsetWidth, ch = cap.offsetHeight, pad = frame.clientWidth < innerWidth - 2 ? 44 : 10; // у суженной рамки края уходят в затухание
         let cy = hr.top - fr.top - ch - 8; if (cy < pad) cy = hr.bottom - fr.top + 8;
         cy = Math.max(pad, Math.min(fh - ch - pad, cy));
-        const cx = Math.max(pad, Math.min(fw - cw - pad, x - cw / 2));
+        const lo = Math.max(0, -fr.left) + pad, hi = Math.min(fw, innerWidth - fr.left) - pad; // видимая часть рамки, а не вся рамка
+        const cx = Math.max(lo, Math.min(hi - cw, x - cw / 2));
         cap.style.left = cx + "px"; cap.style.top = cy + "px"; cap.classList.add("show");
       }
       still.classList.add("lit");
@@ -2390,8 +2391,9 @@
         if (ptr === "touch" && cap) {
           const k = key(), shut = h.dataset.fid && !itemOpen(h.dataset.fid);
           if (cur === k && cap.classList.contains("tap") && !shut) return go(k);
-          light(k); if (cur !== k) return;
-          cap.classList.add("tap"); cap.dataset.go = shut ? "" : k; cap.classList.toggle("go", !shut);
+          cap.classList.add("tap"); cap.classList.toggle("go", !shut); // сначала показать, потом мерить: скрытая подпись имеет ширину 0
+          light(k); if (cur !== k) { cap.classList.remove("tap", "go"); return; }
+          cap.dataset.go = shut ? "" : k;
           clearTimeout(tapT); tapT = setTimeout(dark, shut ? 1600 : 6000);
           return;
         }
