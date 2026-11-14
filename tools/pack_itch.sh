@@ -8,7 +8,7 @@ OUT=dist/itch
 rm -rf "$OUT" && mkdir -p "$OUT/img"
 cp game/index.html game/engine.js game/graph.js game/dev.js game/style.css game/stats.js "$OUT/"
 [ -f game/music.js ] && cp game/music.js "$OUT/" || true
-if [ -d game/music ]; then mkdir -p "$OUT/music"; find game/music -name '._*' -delete 2>/dev/null || true; find game/music -name 'suno_*.mp3' -exec cp {} "$OUT/music/" \; ; fi
+if [ -d game/music ]; then mkdir -p "$OUT/music"; find game/music -name '._*' -delete 2>/dev/null || true; for f in $(cat game/music.js game/obyasnenie/*.js game/obyasnenie/*.html 2>/dev/null | grep -o '[a-z0-9_]*\.mp3' | sort -u); do [ -f "game/music/$f" ] && cp "game/music/$f" "$OUT/music/"; done; fi
 cp -r game/fonts "$OUT/"
 find game/img -maxdepth 1 -type f \( -name '*.jpg' -o -name '*.png' -o -name '*.webp' \) ! -name '*архив*' -exec cp {} "$OUT/img/" \;
 if [ -d game/obyasnenie ]; then cp -r game/obyasnenie "$OUT/"; fi
