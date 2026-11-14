@@ -173,3 +173,8 @@ id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_toke
 В2-06,2026-11-14T16:58:06,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-06.jpg,gleb age 24,3119,1987,1132
 В2-02,2026-11-14T17:20:55,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1526,394,1132
 В2-02,2026-11-14T17:23:56,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1552,420,1132
+В3-01,2026-11-14T18:27:47,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-01.jpg,,1518,386,1132
+В3-02,2026-11-14T18:28:22,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-02.jpg,,1530,398,1132
+В3-03,2026-11-14T18:28:56,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-03.jpg,,1524,392,1132
+В3-04,2026-11-14T18:29:41,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-04.jpg,,1522,390,1132
+В3-05,2026-11-14T18:30:20,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-05.jpg,,1506,374,1132
