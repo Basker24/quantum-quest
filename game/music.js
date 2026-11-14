@@ -17,7 +17,7 @@ window.QQM = (function () {
     { re: /^⊣/,        file: "suno_z10.mp3" }, // тупиковые финалы
     { re: /^Т-00/,     file: "suno_z1_v1.mp3" }, // пролог «Сухое русло» — та же тема, что в меню (решение автора)
     { re: /^Т-01/,     file: "suno_z2.mp3" }, // Чёрная заводь, нырок
-    { re: /^Т-02/,     file: "suno_z2.mp3" },  // под водой, Корень
+    { re: /^Т-02/,     file: "suno_z2_under.mp3" },  // под водой: глухой lowpass-вариант z2
     { re: /^DLC/,      file: "suno_z13.mp3" }, // DLC «Объяснение» — ночь без откатов
     { re: /^Т/,        file: "suno_z3.mp3" },  // двор 90-х
     { re: /^В1/,       file: "suno_z5.mp3" },  // шахта «Глубокая»
@@ -101,22 +101,42 @@ window.QQM = (function () {
     });
   }
 
-  // стингер смерти: one-shot, фон приглушается и возвращается
+  // стингер смерти: секунда полной тишины -> удар -> фон возвращается приглушённым
   function stinger() {
     if (muted) return;
     try {
-      if (bg) fade(bg, bg.volume, DUCK, 300);
-      if (stingerEl) { stingerEl.pause(); stingerEl = null; }
-      stingerEl = new Audio(DIR + STINGER);
-      stingerEl.loop = false;
-      stingerEl.volume = 0.85;
-      stingerEl.addEventListener("ended", () => {
-        if (bg) fade(bg, bg.volume, VOL, 1500);
-        stingerEl = null;
-      });
-      const p = stingerEl.play();
-      if (p && p.catch) p.catch(() => {});
+      if (bg) fade(bg, bg.volume, 0, 130); // разрыв музыки: короткая пустота
+      setTimeout(() => {
+        if (stingerEl) { stingerEl.pause(); stingerEl = null; }
+        stingerEl = new Audio(DIR + STINGER);
+        stingerEl.loop = false;
+        stingerEl.volume = 0.85;
+        stingerEl.addEventListener("ended", () => {
+          if (bg) fade(bg, bg.volume, VOL, 1500);
+          stingerEl = null;
+        });
+        const p = stingerEl.play();
+        if (p && p.catch) p.catch(() => {});
+      }, 850);
     } catch (e) { /* тишина лучше падения */ }
+  }
+
+  // хор-шёпоты при сильном холодке (ДАР 60+): текстура qqm_chill.mp3, one-shot поверх фона
+  let chillEl = null, lastChill = 0;
+  function chill() {
+    if (muted) return;
+    const now = Date.now();
+    if (now - lastChill < 8000) return;
+    lastChill = now;
+    try {
+      if (chillEl) { chillEl.pause(); chillEl = null; }
+      chillEl = new Audio(DIR + "qqm_chill.mp3");
+      chillEl.loop = false;
+      chillEl.volume = 0.16;
+      const p = chillEl.play();
+      if (p && p.catch) p.catch(() => {});
+      chillEl.addEventListener("ended", () => { chillEl = null; });
+    } catch (e) { /* ничего */ }
   }
 
   // синк с кнопкой «звук» движка

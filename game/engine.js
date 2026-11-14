@@ -228,8 +228,35 @@
           o.connect(v).connect(lp); o.start(t); o.stop(t + 7.7);
         }
       },
-      // «холодок»: очень тихий низкий тон, когда в выборе есть смерть
-      cold() { if (!live()) return; tone(98, { a: 0.5, d: 1.6, g: 0.05 }); tone(73.4, { a: 0.7, d: 1.8, g: 0.035 }); },
+      // «холодок»: очень тихий низкий тон + при ДАРе 60+ хор-шёпоты (qqm_chill через QQM)
+      cold() { if (!live()) return; tone(98, { a: 0.5, d: 1.6, g: 0.05 }); tone(73.4, { a: 0.7, d: 1.8, g: 0.035 }); if (window.QQM) QQM.chill(); },
+      clockT: null,
+      // тикающие часы острой сцены: осталось secondsLeft — тики ускоряются к нулю и громче
+      clock(secondsLeft) {
+        if (!live() || secondsLeft == null || secondsLeft > 30) { this.clockStop(); return; }
+        const step = () => {
+          const left = (S && S.st && S.st[CLK] != null) ? S.st[CLK] : null;
+          if (left == null) { this.clockStop(); return; }
+          const k = 1 - Math.min(1, left / 30);
+          noise(0, 0.012, 0.05 + 0.09 * k, 3400);
+          tone(1850, { d: 0.045, g: 0.03 + 0.05 * k, to: 1150 });
+        };
+        step();
+        clearInterval(this.clockT);
+        this.clockT = setInterval(() => {
+          const left = (S && S.st && S.st[CLK] != null) ? S.st[CLK] : null;
+          if (left == null || left <= 0) { this.clockStop(); return; }
+          const gap = Math.max(280, Math.min(950, left * 55));
+          clearInterval(this.clockT);
+          this.clockT = setInterval(step, gap);
+          step();
+        }, 950);
+      },
+      clockStop() { if (this.clockT) { clearInterval(this.clockT); this.clockT = null; } },
+      // скрип крышки надгробия
+      creak() { if (!live()) return; tone(640, { a: 0.06, d: 0.9, g: 0.045, type: "sawtooth", to: 210 }); noise(0.02, 0.5, 0.045, 900); },
+      // шелест страниц тетради
+      paper() { if (!live()) return; noise(0, 0.16, 0.14, 1100); noise(0.1, 0.1, 0.08, 1600); },
       // сердцебиение, пока часы острой сцены на исходе
       heart(want) {
         if (!want) { clearInterval(heartT); heartT = null; return; }
@@ -322,6 +349,7 @@
     snd.screen(id);
     if (id !== "#title") { const f = document.getElementById("cta-float"); if (f) f.classList.add("off"); }
     if (window.QQM) { QQM.setMuted(!snd.on()); QQM.screen(id); } // меню-тема на титуле; сначала узнать, включён ли звук
+    if (id !== "#scene") snd.clockStop(); // покидаем сцену — часы молчат
     window.scrollTo(0, 0);
   }
 
@@ -351,6 +379,8 @@
     const step = () => {
       if (i < lines.length) { const p = document.createElement("p"); p.textContent = lines[i++]; art.append(p); setTimeout(step, REDUCED ? 100 : 1100); return; }
       art.insertAdjacentHTML("beforeend", `<div class="tomb root-tomb">
+      snd.creak();
+      snd.creak(); // скрип крышки
         <div class="tomb-cross">✝</div>
         <div class="tomb-name">Андрей Николаевич Самохин</div>
         <div class="tomb-years mono">1989 — 1996</div>
@@ -459,6 +489,7 @@
   // ---------- сцена
   let typing = null;
   function render(sc) {
+    { const l = leftOf(sc); if (l != null && snd.on()) snd.clock(l); else snd.clockStop(); } // часы острой сцены
     show("#scene");
     const st = S.st;
     document.body.dataset.drift = Math.min(4, Math.floor((st["ДРЕЙФ"] || 0) / 20));
@@ -2139,6 +2170,7 @@
   };
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
+  function journalPanelOpen() { snd.paper(); }
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
   // ---------- натюрморт в меню: пункт ↔ предмет на столе
   // «Новая жизнь» / «Продолжить»: лампа гаснет, и только потом — первая сцена
