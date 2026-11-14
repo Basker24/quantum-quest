@@ -160,3 +160,16 @@ probe_ploy_stand_cream_frame_v11,2026-11-12T00:19:02,probe,gpt-image-2,medium,10
 probe_ploy_towel_cream_frame_v12,2026-11-12T00:24:20,probe,gpt-image-2,medium,1024x1536,ok,game/img/style-test/ploy_towel_cream_frame_v12.jpg,,,,
 id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_tokens
 В5-05,2026-11-14T16:01:03,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В5-05.jpg,ploy age 24,3128,1996,1132
+В2-01,2026-11-14T16:36:32,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-01.jpg,,1484,352,1132
+В2-02,2026-11-14T16:37:10,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1454,322,1132
+В2-03,2026-11-14T16:37:44,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-03.jpg,,1456,324,1132
+В2-04,2026-11-14T16:38:16,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-04.jpg,,1472,340,1132
+В2-05,2026-11-14T16:38:52,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-05.jpg,nika age 22,3091,1959,1132
+В2-06,2026-11-14T16:39:26,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-06.jpg,gleb age 24,3057,1925,1132
+В2-07,2026-11-14T16:40:05,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-07.jpg,lunev age 60,3071,1939,1132
+В2-08,2026-11-14T16:40:42,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-08.jpg,,1454,322,1132
+В2-02,2026-11-14T16:51:08,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1478,346,1132
+В2-04,2026-11-14T16:51:47,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-04.jpg,,1492,360,1132
+В2-06,2026-11-14T16:58:06,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-06.jpg,gleb age 24,3119,1987,1132
+В2-02,2026-11-14T17:20:55,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1526,394,1132
+В2-02,2026-11-14T17:23:56,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В2-02.jpg,,1552,420,1132
