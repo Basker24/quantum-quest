@@ -2159,15 +2159,17 @@
       const btn = document.getElementById(bid), h = hs.find((x) => x.dataset.btn === bid);
       if (!btn || !h || btn.hidden || h.hidden) return dark();
       cur = bid;
-      const x = h.offsetLeft + h.offsetWidth / 2, y = h.offsetTop + h.offsetHeight / 2, fw = frame.clientWidth, fh = frame.clientHeight;
+      const fr = frame.getBoundingClientRect(), hr = h.getBoundingClientRect();
+      const x = hr.left - fr.left + hr.width / 2, y = hr.top - fr.top + hr.height / 2, fw = frame.clientWidth, fh = frame.clientHeight;
       frame.style.setProperty("--sx", x + "px"); frame.style.setProperty("--sy", y + "px");
-      frame.style.setProperty("--sr", Math.round(Math.max(48, Math.min(fw, fh) * 0.12)) + "px");
+      frame.style.setProperty("--sr", Math.round(Math.max(44, Math.max(hr.width, hr.height) * 0.5)) + "px"); // луч — по размеру предмета
       const left = x > fw * 0.55; // бирка уходит туда, где больше места
       cap.classList.toggle("left", left);
-      frame.style.setProperty("--cx", (left ? x - 8 : x + 8) + "px"); frame.style.setProperty("--cy", Math.max(40, Math.min(fh - 40, y)) + "px");
-      cap.querySelector("b").textContent = btn.dataset.thing || "";
+      frame.style.setProperty("--cx", (left ? x - hr.width / 2 : x + hr.width / 2) + "px"); frame.style.setProperty("--cy", Math.max(40, Math.min(fh - 40, y)) + "px");
+      cap.querySelector("b").textContent = btn.dataset.thing || ""; // предмет
+      cap.querySelector("strong").textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent; // куда ведёт
       const sub = btn.querySelector(".m-s, small");
-      cap.querySelector("span").textContent = (btn.querySelector(".m-t, .cta-l") || btn).textContent + (sub && sub.textContent ? " — " + sub.textContent : "");
+      cap.querySelector("span").textContent = sub ? sub.textContent : "";
       cap.classList.remove("left-anim"); void cap.offsetWidth; // заново «дописать» бирку
       still.classList.add("lit");
       hs.forEach((x) => x.classList.toggle("on", x === h));
