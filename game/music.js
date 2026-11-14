@@ -35,6 +35,8 @@ window.QQM = (function () {
   let current = null; // текущий файл (чтобы не рестартовать ту же зону)
   let muted = false;
   let stingerEl = null;
+  let lastScene = null; // последняя сцена: при включении звука играть её зону, а не меню
+  let blocked = false;  // браузер отклонил автоплей до первого жеста
 
   function make(file) {
     const a = new Audio(DIR + file);
@@ -64,6 +66,7 @@ window.QQM = (function () {
 
   // плавная смена фона с кроссфейдом; та же зона — ничего не делаем
   function scene(id) {
+    lastScene = id || null;
     if (muted) return;               // звук выключен: не стартуем
     const file = id ? trackFor(id) : TITLE;
     switchTo(file);
@@ -71,7 +74,7 @@ window.QQM = (function () {
 
   // титульный экран и меню
   function screen(screenId) {
-    if (screenId === "#title") switchTo(TITLE);
+    if (screenId === "#title") { lastScene = null; if (!muted) switchTo(TITLE); }
   }
 
   function switchTo(file) {
@@ -79,14 +82,17 @@ window.QQM = (function () {
     current = file;
     const old = bg;
     if (old) {
-      fade(old, old.volume, 0, XFADE, () => { old.pause(); old.src = ""; });
+      old.__retired = true; // уходящий трек: его ошибки (в т. ч. от сброса src) не трогают текущую зону
+      fade(old, old.volume, 0, XFADE, () => { old.pause(); old.removeAttribute("src"); old.load(); });
     }
     bg = make(file);
     bg.volume = 0;
     const p = bg.play();
-    if (p && p.catch) p.catch(() => { /* автоплей до первого клика — разблокируется в tryStart */ });
+    if (p && p.catch) p.catch(() => { blocked = true; }); // автоплей до первого клика — повторим на жесте
     fade(bg, 0, VOL, XFADE);
-    bg.addEventListener("error", () => {
+    const el = bg;
+    el.addEventListener("error", () => {
+      if (el.__retired || el !== bg) return;
       // файла ещё нет (конвейер не дотащил) — тихо уходим в меню-тему
       if (file !== FALLBACK) { current = null; switchTo(FALLBACK); }
     });
@@ -112,28 +118,27 @@ window.QQM = (function () {
 
   // синк с кнопкой «звук» движка
   function setMuted(m) {
+    m = !!m;
+    if (m === muted && (muted || bg)) return; // ничего не поменялось — не дёргать громкость посреди кроссфейда
     muted = m;
-    if (bg) bg.volume = muted ? 0 : VOL;
-    if (stingerEl) stingerEl.volume = muted ? 0 : 0.85;
-    if (!muted && !bg) screen("#title");
-    if (!muted) tryStart();
+    if (muted) {
+      if (bg) { bg.__retired = bg.__stopped = true; bg.pause(); bg.removeAttribute("src"); bg.load(); bg = null; current = null; } // выключил — тишина сразу, а не fade
+      if (stingerEl) { stingerEl.pause(); stingerEl = null; }
+      return;
+    }
+    switchTo(lastScene ? trackFor(lastScene) : TITLE); // включил — зона текущей сцены (или меню)
   }
 
-  // браузеры не дают играть звук до первого касания: на любое взаимодействие пробуем
-  // запустить задуманный трек (обычно — меню-тема на титуле). После успеха слушатели снимаем.
-  let unlocked = false;
-  function tryStart() {
-    if (unlocked || muted || !bg || !bg.paused) return;
+
+  // первый клик/клавиша: браузер разрешил звук — дотянуть отклонённый трек
+  function retry() {
+    if (!blocked || muted || !bg) return;
+    blocked = false;
     const p = bg.play();
-    if (p && p.then) p.then(() => {
-      unlocked = true;
-      ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
-        document.removeEventListener(ev, tryStart, true));
-    }).catch(() => { /* ещё нет жеста — ждём следующий */ });
+    if (p && p.catch) p.catch(() => { blocked = true; });
   }
-  ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
-    document.addEventListener(ev, tryStart, { capture: true }));
+  for (const ev of ["pointerdown", "keydown", "touchend"]) window.addEventListener(ev, retry, { capture: true, passive: true });
 
   return { scene, screen, stinger, setMuted, trackFor,
-    debug: () => ({ file: current, paused: bg ? bg.paused : null, time: bg ? bg.currentTime : null, unlocked, muted }) };
+    debug: () => ({ file: current, paused: bg ? bg.paused : null, time: bg ? bg.currentTime : null, blocked, muted, lastScene }) };
 })();

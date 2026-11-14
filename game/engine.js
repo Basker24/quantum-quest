@@ -319,7 +319,7 @@
     document.body.dataset.screen = id.slice(1);
     bgMode(id === "#title" ? "title" : id === "#scene" || id === "#chapter" ? "dust" : "off");
     snd.screen(id);
-    if (window.QQM) QQM.screen(id); // меню-тема на титуле
+    if (window.QQM) { QQM.setMuted(!snd.on()); QQM.screen(id); } // меню-тема на титуле; сначала узнать, включён ли звук
     window.scrollTo(0, 0);
   }
 
@@ -336,7 +336,7 @@
   // ---------- Корень: утопление в семь лет показано языком смерти, но без отката (канон п. 26)
   function rootDeath(done) {
     show("#death");
-    snd.stop(); buzz(40);
+    snd.stop(); buzz(40); if (window.QQM) QQM.stinger();
     $("#death-tc").textContent = "28 ИЮЛЯ 1996, ОКОЛО ПОЛУДНЯ";
     const art = $("#death-text"); art.innerHTML = "";
     art.style.translate = art.style.filter = art.style.transition = "";
