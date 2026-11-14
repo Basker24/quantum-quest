@@ -83,9 +83,10 @@ window.QQM = (function () {
     switchTo(file);
   }
 
-  // титульный экран и меню
+  // титульный экран и меню; титры — «Свеча в чужих окнах»
   function screen(screenId) {
     if (screenId === "#title" || screenId === "#intro") { lastScene = null; if (!muted) switchTo(TITLE); }
+    if (screenId === "#credits") { lastScene = null; if (!muted) switchTo("suno_z13_v10_credits.mp3"); }
   }
 
   function switchTo(file) {
