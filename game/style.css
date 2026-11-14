@@ -1091,3 +1091,5 @@ body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; d
 
 /* подпись под вариантом (hint:): во что идёшь — жанр и вопрос жизни */
 .choice small.hint { display: block; margin-top: 4px; font-family: var(--mono); font-size: 12px; letter-spacing: .02em; color: #9a9182; line-height: 1.35; }
+
+@media (max-width: 480px) { .cr-in p { font-size: 14.5px; } .cr-in .cr-small { font-size: 13px !important; } .cr-in { padding: 0 12px; } }
