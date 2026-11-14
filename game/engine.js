@@ -752,7 +752,7 @@
       if (!wip && (!c.visible || ok(c.visible, st) || /seen|one_life/.test(JSON.stringify(c.visible)))) continue;
       const b = document.createElement("button");
       b.className = "choice locked" + (wip ? " wip" : ""); b.disabled = true;
-      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : lockReason(c.visible, st))}</small>`;
+      b.innerHTML = `<span class="num mono">·</span><span class="lbl">— — —</span><small>${esc(wip ? "эта жизнь ещё пишется" : c.locked || lockReason(c.visible, st))}</small>`;
       nav.append(b);
     }
     compactChoices(nav);
@@ -1616,6 +1616,23 @@
       y += ROW + 6;
     }
     const last = anchor[anchor.length - 1];
+    // после якоря: арки П1…П4 рядом друг с другом, под каждой — её финалы и тупики
+    const aLanes = [...new Set(ids.map(laneOf).filter((l) => /^П\d/.test(l)))].sort();
+    if (aLanes.length) {
+      bands.push({ y: y + 10, label: "после" });
+      y += 30;
+      const ax = (i) => midX + (i - (aLanes.length - 1) / 2) * COL;
+      let deep = 0;
+      aLanes.forEach((l, i) => {
+        const list = ids.filter((id) => laneOf(id) === l).sort((a, b) => topo[a] - topo[b]);
+        list.forEach((id, k) => place(id, ax(i), y + k * ROW, "scene"));
+        let k = list.length;
+        const outs = [...new Set(list.flatMap((id) => kids[id] || []))].filter((t) => !pos[t] && (laneOf(t) === "Ф" || laneOf(t) === "К")).sort((a, b) => topo[a] - topo[b]);
+        outs.forEach((t) => place(t, ax(i), y + (k++) * ROW + 14, laneOf(t) === "Ф" ? "final" : "end"));
+        deep = Math.max(deep, k);
+      });
+      y += deep * ROW + 20;
+    }
     const fin = (kids[last] || []).filter((t) => !pos[t]);
     y += 20;
     fin.forEach((t, i) => place(t, midX + (i - (fin.length - 1) / 2) * COL * 0.86, y, laneOf(t) === "Ф" ? "final" : "end"));

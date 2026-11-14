@@ -7,7 +7,7 @@
     title: Чёрная заводь
     date: 28 июля 1996
     age: 7
-    stage: trunk            # prologue | trunk | demo | branch | anchor | final
+    stage: trunk            # prologue | trunk | demo | branch | anchor | after | final
     photo: bw               # bw | color | digital | phone | future
     photo_caption: ...
     photo_prompt: ...
@@ -318,6 +318,8 @@ def parse_choices(section, cfg, sid):
             if not m:
                 raise QQError(f"{sid}/{ch['id']}: «cost: N» — число секунд")
             ch["cost"] = int(m.group(1))
+        elif s.startswith("locked:"):
+            ch["locked"] = s[7:].strip()  # подсказка у закрытого варианта вместо автоматической причины
         elif s.startswith("tags:"):
             ch["tags"] = [t.strip() for t in s[5:].split(",")]
         else:

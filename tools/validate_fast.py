@@ -324,7 +324,7 @@ def main(note=""):
         if did not in reached_deaths:
             warns.append(f"R: смерть {did} недостижима")
 
-    rank = {"prologue": 0, "trunk": 1, "demo": 2, "branch": 3, "anchor": 4, "final": 5}
+    rank = {"prologue": 0, "trunk": 1, "demo": 2, "branch": 3, "anchor": 4, "after": 5, "final": 6}
     L = ["# Отчёт валидатора (генерируется, не править руками)", "",
          "**Режим: быстрая интервальная проверка.** " + (note or ""), "",
          "Диапазоны ниже — по всем путям, с небольшим запасом (переменные считаются независимо).", "",

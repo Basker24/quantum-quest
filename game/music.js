@@ -35,6 +35,7 @@ window.QQM = (function () {
     { re: /^В6/,       file: "suno_z15.mp3" }, // скит, Хор
     { re: /^В7/,       file: "suno_z16.mp3" }, // обычная жизнь
     { re: /^Я/,        file: "suno_z9.mp3" },  // якорь 2061
+    { re: /^П/,        file: "suno_z9.mp3" },  // после якоря (арки П1–П4) — пока тема якоря; ZCode может дать свои
     { re: /^Ф-02/,     file: "suno_z11.mp3" }, // светлые финалы
     { re: /^Ф-03/,     file: "suno_z11.mp3" },
     { re: /^Ф-04/,     file: "suno_z11.mp3" },

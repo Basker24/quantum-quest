@@ -557,7 +557,7 @@ def main():
         for f in CFG["flags"]:
             flg[sid][f] |= set(aux[f])
 
-    rank = {"prologue": 0, "trunk": 1, "demo": 2, "branch": 3, "anchor": 4, "final": 5}
+    rank = {"prologue": 0, "trunk": 1, "demo": 2, "branch": 3, "anchor": 4, "after": 5, "final": 6}
     order = sorted(rng, key=lambda s: (rank.get(S[s].get("stage"), 9), s))
     L = ["# Отчёт валидатора (генерируется, не править руками)", "",
          f"Сцен: {len(S)}, смертей: {len(D)}, узлов «сцена × живое состояние»: {len(AUX)}", "", "## Проблемы", ""]
