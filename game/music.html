@@ -37,6 +37,8 @@
   .track { width:100%; height:6px; border-radius:3px; background:#2a3140; position:relative; }
   .fill { position:absolute; left:0; top:0; height:100%; width:0; border-radius:3px; background:var(--accent); }
   .time { flex:0 0 auto; font-size:.72rem; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .dl { flex:0 0 auto; text-decoration:none; color:var(--dim); font-size:15px; padding:2px 4px; }
+  .dl:hover { color:var(--accent); }
 </style>
 </head>
 <body>
@@ -252,6 +254,15 @@
     <p class="meta">4:00 · метал · русский вокал (исправлено: теперь со словами)</p>
   </div>
 
+  <div class="card">
+    <span class="tag">⚔ Melodeath · новый текст · черновик</span>
+    <h2>«Спасение людей» — Swedish melodic death</h2>
+    <p class="desc">Гроул-куплеты + чистые мелодичные припевы, твин-гитары. Текст про спасение ценой себя: «Твоё лицо — мой единственный свет», «Я — сапёр. Я не сплю. Я — щит на мосту». Лор: Дрейф, комета, «Сверим часы».</p>
+    <p class="made">Сделана из: <b>Big Nothing — полная версия (3:48)</b> как референс стиля и мотива</p>
+    <div class="player" data-src="music/qq_melodeath_v2.mp3"><button class="pp">▶</button><div class="bar"><div class="track"><div class="fill"></div></div></div><span class="time">0:00</span></div>
+    <p class="meta">5:00 · гроул + чистый вокал · черновик на вердикт (кандидат в DLC №2)</p>
+  </div>
+
   <h3>Архив · не в текущей версии</h3>
   <div class="grid">
     <div class="card">
@@ -329,6 +340,11 @@
         audio.addEventListener("timeupdate", tick);
         audio.addEventListener("loadedmetadata", tick);
         audio.addEventListener("ended", () => { pp.textContent = "▶"; fill.style.width = "0"; });
+        const dl = document.createElement("a");
+        dl.href = box.dataset.src;
+        dl.download = box.dataset.src.split("/").pop();
+        dl.className = "dl"; dl.textContent = "⬇"; dl.title = "Скачать mp3";
+        box.appendChild(dl);
       }
       return audio;
     };
