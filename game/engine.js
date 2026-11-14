@@ -501,7 +501,7 @@
     const put = (html) => { if (S && S.scene === sid && !$("#scene").hidden) $("#text").insertAdjacentHTML("afterbegin", `<p class="stat-line mono">${html}</p>`); };
     if (sf) QS.split(sf.scene).then((r) => { // «так же выбрали 64%»
       if (!r) return; const all = Object.values(r).reduce((a, b) => a + b, 0), mine = r[sf.scene + "/" + sf.cid] || 0;
-      if (all >= 10 && mine) put(`так же, как я, выбрали ${pct(mine, all)}% игроков`);
+      if (all >= 10 && mine) put(`в первый раз так же выбрали ${pct(mine, all)}% игроков`);
     });
     if (sc.stage === "final") {
       const deaths = Object.values(meta.journal || {}).reduce((a, j) => a + (j.times || 0), 0);
@@ -816,10 +816,11 @@
     const o = c.outcomes.find((x) => ok(x.if, st));
     const top = S.stack[S.stack.length - 1];
     if (top && top.scene === S.scene) top.taken = c.id;
+    const firstHere = !meta.taken[S.scene] || !Object.keys(meta.taken[S.scene]).length; // впервые решаю в этой сцене
     meta.taken[S.scene] = meta.taken[S.scene] || {};
     if (!meta.taken[S.scene][c.id]) meta.taken[S.scene][c.id] = meta.lives || 0;
     saveMeta();
-    if (QS && visible(sc, st).length >= 2) { QS.choice(S.scene, c.id); S.splitFor = { scene: S.scene, cid: c.id }; }
+    if (QS && visible(sc, st).length >= 2) { if (firstHere) QS.choice(S.scene, c.id); S.splitFor = { scene: S.scene, cid: c.id }; } // в зачёт — только первый выбор игрока
     if (o.to.startsWith("✝")) { S.deathIf = [o.if, c.visible].filter(Boolean); return die(o.to); }
     const check = statCheck(c, o, st);
     const next = clone(st);

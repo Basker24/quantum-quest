@@ -35,6 +35,11 @@ create index if not exists qq_events_kind_key on public.qq_events (kind, key);
 create or replace function public.qq_hit(p uuid, k text, key text)
 returns void language plpgsql security definer set search_path = public as $$
 begin
+  -- выбор считается один раз на игрока и сцену: только самый первый (вслепую), перепрохождения не в счёт
+  if k = 'choice' and exists (select 1 from qq_events e where e.player = p and e.kind = 'choice'
+      and e.key like split_part(qq_hit.key, '/', 1) || '/%') then
+    return;
+  end if;
   insert into qq_events as e(player, kind, key) values (p, k, left(qq_hit.key, 80)) on conflict on constraint qq_events_pkey do nothing;
   if k = 'death' then
     insert into qq_counters as c(key, n) values ('deaths', 1) on conflict on constraint qq_counters_pkey do update set n = c.n + 1;
