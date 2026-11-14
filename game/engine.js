@@ -2362,7 +2362,7 @@
       document.querySelectorAll("#title [data-thing]").forEach((b) => b.classList.toggle("on", b.id === bid));
       still.querySelectorAll(".mi").forEach((m) => m.classList.toggle("on", m.dataset.fid === fid));
     };
-    const dark = () => { cur = null; clearTimeout(tapT); still.classList.remove("lit"); cap && cap.classList.remove("tap"); still.querySelectorAll(".mi.on").forEach((m) => m.classList.remove("on")); hs.forEach((x) => x.classList.remove("on")); document.querySelectorAll("#title [data-thing].on").forEach((b) => b.classList.remove("on")); };
+    const dark = () => { cur = null; clearTimeout(tapT); still.classList.remove("lit"); if (cap) { cap.classList.remove("tap", "go"); cap.dataset.go = ""; } still.querySelectorAll(".mi.on").forEach((m) => m.classList.remove("on")); hs.forEach((x) => x.classList.remove("on")); document.querySelectorAll("#title [data-thing].on").forEach((b) => b.classList.remove("on")); };
     const mouse = (e) => e.pointerType === "mouse" || e.pointerType === "pen";
     for (const b of document.querySelectorAll("#title [data-thing]")) {
       b.addEventListener("pointerenter", (e) => { if (!mouse(e)) return; clearTimeout(idleT); light(b.id); });
@@ -2370,6 +2370,16 @@
       b.addEventListener("focus", () => { if (b.matches(":focus-visible")) light(b.id); });
       b.addEventListener("blur", () => { idleT = setTimeout(dark, 250); });
     }
+    // палец (решение автора 14.11): первый тап — подпись «куда ведёт», второй тап по подписи или по предмету — переход
+    let ptr = "mouse";
+    still.addEventListener("pointerdown", (e) => { ptr = e.pointerType || "mouse"; }, true);
+    const go = (k) => {
+      dark();
+      if (k.startsWith("fin:")) return openItem(k.slice(4));
+      const btn = document.getElementById(k);
+      if (btn && !btn.hidden && !btn.classList.contains("locked")) btn.click();
+    };
+    if (cap) cap.addEventListener("click", (e) => { e.stopPropagation(); const k = cap.dataset.go; if (k) go(k); });
     const bindHs = (h) => {
       if (h.__b) return; h.__b = 1;
       const key = () => (h.dataset.fid ? "fin:" + h.dataset.fid : h.dataset.btn);
@@ -2377,6 +2387,14 @@
       h.addEventListener("pointerleave", (e) => { if (!mouse(e)) return; idleT = setTimeout(dark, 250); });
       h.addEventListener("click", (e) => { // предмет — та же кнопка, что и пункт меню
         e.stopPropagation();
+        if (ptr === "touch" && cap) {
+          const k = key(), shut = h.dataset.fid && !itemOpen(h.dataset.fid);
+          if (cur === k && cap.classList.contains("tap") && !shut) return go(k);
+          light(k); if (cur !== k) return;
+          cap.classList.add("tap"); cap.dataset.go = shut ? "" : k; cap.classList.toggle("go", !shut);
+          clearTimeout(tapT); tapT = setTimeout(dark, shut ? 1600 : 6000);
+          return;
+        }
         if (h.dataset.fid) { // предмет финала: открыт — его дорога в «Путях»; под листом — только подпись
           if (openItem(h.dataset.fid)) return;
           light(key()); if (cap) { cap.classList.add("tap"); clearTimeout(tapT); tapT = setTimeout(dark, 1600); }
