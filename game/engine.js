@@ -259,6 +259,8 @@
       creak() { if (!live()) return; tone(640, { a: 0.06, d: 0.9, g: 0.045, type: "sawtooth", to: 210 }); noise(0.02, 0.5, 0.045, 900); },
       // шелест страниц тетради
       paper() { if (!live()) return; noise(0, 0.16, 0.14, 1100); noise(0.1, 0.1, 0.08, 1600); },
+      // тихий блик при наведении на пункт меню
+      hover() { if (!live()) return; tone(920, { a: 0.004, d: 0.07, g: 0.02, type: "triangle" }); },
       // сердцебиение, пока часы острой сцены на исходе
       heart(want) {
         if (!want) { clearInterval(heartT); heartT = null; return; }
@@ -2264,6 +2266,11 @@
   function soundBtn() { for (const b of document.querySelectorAll("#btn-sound, #btn-sound2")) { b.textContent = snd.on() ? "звук: вкл" : "звук: выкл"; b.setAttribute("aria-pressed", String(snd.on())); } if (window.QQM) QQM.setMuted(!snd.on()); }
   for (const id of ["#btn-sound", "#btn-sound2"]) $(id).onclick = () => { snd.toggle(); soundBtn(); buzz(10); };
   document.querySelectorAll(".close").forEach((b) => (b.onclick = closePanel));
+  // тихий блик при наведении на пункты меню (телефон игнорирует hover — не мешает)
+  let lastHover = 0;
+  document.querySelectorAll(".menu-list button, .choice, .set-btn").forEach((b) => {
+    b.addEventListener("pointerenter", () => { const n = Date.now(); if (n - lastHover < 90 || !snd.on()) return; lastHover = n; snd.hover(); });
+  });
   // ---------- режим автора: статистика всех игроков (где бросают, редкие выборы, финалы, смерти)
   function renderDevPlayers() {
     const box = $("#devplayers-body");
