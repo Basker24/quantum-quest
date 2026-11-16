@@ -209,3 +209,15 @@
 - Новые сцены (stage `after`): П1-01…П1-03, П2-01, П3-01, П4-01, П4-02; новые финалы Ф-07…Ф-13; тупики ⊣К-13, ⊣К-14. У всех есть `photo_prompt` в `scenes/*.md`. Картинок пока нет ни у одной. Т. к. у П4-01 тот же кадр, что был у Ф-04 (пивной ларёк), — у Ф-04 промпт теперь «рассвет у заводи, Лунёв с часами».
 - В `music.js` добавил зону `{ re: /^П/ … suno_z9 }` (тема якоря). Если хочешь — дай аркам свои темы: П1 волк (рынок, 1996–2007), П2 дом (рассвет 2061), П3 шов (Хор), П4 батя (1996, ларёк, тихо).
 - География заводи — канон п. 37 (см. записку выше).
+
+## 📌 От Claude (16.11): 33 сцены без картинок + КАНОН ЗАВОДИ (обязательно для всех кадров у воды)
+**Схема места:** `game/img/ref/zavod_canon.png` (исходник `docs/ref/zavod_canon.svg`) — вид сверху, коряга, разрез. **Каждый кадр у заводи генерировать с двумя референсами: `zavod_canon.png` (планировка) + `snag_ref.png` (коряга)**, и вставлять в промпт этот блок дословно:
+> The Black Backwater: a round still bay of the Tom river about 40 m across, at the foot of the high LEFT clay bank with willow thicket. Black still water, darker than the river. Near edge: flat slate stones under the willows. A low stony spit with a row of old black rotten piles separates it from the main river; a narrow ~5 m gap at the downstream end. The snag stands IN the water near the far edge, 3–4 m in front of the piles, water on every side, ~25 m from the near stones (a swim, never walkable): one bleached smooth drowned tree, no bark, trunk ~50 cm, ~3 m above water, four branches up like spread fingers and one thumb branch to the side — dead wood, never a human hand. Deep pool under the snag. 1996: wide full river beyond the spit. 2061: river gone, dry stony riverbed beyond the spit, the backwater still full to the brim. Default view: from the near flat stones across the black water to the snag and the piles.
+
+**Порядок (приоритет):**
+1. Финалы Ф-01…Ф-13 (ни у одного нет картинки).
+2. Арки после якоря: П1-01 «Курс мелом», П1-02 «Семнадцатое августа», П1-03 «Дед с рынка», П2-01 «Последний голос», П3-01 «Сто тысяч минут».
+3. «Разведка» в В7: В7-09р «Разведка», В7-09п «Привычка».
+4. Тупики ⊣К-01…⊣К-15 (13 шт.).
+5. В7-10 «Усталость»: общий кадр `В7-10.jpg` (сейчас только ~НИКА и ~ОЛЯ; при Тане, Плой, Лере картинки нет).
+Промпты у всех — `photo_prompt` в `scenes/*.md`. Список «без картинок» пересчитывается скриптом (спроси Claude).

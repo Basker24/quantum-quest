@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1230" viewBox="0 0 1600 1230" font-family="PT Sans, Arial, sans-serif">
+  <rect width="1600" height="1230" fill="#f4efe4"/>
+  <text x="40" y="52" font-size="30" font-weight="700" fill="#222">Чёрная заводь — канон места (п. 37) · Black Backwater — location canon</text>
+  <text x="40" y="84" font-size="17" fill="#555">Одна схема для всех кадров у воды: 1996 (река полная) и 2061 (русло сухое, заводь полная). Use as layout reference for every waterside image.</text>
+
+  <!-- ===== ПЛАН (вид сверху) ===== -->
+  <g transform="translate(40,110)">
+    <text x="0" y="22" font-size="22" font-weight="700" fill="#222">1. Вид сверху · TOP VIEW (север вверху)</text>
+    <rect x="0" y="35" width="900" height="600" fill="#e9e1cf" stroke="#999"/>
+    <!-- высокий левый берег -->
+    <path d="M0 35 H900 V170 C780 175 700 160 620 168 C520 178 430 162 330 170 C220 180 120 165 0 172 Z" fill="#c9b48a"/>
+    <path d="M0 172 C120 165 220 180 330 170 C430 162 520 178 620 168 C700 160 780 175 900 170" fill="none" stroke="#7a6438" stroke-width="4" stroke-dasharray="14 6"/>
+    <text x="20" y="70" font-size="16" fill="#4a3c20">высокий глинистый берег · high clay bank</text>
+    <!-- тальник -->
+    <g fill="#7f9b5a" opacity=".9">
+      <circle cx="80" cy="140" r="26"/><circle cx="130" cy="128" r="30"/><circle cx="185" cy="146" r="24"/><circle cx="240" cy="132" r="28"/>
+      <circle cx="560" cy="138" r="28"/><circle cx="615" cy="128" r="30"/><circle cx="670" cy="142" r="24"/><circle cx="730" cy="132" r="28"/><circle cx="790" cy="140" r="26"/>
+    </g>
+    <text x="70" y="108" font-size="15" fill="#2f4419">тальник (ивы) · willow thicket</text>
+    <text x="580" y="106" font-size="15" fill="#2f4419">тальник · willows</text>
+    <!-- главное русло -->
+    <rect x="0" y="470" width="900" height="165" fill="#9fc0d6"/>
+    <text x="20" y="560" font-size="18" fill="#1f4a66">Томь (1996: полная, течение →) · Tom river, current →</text>
+    <text x="20" y="585" font-size="16" fill="#1f4a66">2061: сухое каменное русло · 2061: dry stony riverbed</text>
+    <path d="M640 560 h120 m-20 -12 l20 12 l-20 12" stroke="#1f4a66" stroke-width="4" fill="none"/>
+    <!-- заводь -->
+    <ellipse cx="450" cy="315" rx="190" ry="140" fill="#1d2228"/>
+    <text x="378" y="270" font-size="17" fill="#e8e3d8">ЗАВОДЬ · BACKWATER</text>
+    <text x="368" y="292" font-size="14" fill="#c9c3b6">≈ 40 м, вода чёрная, стоячая</text>
+    <text x="368" y="310" font-size="14" fill="#c9c3b6">≈ 40 m, black still water</text>
+    <!-- ближний край: плоские камни -->
+    <g fill="#a69f92" stroke="#6b655b">
+      <ellipse cx="330" cy="190" rx="26" ry="11"/><ellipse cx="380" cy="182" rx="32" ry="12"/><ellipse cx="440" cy="179" rx="30" ry="12"/>
+      <ellipse cx="498" cy="182" rx="28" ry="11"/><ellipse cx="552" cy="190" rx="24" ry="10"/>
+    </g>
+    <rect x="420" y="168" width="44" height="16" fill="#8d8678" stroke="#4d483f"/>
+    <text x="30" y="200" font-size="14" fill="#3d3628">ближний край: плоские камни →</text><text x="30" y="216" font-size="13" fill="#3d3628">near edge: flat slate stones</text>
+    <text x="420" y="160" font-size="13" fill="#4a3c20">камень, с которого прыгают</text>
+    <!-- коса -->
+    <path d="M250 300 C250 420 350 475 470 470 C580 468 650 430 668 360" fill="none" stroke="#b9ad97" stroke-width="34" stroke-linecap="round"/>
+    <text x="268" y="495" font-size="15" fill="#3d3628">низкая каменистая коса · low stony spit</text>
+    <!-- зазор -->
+    <text x="676" y="320" font-size="13" fill="#3d3628">узкий проток ~5 м</text>
+    <text x="676" y="336" font-size="13" fill="#3d3628">narrow gap to river</text>
+    <!-- сваи -->
+    <g fill="#2a241d">
+      <circle cx="360" cy="456" r="6"/><circle cx="395" cy="463" r="6"/><circle cx="430" cy="467" r="6"/><circle cx="465" cy="468" r="6"/>
+      <circle cx="500" cy="466" r="6"/><circle cx="535" cy="462" r="6"/><circle cx="570" cy="455" r="6"/>
+    </g>
+    <text x="580" y="455" font-size="14" fill="#2a241d">старые чёрные сваи · old black piles</text>
+    <!-- коряга -->
+    <circle cx="470" cy="408" r="15" fill="#fbfaf6" stroke="#222" stroke-width="2"/>
+    <text x="492" y="404" font-size="15" fill="#fbfaf6" font-weight="700">КОРЯГА · SNAG</text>
+    <text x="492" y="422" font-size="13" fill="#f4efe4">в воде, 3–4 м до свай, вода кругом</text>
+    <!-- размер 25 м -->
+    <path d="M455 196 L468 392" stroke="#e0b44a" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="398" y="350" font-size="15" fill="#e0b44a" font-weight="700">≈ 25 м вплавь</text>
+    <!-- разрез -->
+    <path d="M455 40 V632" stroke="#c0392b" stroke-width="2" stroke-dasharray="3 6"/>
+    <text x="462" y="628" font-size="15" fill="#c0392b" font-weight="700">разрез А–А</text>
+    <!-- масштаб -->
+    <path d="M740 605 h95" stroke="#222" stroke-width="3"/><text x="760" y="625" font-size="14">≈ 20 м</text>
+  </g>
+
+  <!-- ===== КОРЯГА ===== -->
+  <g transform="translate(980,110)">
+    <text x="0" y="22" font-size="22" font-weight="700" fill="#222">2. Коряга · THE SNAG</text>
+    <rect x="0" y="35" width="580" height="600" fill="#eef3f6" stroke="#999"/>
+    <rect x="0" y="470" width="580" height="165" fill="#1d2228"/>
+    <path d="M0 470 H580" stroke="#6c8aa0" stroke-width="2"/>
+    <text x="14" y="490" font-size="14" fill="#c9c3b6">поверхность воды · water surface</text>
+    <!-- ствол -->
+    <path d="M262 635 C258 560 266 500 270 470 C276 420 270 380 282 330" stroke="#fbfaf6" stroke-width="44" fill="none" stroke-linecap="round"/>
+    <path d="M262 635 C258 560 266 500 270 470 C276 420 270 380 282 330" stroke="#555" stroke-width="2" fill="none" opacity=".35"/>
+    <!-- пять «пальцев» -->
+    <g stroke="#fbfaf6" stroke-linecap="round" fill="none">
+      <path d="M282 334 C262 280 225 240 195 190" stroke-width="20"/>
+      <path d="M284 330 C278 260 262 200 255 130" stroke-width="20"/>
+      <path d="M286 330 C292 255 306 190 318 120" stroke-width="20"/>
+      <path d="M288 334 C320 280 350 240 380 190" stroke-width="18"/>
+      <path d="M278 380 C240 372 205 360 168 340" stroke-width="16"/>
+    </g>
+    <g stroke="#7a7368" stroke-width="1.5" fill="none" opacity=".6">
+      <path d="M195 190 l-6 -10 M255 130 l-3 -12 M318 120 l3 -12 M380 190 l7 -9 M168 340 l-11 -3"/>
+    </g>
+    <text x="330" y="380" font-size="14" fill="#333">«большой палец» — сук вбок</text>
+    <text x="330" y="398" font-size="13" fill="#555">thumb branch to the side</text>
+    <text x="370" y="160" font-size="14" fill="#333">4 сука вверх, как пальцы</text>
+    <text x="370" y="178" font-size="13" fill="#555">4 branches up like fingers</text>
+    <path d="M535 470 V250" stroke="#333" stroke-width="2"/><path d="M528 250 h14 M528 470 h14" stroke="#333" stroke-width="2"/>
+    <text x="490" y="362" font-size="14" fill="#333" transform="rotate(-90 500 362)">≈ 3 м над водой</text>
+    <text x="14" y="62" font-size="15" fill="#222">белое мёртвое дерево, выбеленное водой, гладкое, без коры</text>
+    <text x="14" y="82" font-size="14" fill="#555">bleached drowned tree, smooth, no bark; DEAD WOOD, never a human hand</text>
+    <text x="14" y="102" font-size="14" fill="#555">ствол ~50 см · trunk ~50 cm; чуть наклонён к косе · leans slightly to the spit</text>
+    <text x="14" y="560" font-size="14" fill="#c9c3b6">под корягой омут, 4–5 м, дна не видно</text>
+    <text x="14" y="580" font-size="13" fill="#9a958b">deep pool under the snag, 4–5 m, bottom not visible</text>
+    <text x="14" y="612" font-size="13" fill="#9a958b">эталон фактуры: game/img/ref/snag_ref.png</text>
+  </g>
+
+  <!-- ===== РАЗРЕЗ ===== -->
+  <g transform="translate(40,780)">
+    <text x="0" y="22" font-size="22" font-weight="700" fill="#222">3. Разрез А–А (сбоку) · SIDE SECTION, near bank → snag → spit → river</text>
+    <rect x="0" y="35" width="1520" height="320" fill="#eef3f6" stroke="#999"/>
+    <!-- берег -->
+    <path d="M0 95 H230 C260 140 270 175 300 205 H0 Z" fill="#c9b48a"/>
+    <g fill="#7f9b5a"><circle cx="60" cy="80" r="30"/><circle cx="125" cy="72" r="34"/><circle cx="185" cy="84" r="26"/></g>
+    <text x="14" y="140" font-size="14" fill="#4a3c20">высокий берег ~6 м, тальник</text>
+    <!-- камни ближнего края -->
+    <path d="M300 205 H400" stroke="#8d8678" stroke-width="14"/>
+    <text x="300" y="196" font-size="13" fill="#3d3628">плоские камни</text>
+    <!-- вода заводи -->
+    <path d="M400 210 H1050 V215 C1000 300 900 330 760 335 C620 338 520 300 440 240 C425 230 410 218 400 212 Z" fill="#1d2228"/>
+    <path d="M400 210 H1050" stroke="#6c8aa0" stroke-width="2"/>
+    <text x="520" y="250" font-size="15" fill="#e8e3d8">заводь: у камней мелко, к коряге омут</text>
+    <text x="520" y="270" font-size="13" fill="#c9c3b6">shallow by the stones, deep pool by the snag</text>
+    <!-- коряга -->
+    <path d="M905 330 C902 280 908 240 912 200 C916 170 914 150 922 120" stroke="#fbfaf6" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <g stroke="#fbfaf6" stroke-width="7" stroke-linecap="round" fill="none"><path d="M922 122 l-20 -45 M924 120 l-6 -55 M926 120 l10 -55 M928 122 l24 -42 M918 150 l-30 -10"/></g>
+    <text x="830" y="70" font-size="15" fill="#222" font-weight="700">коряга ~3 м над водой</text>
+    <!-- коса и сваи -->
+    <path d="M1050 215 C1080 190 1120 188 1160 196 L1180 215 Z" fill="#b9ad97"/>
+    <g fill="#2a241d"><rect x="1080" y="150" width="9" height="55"/><rect x="1108" y="160" width="9" height="45"/><rect x="1136" y="145" width="9" height="60"/></g>
+    <text x="1060" y="135" font-size="14" fill="#2a241d">коса, сваи</text>
+    <!-- река -->
+    <path d="M1180 215 H1520 V300 C1420 320 1300 318 1180 290 Z" fill="#9fc0d6"/>
+    <path d="M1180 215 H1520" stroke="#1f4a66" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="1200" y="255" font-size="15" fill="#1f4a66">Томь, 1996</text>
+    <text x="1200" y="335" font-size="14" fill="#5a4a2a">2061: здесь сухие камни, а заводь полная до краёв</text>
+    <text x="1200" y="352" font-size="13" fill="#5a4a2a">2061: dry stones here, the backwater stays full</text>
+    <!-- 2061 линия -->
+    <text x="430" y="380" font-size="14" fill="#555">Камера/взгляд по умолчанию: с плоских камней ближнего края, через чёрную воду на корягу и сваи, за ними река (1996) или сухое русло и комета (2061).</text>
+    <text x="430" y="398" font-size="13" fill="#777">Default viewpoint: from the near flat stones, across the black water to the snag and piles; river (1996) or dry riverbed + comet (2061) beyond.</text>
+  </g>
+</svg>
