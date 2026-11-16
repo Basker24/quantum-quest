@@ -961,12 +961,18 @@
       for (const k of ["a", "l", "r"]) { const x = e[k]; if (Array.isArray(x)) x.forEach((y) => statCmp(y, acc)); else statCmp(x, acc); }
       return acc;
     };
+    const nm = (arr) => [...new Set(arr.map((e) => C.vars[e.l.n].name.toUpperCase()))].join(" · ");
+    // своя проверка у пройденного исхода: прошёл по ней — «хватило»
+    const own = statCmp(o.if);
+    if (own.length) return nm(own.filter((e) => ev(e, st))) + " · хватило";
     const gate = c.outcomes.find((x) => statCmp(x.if).length);
     if (!gate) return null;
-    const passed = gate === o;
-    const names = [...new Set(statCmp(gate.if).filter((e) => ev(e, st) === passed).map((e) => C.vars[e.l.n].name.toUpperCase()))];
-    if (!names.length) return null;
-    return names.join(" · ") + " · " + (passed ? "хватило" : "не хватило");
+    const lack = statCmp(gate.if).filter((e) => !ev(e, st));
+    if (!lack.length) return null;
+    // проверку не прошёл, но выжил другим путём (предмет, знание) — так и говорим
+    if (o.to && !o.to.startsWith("✝") && o !== c.outcomes[c.outcomes.length - 1]) return nm(lack) + " · не хватило, выручило другое";
+    if (o.to && !o.to.startsWith("✝") && c.outcomes.indexOf(o) > c.outcomes.indexOf(gate)) return nm(lack) + " · не хватило, выручило другое";
+    return nm(lack) + " · не хватило";
   }
 
   // ---------- «что было дальше»: последствие выбора сразу, на том же экране
