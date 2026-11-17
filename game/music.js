@@ -171,6 +171,6 @@ window.QQM = (function () {
   }
   for (const ev of ["pointerdown", "keydown", "touchend"]) window.addEventListener(ev, retry, { capture: true, passive: true });
 
-  return { scene, screen, stinger, setMuted, trackFor,
+  return { scene, screen, stinger, setMuted, trackFor, chill,
     debug: () => ({ file: current, paused: bg ? bg.paused : null, time: bg ? bg.currentTime : null, blocked, muted, lastScene }) };
 })();
