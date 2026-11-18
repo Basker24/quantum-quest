@@ -239,9 +239,56 @@ def searcher(G, limit=LIMIT):
     return K, search
 
 
+def meta_ops(e, acc):
+    """Мета-операции в AST: seen (прошлые жизни), lived, kinds, branches, one_life.
+    seen(X) с life=True — смерть в ЭТОЙ жизни, не мета."""
+    if isinstance(e, dict):
+        op = e.get("op")
+        if op in ("lived", "kinds", "branches", "one_life"):
+            acc.add(op)
+        if op == "seen" and not e.get("life"):
+            acc.add("seen")
+        for k in ("a", "l", "r"):
+            x = e.get(k)
+            if isinstance(x, list):
+                meta_ops_list(x, acc)
+            elif x is not None:
+                meta_ops(x, acc)
+    elif isinstance(e, list):
+        meta_ops_list(e, acc)
+    return acc
+
+
+def meta_ops_list(es, acc):
+    for e in es:
+        meta_ops(e, acc)
+
+
+def path_meta(S, path):
+    """Пометки маршрута по пути-свидетелю: (gate_dependent, journal_sensitive).
+    gate_dependent — путь проходит мета-гейт kinds()/branches(): вариант открывается только
+    накопленным Журналом, при пустом (чистый прогон) недоступен — помечается условным.
+    journal_sensitive — исход какого-то выбора на пути решает мета-условие: при непустом
+    Журнале маршрут может пойти иначе (порядок многожизненного прогона это учитывает)."""
+    gate = sens = False
+    for sid, cid, _ in path or []:
+        if cid is None:
+            continue
+        c = next(c for c in S[sid]["choices"] if c["id"] == cid)
+        if meta_ops(c.get("visible"), set()) & {"kinds", "branches"}:
+            gate = True
+        if any(meta_ops(o.get("if"), set()) for o in c["outcomes"]):
+            sens = True
+    return gate, sens
+
+
 def find_all(G, limit=LIMIT):
     K, search = searcher(G, limit)
-    return {t: search(t) for t in K.finals}
+    out = {}
+    for t in K.finals:
+        path, used = search(t)
+        out[t] = (path, used, *path_meta(K.S, path))
+    return out
 
 
 # восемь жизней: первая сцена каждой ветви (В2.1 и В2.2 начинаются после общей части В2)
@@ -268,7 +315,7 @@ def main():
     lines = ["# Свидетели: по одному пути к каждому финалу", "",
              "Сгенерировано `tools/witness.py`. Буква — id варианта в исходнике сцены.", ""]
     guides, warns = {}, []
-    for t, (path, used) in res.items():
+    for t, (path, used, gdep, jsens) in res.items():
         title = S[t]["title"]
         if path is None:
             warns.append(f"финал {t} «{title}»: путь не найден ({used} состояний) — возможно, недостижим")
@@ -276,6 +323,14 @@ def main():
             continue
         steps = []
         lines += [f"## {t} «{title}» — {len(path)} шагов, {used} состояний", ""]
+        if gdep:
+            lines += ["⚠ Условный маршрут: путь проходит мета-гейт kinds()/branches() — при пустом Журнале "
+                      "(чистый прогон) вариант недоступен. `witness_play.js` его пропускает; доказывается "
+                      "многожизненным прогоном `node tools/witness_play.js --multi`.", ""]
+        elif jsens:
+            lines += ["Внимание: исход одного из выборов решает мета-условие — при непустом Журнале маршрут "
+                      "может пойти иначе. Его доказывает чистый прогон; в многожизненном (`--multi`) он "
+                      "пропускается, чтобы не ловить ложный провал.", ""]
         for sid, cid, death in path:
             sc = S[sid]
             if cid is None:

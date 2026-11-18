@@ -13,7 +13,7 @@ def build_guides(g):
     hand = json.loads((ROOT / "scenes" / "_guides.json").read_text(encoding="utf-8"))
     S = g["scenes"]
     out = {}
-    for fid, (path, _) in find_all(g).items():
+    for fid, (path, used, gdep, jsens) in find_all(g).items():
         h = hand.get(fid, {})
         steps = []
         for sid, cid, death in path or []:
@@ -24,7 +24,8 @@ def build_guides(g):
                           "choice": cid, "label": label, "death": bool(death)})
         out[fid] = {"title": S[fid]["title"], "year": (re.search(r"(\d{4})", S[fid].get("date", "")) or [""])[0],
                     "hint": h.get("hint", ""), "forks": h.get("forks", []), "secret": h.get("secret", False),
-                    "gate": h.get("gate"), "steps": steps, "found": path is not None}
+                    "gate": h.get("gate"), "gateDependent": gdep, "journalSensitive": jsens,
+                    "steps": steps, "found": path is not None}
     return out
 
 
