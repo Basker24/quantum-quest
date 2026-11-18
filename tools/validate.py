@@ -53,11 +53,11 @@ def meta_dep(e):
 
 
 def ev(e, st, seen_life=frozenset(), meta=None):
-    """seen_life — смерти этой жизни; meta — смерти из Журнала (все жизни).
+    """seen_life — смерти этой жизни; meta — Журнал прошлых жизней: id смертей И посещённых сцен.
     meta=None: считать Журналом то же, что seen_life (как раньше). Для I1 передают frozenset():
     мета-эхо (seen без _life) — подарок прошлых жизней, опираться на него нельзя.
-    lived(ID) — сцена прожита в прошлой жизни: истинна только при непустом meta («полный Журнал»),
-    иначе (None, frozenset()) ложна — I1 и свидетели на неё не опираются, I2 считает оба исхода."""
+    lived(ID) — сцена ID прожита в ПРОШЛОЙ жизни (как vlife в engine.js): истинна, только если ID ∈ meta;
+    при None, frozenset() и маркере GATES ложна — I1 и свидетели на неё не опираются, I2 считает оба исхода."""
     op = e["op"]
     if op in ("num", "lit"):
         return e["v"]
@@ -71,8 +71,11 @@ def ev(e, st, seen_life=frozenset(), meta=None):
         return all(ev(a, st, seen_life, meta) for a in e["a"])
     if op == "or":
         return any(ev(a, st, seen_life, meta) for a in e["a"])
-    if op == "lived":
-        return bool(meta) and meta is not GATES
+    if op == "lived":                         # сцена прожита в прошлой жизни: её id в Журнале
+        if not meta:
+            return False
+        # "*" — маркер validate_fast «Журнал непуст, конкретные сцены неизвестны»
+        return e["id"] in meta or "*" in meta
     if op in ("kinds", "branches"):          # мета-гейт: полный Журнал — максимум, пустой — 0
         return META_MAX[op] if meta else 0
     if op == "one_life":                      # режим «Одна жизнь»: I2 — обе стороны, I1/свидетели — обычный режим
@@ -132,6 +135,8 @@ def main():
     CFG = G["config"]
     set_meta_max(G)
     S, D = G["scenes"], G["deaths"]
+    # «полный Журнал» для I2: все смерти (seen) и все сцены (lived — сцена могла быть прожита в прошлой жизни)
+    FULL_META = frozenset(D) | frozenset(S)
     ALL = list(CFG["vars"]) + list(CFG["flags"])
     errors, warns = [], []
 
@@ -371,7 +376,7 @@ def main():
                         continue
                     if "visible" in c:
                         # мета-эхо: для I2 считаем Журнал полным, для хода игры (и I1′) — пустым
-                        if ev(c["visible"], st, seen_life, frozenset(D)):
+                        if ev(c["visible"], st, seen_life, FULL_META):
                             cond_true.add((sid, c["id"], "visible: " + c.get("visible_src", "")))
                         r = ev(c["visible"], st, seen_life, frozenset())
                         (cond_true if r else cond_false).add((sid, c["id"], "visible: " + c.get("visible_src", "")))
@@ -512,7 +517,7 @@ def main():
                     lo, hi = aux[u]
                     opts.append(list(range(lo, hi + 1, 5)) or [lo])
             k = (sid, "текст", b["md"][:32])
-            metas = (None, frozenset(D)) if meta_dep(b["if"]) else (None,)
+            metas = (None, FULL_META) if meta_dep(b["if"]) else (None,)
             for combo in product(*opts):
               for mm in metas:
                 r = ev(b["if"], dict(zip(used, combo)), frozenset(), mm)

@@ -184,8 +184,8 @@ def main(note=""):
                             t2, f2 = possible(st, b["if"], X, m)
                             t, f = t or t2, f or f2
                 if len(ids) > 8:
-                    t2, f2 = possible(st, b["if"], frozenset(D))
-                    t3, f3 = possible(st, b["if"], frozenset(), frozenset(D))
+                    t2, f2 = possible(st, b["if"], frozenset(D) | {"*"})
+                    t3, f3 = possible(st, b["if"], frozenset(), frozenset(D) | {"*"})
                     t, f = t or t2 or t3, f or f2 or f3
             k = (where[0], where[1], b["md"][:32])
             if t:
@@ -222,9 +222,9 @@ def main(note=""):
                 continue
             nclk = {v - cost for v in fit} if clock is not None else {None}
             if "visible" in c:
-                t, f = possible(st, c["visible"], frozenset(D))   # эхо: могло быть видно после смерти
+                t, f = possible(st, c["visible"], frozenset(D) | {"*"})   # эхо: могло быть видно после смерти
                 if meta_dep(c["visible"]):
-                    t = t or possible(st, c["visible"], frozenset(), frozenset(D))[0]
+                    t = t or possible(st, c["visible"], frozenset(), frozenset(D) | {"*"})[0]
                 t0, f0 = possible(st, c["visible"])
                 k = (sid, c["id"], "visible: " + c.get("visible_src", ""))
                 if t:
