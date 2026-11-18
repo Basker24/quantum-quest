@@ -1475,7 +1475,7 @@
     }).join("");
     const total = Object.keys(G.deaths).length, seenN = Object.keys(meta.journal || {}).length;
     box.innerHTML = `<h3 class="memo-h">Что я знаю</h3><div class="clues">${rows}</div>
-      <p class="dim tiny mono">Хор знает ${seenN} смертей из ${total} · стихий ${kindsSeen().size} из ${C.stihii.length} · прожито жизней ${branchesLived().size} из 8</p>`;
+      <p class="dim tiny mono">Хор знает ${seenN} смертей из ${total} · стихий ${kindsSeen().size} из ${C.stihii.length} · прожито жизней ${branchesLived().size} из 9</p>`;
   }
 
   function renderPanels() {
