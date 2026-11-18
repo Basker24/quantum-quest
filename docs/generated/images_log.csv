@@ -178,3 +178,26 @@ id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_toke
 В3-03,2026-11-14T18:28:56,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-03.jpg,,1524,392,1132
 В3-04,2026-11-14T18:29:41,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-04.jpg,,1522,390,1132
 В3-05,2026-11-14T18:30:20,scene,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/В3-05.jpg,,1506,374,1132
+Я-01,2026-11-18T13:42:09,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,fail: HTTP 400: {
+  "error": {
+    "message": "Invalid file 'image[0]': unsupported mi,,zavod_canon+snag_ref+old_frame,,,
+Я-01,2026-11-18T13:43:04,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01.jpg,zavod_canon+snag_ref+old_frame,5499,,
+Я-01~ДАША,2026-11-18T13:44:13,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01~ДАША.jpg,zavod_canon+snag_ref+old_frame,5499,,
+Я-01~ПАРТНЁР,2026-11-18T13:44:52,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01~ПАРТНЁР.jpg,zavod_canon+snag_ref+old_frame,5499,,
+Я-01~ТАНЯ,2026-11-18T13:45:27,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01~ТАНЯ.jpg,zavod_canon+snag_ref+old_frame,5499,,
+Я-01~ДАША,2026-11-18T13:58:48,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01~ДАША.jpg,zavod_canon+snag_ref+old_frame,5571,,
+Я-01~ПАРТНЁР,2026-11-18T14:10:39,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v1_Я-01~ПАРТНЁР.jpg,zavod_canon+snag_ref+old_frame,5571,,
+Я-01,2026-11-18T14:29:04,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v3_Я-01.jpg,snag-v3,5569,,
+Я-01,2026-11-18T14:46:47,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v4_Я-01.jpg,snag-v3,5617,,
+Я-01,2026-11-18T14:49:48,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01.jpg,snag-v3,5642,,
+Я-01~ДАША,2026-11-18T14:55:48,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ДАША.jpg,snag-v3,3886,,
+Я-01~ПАРТНЁР,2026-11-18T14:57:59,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ПАРТНЁР.jpg,snag-v3,3885,,
+Я-01~ТАНЯ,2026-11-18T15:07:09,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ТАНЯ.jpg,snag-v3,3864,,
+Я-01~ОЛЯ,2026-11-18T15:09:37,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ОЛЯ.jpg,snag-v3,3289,,
+Я-01~ПЛОЙ,2026-11-18T15:19:37,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ПЛОЙ.jpg,snag-v3,3868,,
+Я-01~ШАДРИН,2026-11-18T15:31:15,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ШАДРИН.jpg,snag-v3,5440,,
+Я-01~ВИТЬКА,2026-11-18T16:10:19,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ВИТЬКА.jpg,snag-v3,3868,,
+Я-01~САРДААНА,2026-11-18T17:03:43,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~САРДААНА.jpg,snag-v3,3875,,
+Я-01~ВНУК,2026-11-18T17:52:04,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ВНУК.jpg,snag-v3,5632,,
+Я-01~ДОЧЬ,2026-11-18T18:52:54,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ДОЧЬ.jpg,snag-v3,5632,,
+Я-01~ДОЧЬ,2026-11-18T18:59:37,snagfix,gpt-image-2.6-sunburst,medium,1536x1024,ok,game/img/style-test/snag_v5_Я-01~ДОЧЬ.jpg,snag-v3,3928,,
