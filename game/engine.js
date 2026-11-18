@@ -2249,6 +2249,7 @@
     const done = endsDone(), all = ENDS().length;
     const fin = (n) => (n % 10 === 1 && n % 100 !== 11 ? "финал" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "финала" : "финалов");
     lockItem($("#btn-dlc"), devOn || dlcUnlocked(), "откроется, когда пройдёшь жизнь горноспасателя до конца");
+    lockItem($("#btn-dlc2"), devOn, "откроется в режиме автора: 90 % финалов или код «регент»");
     lockItem($("#btn-lore2"), devOn || loreUnlocked(), `откроется, когда увидишь ${need(0.6)} ${fin(need(0.6))} из ${all} (сейчас ${done})`);
     const ml = $("#m-lore"); if (ml) ml.textContent = loreUnlocked() ? "" : `${done}/${need(0.6)}`;
     const db = $("#btn-dev");
@@ -2328,6 +2329,7 @@
     $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; guideFocus = null; openPanel(panel); };
   $("#btn-quit").onclick = showTitle;
   $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = "obyasnenie/obyasnenie.html"; };
+  $("#btn-dlc2").onclick = () => { if ($("#btn-dlc2").classList.contains("locked")) return; location.href = "gleb41/gleb41.html"; };
   // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно
   const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k);
   function ioMsg(html, bad) { const m = $("#io-msg"); m.hidden = !html; m.classList.toggle("bad", !!bad); m.innerHTML = html || ""; return m; }
