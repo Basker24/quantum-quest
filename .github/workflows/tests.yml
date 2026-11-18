@@ -1,0 +1,42 @@
+# Тесты Quantum Quest на каждый push/PR.
+# Локально то же самое: python3 tools/test_lived.py; python3 tools/build.py; python3 tools/validate.py;
+# python3 tools/witness.py; node tools/witness_play.js; node tools/e2e.js; node tools/e2e_life.js
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: модель lived(ID) (P1 аудита 17.11)
+        run: python3 tools/test_lived.py
+      - name: сборка без dev-пресетов (быстро)
+        run: python3 tools/build.py --no-dev
+      - name: валидатор
+        run: python3 tools/validate.py
+      - name: свидетели (26 маршрутов)
+        run: python3 tools/witness.py
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: полная сборка (graph.js + dev.js)
+        run: python3 tools/build.py
+      - name: чистый прогон свидетелей
+        run: node tools/witness_play.js
+      - name: сквозные тесты
+        run: node tools/e2e.js && node tools/e2e_life.js

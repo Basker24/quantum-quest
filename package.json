@@ -1,0 +1,8 @@
+{
+  "name": "quantum-quest-tools",
+  "private": true,
+  "description": "Инструменты прогонов Quantum Quest (Playwright): witness_play.js, e2e.js, e2e_life.js",
+  "devDependencies": {
+    "playwright": "1.57.0"
+  }
+}
