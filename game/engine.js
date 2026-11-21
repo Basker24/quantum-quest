@@ -343,7 +343,7 @@
   const reveal = (p) => { p.classList.remove("pending"); if (p._tag) p._tag.classList.remove("pending"); };
 
   // ---------- экраны
-  const screens = ["#childhood", "#credits", "#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
+  const screens = ["#reread", "#childhood", "#credits", "#lore", "#askstats", "#devplayers", "#intro", "#title", "#chapter", "#scene", "#death", "#awake", "#rewind", "#flow", "#journal", "#me", "#howto", "#about", "#guide", "#devstate", "#devstats", "#devjump"];
   let back = "#title";
   function show(id) {
     for (const s of screens) $(s).hidden = s !== id;
@@ -623,6 +623,8 @@
     S.lifeBlocks = S.lifeBlocks || {};
     const lb = S.lifeBlocks[S.scene], lkey = (b) => b.key || "~" + bkey(b.md);
     const els = blocks.map((b) => { const p = para(art, b.cls, md(b.md), b.tag); p._own = b.own; p._old = !!b.key && oldBlock(b); p._lifeSeen = legacy || !!(lb && lb[lkey(b)]); return p; });
+    // финал и тупик: запомнить текст, как его прочёл игрок, — перечитать из «Моей жизни»
+    if (sc.stage === "final") { meta.reread = meta.reread || {}; meta.reread[S.scene] = { date: sc.date || "", title: sc.title || "", md: blocks.filter((b) => b.md && !b.own).map((b) => ({ m: b.md, c: b.cls || "" })) }; }
     const sbNow = (meta.seenBlocks[S.scene] = meta.seenBlocks[S.scene] || {});
     for (const b of blocks) if (b.key && !(b.key in sbNow)) sbNow[b.key] = life;
     saveMeta();
@@ -1952,9 +1954,24 @@
         h = `<p class="mono kicker">${kind === "final" ? "финал · " : kind === "end" ? "тупик · " : ""}${esc(sc.date || "")}${sc.age != null ? " · мне " + sc.age : ""}${devOn ? " · " + esc(id) : ""}</p><h3>${esc(sc.title || id)}</h3>${rows ? `<ul class="fc-ch">${rows}</ul>` : ""}${ds.length ? `<p class="mono tiny">${dj.length ? "в Журнале: " + dj.map((d) => "✝ " + esc(G.deaths[d].title || d)).join(", ") : ""}${ds.length - dj.length ? `${dj.length ? " · " : ""}ещё не найдено смертей: ${ds.length - dj.length}` : ""}</p>` : ""}`;
       }
     }
-    card.innerHTML = `<button class="close ghost fc-x" aria-label="Закрыть">×</button>${h}`;
+    const fk = !isDeath && G.scenes[id] ? (flowLayout().pos[id] || {}).kind : null, isEnd = fk === "final" || fk === "end";
+    const rr = isEnd && meta.reread && meta.reread[id];
+    const canRead = isEnd && (rr || devOn) && meta.visited[id];
+    card.innerHTML = `<button class="close ghost fc-x" aria-label="Закрыть">×</button>${h}${canRead ? `<button class="choice ghost-choice fc-read" type="button">Перечитать</button>` : isEnd && meta.visited[id] ? `<p class="mono tiny dim">Текст сохранится, когда дойдёшь сюда в следующий раз.</p>` : ""}`;
     card.hidden = false;
     card.querySelector(".fc-x").onclick = () => (card.hidden = true);
+    const rb = card.querySelector(".fc-read");
+    if (rb) rb.onclick = () => showReread(id);
+  }
+  // перечитать финал: тот самый текст, который игрок видел в последний раз
+  function showReread(id) {
+    const r = meta.reread && meta.reread[id], sc = G.scenes[id];
+    const lines = r ? r.md : (sc.text || []).filter((b) => !b.if && b.md).map((b) => ({ m: b.md, c: b.kind || "" }));
+    $("#rr-kick").textContent = [(r && r.date) || sc.date || "", id.startsWith("⊣") ? "тупик" : "финал"].filter(Boolean).join(" · ");
+    $("#rr-title").textContent = (r && r.title) || sc.title || id;
+    $("#rr-text").innerHTML = lines.map((x) => `<p class="${esc(x.c)}">${md(x.m)}</p>`).join("");
+    show("#reread");
+    $("#reread .close").onclick = () => { show("#flow"); };
   }
   (function initFlowTap() {
     const wrap = $("#flow-wrap");

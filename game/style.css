@@ -1093,3 +1093,8 @@ body[data-screen="title"] #title .title-wrap { position: relative; z-index: 2; d
 .choice small.hint { display: block; margin-top: 4px; font-family: var(--mono); font-size: 12px; letter-spacing: .02em; color: #9a9182; line-height: 1.35; }
 
 @media (max-width: 480px) { .cr-in p { font-size: 14.5px; } .cr-in .cr-small { font-size: 13px !important; } .cr-in { padding: 0 12px; } }
+
+#reread .text p { line-height: 1.65; }
+#reread .plaque { color: #9a9182; font-size: 13px; border-top: 1px dashed rgba(233,228,218,.15); padding-top: 10px; }
+#reread blockquote { margin: 1em 0; padding-left: 14px; border-left: 2px solid var(--accent); font-style: italic; color: #b7c4d4; }
+.fc-read { margin-top: 10px; }
