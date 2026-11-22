@@ -3,202 +3,278 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Сорок первая строка — дополнение к «Тот, кто остался»</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Сорок первая строка</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
 <style>
-/* «Сорок первая строка»: ночь Глеба. Холодный лабораторный синий; тепло — только приметы мамы. */
+/* Токены основной игры (game/style.css): тёмная бумага, натриевый фонарь, выцветшая Томь; PT Serif / PT Mono локально. */
 :root{color-scheme:dark;
- --bg:#070a11;--panel:#0e1420;--panel2:#141d2c;--line:#243449;--fg:#dfe6ee;--dim:#7d8aa0;
- --acc:#7cc4e8;--gold:#f2b95c;--red:#d96355;--vio:#9d8fd6;
- --f-t:"Unbounded",system-ui,sans-serif;--f-b:"Lora",Georgia,serif;--f-m:"IBM Plex Mono",ui-monospace,monospace}
+ --bg:#0d0d0f;--card:#151517;--card2:#1b1b1e;--ink:#e9e4da;--dim:#8d877c;--line:#2a2826;
+ --accent:#d9a441;--water:#4f7a78;--blood:#b2463a;--hor:#9fb7c9;--ok:#8fb59a;
+ --serif:"PT Serif",Georgia,"Times New Roman",serif;--mono:"PT Mono",ui-monospace,Menlo,monospace;--cap:"PT Serif Caption","PT Serif",Georgia,serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--f-b);
- background-image:radial-gradient(circle at 1px 1px,rgba(124,196,232,.06) 1px,transparent 0);background-size:26px 26px;
- padding-block:0 48px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
-button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:8px}
-button:focus-visible{outline:2px solid var(--acc)}
-.game{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.hud{position:sticky;top:env(safe-area-inset-top,0);z-index:20;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
- background:linear-gradient(var(--bg) 80%,rgba(7,10,17,0));padding:12px 0 10px}
-.clock{font:500 34px/1 var(--f-m);color:var(--acc)}.clock small{display:block;font-size:10px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
-.meters{display:flex;gap:10px;flex-wrap:wrap;min-width:0}
-.meter{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 12px;min-width:130px}
-.meter .lbl{display:flex;justify-content:space-between;font:10.5px var(--f-m);color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
-.meter .bar{position:relative;height:7px;background:var(--panel2);border-radius:4px;margin-top:5px;overflow:hidden}
-.meter .bar i{position:absolute;inset:0 auto 0 0;transition:width .5s}
-.m-drift .bar i{background:linear-gradient(90deg,#4a5f8a,var(--vio),#e2c2ff)}
-.m-molva .bar i{background:linear-gradient(90deg,#8a6b3a,var(--gold))}
-.tbtn{padding:8px 12px;font-size:13px}.tbtn b{color:var(--gold)}
-.hud2{display:flex;gap:8px;align-items:center}
-@media (max-width:640px){.hud{grid-template-columns:auto 1fr}.meters{grid-column:1/-1;grid-row:2}.clock{font-size:26px}}
-.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px}
-@media (max-width:860px){.cols{grid-template-columns:1fr}}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.p-t{font:11px var(--f-m);color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px}
-#mapsvg{display:block;width:100%;height:auto}
-.mapdot{cursor:pointer}
-.mapdot circle{transition:r .2s}
-.mapdot:hover circle{stroke-width:2.5}
-.mapdot text{font:11px var(--f-m);fill:var(--dim);pointer-events:none}
-.mapdot text.tn{fill:var(--fg);font-family:var(--f-b);font-size:11.5px}
-.scene{font-size:15.5px;line-height:1.7;min-height:64px}
-.acts{display:flex;flex-direction:column;gap:7px;margin-top:10px}
-.acts button{text-align:left;padding:9px 12px;line-height:1.4}
-.acts button:hover{border-color:var(--acc)}
-.acts button.death{border-color:#4a2622;color:#e8b6ae}
-.acts button.death:hover{border-color:var(--red)}
-.acts .off{color:var(--dim);cursor:not-allowed}
-.go{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.go button{padding:5px 9px;font:12px var(--f-m);color:var(--dim)}
-.go button:hover{color:var(--fg);border-color:var(--acc)}
-.log{max-height:170px;overflow:auto;display:flex;flex-direction:column;gap:5px;font-size:13.5px}
-.log p{margin:0;padding-left:10px;border-left:2px solid var(--line)}
-.log .x{border-color:var(--red)}.log .g{border-color:var(--ok,#86c49e)}.log .a{border-color:var(--vio)}.log .h{border-color:var(--acc)}
-.log .t{font:10.5px var(--f-m);color:var(--dim);margin-right:6px}
-.modal{position:fixed;inset:0;z-index:40;background:rgba(4,6,10,.78);display:none;align-items:center;justify-content:center;padding:16px}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:17px/1.6 var(--serif);padding:0 max(16px,env(safe-area-inset-left)) 48px max(16px,env(safe-area-inset-right))}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+button:focus-visible,.pin:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto}
+/* верх */
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0 10px;
+ background:linear-gradient(var(--bg) 78%,rgba(13,13,15,0));padding-top:max(12px,env(safe-area-inset-top))}
+.clock{font:400 32px/1 var(--mono);color:var(--accent);letter-spacing:.02em}
+.clock small{display:block;font-size:11px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-top:5px}
+.drift{display:flex;flex-direction:column;gap:5px}
+.drift .lbl{font:11px var(--mono);color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+.pips{display:flex;gap:4px}.pips i{width:18px;height:6px;border:1px solid var(--line);background:var(--card)}
+.pips i.on{background:var(--hor);border-color:var(--hor)}
+.sp{flex:1}
+.tb{font:13px var(--mono);color:var(--dim);border:1px solid var(--line);padding:7px 11px;background:var(--card)}
+.tb:hover{color:var(--ink);border-color:var(--accent)}
+.tb b{color:var(--accent);font-weight:400}
+/* сетка */
+.cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+.left{display:flex;flex-direction:column;gap:18px;min-width:0}
+@media (max-width:880px){.cols{display:flex;flex-direction:column}.left{display:contents}.p-map{order:1}#here{order:2}.p-log{order:3}}
+.panel{background:var(--card);border:1px solid var(--line);padding:16px 18px}
+.kick{font:11px var(--mono);color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px}
+/* карта */
+#map{display:block;width:100%;height:auto;background:#101012}
+.pin{cursor:pointer}
+.pin .ring{fill:var(--bg);stroke:var(--dim);stroke-width:1.5}
+.pin.can .ring{stroke:var(--accent)}
+.pin.can:hover .ring{fill:#2a2110}
+.pin.here .ring{fill:var(--accent);stroke:var(--accent)}
+.pin text{font:19px var(--mono);fill:var(--ink);paint-order:stroke;stroke:#101012;stroke-width:5px;stroke-linejoin:round}
+.pin text.s{font-size:14px;fill:var(--dim)}
+.pin .sh{display:none}
+.pin.far{cursor:default}.pin.far text{fill:var(--dim)}
+.pin .mins{font-size:14px;fill:var(--accent)}
+/* сцена */
+h2{font:400 24px/1.25 var(--cap);margin:0 0 4px}
+.sub{font:13px var(--mono);color:var(--dim);margin:0 0 12px}
+.scene{margin:0 0 14px}
+.last{border-left:2px solid var(--accent);padding:2px 0 2px 14px;margin:0 0 16px}
+.last.hor{border-color:var(--hor);font-style:italic}
+.last .h{font:12px var(--mono);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.acts{display:flex;flex-direction:column;gap:8px}
+.act{text-align:left;border:1px solid var(--line);background:var(--card2);padding:10px 14px;line-height:1.4;display:flex;gap:10px;align-items:baseline}
+.act:hover:not([disabled]){border-color:var(--accent)}
+.act .m{margin-left:auto;font:12px var(--mono);color:var(--dim);white-space:nowrap}
+.act.done{color:var(--dim)}
+.act.hor{border-color:#2e3a44}
+.act[disabled]{cursor:not-allowed;color:var(--dim)}
+.act[disabled] small{display:block;font:13px var(--serif);font-style:italic;margin-top:3px}
+.goes{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.goes button{font:13px var(--mono);color:var(--dim);border:1px solid var(--line);padding:5px 9px}
+.goes button:hover{color:var(--ink);border-color:var(--accent)}
+/* журнал */
+.log{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto;font-size:15px}
+.log p{margin:0;padding-left:12px;border-left:2px solid var(--line)}
+.log .a{border-color:var(--hor)}.log .g{border-color:var(--accent)}
+.log .t{font:12px var(--mono);color:var(--dim);margin-right:8px}
+.log .a .tag{font:11px var(--mono);color:var(--hor);margin-right:6px}
+.foot{font:12px var(--mono);color:var(--dim);margin:18px 0 0}
+/* окна */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(5,5,6,.86);display:none;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px 16px;overflow:auto}
 .modal.open{display:flex}
-.sheet{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:560px;width:100%;max-height:86vh;overflow:auto;padding:18px}
-.sheet h3{margin:0 0 12px;font:400 18px var(--f-t)}
-.sheet table{width:100%;border-collapse:collapse;font:12px var(--f-m)}
-.sheet td,.sheet th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
-.sheet th{color:var(--dim);text-transform:uppercase;font-size:10px;letter-spacing:.1em}
-.sheet tr.new td{color:var(--gold)}
-.end{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:22px}
-.end h3{font:400 20px var(--f-t);margin:0 0 14px;color:var(--gold)}
-.end p{font-size:16px;line-height:1.8}
-.end .dim{color:var(--dim);font:12px var(--f-m)}
-.kicker{font:10.5px var(--f-m);color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin:0}
-</style></head><body>
-<div class="game">
-  <div class="hud">
-    <div class="clock"><span id="clock">01:00</span><small>ночь на 14 марта 2015 · Юрга</small></div>
-    <div class="meters">
-      <div class="meter m-drift"><div class="lbl"><span>Дрейф</span><span id="driftN">0/5</span></div><div class="bar"><i id="driftB" style="width:0"></i></div></div>
-      <div class="meter m-molva"><div class="lbl"><span>Молва</span><span id="molvaN">0</span></div><div class="bar"><i id="molvaB" style="width:0"></i></div></div>
-    </div>
-    <div class="hud2"><button class="tbtn" id="btn-table">Таблица · <b id="rowsN">40</b> строк</button><button class="tbtn" id="btn-restart">заново</button></div>
+.sheet{background:var(--card);border:1px solid var(--line);max-width:720px;width:100%;padding:20px 22px;margin:auto 0}
+.sheet h3{font:400 22px var(--cap);margin:0 0 6px}
+.sheet .sub{margin-bottom:14px}
+.sheet p{margin:0 0 12px}
+.sheet .rem{font-style:italic;color:#cfc8ba;border-left:2px solid var(--line);padding-left:14px}
+.btn{font:14px var(--mono);border:1px solid var(--accent);color:var(--accent);padding:9px 16px;margin:6px 8px 0 0}
+.btn:hover{background:#2a2110}
+.btn.q{border-color:var(--line);color:var(--dim)}
+table{width:100%;border-collapse:collapse;font:13px var(--mono)}
+td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--dim);font-weight:400;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+td.n{color:var(--dim);width:2.2em}td.mama{color:var(--blood);width:3.5em}
+tr.empty td{color:var(--accent)}
+.tabwrap{overflow-x:auto}
+.warn{font-size:16px}.warn .help{font:14px var(--mono);color:var(--accent)}
+.ends{font:13px var(--mono);color:var(--dim);margin-top:10px}
+.ends b{color:var(--accent);font-weight:400}
+@media (max-width:620px){body{font-size:16px}.clock{font-size:26px}.pin text{font-size:34px;stroke-width:8px}.pin .lg{display:none}.pin .sh{display:inline}.pin text.s{display:none}.pin text.s.mins{display:inline;font-size:24px;transform:translateY(16px)}.pin .ring{stroke-width:3}
+ table{font-size:11px}td,th{padding:4px 3px}}
+@media (prefers-reduced-motion:no-preference){.panel,.last{animation:fade .25s ease-out}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <div class="clock"><span id="clock">01:00</span><small id="left">до 04:40 — 3 ч 40 мин</small></div>
+    <div class="drift"><span class="lbl">Дрейф <span id="driftN" class="mono">0/5</span></span><span class="pips" id="pips"></span></div>
+    <span class="sp"></span>
+    <button class="tb" id="b-table">Таблица · <b>40</b> строк</button>
+    <button class="tb" id="b-menu">← в меню</button>
   </div>
 
   <div class="cols">
-    <div class="panel">
-      <p class="p-t">Юрга, карта ночи</p>
-      <svg id="mapsvg" viewBox="0 0 1536 1024" role="img" aria-label="Карта Юрги"></svg>
+    <div class="left">
+    <div class="panel p-map">
+      <p class="kick">Юрга, ночь на 14 марта 2015 · коснись места, чтобы идти</p>
+      <svg id="map" viewBox="0 0 1000 700" role="img" aria-label="Карта ночной Юрги"></svg>
     </div>
-    <div class="panel">
-      <p class="p-t" id="locname">—</p>
-      <div class="scene" id="scene"></div>
+    <div class="panel p-log">
+      <p class="kick">Ночь в записях</p>
+      <div class="log" id="log"></div>
+    </div>
+    </div>
+    <div class="panel" id="here">
+      <h2 id="lname">—</h2><p class="sub" id="lsub"></p>
+      <div id="last"></div>
+      <p class="scene" id="scene"></p>
       <div class="acts" id="acts"></div>
-      <p class="p-t" style="margin-top:14px">Идти</p>
-      <div class="go" id="go"></div>
+      <div class="goes" id="goes"></div>
     </div>
   </div>
 
-  <div class="panel">
-    <p class="p-t">Ночь в записях</p>
-    <div class="log" id="log"></div>
-  </div>
-
-  <p class="kicker">Дополнение «Сорок первая строка» · Глеб Ростоцкий · проходит за одну ночь · не требует основной игры</p>
+  <p class="foot">Дополнение «Сорок первая строка» к игре «Тот, кто остался» · Глеб Ростоцкий, аспирант Лунёва · одна ночь</p>
 </div>
 
-<div class="modal" id="m-table"><div class="sheet">
-  <h3>Таблица40_финал.xlsx</h3>
-  <div id="table-body"></div>
-  <p class="dim" style="font:12px var(--f-m)">Сорок миров, в которых Глеба похоронили. Сорок первая строка пустая.</p>
-  <button id="btn-table-close" style="margin-top:10px;padding:8px 14px">закрыть</button>
-</div></div>
-
-<div class="modal" id="m-end"><div class="sheet end" id="end-body"></div></div>
+<div class="modal" id="m"><div class="sheet" id="sheet"></div></div>
 
 <script src="core.js"></script>
 <script>
 (function(){
-  const $ = (s) => document.querySelector(s);
-  let S = window.G.fresh();
-  const render = () => {
-    $('#clock').textContent = window.G.hm(S.t);
-    $('#driftN').textContent = S.N + '/5'; $('#driftB').style.width = Math.min(100, S.N * 20) + '%';
-    $('#molvaN').textContent = S.M; $('#molvaB').style.width = Math.min(100, S.M * 10) + '%';
-    $('#rowsN').textContent = S.rows.length;
-    $('#locname').textContent = window.G.LOC[S.loc].n;
-    $('#scene').textContent = window.G.descr(S);
-    const acts = document.getElementById('acts'); acts.innerHTML = '';
-    for (const a of window.G.list(S)) {
-      const b = document.createElement('button');
-      if (a.kind === 'die') b.className = 'death';
-      b.innerHTML = a.lbl + (a.min ? ' <span class="mono" style="color:var(--dim);font-size:11px">+' + a.min + ' мин</span>' : '');
-      if (a.off) { b.className = 'off'; b.innerHTML = a.lbl + ' <span style="color:var(--dim);font-size:12px">— ' + a.off + '</span>'; }
-      else b.onclick = () => { const r = window.G.apply(S, a.id); after(r); };
+  const G = window.G, $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let S = G.fresh();
+
+  // ---------- карта: Юрга нарисована вручную, точки и дороги из core.js
+  const MAPBASE = `
+  <defs>
+    <pattern id="snow" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".8" fill="#2a2826"/><circle cx="10" cy="11" r=".6" fill="#232124"/></pattern>
+    <linearGradient id="riv" x1="0" x2="1"><stop offset="0" stop-color="#1c2a2a"/><stop offset=".5" stop-color="#26393a"/><stop offset="1" stop-color="#1c2a2a"/></linearGradient>
+  </defs>
+  <rect width="1000" height="700" fill="#101012"/><rect width="1000" height="700" fill="url(#snow)"/>
+  <!-- кварталы -->
+  <g fill="#18171a" stroke="#222125" stroke-width="1">
+    ${[[150,250,80,40],[245,230,60,45],[320,240,90,50],[430,215,55,45],[150,320,70,55],[300,300,25,35],[380,320,50,40],[490,330,70,60],[150,395,45,40],[260,440,70,45],[350,410,60,40],[520,420,60,45],[250,500,80,40],[360,530,70,45],[470,520,60,50],[560,300,50,40]].map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`).join("")}
+  </g>
+  <!-- улицы -->
+  <g stroke="#2c2a2c" stroke-width="7" fill="none" stroke-linecap="round">
+    <path d="M120 290 H600"/><path d="M110 385 H610"/><path d="M150 480 H620"/>
+    <path d="M240 200 V570"/><path d="M345 205 V590"/><path d="M455 200 V580"/><path d="M560 260 V560"/>
+  </g>
+  <!-- Транссиб -->
+  <g fill="none">
+    <path d="M0 175 C200 170 600 160 1000 150" stroke="#3a3632" stroke-width="5"/>
+    <path d="M0 175 C200 170 600 160 1000 150" stroke="#101012" stroke-width="2" stroke-dasharray="10 10"/>
+  </g>
+  <text x="18" y="160" font-family="PT Mono" font-size="12" fill="#5d5850">ТРАНССИБ · на Новосибирск</text>
+  <text x="840" y="138" font-family="PT Mono" font-size="12" fill="#5d5850">на Тайгу ·</text>
+  <!-- Томь -->
+  <path d="M700 0 C760 120 690 230 760 330 C820 420 760 560 810 700 L880 700 C830 560 890 420 830 330 C770 230 840 120 780 0 Z" fill="url(#riv)"/>
+  <path d="M742 0 C800 120 730 230 796 330 C855 420 800 560 845 700" stroke="#33494a" stroke-width="1" fill="none" stroke-dasharray="3 9"/>
+  <text x="805" y="250" font-family="PT Serif" font-style="italic" font-size="22" fill="#4f7a78" transform="rotate(68 805 250)">Томь</text>
+  <!-- Р-255 -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M40 560 C120 540 160 520 200 470 C240 430 300 470 455 470 C560 470 660 455 745 455 C830 455 860 520 925 590 C950 615 975 640 1000 650" stroke="#4a3b22" stroke-width="9"/>
+    <path d="M40 560 C120 540 160 520 200 470 C240 430 300 470 455 470 C560 470 660 455 745 455 C830 455 860 520 925 590 C950 615 975 640 1000 650" stroke="#d9a441" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="8 8"/>
+  </g>
+  <text x="30" y="590" font-family="PT Mono" font-size="12" fill="#7d6a45">Р-255 · на Новосибирск</text>
+  <text x="890" y="682" font-family="PT Mono" font-size="12" fill="#7d6a45">на Кемерово →</text>
+  <!-- мост -->
+  <g stroke="#6d675e" stroke-width="2"><path d="M705 447 H790"/><path d="M705 463 H790"/></g>
+  <!-- излучина и откос -->
+  <path d="M895 560 C915 585 935 600 960 612" stroke="#b2463a" stroke-opacity=".5" stroke-width="2" fill="none" stroke-dasharray="2 4"/>
+  <!-- роза и масштаб -->
+  <g font-family="PT Mono" font-size="12" fill="#5d5850"><path d="M960 40 l6 18 -6 -5 -6 5 z" fill="#8d877c"/><text x="955" y="78">С</text>
+  <path d="M40 670 H140" stroke="#5d5850" stroke-width="2"/><text x="40" y="660">1 км</text></g>
+  <text x="560" y="610" font-family="PT Serif" font-style="italic" font-size="26" fill="#3b3833">Юрга</text>`;
+
+  function drawMap() {
+    const L = G.LOC, can = Object.fromEntries(G.moves(S).map((m) => [m.to, m.min]));
+    let pins = "";
+    for (const [id, l] of Object.entries(L)) {
+      const here = id === S.loc, ok = id in can;
+      const cls = "pin" + (here ? " here" : ok ? " can" : " far");
+      const right = l.x < 820, tx = right ? l.x + 16 : l.x - 16, anchor = right ? "start" : "end";
+      pins += `<g class="${cls}" data-loc="${id}" ${ok ? 'tabindex="0" role="button"' : ""} aria-label="${esc(l.n)}${ok ? ", " + can[id] + " мин" : ""}">
+        <circle class="ring" cx="${l.x}" cy="${l.y}" r="${here ? 10 : 8}"/>
+        <text class="lg" x="${tx}" y="${l.y - 2}" text-anchor="${anchor}">${esc(l.n)}</text><text class="sh" x="${tx}" y="${l.y + 4}" text-anchor="${anchor}">${esc(l.k)}</text>
+        <text class="s${ok ? " mins" : ""}" x="${tx}" y="${l.y + 20}" text-anchor="${anchor}">${ok ? can[id] + " мин" : here ? "я здесь" : esc(l.s)}</text></g>`;
+    }
+    const svg = $("#map"); svg.innerHTML = MAPBASE + pins;
+    svg.querySelectorAll(".pin.can").forEach((g) => {
+      const go = () => doIt("go:" + g.dataset.loc);
+      g.addEventListener("click", go); g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  }
+
+  function render() {
+    $("#clock").textContent = G.hm(S.t);
+    const left = Math.max(0, G.DEADLINE - S.t);
+    $("#left").textContent = left ? "до 04:40 — " + (left >= 60 ? Math.floor(left / 60) + " ч " : "") + (left % 60) + " мин" : "04:40";
+    $("#driftN").textContent = S.N + "/" + G.DMAX;
+    $("#pips").innerHTML = Array.from({ length: G.DMAX }, (_, i) => `<i class="${i < S.N ? "on" : ""}"></i>`).join("");
+    const l = G.LOC[S.loc];
+    $("#lname").textContent = l.n; $("#lsub").textContent = l.s;
+    $("#last").innerHTML = S.last ? `<div class="last ${S.last.cls}"><div class="h">${esc(S.last.title)}</div>${esc(S.last.text)}</div>` : "";
+    $("#scene").textContent = G.descr(S);
+    const acts = $("#acts"); acts.innerHTML = "";
+    for (const a of G.list(S)) {
+      const b = document.createElement("button");
+      b.className = "act" + (a.id === "listen" ? " hor" : "") + (a.done && a.id !== "listen" && a.id !== "wait" ? " done" : "");
+      const lbl = a.id === "dawn" && S.loc === "tras" ? "Сесть к Руслану и уехать, не дожидаясь" : a.lbl;
+      if (a.off) { b.disabled = true; b.innerHTML = `<span>${esc(lbl)}<small>${esc(a.off)}</small></span>`; }
+      else { b.innerHTML = `<span>${esc(lbl)}</span>${a.min ? `<span class="m">+${a.min} мин</span>` : ""}`; b.onclick = () => doIt(a.id); }
       acts.append(b);
     }
-    const go = document.getElementById('go'); go.innerHTML = '';
-    for (const m of window.G.moves(S)) {
-      const b = document.createElement('button');
-      b.textContent = window.G.LOC[m.to].n + ' · ' + m.min + ' мин';
-      b.onclick = () => { window.G.apply(S, 'go:' + m.to); after({ kind: 'go' }); };
-      go.append(b);
+    const goes = $("#goes"); goes.innerHTML = "";
+    for (const m of G.moves(S)) {
+      const b = document.createElement("button");
+      b.textContent = G.LOC[m.to].n + " · " + m.min + " мин";
+      b.onclick = () => doIt("go:" + m.to); goes.append(b);
     }
-    const log = document.getElementById('log'); log.innerHTML = '';
-    for (const l of S.log.slice(0, 24)) {
-      const p = document.createElement('p'); p.className = l.cls;
-      p.innerHTML = '<span class="t">' + window.G.hm(l.t) + '</span>' + l.txt;
-      log.append(p);
-    }
+    if (!S.taxi) { const p = document.createElement("span"); p.className = "mono"; p.style.cssText = "font-size:12px;color:var(--dim);align-self:center"; p.textContent = "до 19-го км пешком не дойти, нужна машина"; goes.append(p); }
+    $("#log").innerHTML = S.log.slice(0, 40).map((x) => `<p class="${x.cls}"><span class="t">${G.hm(x.t)}</span>${x.cls === "a" ? '<span class="tag">⚑ сдвинулось</span>' : ""}${esc(x.txt)}</p>`).join("") || '<p><span class="t">01:00</span>Я сижу в номере и смотрю на таблицу. Шесть лет назад, в 04:40, на девятнадцатом километре. Сегодня я хочу быть там в ту же минуту.</p>';
     drawMap();
-    if (S.ending && S.over) showEnd();
-  };
-  const after = (r) => { if (r && r.kind === 'die') showDie(r); render(); };
-  const showDie = (r) => {
-    showSheet('m-table', '<h3>✝ ' + r.d.lbl + '</h3><p style="white-space:pre-line">' + r.d.die + '</p>' +
-      (r.r ? '<p style="white-space:pre-line;color:var(--gold)">— В мире, где Глеб остался жить:<br>' + r.r.why + '</p>' : '') +
-      (r.r && r.r.seen ? '<p style="white-space:pre-line;color:var(--dim)">Видели: ' + r.r.seen + '</p>' : '') +
-      '<p style="color:var(--vio)">Дрейф: ' + S.N + ' из 5.</p><button onclick="document.getElementById(\'m-table\').classList.remove(\'open\')" style="margin-top:10px;padding:8px 14px">дальше</button>');
-  };
-  const openSheet = (title, html) => { document.querySelector('#m-table .sheet').innerHTML = ''; const m = document.getElementById('m-end'); };
-  const showSheet = (id, html) => { const sheet = document.querySelector('#' + id + ' .sheet'); sheet.innerHTML = html; document.getElementById(id).classList.add('open'); };
-  const showTable = () => {
-    const rows = S.rows.map((r, i) => '<tr' + (i >= 40 ? ' class="new"' : '') + '><td>' + (i + 1) + '</td><td>' + r.d + '</td><td>' + r.p + '</td><td>' + (r.m || '—') + '</td></tr>').join('');
-    showSheet('m-table', '<h3>Таблица40_финал.xlsx</h3><table><tr><th>№</th><th>Дата</th><th>Место</th><th>Примета</th></tr>' + rows + '<tr class="new"><td>' + (S.rows.length + 1) + '</td><td>…</td><td>…</td><td>пусто</td></tr></table><button onclick="document.getElementById(\'m-table\').classList.remove(\'open\')" style="margin-top:10px;padding:8px 14px">закрыть</button>');
-  };
-  const showEnd = () => {
-    const e = window.G.endingText(S);
-    document.getElementById('end-body').innerHTML = '<p class="kicker">Финал дополнения</p><h3>' + e.h + '</h3>' + e.p.map(x => '<p>' + x + '</p>').join('') + '<p class="dim">«Сорок первая строка» · дополнение к «Тот, кто остался» · Глеб Ростоцкий · ночь на 14 марта 2015</p><button id="end-ok" style="margin-top:8px;padding:9px 16px">закрыть</button>';
-    document.getElementById('m-end').classList.add('open');
-    document.getElementById('end-ok').onclick = () => document.getElementById('m-end').classList.remove('open');
-  };
-  const drawMap = () => {
-    const svg = document.getElementById('mapsvg');
-    const L = window.G.LOC;
-    let edges = '';
-    const seen = new Set();
-    for (const e of window.G.EDGES_SRC || []) {}
-    // рёбра рисуем по списку пар (уникальных)
-    const pairs = window.G.EDGES_PAIRS || [];
-    for (const [a, b] of pairs) {
-      const A = L[a], B2 = L[b];
-      edges += '<line x1="' + A.x + '" y1="' + A.y + '" x2="' + B2.x + '" y2="' + B2.y + '" stroke="#243449" stroke-width="2" stroke-opacity=".8"/>';
-    }
-    let dots = '';
-    for (const [id, l] of Object.entries(L)) {
-      const here = id === S.loc;
-      const col = here ? '#f2b95c' : '#7cc4e8';
-      dots += '<g class="mapdot" data-loc="' + id + '"><circle cx="' + l.x + '" cy="' + l.y + '" r="' + (here ? 11 : 7) + '" fill="' + (here ? 'rgba(242,185,92,.25)' : 'rgba(124,196,232,.12)') + '" stroke="' + col + '" stroke-width="' + (here ? 2 : 1.4) + '"/><text class="tn" x="' + (l.x + 14) + '" y="' + (l.y + 4) + '">' + l.n.replace('&', ' ') + '</text></g>';
-    }
-    svg.innerHTML = edges + dots;
-    svg.querySelectorAll('.mapdot').forEach((g) => g.addEventListener('click', () => {
-      const to = g.getAttribute('data-loc');
-      const m = window.G.moves(S).find((x) => x.to === to);
-      if (m) { window.G.apply(S, 'go:' + to); after({ kind: 'go' }); }
-    }));
-  };
-  window.G.EDGES_PAIRS = window.G.EDGES;
-  document.getElementById('btn-table').onclick = showTable;
-  document.getElementById('btn-table-close').onclick = () => document.getElementById('m-table').classList.remove('open');
-  document.getElementById('btn-restart').onclick = () => { S = window.G.fresh(); document.getElementById('m-end').classList.remove('open'); render(); };
-  document.getElementById('m-table').addEventListener('click', (e) => { if (e.target.id === 'm-table') e.target.classList.remove('open'); });
-  document.getElementById('m-end').addEventListener('click', (e) => { if (e.target.id === 'm-end') e.target.classList.remove('open'); });
-  render();
+  }
+
+  function doIt(id) {
+    const r = G.apply(S, id);
+    if (r === null) return;
+    render();
+    if (S.over) showEnd();
+    else if (id.startsWith("go:") && matchMedia("(max-width:880px)").matches) $("#here").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function open(html) { $("#sheet").innerHTML = html; $("#m").classList.add("open"); $("#sheet").scrollTop = 0; }
+  function close() { $("#m").classList.remove("open"); }
+  $("#m").addEventListener("click", (e) => { if (e.target.id === "m" && !S.over) close(); });
+
+  function showTable() {
+    const rows = G.ROWS.map((r, i) => `<tr><td class="n">${i + 1}</td><td>${r.d}</td><td>${esc(r.p)}</td><td>${esc(r.m)}</td><td class="mama">нет</td></tr>`).join("");
+    open(`<h3>Таблица40_финал.xlsx</h3><p class="sub">сорок миров, где меня похоронили. Третий столбец — что сдвинулось там, где я проснулся</p>
+      <div class="tabwrap"><table><tr><th>№</th><th>дата</th><th>где</th><th>что сдвинулось</th><th>мама</th></tr>${rows}
+      <tr class="empty"><td class="n">41</td><td>14.03.2015</td><td>Р-255, 19-й км</td><td>…</td><td></td></tr></table></div>
+      <button class="btn" id="x">закрыть</button>`);
+    $("#x").onclick = close;
+  }
+
+  function showEnd() {
+    const e = G.endingText(S), f = G.found(), all = Object.keys(G.ENDINGS);
+    const list = all.filter((k) => f.includes(k)).map((k) => "<b>" + esc(G.ENDINGS[k].t) + "</b>").join(" · ");
+    open(`<p class="kick">${G.hm(S.t)} · 14 марта 2015</p><h3>${esc(e.h)}</h3><p class="sub">${esc(e.sub)}</p>${e.p.map((x) => x.startsWith("> ") ? `<p class="rem">${esc(x.slice(2))}</p>` : `<p>${esc(x)}</p>`).join("")}
+      <p class="ends">Найдено финалов: ${f.length} из ${all.length}: ${list}${f.length < all.length ? ". Один из них тайный." : "."}</p>
+      <button class="btn" id="again">прожить ночь заново</button><button class="btn q" id="tomenu">в меню игры</button>`);
+    $("#again").onclick = () => { S = G.fresh(); close(); render(); };
+    $("#tomenu").onclick = () => { location.href = "../index.html"; };
+  }
+
+  function warn() {
+    open(`<p class="kick">Перед началом</p><h3>Сорок первая строка</h3><p class="sub">ночь Глеба Ростоцкого · Юрга, 13–14 марта 2015</p>
+      <div class="warn"><p>Глеб — аспирант Лунёва из основной игры. Шесть лет назад он разбился на трассе под Юргой, мама погибла, а его откачали через шесть минут. С тех пор он умирал нарочно, сорок раз, чтобы найти мир, где она жива. Это история о горе и о том, что так её не найти. Как он умирал, в игре не рассказано и не показано.</p>
+      <p>Если тебе сейчас плохо, позвони: <span class="help">8-800-333-44-34</span>, бесплатно и круглосуточно, или <span class="help">112</span>.</p>
+      <p>Смертей в эту ночь нет. Есть четыре часа, город, Хор и таблица. Глеб хочет быть на девятнадцатом километре в 04:40.</p></div>
+      <button class="btn" id="go">начать ночь</button><button class="btn q" id="back">в меню игры</button>`);
+    $("#go").onclick = close; $("#back").onclick = () => { location.href = "../index.html"; };
+  }
+
+  $("#b-table").onclick = showTable;
+  $("#b-menu").onclick = () => { location.href = "../index.html"; };
+  render(); warn();
 })();
 </script>
 </body>

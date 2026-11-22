@@ -2348,7 +2348,7 @@
   $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = "obyasnenie/obyasnenie.html"; };
   $("#btn-dlc2").onclick = () => { if ($("#btn-dlc2").classList.contains("locked")) return; location.href = "gleb41/gleb41.html"; };
   // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно
-  const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k);
+  const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k) || /^gleb41-/.test(k);
   function ioMsg(html, bad) { const m = $("#io-msg"); m.hidden = !html; m.classList.toggle("bad", !!bad); m.innerHTML = html || ""; return m; }
   $("#btn-export").onclick = () => {
     const keys = {};
