@@ -1,0 +1,49 @@
+{
+  "_comment": "Английские тексты конфига (только текстовые поля; логика — в scenes/_config.json). Сливается поверх русского в graph_en.js.",
+  "title": "Black Backwater",
+  "vars": {
+    "ТЕЛ": {"name": "Body", "tiers": [[0, "frail"], [20, "ordinary"], [40, "sturdy"], [60, "strong"], [80, "iron"]],
+            "desc": "Health, strength, stamina.",
+            "affects": "surviving cold, a fight, a cave-in, a long run; some deaths are decided by the body"},
+    "РАЗ": {"name": "Mind", "tiers": [[0, "scatterbrained"], [20, "ordinary"], [40, "sharp"], [60, "keen"], [80, "brilliant"]],
+            "desc": "Memory, reckoning, learning.",
+            "affects": "hunches and exact decisions, school and instruments, talking as an equal with clever people"},
+    "ЭМП": {"name": "Heart", "tiers": [[0, "deaf to people"], [20, "ordinary"], [40, "perceptive"], [60, "attuned"], [80, "sees right through you"]],
+            "desc": "How well I feel other people. Not health, not romance: noticing.",
+            "affects": "heart-to-heart talks and making up, closeness with Nika and family, who I manage to notice in time"},
+    "ВОЛ": {"name": "Will", "tiers": [[0, "timid"], [20, "ordinary"], [40, "stubborn"], [60, "firm"], [80, "unbending"]],
+            "desc": "Stubbornness and endurance.",
+            "affects": "saying no, not breaking, holding on to someone, seeing it through"},
+    "ДАР": {"name": "Resonance", "tiers": [[0, "silence"], [20, "a chill"], [40, "voices"], [60, "a choir"], [80, "choirmaster"]],
+            "desc": "My link to the ones I was in other worlds.",
+            "affects": "the chill before a death, the voices of the Choir, how far back I can rewind"},
+    "ДРЕЙФ": {"name": "Drift", "tiers": [[0, "the world holds still"], [5, "small things don't add up"], [40, "the world is sliding"], [60, "a stranger's world"], [80, "the splice"]],
+            "desc": "How far the world has slid from the one I was born in. It grows when I bend fate to suit myself.",
+            "affects": "small things around me stop adding up, people and endings change; with little drift the bright endings stay open"},
+    "СВЯЗЬ_НИКА": {"name": "Nika"},
+    "СВЯЗЬ_ВИТЬКА": {"name": "Vitka"},
+    "СВЯЗЬ_МАМА": {"name": "Mom"},
+    "СВЯЗЬ_ОТЕЦ": {"name": "Dad"},
+    "СВЯЗЬ_ЛУНЁВ": {"name": "Lunyov"},
+    "СВЯЗЬ_ПАРТНЁР": {"name": "The one beside me"}
+  },
+  "shock_first": [
+    "At first I don't understand where I am. And when I do, it only gets worse.",
+    "I just died. For real, all the way to the end, and I remember all of it, every second, the way you remember yesterday. And here I am, alive, and everything around me is exactly the way it was a minute ago, before it happened.",
+    "The death already feels like a memory, as if it happened long ago and to somebody else, though only a second has gone by. But no dream hurts like this afterward. My body remembers everything down to the last breath, and my hands are shaking.",
+    "I don't understand what's happening to me. Maybe I've gone crazy. Maybe it was a premonition. Only a premonition doesn't leave the taste of that minute in your mouth.",
+    "One thing I know for sure: I'm not going back there."
+  ],
+  "shock_again": [
+    "It happened again. I remember my death as clearly as an old photograph, and I'm here again, alive, a minute before it.",
+    "It's no easier for not being the first time. But at least now I know I have this minute."
+  ],
+  "shock_later": [
+    "I'm here again, alive, a minute before my death, and my hands are shaking. I don't understand what's wrong with me, and some part of me already knows."
+  ],
+  "meta_entries": [
+    {"id": "сосед-Т07", "title": "✝ — the me next door", "date": "December 2003",
+     "text": "Ice by the bank, the green glow of a dashboard underwater. This me got into the Lada Nine and never got out. For one second I saw through his eyes."}
+  ],
+  "photo_eras": {"bw": "old black-and-white photo, 1990s", "color": "glossy color print from a photo shop, 2000s", "digital": "digital point-and-shoot, 2010s", "phone": "smartphone, 2020s–2040s", "future": "a picture of the future that's too clean, 2050–2061"}
+}

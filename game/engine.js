@@ -4,6 +4,7 @@
   "use strict";
   const G = window.GRAPH, C = G.config;
   const $ = (s) => document.querySelector(s);
+  const TT = (s) => (window.QQ_T ? window.QQ_T(s) : s); // перевод строк вне DOM (картинка надгробия, «поделиться»); в русской версии — как есть
   const DEBUG = /[?&]debug/.test(location.search);
   const SAVE = "qq_save_v1", META = "qq_meta_v1";
   const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -683,7 +684,7 @@
       .sort((a, b) => String(meta.journal[a[0]].first).localeCompare(String(meta.journal[b[0]].first)));
     if (!seen.length) return ["Рыбаки молчат. Я почти никого из них не знаю, и они меня, кажется, тоже."];
     const voice = (ep) => {
-      const m = /^(\d+)\s+(год|года|лет)\.\s*(.*)$/.exec(ep);
+      const m = /^(\d+)\s+(год|года|лет)\.\s*(.*)$/.exec(ep) || /^Age (\d+)()\.\s*(.*)$/.exec(ep); // + английская эпитафия «Age 21. …»
       return "— " + (m ? `Мне было ${m[1]}. ${m[3]}` : ep);
     };
     const N = 7, pick = [];
@@ -741,7 +742,7 @@
 
   function dateStamp(date) {
     const m = /(\d{1,2})\s+(\S+)\s+(\d{4})/.exec(date || "");
-    const months = { января: 1, февраля: 2, марта: 3, апреля: 4, мая: 5, июня: 6, июля: 7, августа: 8, сентября: 9, октября: 10, ноября: 11, декабря: 12 };
+    const months = { января: 1, февраля: 2, марта: 3, апреля: 4, мая: 5, июня: 6, июля: 7, августа: 8, сентября: 9, октября: 10, ноября: 11, декабря: 12, January: 1, February: 2, March: 3, April: 4, May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 }; // + английская версия
     if (m) return `'${m[3].slice(2)}  ${months[m[2]] || ""}  ${m[1]}`;
     const y = yearOf(date);
     return y ? `'${y.slice(2)}` : "";
@@ -1033,15 +1034,15 @@
     g.textAlign = "center";
     g.font = `34px ${mono}`; g.fillStyle = "#8d877c"; g.fillText(String(d.date || "").toUpperCase(), W / 2, 170);
     g.font = `120px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText("✝", W / 2, 320);
-    g.font = `54px ${serif}`; g.fillText("Андрей Николаевич Самохин", W / 2, 420);
+    g.font = `54px ${serif}`; g.fillText(TT("Андрей Николаевич Самохин"), W / 2, 420);
     g.font = `38px ${mono}`; g.fillStyle = "#b9a27a"; g.fillText(`1989 — ${yearOf(d.date) || ""}`, W / 2, 480);
     let y = wrap(d.epitaph, W / 2, 590, W - 260, 54, `italic 40px ${serif}`, "#e9e4da");
     if (d.mourner) {
       y += 30;
-      g.font = `28px ${mono}`; g.fillStyle = "#b2463a"; g.fillText("В ТОМ МИРЕ", W / 2, y); y += 54;
+      g.font = `28px ${mono}`; g.fillStyle = "#b2463a"; g.fillText(TT("В ТОМ МИРЕ"), W / 2, y); y += 54;
       y = wrap(d.mourner, W / 2, y, W - 260, 46, `34px ${serif}`, "#c9c2b5");
     }
-    g.font = `44px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText(C.title || "Тот, кто остался", W / 2, H - 190);
+    g.font = `44px ${serif}`; g.fillStyle = "#e9e4da"; g.fillText(TT(C.title || "Тот, кто остался"), W / 2, H - 190);
     g.font = `26px ${mono}`; g.fillStyle = "#6f8aa0"; g.fillText((C.share_url || "").replace(/^https?:\/\//, ""), W / 2, H - 95);
     return cv;
   }
@@ -1049,7 +1050,7 @@
   function shareTomb(d) {
     const box = $("#death-text").querySelector(".tomb-share");
     const url = C.share_url || location.href;
-    const text = `${d.epitaph || ""} — «${C.title || "Тот, кто остался"}»`;
+    const text = `${d.epitaph || ""} — «${TT(C.title || "Тот, кто остался")}»`;
     const cv = tombCanvas(d);
     cv.toBlob(async (blob) => {
       const file = blob && new File([blob], "nadgrobie.png", { type: "image/png" });

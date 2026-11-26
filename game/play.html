@@ -1,5 +1,22 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Тот, кто остался</title>
+<script>
+/* язык: ?lang=en|ru или сохранённый выбор (ключ qqlang, не qq_: «стереть прогресс» язык не сбрасывает) */
+(function () {
+  var q = /[?&]lang=(en|ru)\b/.exec(location.search), l = q ? q[1] : null;
+  try { if (l) localStorage.setItem("qqlang", l); else l = localStorage.getItem("qqlang"); } catch (e) { /* без хранилища — русский */ }
+  window.QQ_LANG = l === "en" ? "en" : "ru";
+  document.documentElement.lang = window.QQ_LANG;
+  document.addEventListener("click", function (e) {
+    var b = e.target && e.target.closest && e.target.closest("#btn-lang");
+    if (!b) return;
+    var to = window.QQ_LANG === "en" ? "ru" : "en";
+    try { localStorage.setItem("qqlang", to); } catch (x) { /* ничего */ }
+    var u = location.href.replace(/([?&])lang=(en|ru)&?/, "$1").replace(/[?&]$/, "");
+    location.href = u + (u.indexOf("?") < 0 ? "?" : "&") + "lang=" + to;
+  });
+})();
+</script>
 <meta name="theme-color" content="#0d0d0f">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="style.css">
@@ -112,7 +129,7 @@
           <button id="btn-devstats" class="mitem"><span class="m-t">⚙ Справка по статам</span><span class="m-s">все проверки каждой характеристики по годам</span></button>
         </nav>
         <div class="settings mono tiny">
-          <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-about2" class="set-btn">об игре и помощь</button><span class="dot-sep" aria-hidden="true">·</span><details class="more"><summary class="set-btn">ещё…</summary><div class="more-pop">
+          <button id="btn-sound2" class="set-btn" aria-pressed="true">звук: вкл</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-about2" class="set-btn">об игре и помощь</button><span class="dot-sep" aria-hidden="true">·</span><button id="btn-lang" class="set-btn" lang="en">English</button><span class="dot-sep" aria-hidden="true">·</span><details class="more"><summary class="set-btn">ещё…</summary><div class="more-pop">
             <button id="btn-credits" class="set-btn">титры</button>
             <button id="btn-export" class="set-btn">сохранить прогресс в файл</button>
             <button id="btn-import" class="set-btn">загрузить из файла</button>
@@ -450,4 +467,10 @@
 <script src="music.js"></script>
 <script src="stats.js"></script>
 <script src="graph.js"></script>
+<script>
+if (window.QQ_LANG === "en") { // английский слой: тексты сцен поверх графа и словарь интерфейса
+  var lb = document.getElementById("btn-lang"); if (lb) { lb.textContent = "Русский"; lb.lang = "ru"; }
+  document.write('<script src="graph_en.js"><\/script><script src="i18n_en.js"><\/script>');
+}
+</script>
 <script src="engine.js"></script>

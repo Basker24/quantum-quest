@@ -10,7 +10,7 @@
 
 - Сцены идут в **настоящем времени** от первого лица, как в оригинале (*I'm seven. I have half a bike.*). Для детского голоса это естественно (Emma Donoghue, *Room*), а для взрослого держит напряжение.
 - **Ремарки старика** написаны в прошедшем времени, курсивом, отдельным абзацем (`> `). Старик говорит из 2061-го, поэтому у него past simple, а не present perfect: *The old woman downstairs was right about that backwater.*
-- Флешбэк внутри сцены — past simple, без *had had* каскадов.
+- Флешбэк внутри сцены — past simple, без *had had* каскадов. Одно якорное *had* для смены времени допустимо (критик).
 
 ## 2. Регистр по возрасту
 
@@ -18,7 +18,7 @@
 - Короткие предложения, цепочки на *and*: *and Vitka says there's no such thing, and the piles are real, and they suck you in.*
 - Ребёнок не называет взрослых чувств. Вместо *I was scared* он пишет *I count my fingers*.
 - Свои объяснения взрослых вещей: *all grown-ups have stomachaches*.
-- Дворовая речь: «чё» → *wha'?* / *so?*; «ваще» → *like, ever*; «нафиг» → *forget it*; «слабо?» → *dare you* / *bet you can't*; «кто не доплывёт, тот девчонка» → *last one there's a girl*. Американизмы конца 90-х (*as if*, *duh*) — можно, но редко, по одному на сцену.
+- Дворовая речь: «чё» → *huh?* / *so?*; «ваще» → *ever*; «нафиг» → *forget it*; «слабо?» → *bet you can't*; «кто не доплывёт, тот девчонка» → *last one there's a girl*. Никаких *wha'?*, *like, ever*, *as if*, *duh*: они делают из сибирского ребёнка американского (критик 26.11). Испуг назвать можно (*I'm scared*), нельзя разбирать его по-взрослому.
 - Нельзя: взрослые метафоры, слова длиннее, чем знает семилетка (*luminous*, *ominous*), ирония сверху.
 
 ### 11–14 лет (2000–2003)
@@ -67,6 +67,15 @@
 | Объявленная эмоция | *I felt a wave of panic* | *I count the buttons on my shirt* |
 | *As if* / *like* в каждом абзаце | | Не больше одного сравнения на абзац |
 | Латинизмы вместо простых слов | *commence, utilize, illuminate* | *start, use, light* |
+| Глаголы-фильтры | *I saw / I heard / I felt / I noticed / I realized* | Прямое описание: не *I heard a voice counting*, а *Somebody is counting* |
+| Штампы тела | *my heart pounded, breath caught, stomach dropped, lump in my throat, blood ran cold, goosebumps* | Что делает тело в этой сцене: колено прыгает, пересчитываю пальцы |
+| Штампы смерти | *everything went black, darkness swallowed me, the last thing I saw was…* | Последняя конкретная деталь без рамки |
+| Кино | *for a beat, in slow motion, the world narrowed, framed* | Звук или предмет |
+| Атмосфера | *the air was thick, tension hung, shadows danced, silence pressed in* | Предмет и звук |
+| Подушки | *somehow, almost, just, seemed to, kind of* | Убрать. *I don't know why* — только там, где это мысль героя, и не чаще раза на сцену |
+| Глаголы речи | *murmured, whispered, breathed, chuckled, smirked* | *says*, *asks*; шёпот — раз на сцену |
+| Мудрость задним числом | *That was the day I learned…*, *Memory is a funny thing…* | Ремарка старика с фактом |
+| Современный синтаксис мемов | *yeah, no; I mean; because X; that happened; nope* | Нейтральная речь эпохи |
 
 ## 5. Реалии
 

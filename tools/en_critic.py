@@ -10,6 +10,9 @@ docs/en/review/<дата>_<партия>.md; ниже ответа шоуран�
 
 Только стандартная библиотека. Ключ — из переменной окружения OPENAI_API_KEY (никогда не печатать).
 Модель по умолчанию — самая сильная текстовая из доступных (gpt-5.5-pro), запасная — gpt-5.5.
+Дорого: отзыв на глоссарий у pro с effort=high — ≈ 8 тыс. токенов на входе и 45 тыс. на выходе (рассуждения).
+Для партий сцен разумно --model gpt-5.5 --effort medium; pro — на пилот целиком.
+Запрос фоновый (background: true) с опросом статуса: долгий синхронный ответ обрывает прокси.
 """
 import argparse
 import datetime
@@ -81,10 +84,10 @@ def _req(method, url, body=None, timeout=120):
         return json.load(r)
 
 
-def call(model, instructions, text, limit=3600):
+def call(model, instructions, text, limit=3600, effort="high"):
     """Фоновый запрос (background: true) и опрос статуса: долгий синхронный ответ обрывает прокси."""
     body = {"model": model, "instructions": instructions, "input": text, "background": True,
-            "reasoning": {"effort": "high"}}
+            "reasoning": {"effort": effort}}
     d = _req("POST", "https://api.openai.com/v1/responses", body)
     rid, t0 = d["id"], time.time()
     while d.get("status") in ("queued", "in_progress"):
@@ -102,12 +105,12 @@ def call(model, instructions, text, limit=3600):
     return "\n".join(out).strip(), d.get("model", model), d.get("usage", {})
 
 
-def ask(instructions, text, models):
+def ask(instructions, text, models, effort="high"):
     last = None
     for m in models:
         for attempt in range(3):
             try:
-                return call(m, instructions, text)
+                return call(m, instructions, text, effort=effort)
             except urllib.error.HTTPError as e:
                 msg = e.read().decode(errors="replace")[:300]
                 last = f"{m}: HTTP {e.code} {msg}"
@@ -130,6 +133,7 @@ def main():
     ap.add_argument("--name", help="имя партии для файла отзыва")
     ap.add_argument("--model", help="модель (по умолчанию самая сильная)")
     ap.add_argument("--glossary", action="store_true", help="отзыв на глоссарий и стайлгайд")
+    ap.add_argument("--effort", default="high", choices=["low", "medium", "high"], help="глубина рассуждений (дешевле — medium)")
     a = ap.parse_args()
     models = [a.model] if a.model else MODELS
     ctx = "\n\n".join(f"===== {p.name} =====\n{p.read_text(encoding='utf-8')}"
@@ -153,7 +157,7 @@ def main():
         files = a.files
     t0 = time.time()
     print(f"критик читает {len(files)} файл(ов), {len(text)} знаков…", file=sys.stderr)
-    answer, model, usage = ask(instructions, text, models)
+    answer, model, usage = ask(instructions, text, models, a.effort)
     REVIEW.mkdir(parents=True, exist_ok=True)
     out = REVIEW / f"{datetime.date.today().isoformat()}_{name}.md"
     n = 2

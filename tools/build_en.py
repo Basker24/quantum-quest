@@ -144,7 +144,7 @@ JS_APPLY = r"""
   for (var v in (E.vars || {})) if (C.vars[v]) for (var f in E.vars[v]) C.vars[v][f] = E.vars[v][f];
   (E.meta_entries || []).forEach(function (m) { (C.meta_entries || []).forEach(function (x) { if (x.id === m.id) for (var f in m) if (f !== "id") x[f] = m[f]; }); });
   if (E.stihii_names) C.stihii_names = E.stihii_names;
-  if (L.memos) for (var m in L.memos) if (G.memos) G.memos[m] = L.memos[m];
+  if (L.memos) for (var m in L.memos) if (G.memos && m.charAt(0) !== "_") G.memos[m] = L.memos[m];
   // путеводитель: названия и подписи шагов — из переведённых сцен; ручные подсказки — из _guides.json
   var GU = L.guides || {};
   for (var fid in (G.guides || {})) {
