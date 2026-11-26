@@ -47,15 +47,27 @@ const { chromium } = require('playwright');
   }
   await p.click('#btn-new');
   const meta = () => p.$eval('#meta', (e) => e.textContent).catch(() => '');
-  let steps = 0, afters = 0;
-  while (steps++ < 40) {
+  let steps = 0, afters = 0, deaths = 0;
+  const FULL = process.argv.includes('--full'); // пройти «Обычную жизнь» до конца, а не останавливаться на В7-01
+  while (steps++ < 120) {
     await p.waitForSelector('#scene:not([hidden]), #death:not([hidden]), #chapter:not([hidden])', { timeout: 30000 });
     if (await p.$('#chapter:not([hidden])')) { await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 }); }
     if (await p.$('#death:not([hidden])')) {
       await p.waitForSelector('#btn-death-next:not([hidden])', { timeout: 30000 });
-      await scan('root'); await shot('root');
-      await p.click('#btn-death-next'); console.log('   ✝ Root');
+      const root = !!(await p.$('#death .root-tomb'));
+      await scan(root ? 'root' : 'death'); await shot(root ? 'root' : 'death-' + deaths);
+      await p.click('#btn-death-next'); console.log(root ? '   ✝ Root' : '   ✝ death');
+      if (!root) { // пробуждение: шок, затем «вдохнуть и остаться в этой минуте»
+        deaths++;
+        await p.waitForSelector('#awake:not([hidden]), #rewind:not([hidden]), #scene:not([hidden])', { timeout: 30000 });
+        await p.click('#awake-text').catch(() => {}); await p.waitForTimeout(500);
+        await scan('awake'); if (deaths === 1) await shot('awake');
+        const bs = await p.$$('#awake-btns button'); if (bs.length) await bs[0].click();
+        await p.waitForTimeout(500);
+        if (await p.$('#rewind:not([hidden])')) { await scan('rewind'); const t = await p.$$('#tape button, #rewind button.choice'); if (t.length) await t[t.length - 1].click(); }
+      }
       await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 });
+      continue;
     }
     await p.click('#text').catch(() => {}); await p.waitForTimeout(700);
     const m = await meta();
@@ -72,7 +84,7 @@ const { chromium } = require('playwright');
       await shot('graduation');
       await (await p.$$('#choices button:not([hidden])'))[g].click(); await p.waitForTimeout(600);
       await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 }); await p.click('#text').catch(() => {}); await p.waitForTimeout(700);
-      await scan('В7-01'); console.log((await meta()).padEnd(36), '| В7-01 достигнута'); break;
+      await scan('В7-01'); console.log((await meta()).padEnd(36), '| В7-01 достигнута'); if (!FULL) break; continue;
     }
     await (await p.$$('#choices button:not([hidden])'))[i].click(); await p.waitForTimeout(400);
     if (!(await p.$('#scene[hidden]')) && (await p.$('#text p.picked'))) { // экран «После»
@@ -86,7 +98,7 @@ const { chromium } = require('playwright');
   await p.click('.screen:not([hidden]) .close').catch(() => {});
   await p.click('#btn-journal').catch(() => {}); await p.waitForTimeout(400); await scan('Хор'); await shot('journal');
   const missing = await p.evaluate(() => Object.keys(window.QQ_I18N_MISSING || {}));
-  console.log('экранов «После»:', afters);
+  console.log('экранов «После»:', afters, '· смертей:', deaths);
   console.log('видимая кириллица:', cyr.size ? '' : 'нет');
   for (const [t, w] of cyr) console.log('  ·', JSON.stringify(t), '←', w);
   console.log('словарь не узнал (всего, вкл. скрытое):', missing.length);

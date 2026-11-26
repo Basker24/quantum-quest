@@ -1,12 +1,107 @@
 {
-  "_comment": "Английские подписи флагов для «Я» → «Что со мной было» (scenes/_memos.json). Только переведённые жизни; остальное — по-русски до перевода.",
-  "F_Т01": {"СПОР": "At seven I raced Vitka to the snag. I didn't make it.", "БУБЛИК": "At seven I jumped into the backwater after Bublik. Bublik made it out.", "ЧАСЫ": "At seven I dove for the glint by the snag and came up with a watch in my fist. It's stopped at 4:12.", "ДОЛГ": "At seven I ran for the grown-ups, and Vitka stayed in the water. I owe him."},
-  "F_Т02": {"ЧЕЙ": "Under the water somebody asked me, \"Whose kid are you?\"", "ХОР": "Under the water somebody was counting along with the girl. Lots of voices.", "ЛИЦО": "Under the water I looked down and saw myself on the sand, with an old man over me.", "МАМА": "Under the water I called for Mom, and a stranger's palm lay on my forehead."},
-  "F_Т03": {"ШРАМ": "Punched Shmelyov for calling me Vodyanoy, and whatever happened, happened.", "ВОДЯНОЙ": "Made the nickname Vodyanoy my own.", "ЗАМЕТКА": "Put up notices, and the Kuzbass paper wrote about it: looking for the old man in the striped shirt.", "ВОДОБОЯЗНЬ": "Swore never to talk about water again."},
-  "F_Т04": {"РЕЛЬСЫ": "Sat on the railroad tracks with Dad in ninety-eight.", "РЫНОК": "Sold frying pans at the market with Mom.", "ЦВЕТМЕТ": "Cut cable for scrap copper with Vitka.", "ОЛИМПИАДА": "Went to the math olympiad with Nina Petrovna."},
-  "F_Т05": {"ТЕТРАДИ": "Read Granddad's notebooks. I remember a sentence in the margin.", "ФОТО": "I know who the second man in Granddad's photo is.", "ПРОДАЛ": "Sold Granddad's box to the junk dealer for Sega cartridges.", "СОЖЖЕНО": "Gave Granddad's box to Dad. Dad burned it."},
-  "F_Т06": {"ПЕРЕПЛЫЛ": "Swam across Black Backwater with Nika.", "ТАЙНА_НИКИ": "Told Nika about the dark under the water. Nobody else.", "ПАЦАНЫ": "Laughed at \"the Novosibirsk girl\" with the guys.", "БАКЕНЩИК": "The buoy keeper told me about a man who stands by the backwater every July."},
-  "F_Т07": {"КЛЮЧИ": "Yanked the keys out of Vitka's Lada Nine on the ice.", "ЛЁД": "Drove across the frozen Tom. My body remembers what to do.", "СДАЛ": "Called Dad from a pay phone so Vitka wouldn't drive on the ice.", "ВИДЕНИЕ": "Saw Vitka go under the ice. In this world he didn't."},
-  "F_Т08": {"ПАЛЫЧ": "Hauled air tanks for the mine rescuers for three nights while Dad was underground.", "ДОМ": "Held it together at home for three nights, for Mom and Sonka.", "ТОРГ": "Went to the backwater for three nights and bargained with the water for Dad.", "ДАТЧИКИ": "Found out why the Glubokaya blew and told a reporter."},
-  "F_Т09": {"АРМИЯ": "Gave Vitka a proper send-off to the army.", "ДОЛГ_СВАРНОМУ": "Helped Vitka dodge the draft through Welder. Now I owe Welder.", "НИКА": "Went to the dacha with Nika instead of Vitka's send-off.", "ДВЕРЬ": "In the garage Dad said, \"Under the mine. There was a door down there.\""}
+ "_comment": "Английские подписи флагов для «Я» → «Что со мной было» (scenes/_memos.json). Только переведённые жизни; остальное — по-русски до перевода.",
+ "F_Т01": {
+  "СПОР": "At seven I raced Vitka to the snag. I didn't make it.",
+  "БУБЛИК": "At seven I jumped into the backwater after Bublik. Bublik made it out.",
+  "ЧАСЫ": "At seven I dove for the glint by the snag and came up with a watch in my fist. It's stopped at 4:12.",
+  "ДОЛГ": "At seven I ran for the grown-ups, and Vitka stayed in the water. I owe him."
+ },
+ "F_Т02": {
+  "ЧЕЙ": "Under the water somebody asked me, \"Whose kid are you?\"",
+  "ХОР": "Under the water somebody was counting along with the girl. Lots of voices.",
+  "ЛИЦО": "Under the water I looked down and saw myself on the sand, with an old man over me.",
+  "МАМА": "Under the water I called for Mom, and a stranger's palm lay on my forehead."
+ },
+ "F_Т03": {
+  "ШРАМ": "Punched Shmelyov for calling me Vodyanoy, and whatever happened, happened.",
+  "ВОДЯНОЙ": "Made the nickname Vodyanoy my own.",
+  "ЗАМЕТКА": "Put up notices, and the Kuzbass paper wrote about it: looking for the old man in the striped shirt.",
+  "ВОДОБОЯЗНЬ": "Swore never to talk about water again."
+ },
+ "F_Т04": {
+  "РЕЛЬСЫ": "Sat on the railroad tracks with Dad in ninety-eight.",
+  "РЫНОК": "Sold frying pans at the market with Mom.",
+  "ЦВЕТМЕТ": "Cut cable for scrap copper with Vitka.",
+  "ОЛИМПИАДА": "Went to the math olympiad with Nina Petrovna."
+ },
+ "F_Т05": {
+  "ТЕТРАДИ": "Read Granddad's notebooks. I remember a sentence in the margin.",
+  "ФОТО": "I know who the second man in Granddad's photo is.",
+  "ПРОДАЛ": "Sold Granddad's box to the junk dealer for Sega cartridges.",
+  "СОЖЖЕНО": "Gave Granddad's box to Dad. Dad burned it."
+ },
+ "F_Т06": {
+  "ПЕРЕПЛЫЛ": "Swam across Black Backwater with Nika.",
+  "ТАЙНА_НИКИ": "Told Nika about the dark under the water. Nobody else.",
+  "ПАЦАНЫ": "Laughed at \"the Novosibirsk girl\" with the guys.",
+  "БАКЕНЩИК": "The buoy keeper told me about a man who stands by the backwater every July."
+ },
+ "F_Т07": {
+  "КЛЮЧИ": "Yanked the keys out of Vitka's Lada Nine on the ice.",
+  "ЛЁД": "Drove across the frozen Tom. My body remembers what to do.",
+  "СДАЛ": "Called Dad from a pay phone so Vitka wouldn't drive on the ice.",
+  "ВИДЕНИЕ": "Saw Vitka go under the ice. In this world he didn't."
+ },
+ "F_Т08": {
+  "ПАЛЫЧ": "Hauled air tanks for the mine rescuers for three nights while Dad was underground.",
+  "ДОМ": "Held it together at home for three nights, for Mom and Sonka.",
+  "ТОРГ": "Went to the backwater for three nights and bargained with the water for Dad.",
+  "ДАТЧИКИ": "Found out why the Glubokaya blew and told a reporter."
+ },
+ "F_Т09": {
+  "АРМИЯ": "Gave Vitka a proper send-off to the army.",
+  "ДОЛГ_СВАРНОМУ": "Helped Vitka dodge the draft through Welder. Now I owe Welder.",
+  "НИКА": "Went to the dacha with Nika instead of Vitka's send-off.",
+  "ДВЕРЬ": "In the garage Dad said, \"Under the mine. There was a door down there.\""
+ },
+ "F_ЗНАЕТ": "I've already died once. I remember it like a memory.",
+ "F_ЗНАЕТ_ДЕДА": "I know who my grandfather was.",
+ "F_НАУЧИЛ": "Taught Andryusha to swim.",
+ "F_ЖЕНА": {
+  "ЖИВА": "Noticed my wife was tired, and got there in time.",
+  "УМЕРЛА": "My wife has been gone since '47."
+ },
+ "F_ПАРТНЁР": {
+  "НИКА": "Nika is beside me.",
+  "ОЛЯ": "Olga is beside me.",
+  "ТАНЯ": "Tanya is beside me. She doesn't hand me a lamp anymore; she hides it.",
+  "НЕТ": "Nobody beside me.",
+  "ПЛОЙ": "Ploy is beside me. Under the water she holds my hand.",
+  "ЛЕРА": "Lera is beside me. Her scar is on her arm, and I remember which one.",
+  "САРДААНА": "Sardaana is beside me. She measures mammoths with her mother's flowery tape measure."
+ },
+ "F_РАЗВЕДЧИК": "I died three times on Varya's highway in a single morning and talked her down it minute by minute.",
+ "F_ОДЕЯЛО": "Went into the burning kids' room under a wet blanket.",
+ "F_В701": {
+  "НИКА": "Answered Nika with a long letter.",
+  "ОЛЯ": "Went to the movies with Olya from the next stairwell.",
+  "СМЕНА": "Took extra shifts at Azot."
+ },
+ "F_В703": {
+  "ВАРЯ": "Got Varya to the pharmacy alive. In another world I didn't."
+ },
+ "F_В704": {
+  "ТЕСТЬ": "Dragged my father-in-law out of the banya into the snow.",
+  "ПОМНИЛ": "Dragged my father-in-law out of the banya because I remembered how people fall asleep in there. The next morning he had a different father.",
+  "УМЕР": "Walked out of the banya alone. My father-in-law stayed on the bench, and there was no going back for him."
+ },
+ "F_В705": {
+  "ВИШНЯ": "Let the oncoming KAMAZ by. The silver Granta turned cherry red.",
+  "ПЕРВЫЙ": "Passed the semi right behind the KAMAZ, because I remembered it.",
+  "ВТОРОЙ": "Passed the semi only after the second KAMAZ, the one that wasn't there the first time."
+ },
+ "F_В706": {
+  "ДВЕРЬ": "Pulled Varya out of the burning kids' room.",
+  "ЗНАНИЕ": "Went back to eight in the evening and didn't plug in the lights. Varya has written with her left hand ever since."
+ },
+ "F_В708": {
+  "СПАС": "Pulled Kolka out from under the ice.",
+  "ПОМНИЛ": "Ran around Kolka along the bank, because I remembered where the ice was thin. Now Kolka's scar is on the other knee."
+ },
+ "F_В709": {
+  "ОТПУСТИЛ": "Let Varya go to Novosibirsk.",
+  "КОНТРОЛЬ": "Put a tracker on Varya.",
+  "ПРАВДА": "Told my wife about the icicle, the lights and the pond.",
+  "РАЗВЕДКА": "I died on Varya's road so I'd know what was waiting for her."
+ }
 }
