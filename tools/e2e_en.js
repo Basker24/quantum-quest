@@ -22,7 +22,7 @@ const { chromium } = require('playwright');
         const t = n.nodeValue.trim();
         if (!t || !CYR.test(t)) continue;
         const el = n.parentElement;
-        if (!el || el.closest('[hidden], .dev-panel, #dev-menu, #lore, script, style, .dbg')) continue;
+        if (!el || el.closest('[hidden], .dev-panel, #dev-menu, #lore, script, style, .dbg, #btn-lang')) continue;
         const r = el.getBoundingClientRect();
         if (!r.width && !r.height) continue;
         if (getComputedStyle(el).visibility === 'hidden') continue;
@@ -47,7 +47,7 @@ const { chromium } = require('playwright');
   }
   await p.click('#btn-new');
   const meta = () => p.$eval('#meta', (e) => e.textContent).catch(() => '');
-  let steps = 0, afters = 0, deaths = 0;
+  let steps = 0, afters = 0, deaths = 0; const tried = {};
   const FULL = process.argv.includes('--full'); // пройти «Обычную жизнь» до конца, а не останавливаться на В7-01
   while (steps++ < 120) {
     await p.waitForSelector('#scene:not([hidden]), #death:not([hidden]), #chapter:not([hidden])', { timeout: 30000 });
@@ -77,7 +77,15 @@ const { chromium } = require('playwright');
     const title = await p.$eval('#text', (e) => (e.querySelector('h2, h1') || {}).innerText || '').catch(() => '');
     if (/^[^А-Яа-я]*$/.test(ls.join('')) === false && !/Next/.test(ls.join(''))) { console.log(m.padEnd(36), '| русский текст: стоп'); break; }
     if (steps === 3) await shot('scene');
-    const i = ls.length > 1 ? Math.min(pick, ls.length - 1) : 0;
+    // после смерти в этой сцене — не тот же вариант: сперва эхо-выбор («I remember…», «I've seen…»), иначе следующий по счёту
+    tried[m] = tried[m] || [];
+    let i = ls.length > 1 ? Math.min(pick, ls.length - 1) : 0;
+    if (tried[m].length) {
+      const echo = ls.findIndex((l, k) => /^"I('ve| remember| know)/.test(l) && !tried[m].includes(k));
+      i = echo >= 0 ? echo : ls.findIndex((l, k) => !tried[m].includes(k));
+      if (i < 0) i = 0;
+    }
+    tried[m].push(i);
     console.log(m.padEnd(36), '→', (ls[i] || '?').slice(0, 60));
     if (/Stay\. A job/.test(ls.join('|'))) { // выпускной: идём в «Обычную жизнь»
       const g = ls.findIndex((l) => /^Stay\./.test(l));

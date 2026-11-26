@@ -70,7 +70,7 @@
     "Сверху, через воду, тонкий девчачий голос считает: «…сто девяносто… сто девяносто один…»": "From above, through the water, a thin girl's voice is counting: \"…one hundred ninety… one hundred ninety-one…\"",
     "Потом не остаётся ничего, даже счёта.": "Then there's nothing left, not even the counting.",
     "Андрей Николаевич Самохин": "Andrei Nikolayevich Samokhin", "7 лет. Чёрная заводь. Утонул у коряги.": "Age 7. Black Backwater. Drowned by the snag.",
-    "Ника считает:": "Nika is counting:", "В ТОМ МИРЕ": "IN THAT WORLD", "Тот, кто остался": TITLE,
+    "Ника считает:": "Nika is counting:", "В ТОМ МИРЕ": "IN THAT WORLD", "в том мире": "in that world", "Тот, кто остался": TITLE,
     "сохранить картинку": "save the image", "ВКонтакте": "VK", "↗ поделиться надгробием": "↗ share the headstone", "редкая": "rare",
     "Если тебе сейчас тяжело не только в игре — в разделе": "If things are hard for you outside the game too, the", "«Об игре и помощь»": "About & help",
     "есть телефоны, по которым ответят.": "section has numbers where someone will answer.",
