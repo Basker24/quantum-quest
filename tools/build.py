@@ -171,6 +171,9 @@ def main():
     keep.insert(1, '<meta name="claude:viewport-fit-sides" content="cover">')
     (ROOT / "game" / "play.html").write_text("\n".join(keep).strip() + "\n" + body.strip() + "\n", encoding="utf-8")
     print(f"собрано: {len(g['scenes'])} сцен, {len(g['deaths'])} смертей → {out.relative_to(ROOT)}")
+    import build_en  # английский слой: scenes_en/ → game/graph_en.js (сверка структуры с русской)
+    if build_en.main(g):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
