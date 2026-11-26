@@ -18,6 +18,7 @@ scenes_en/_guides.json.
 
     python3 tools/build_en.py          # build.py зовёт его сам
 """
+import hashlib
 import json
 import sys
 
@@ -26,6 +27,13 @@ from qqparse import ROOT, QQError, parse_file
 EN = ROOT / "scenes_en"
 HEAD_TEXT = ("title", "date", "photo_caption", "clock_label", "lesson", "epitaph", "mourner")
 HEAD_LOGIC = ("stage", "photo", "photo_by", "clock", "age", "stihia", "next")
+EXCLUDE = ()  # DLC-2 лежит в game/gleb41, не в scenes/ — в сверку не входит
+
+
+def src_sha(name):
+    """Хэш русского исходника (12 знаков sha1) — пишется в шапку английского файла как src_sha."""
+    p = ROOT / "scenes" / name
+    return hashlib.sha1(p.read_bytes()).hexdigest()[:12] if p.exists() else None
 
 
 def conds(blocks):
@@ -96,7 +104,8 @@ def build(g):
     lay = {"scenes": {}, "deaths": {}}
     errs = []
     if not EN.exists():
-        return None, []
+        return None, [], [], []
+    stale, broken = [], []
     for p in sorted(EN.glob("*.md")):
         if p.name.startswith(("_", "._")):
             continue
@@ -111,7 +120,12 @@ def build(g):
             continue
         if src[sid].get("file") != p.name:
             errs.append(f"{p.name}: {sid} в русской версии лежит в {src[sid].get('file')}")
-        errs += compare(sid, src[sid], item)
+        diff = compare(sid, src[sid], item)
+        if diff:  # логика разошлась (русскую правили): сцена идёт по-русски, пока перевод не догонят
+            broken.append((sid, diff))
+            continue
+        if item.get("en_status") == "stale" or item.get("src_sha") != src_sha(p.name):
+            stale.append(sid)  # текст мог отстать, но логика та же — показываем английский
         lay["deaths" if sid.startswith("✝") else "scenes"][sid] = overlay(item)
     for name in ("_config.json", "_memos.json", "_guides.json"):
         f = EN / name
@@ -121,7 +135,33 @@ def build(g):
     done = len(lay["scenes"]) + len(lay["deaths"])
     lay["missing"] = sorted(set(g["scenes"]) - set(lay["scenes"])) + sorted(set(g["deaths"]) - set(lay["deaths"]))
     lay["stats"] = {"done": done, "total": total}
-    return lay, errs
+    lay["stale"] = sorted(stale)
+    lay["broken"] = sorted(s for s, _ in broken)
+    return lay, errs, stale, broken
+
+
+def report(g=None, full=False):
+    """Для validate.py: предупреждения о недостающих, устаревших и разошедшихся английских сценах.
+    Ошибкой не считается — игра откатывается на русский текст. Возвращает число ошибок разбора."""
+    if g is None:
+        from qqparse import load
+        g = load()
+    lay, errs, stale, broken = build(g)
+    if lay is None:
+        print("EN: scenes_en/ нет")
+        return 0
+    s = lay["stats"]
+    print(f"EN: переведено {s['done']} из {s['total']}; устарели {len(stale)}; логика разошлась {len(broken)}; не переведено {len(lay['missing'])}")
+    for e in errs:
+        print("EN ОШИБКА:", e)
+    for sid, diff in broken:
+        print(f"⚠️  EN {sid}: логика разошлась с русской — в игре по-русски:", "; ".join(diff[:3]))
+    if stale:
+        print("⚠️  EN устарели (src_sha ≠ хэш русского файла или en_status: stale):", ", ".join(stale))
+    if lay["missing"]:
+        m = lay["missing"]
+        print(f"⚠️  EN не переведены ({len(m)}):", ", ".join(m if full or len(m) <= 30 else m[:30] + [f"… ещё {len(m) - 30} (--en-all)"]))
+    return len(errs)
 
 
 JS_APPLY = r"""
@@ -159,6 +199,8 @@ JS_APPLY = r"""
       else (x.choices || []).forEach(function (c) { if (c.id === s.choice) s.label = c.label; });
     });
   }
+  // непереведённые сцены: русский текст с пометкой (откат, чтобы игра не ломалась)
+  L.missing.forEach(function (id) { var s = G.scenes[id] || G.deaths[id]; if (s && s.text && id.charAt(0) !== "✝") s.text = [{ md: "This scene hasn't been translated yet, so it's shown in Russian.", kind: "sys" }].concat(s.text); });
   G.en_missing = L.missing; G.en_stats = L.stats; G.lang = "en";
 })();
 """
@@ -168,9 +210,13 @@ def main(g=None):
     if g is None:
         from qqparse import load
         g = load()
-    lay, errs = build(g)
+    lay, errs, stale, broken = build(g)
     if lay is None:
         return 0
+    for sid, diff in broken:
+        print(f"EN ПРЕДУПРЕЖДЕНИЕ: {sid} — логика разошлась с русской, в игре пока по-русски:", "; ".join(d.split(": ", 1)[1] for d in diff[:3]))
+    if stale:
+        print(f"EN ПРЕДУПРЕЖДЕНИЕ: устарели ({len(stale)}; src_sha не совпадает или en_status: stale):", ", ".join(stale))
     for e in errs:
         print("EN ОШИБКА:", e)
     if errs:

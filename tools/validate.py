@@ -617,4 +617,7 @@ if __name__ == "__main__":
         main()                      # точный перебор всех состояний (тяжёлый, для небольших графов)
     else:
         import validate_fast        # по умолчанию: быстрая интервальная проверка (доли секунды)
-        sys.exit(validate_fast.main(note="Точный перебор: python3 tools/validate.py --exact"))
+        rc = validate_fast.main(note="Точный перебор: python3 tools/validate.py --exact")
+        import build_en             # английская версия: недостающие и устаревшие сцены (CLAUDE.md) — предупреждения
+        rc = rc or (1 if build_en.report(full="--en-all" in sys.argv) else 0)
+        sys.exit(rc)

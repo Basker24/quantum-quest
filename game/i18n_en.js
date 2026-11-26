@@ -305,6 +305,8 @@
   }
   for (var sel in HTML) { var el = document.querySelector(sel); if (el) el.innerHTML = HTML[sel]; }
   document.title = TITLE;
+  // DLC-2 «Сорок первая строка» в английскую версию пока не входит (автор, 26.11) — в английском меню его нет
+  var st = document.createElement("style"); st.textContent = "#btn-dlc2{display:none!important}"; document.head.appendChild(st);
   walk(document.body);
   var busy = false;
   new MutationObserver(function (list) {
