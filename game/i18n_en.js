@@ -31,7 +31,7 @@
     "все развилки: что прожито, а что ещё в тумане": "every fork: what I've lived and what's still in the fog",
     "дороги к финалам, где я уже был или куда иду": "roads to endings I've reached or am heading for",
     "Письмо деда": "Grandfather's Letter", "что на самом деле происходит. Все разгадки": "what's really going on. Every answer",
-    "Дополнение · «Трое до рассвета»": "Expansion · Three Before Dawn (Russian only)",
+    "Дополнение · «Трое до рассвета»": "Expansion · Three Before Dawn",
     "ночь без откатов: успеть спасти троих, пока молва не дошла до участкового": "a night with no rewinds: save three people before the rumor reaches the local cop",
     "Дополнение · «Сорок первая строка»": "Expansion · The Forty-First Line (Russian only)",
     "ночь Глеба Ростоцкого: дрейф, Реестр везунчиков и мир, где мама жива": "Gleb Rostotsky's night: the Drift, the Registry of the Lucky, and a world where Mom is alive",

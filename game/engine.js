@@ -2346,7 +2346,7 @@
   for (const [btn, panel] of [["#btn-journal", "#journal"], ["#btn-journal2", "#journal"], ["#btn-me", "#me"], ["#btn-flow", "#flow"], ["#btn-flow2", "#flow"], ["#btn-flow3", "#flow"], ["#btn-howto2", "#howto"], ["#btn-guide", "#guide"], ["#btn-guide2", "#guide"], ["#btn-guide3", "#guide"], ["#btn-howto", "#howto"], ["#btn-about", "#about"], ["#btn-about2", "#about"], ["#btn-lore2", "#lore"]])
     $(btn).onclick = () => { if ($(btn).classList.contains("locked")) return; guideFocus = null; openPanel(panel); };
   $("#btn-quit").onclick = showTitle;
-  $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = "obyasnenie/obyasnenie.html"; };
+  $("#btn-dlc").onclick = () => { if ($("#btn-dlc").classList.contains("locked")) return; location.href = window.QQ_LANG === "en" ? "obyasnenie/obyasnenie_en.html" : "obyasnenie/obyasnenie.html"; };
   $("#btn-dlc2").onclick = () => { if ($("#btn-dlc2").classList.contains("locked")) return; location.href = "gleb41/gleb41.html"; };
   // ---------- перенос прогресса: все ключи игры из localStorage (qq_* и DLC obyasnenie-*) в JSON-файл и обратно
   const IO_TAG = "tot-kto-ostalsya", ownKey = (k) => /^qq_/.test(k) || /^obyasnenie-/.test(k) || /^gleb41-/.test(k);
