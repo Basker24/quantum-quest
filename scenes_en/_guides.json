@@ -1,0 +1,167 @@
+{
+ "_comment": "Английский путеводитель (меню «Пути»): переводы hint и forks из scenes/_guides.json. Ключи и порядок — как в русском; secret/gate берутся из русского. Правишь русский — правь и здесь.",
+ "Ф-01": {
+  "hint": "Anyone who made it to the willows at Black Backwater. This road is always open.",
+  "forks": [
+   "Reach the willows in '96.",
+   "Go back nowhere."
+  ]
+ },
+ "Ф-02": {
+  "hint": "Someone who didn't bend fate to suit himself too often: the world around has barely slid. And for someone to be waiting for you at home in the end, you need a person close to you and real closeness.",
+  "forks": [
+   "In \"School No. 41\" (2016), don't stay alone.",
+   "In \"The Pull\" (2061), bring the one beside you to the shore.",
+   "In the willows, go back to where someone is waiting."
+  ]
+ },
+ "Ф-03": {
+  "hint": "Anyone. All it takes is the courage to do nothing.",
+  "forks": [
+   "At Black Backwater in 2061, don't dive. Stay on the shore and watch."
+  ]
+ },
+ "Ф-04": {
+  "hint": "Resonance almost \"choirmaster,\" and the world around has barely slid. You must know Lunyov's whole truth and close the loop exactly the way it once opened.",
+  "forks": [
+   "In \"Forty-Two\" (2016), read Lunyov's letter.",
+   "By the snag in '96, do for the boy the same thing he heard in \"Four Minutes.\"",
+   "In the willows, stay in '96 as one of your own, and at dawn walk up to the man without a fishing rod."
+  ]
+ },
+ "Ф-05": {
+  "hint": "Resonance \"choirmaster,\" Heart \"attuned\" or higher. And you must have gone under the electrodes: \"The Protocol\" or \"The Standard.\"",
+  "forks": [
+   "Listen to the water and the chill at the back of your neck at every chance.",
+   "In \"The Protocol\" (2014), agree.",
+   "Don't shut yourself off from people: teach, tell the truth, listen.",
+   "In the willows, open the Choir to everyone."
+  ]
+ },
+ "Ф-06": {
+  "hint": "Resonance \"choirmaster,\" and you went through the standard session: Granddad's experiment worked on you. This road is only for the one who became \"the Oracle.\"",
+  "forks": [
+   "In \"Twelve Minutes\" (2016), the session has to become the standard.",
+   "At the institute, listen to the end.",
+   "In the willows, stay in the loop."
+  ]
+ },
+ "⊣К-02": {
+  "hint": "Dead end. Body \"frail\" or \"ordinary\" by fifty-six: someone who breathed coal dust for thirty-six years and didn't look after himself.",
+  "forks": [
+   "After graduation, go \"Like Dad,\" to the Glubokaya.",
+   "In \"Methane\" (2010), lie on the ground under the wet jacket and don't join the mine rescue.",
+   "In \"Black Lungs\" (2045), don't leave for Tanya."
+  ]
+ },
+ "⊣К-03": {
+  "hint": "Dead end. Someone tired of running from what they made of him.",
+  "forks": [
+   "In \"The Antenna\" (2028), agree to become an instrument."
+  ]
+ },
+ "⊣К-07": {
+  "hint": "Dead end. Someone who left for \"anywhere, as long as it's away from here\" and never wanted to come back. Will has to be at least \"stubborn\" to leave.",
+  "forks": [
+   "After graduation, go anywhere, as long as it's away from here.",
+   "In \"The Voice Message\" (2055), don't answer Sonka."
+  ]
+ },
+ "⊣К-08": {
+  "hint": "Dead end. Someone whose voices rang louder than other people's since childhood, Resonance at least \"a chill,\" and who in the end chose silence.",
+  "forks": [
+   "After graduation, follow the voices that got louder than people.",
+   "In \"Sonka\" (2012), stay on as an orderly with Anna Markovna and take the pills."
+  ]
+ },
+ "⊣К-06": {
+  "hint": "Dead end. Someone who sold his deaths twice: at the gambling table and at Shadrin's meetings. The world drifts away from a man like that, to where he isn't.",
+  "forks": [
+   "After graduation, go to Welder: \"Need money? I've got work.\"",
+   "In \"The Drum\" (2012), spin once more, knowing who will get up from the table.",
+   "In \"The Sapper\" (2019), tell Shadrin who is standing in the kitchen.",
+   "In \"Left-Hand Traffic\" (2049), get on the bus to Shcheglovsk."
+  ]
+ },
+ "⊣К-04": {
+  "hint": "Dead end. Someone who went where it's quiet and cold, and found what he was looking for there: silence.",
+  "forks": [
+   "After graduation, sign on as a laborer with a geological survey party.",
+   "In \"Strangers in the Ringing\" (2047), stay on the island for good."
+  ]
+ },
+ "Ф-07": {
+  "hint": "Someone who took what was his all his life: the world around has slid far, or the will is iron and the pity is thin.",
+  "forks": [
+   "In the willows, stay in '96 with what you know is coming.",
+   "In '98, don't let the blood from '96 slip away.",
+   "When the eighteen-year-old comes to the market looking for work, take him on."
+  ]
+ },
+ "Ф-08": {
+  "hint": "The wolf who got to the vials before Orpheus. The darkest ending.",
+  "forks": [
+   "In the willows, stay in '96 as a wolf.",
+   "On the seventeenth of August, '98, buy the blood out from under Lunyov's buyers or hand it to Shadrin.",
+   "When he comes to the market, ask him to roll up his sleeve."
+  ]
+ },
+ "Ф-09": {
+  "hint": "The wolf who let his prey go.",
+  "forks": [
+   "In the willows, stay in '96 as a wolf.",
+   "When the eighteen-year-old comes to the market, send him off to Tomsk. And if the blood has been destroyed, tell him the truth."
+  ]
+ },
+ "Ф-10": {
+  "hint": "Go home when someone is waiting for you on the shore, and keep one thread of the gift.",
+  "forks": [
+   "The world has barely slid: in the willows, go back to '61.",
+   "Someone has to be waiting for you on the shore in 2061.",
+   "When the Choir leaves, keep the last thread for yourself."
+  ]
+ },
+ "Ф-11": {
+  "hint": "The one who hears: the gift is loud, the seam holds.",
+  "forks": [
+   "In the willows, don't leave the seam.",
+   "Go in to them and become one of the voices."
+  ]
+ },
+ "Ф-12": {
+  "hint": "Someone who lived for people and didn't drift away from himself.",
+  "forks": [
+   "In the willows, stay in '96, close to your own.",
+   "What to tell your young father by the kiosk is up to you.",
+   "At dawn, leave the man without a fishing rod alone, or simply ask him."
+  ]
+ },
+ "Ф-13": {
+  "hint": "Stay one of your own and know who Lunyov is looking for at the backwater.",
+  "forks": [
+   "Learn the truth about Mitya (Lunyov's confession, the voices, or his letter).",
+   "In the willows, stay in '96, close to your own.",
+   "At dawn, tell the man without a fishing rod only one thing: where Mitya lies."
+  ]
+ },
+ "⊣К-13": {
+  "hint": "A wolf with no muscle behind him.",
+  "forks": [
+   "In '98, walk into room three hundred twelve alone."
+  ]
+ },
+ "⊣К-14": {
+  "hint": "One word too many through the bushes.",
+  "forks": [
+   "Back home, say one word to the boy in the willows."
+  ]
+ },
+ "⊣К-15": {
+  "hint": "A father who can hear himself coming back and can't stop saving his own.",
+  "forks": [
+   "In \"Twelve Sensors\" (2033), drive out at night to Varya's highway.",
+   "Die there three times and write out her road for her minute by minute.",
+   "Two years later, don't take the map down from the wall."
+  ]
+ }
+}

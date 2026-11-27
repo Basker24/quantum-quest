@@ -116,7 +116,7 @@
     "Файл не читается.": "The file can't be read.", "Это не файл сохранения этой игры.": "This isn't a save file for this game.", "заменить": "replace", "не надо": "don't",
     "Браузер не даёт записать сохранения.": "The browser won't let the game write saves.",
     "открыто: дополнение и письмо деда": "unlocked: the expansion and Grandfather's letter", "замки снова закрыты (кроме ?dev)": "locks closed again (except ?dev)",
-    "все концы отмечены пройденными": "all endings marked as reached", "такого кода нет": "no such code",
+    "все концы отмечены пройденными": "all endings marked as reached", "пройдено": "reached", "иду сюда": "heading here", "такого кода нет": "no such code",
     // «Детство», перечитать, титры
     "Детство": "Childhood", "Детство ты уже прожил, и не раз. Можно прожить его заново, а можно сразу перейти к выпускному.": "You've lived childhood before, more than once. You can live it again, or skip straight to graduation.",
     "Прожить детство заново": "Live childhood again", "Детство как в прошлый раз": "Childhood like last time", "Детство одним листом": "Childhood on one page",

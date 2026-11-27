@@ -1,5 +1,5 @@
 {
- "_comment": "Английские подписи флагов для «Я» → «Что со мной было» (scenes/_memos.json). Только переведённые жизни; остальное — по-русски до перевода.",
+ "_comment": "Английские подписи флагов для «Я» → «Что со мной было» (scenes/_memos.json). Переведены все жизни (27.11). Правишь русский — правь и здесь.",
  "F_Т01": {
   "СПОР": "At seven I raced Vitka to the snag. I didn't make it.",
   "БУБЛИК": "At seven I jumped into the backwater after Bublik. Bublik made it out.",
@@ -54,13 +54,85 @@
   "НИКА": "Went to the dacha with Nika instead of Vitka's send-off.",
   "ДВЕРЬ": "In the garage Dad said, \"Under the mine. There was a door down there.\""
  },
+ "F_ПУТЬ": null,
  "F_ЗНАЕТ": "I've already died once. I remember it like a memory.",
  "F_ЗНАЕТ_ДЕДА": "I know who my grandfather was.",
- "F_НАУЧИЛ": "Taught Andryusha to swim.",
- "F_ЖЕНА": {
-  "ЖИВА": "Noticed my wife was tired, and got there in time.",
-  "УМЕРЛА": "My wife has been gone since '47."
+ "F_ГИПОКСИЯ": "Survived methane at the coalface. Sometimes my head aches in a particular way.",
+ "F_В201": {
+  "УЧЁБА": "Top of the class in seminars.",
+  "ЖЕЛЕЗО": "Unloaded freight cars at the Tomsk-2 yard.",
+  "КОМПАНИЯ": "Lived the dorm life: guitar, the comedy team.",
+  "ТИШИНА": "Went down to the embankment at night to listen to the water."
  },
+ "F_В204": {
+  "УЧЕНИК": "Told Lunyov, \"Teach me.\"",
+  "СКЕПТИК": "Called Lunyov sick and walked out. Then came back.",
+  "ОТЕЦ": "Called Dad from the department corridor. For the first time he talked about Granddad.",
+  "МИТЯ": "I know who Lunyov waited for at the backwater every July."
+ },
+ "F_В205": {
+  "ПРАВДА": "Told Nika everything: the elevator, Granddad, Tuning Fork.",
+  "РАБОТА": "I keep my distance from Nika.",
+  "СВИДАНИЕ": "Walked around Tomsk with Nika until late at night.",
+  "УБРАЛ": "Asked them to take Nika off the project: it's dangerous to be near me."
+ },
+ "F_В206": {
+  "ПОМОГ": "Taught Gleb to listen.",
+  "ОТКАЗАЛ": "Turned Gleb down: you don't bring back the dead.",
+  "СДАЛ": "Told Lunyov about Gleb's spreadsheet.",
+  "ВРАЧ": "Took Gleb to a doctor by force."
+ },
+ "F_В207": {
+  "СОГЛАСИЛСЯ": "Agreed to the Protocol.",
+  "С_НИКОЙ": "Agreed to the Protocol, as long as Nika was at the monitor.",
+  "ОТКАЗ": "Turned down the Protocol."
+ },
+ "F_В208": {
+  "ЭТАЛОН": "Stayed in the dark to the end and heard it all.",
+  "ПРЕРВАЛ": "Lunged for the light, and Lunyov stopped the session."
+ },
+ "F_ПРОТОКОЛ": "I know Granddad's protocol down to the last line. Cold, a screen, four-twelve.",
+ "F_ЭТАЛОН": "Granddad's experiment worked. On me.",
+ "F_УДАЧА": "I work for Shadrin.",
+ "F_В210": {
+  "ИНСТИТУТ": "Left for the institute outside Moscow.",
+  "С_НИКОЙ": "Left for the institute together with Nika.",
+  "ОТЕЦ": "Went to see Dad before the institute."
+ },
+ "F_В211": {
+  "СЛУШАЛ": "Heard my first stranger's death through to the end.",
+  "СОРВАЛ": "Tore the wires off my head on my first assignment.",
+  "СПРОСИЛ": "Asked whose deaths these were."
+ },
+ "F_В212": {
+  "ЗВОНИЛ": "Called 112 anonymously.",
+  "РАБОТА": "Did the job. I'm an instrument.",
+  "ПОЕХАЛ": "Drove to the railroad crossing myself."
+ },
+ "F_ЗНАЕТ_ШАДРИНА": "I know who tampered with the gas water heater.",
+ "F_В215": {
+  "ОТКАЗ": "Refused to become an antenna.",
+  "ПОБЕГ": "Agreed for show and planned an escape."
+ },
+ "F_В217": {
+  "ТЕТРАДИ": "Read Lunyov's last notebooks.",
+  "СИДЕЛ": "Sat with Lunyov until he fell asleep.",
+  "ДЕВЯНОСТО_ШЕСТОЙ": "Lunyov told me what happened in '96."
+ },
+ "F_В218": {
+  "ПРИБОРЫ": "I'm getting the instruments ready for the twenty-eighth of July.",
+  "НИКА": "Found Nika.",
+  "СЖЁГ": "Burned Lunyov's notes."
+ },
+ "F_В220": {
+  "ПРОЧЁЛ": "Read Lunyov's letter in the cell.",
+  "ОТДАЛ": "Gave Lunyov's letter to the investigator unread.",
+  "СЖЁГ": "Burned Lunyov's letter unread.",
+  "ПОТОМ": "Hid Lunyov's letter in a book. I'll read it later."
+ },
+ "F_МИТЯ": "I know about Mitya, Lunyov's son.",
+ "F_ОБРАЗЕЦ": "I know where the two vials of my blood went.",
+ "F_ЧАСЫ_ЛУНЁВА": "I wear Granddad's Shturmanskie watch from Lunyov's drawer.",
  "F_ПАРТНЁР": {
   "НИКА": "Nika is beside me.",
   "ОЛЯ": "Olga is beside me.",
@@ -70,8 +142,34 @@
   "ЛЕРА": "Lera is beside me. Her scar is on her arm, and I remember which one.",
   "САРДААНА": "Sardaana is beside me. She measures mammoths with her mother's flowery tape measure."
  },
- "F_РАЗВЕДЧИК": "I died three times on Varya's highway in a single morning and talked her down it minute by minute.",
- "F_ОДЕЯЛО": "Went into the burning kids' room under a wet blanket.",
+ "F_В222": {
+  "ПРОЧЁЛ": "Read Granddad's letter aloud to Dad, to the end.",
+  "ПРАВДА": "Told Dad the truth: we're both the lucky kind.",
+  "МОЛЧАЛ": "Kept quiet with Dad, the way he kept quiet all his life.",
+  "ЧАСЫ": "Put Granddad's watch in Dad's palm."
+ },
+ "F_В223": {
+  "МОРЕ": "Saw the sea for the first time in my life. It holds you up by itself.",
+  "ПРАВДА": "Told them why I've walked the embankment at five in the morning for twenty years.",
+  "СОНЬКА": "Went to Sonka's birthday party. Mom said, \"Two of you.\"",
+  "ОСТАЛСЯ": "Turned in my ticket to the sea. At the end of July is when people drown in the Tom most."
+ },
+ "F_ТИМУР": "Timur from sixth grade, class A, stayed under the ice.",
+ "F_В224": {
+  "ПРАВДА": "Told the journalists what the Second Chance is made of.",
+  "ОРФЕЙ": "I consult for Orpheus.",
+  "УЕХАЛ": "Turned the foundation down and stayed out of it."
+ },
+ "F_ДАША": {
+  "УЧЕНИЦА": "I'm teaching Dasha to listen and not be afraid.",
+  "ОТКАЗ": "Stepped aside when Dasha needed help.",
+  "СПРЯТАЛ": "Talked Dasha's parents out of taking her to the clinic."
+ },
+ "F_ДАША_ЗАБРАЛИ": "Dasha was taken to the Orpheus clinic.",
+ "F_ДОЛГ_ШАДРИНУ": "I owe Shadrin.",
+ "F_НА_БЕРЕГУ": null,
+ "F_ПЕТЛЯ_ЧИСТАЯ": null,
+ "F_Я02": null,
  "F_В701": {
   "НИКА": "Answered Nika with a long letter.",
   "ОЛЯ": "Went to the movies with Olya from the next stairwell.",
@@ -85,14 +183,14 @@
   "ПОМНИЛ": "Dragged my father-in-law out of the banya because I remembered how people fall asleep in there. The next morning he had a different father.",
   "УМЕР": "Walked out of the banya alone. My father-in-law stayed on the bench, and there was no going back for him."
  },
+ "F_В706": {
+  "ДВЕРЬ": "Pulled Varya out of the burning kids' room.",
+  "ЗНАНИЕ": "Went back to eight in the evening and didn't plug in the lights. Varya has written with her left hand ever since."
+ },
  "F_В705": {
   "ВИШНЯ": "Let the oncoming KAMAZ by. The silver Granta turned cherry red.",
   "ПЕРВЫЙ": "Passed the semi right behind the KAMAZ, because I remembered it.",
   "ВТОРОЙ": "Passed the semi only after the second KAMAZ, the one that wasn't there the first time."
- },
- "F_В706": {
-  "ДВЕРЬ": "Pulled Varya out of the burning kids' room.",
-  "ЗНАНИЕ": "Went back to eight in the evening and didn't plug in the lights. Varya has written with her left hand ever since."
  },
  "F_В708": {
   "СПАС": "Pulled Kolka out from under the ice.",
@@ -103,5 +201,346 @@
   "КОНТРОЛЬ": "Put a tracker on Varya.",
   "ПРАВДА": "Told my wife about the icicle, the lights and the pond.",
   "РАЗВЕДКА": "I died on Varya's road so I'd know what was waiting for her."
- }
+ },
+ "F_ЖЕНА": {
+  "ЖИВА": "Noticed my wife was tired, and got there in time.",
+  "УМЕРЛА": "My wife has been gone since '47."
+ },
+ "F_НАУЧИЛ": "Taught Andryusha to swim.",
+ "F_В101": {
+  "ОТЕЦ": "My first year underground, I stuck close to Dad.",
+  "МИХАЛЫЧ": "My first year underground, I stuck close to Mikhalych. He taught me to hear the seam crack.",
+  "ТАНЯ": "Lingered after shifts at the lamp room window. Tanya poured me tea from a thermos.",
+  "НИКА": "Called Nika in Novosibirsk every evening."
+ },
+ "F_КОНВЕРТ": "Dad opened the envelope \"For Kolya.\" Granddad went too deep.",
+ "F_В105": {
+  "ВГСЧ": "Joined the mine rescue under Palych. Seventh man.",
+  "БРИГАДА": "Stayed on Dad's crew. Learned to listen to the silence.",
+  "УЧАСТОК": "Enrolled by correspondence at the polytechnic to become a mining foreman. A section of my own."
+ },
+ "F_В106": {
+  "МОЛЧАЛ": "At Nika's wedding I kept quiet and danced with her aunt.",
+  "СКАЗАЛ": "At Nika's wedding I told her. Twenty-six steps.",
+  "СМЕНА": "Left Nika's wedding drunk and went to the mine. Tanya wouldn't give me a lamp."
+ },
+ "F_ЗАКЛЕИЛ": "Put a bag over the methane sensor in the seventh longwall. Three turns of electrical tape.",
+ "F_В109": {
+  "ВЫТАЩИЛ": "Pulled Vitka out from under the beam.",
+  "ПОМОЩЬ": "Went for help. Vitka lives without his legs.",
+  "РАСЧЁТ": "Vitka gave me his self-rescuer. We're even."
+ },
+ "F_В110": {
+  "СЧЁТ": "Dad and I counted how many times we'd died. He has eight.",
+  "ДВЕРЬ": "Asked my dying father about Krasnaya Gorka. He turned away.",
+  "ПИСЬМО": "Put Granddad's letter in Dad's hand.",
+  "ТАНЯ": "Brought Tanya to Dad. He asked her father's forgiveness."
+ },
+ "F_ОБЪЕКТ": "Found Granddad's chamber at Facility Level 640, and his log.",
+ "F_В501": {
+  "МАМА": "Called Mom from Tolmachevo and told her I was flying to Thailand.",
+  "ВРАНЬЁ": "Texted Mom that I was on a business trip. She wrote back, \"Stay away from the water.\"",
+  "НИКА": "Nika saw me off at Tolmachevo, on the metal chairs.",
+  "АНГЛИЙСКИЙ": "Before the flight I learned forty English phrases. The one that stuck best was \"Help me, please.\""
+ },
+ "F_В503": {
+  "САМ": "Rode down the hill to Chalok on my own; the pickup with the ice drove past.",
+  "ШЛЕМ": "Caught the helmet Ploy threw me. White, with a chipped edge.",
+  "ПЕШКОМ": "Walked over the hill and twisted my ankle. Ploy taped it up."
+ },
+ "F_В504": {
+  "МЭ": "Made it to Ploy's mother in the big flood. She calls me \"the son from the roof.\"",
+  "МОСТ": "Sat out the night on the bridge in the big flood. Ploy's mother waited on the balcony until morning."
+ },
+ "F_В505": {
+  "ДЕРЖАЛ": "At thirty meters I held on to Vika from Barnaul.",
+  "ОТПУСТИЛ": "At thirty meters I let go of Vika. By the rules. Her leg goes numb before rain."
+ },
+ "F_В506": {
+  "МОНАХ": "Stayed at the forest monastery for a second rainy season. I have Luang Pho's bowl.",
+  "СВАДЬБА": "Took off the robe and brought Ploy a ring from the market in Ubon.",
+  "ВОПРОС": "Asked Luang Pho who whispers under the water. He drew circles on the ground.",
+  "ОСТРОВ": "Came back from the monastery to the island. I wear a coin with a hole in it around my neck."
+ },
+ "F_В507": {
+  "СОМЧАЙ": "I fill my tanks at Somchai's for half price. His air tastes sweet.",
+  "СВОЙ": "Bought my own compressor on credit. Its air has no taste.",
+  "ПРОБА": "Took Somchai's air to be tested. Somchai moved the intake pipe to the roof."
+ },
+ "F_В508": {
+  "ПРОШЁЛ": "Carried the tanks through the squeeze in the cave, to the third chamber.",
+  "НАВЕРХУ": "Hauled tanks at the cave entrance, to the pumps."
+ },
+ "F_В509": {
+  "СМОТРЕЛ": "Watched Dad's funeral on my phone to the end.",
+  "МОРЕ": "Switched off Dad's funeral and went out to sea.",
+  "МАМА": "At Dad's funeral I talked to Mom on the phone. \"Stay away from the water.\""
+ },
+ "F_В510": {
+  "РЕБЯТА": "Took the guys from the last flights into the Tom dumpling shop.",
+  "ТИХО": "Hung a sign in the Tom: no politics.",
+  "НИКА": "Sat with Nika at night in the Tom's kitchen, among the flour sacks.",
+  "ПЛОЙ": "On Fridays I closed the Tom and went out to sea with Ploy."
+ },
+ "F_В511": {
+  "ФАРАНГ": "In the big flood I took a Dutchman off a roof who didn't need it.",
+  "ШКОЛА": "In the big flood I took children off the school roof. The Dutchman stayed on his."
+ },
+ "F_В512": {
+  "ПРИЕДУ": "Promised Sonka I'd come to Mom as soon as the planes were allowed to fly.",
+  "ВИДЕО": "Recorded a video for Mom with a turtle. She doesn't recognize me in it.",
+  "ПЛОЙ": "Went to Chumphon for Ploy."
+ },
+ "F_МАЛИ": "I have a daughter. Mali, Thai for \"jasmine.\"",
+ "F_ТАБЛЕТКИ": "I take Anna Markovna's pills. The voices are behind them, as if behind cotton wool.",
+ "F_В601": {
+  "ПРАВДА": "Told Anna Markovna everything about the voices, just as it is. She wrote them down in three columns.",
+  "МОЛЧУ": "Told Anna Markovna it was all over. She didn't believe me.",
+  "ТЕТРАДЬ": "Started a green notebook in three columns. Who, what they say, when.",
+  "ТАБЛЕТКИ": "At the Regional Hospital I took everything they gave me, just so it would go quiet."
+ },
+ "F_В603": {
+  "ТАБЛЕТКИ": "After I was discharged I took my pills and lived at home, quietly.",
+  "СЛУШАТЬ": "After I was discharged I flushed the pills down the toilet and started listening to them.",
+  "ОТЕЦ": "Dad told me about the cold at the back of his neck. In '89 he turned his crew around."
+ },
+ "F_В604": {
+  "ГОЛОС": "In the fog on the Multa I told a living voice from a dead one.",
+  "МАТ": "In the fog on the Multa I walked toward the one who was swearing. The living swear.",
+  "ЖДАЛ": "Sat the night out on the pass while they called. Two fingers on my left hand have no nails."
+ },
+ "F_В605": {
+  "МРАССУ": "Went to the Mras-Su, to an old man who doesn't send people away.",
+  "ВИТЬКА": "Asked Vitka to come to the taiga with me. He came.",
+  "НИКА": "Nika said I'm just Andrei who sleeps badly."
+ },
+ "F_В606": {
+  "ПОСТ": "Stood the night through in the icy chapel on the ninth day of the fast.",
+  "ХЛЕБ": "Ate Father Serafim's crust of bread.",
+  "ПОПОЛАМ": "Broke the crust in half with Father Serafim.",
+  "ПЕЧКА": "Prayed by the stove. Once already I'd frozen to the floorboards in that chapel."
+ },
+ "F_КАМЕРТОН": "I wear Father Serafim's tuning fork on a cord.",
+ "F_В607": {
+  "ЛЮДИ": "Went out to the people who came to the hermitage. Listened to them all day.",
+  "ГНАЛ": "Drove the people away from the hermitage. The hermitage is not a circus.",
+  "ГОЛОС": "Took dictation from the one who studied in Tomsk. Burned half of it.",
+  "ОТЕЦ": "Told Dad who his father was."
+ },
+ "F_В608": {
+  "ВЫДЕРЖАЛ": "At Epiphany I broke free from under their palms and said, \"Enough.\"",
+  "ПРАВДА": "At Epiphany I told them, \"I die like you do. I just remember.\"",
+  "НИКА": "At Epiphany Nika led me off the ice: \"He's my patient.\"",
+  "УШЁЛ": "At Epiphany I walked off the ice without them. Vitka stayed.",
+  "ВЕРЁВКА": "At Epiphany I tied a rope around myself. It was held by someone who needs me alive."
+ },
+ "F_В609": {
+  "ЧУЖИЕ": "I hear strangers in my pitch. They don't die, they rewind.",
+  "МИТЯ": "In the Choir a boy is crying who isn't mine. Mitya Lunyov.",
+  "НИКА": "Wrote to Nika about the voices in my pitch. She went to Krasny Prospekt.",
+  "ДРОВА": "Split firewood for two days so as not to hear the strangers in my pitch."
+ },
+ "F_В610": {
+  "РЕКА": "Got away from the wildfire downhill, across the burn. A burn doesn't burn twice.",
+  "РУЧЕЙ": "Lay out the wildfire in a stream under a wet sheepskin coat. The cabin burned down.",
+  "ВЕТЕР": "Turned the wind. Stepan's winter cabin burned down."
+ },
+ "F_В611": {
+  "ПЛОТ": "Lashed a raft together out of barrels in Mezhdurechensk.",
+  "БЕРЕГ": "Walked downriver, along the railroad ties by the river."
+ },
+ "F_В612": {
+  "НАПРЯМИК": "Crossed the settling ponds straight across.",
+  "ХОР": "Crossed the settling ponds with my eyes closed, on the living side.",
+  "ДАМБА": "Went around the settling ponds along the dam, eight kilometers in the heat.",
+  "ТРУБА": "Crossed the settling ponds on a pipe, like walking a log."
+ },
+ "F_В202": {
+  "ПОТОЛОК": "In the elevator with the nitrogen, I climbed up under the ceiling, to the grate.",
+  "СТОП": "In the elevator with the nitrogen, I hit Stop and squeezed out through the gap."
+ },
+ "F_ОДЕЯЛО": "Went into the burning kids' room under a wet blanket.",
+ "F_В401": {
+  "ВЕСЫ": "Kept count of the metal on Welder's scales.",
+  "ГРУЗЧИК": "Hauled metal at Welder's scrap yard.",
+  "ФУРЫ": "Rode shotgun as a freight hand in Welder's Bychok truck."
+ },
+ "F_В402": {
+  "КЛИН": "Jammed a frozen chicken leg in the freezer door so it wouldn't slam shut.",
+  "СТЕНА": "Left the warehouse along the wall, where the dog can't reach.",
+  "СТОРОЖ": "Called the watchman by name out of the dark. He knows Dad."
+ },
+ "F_В403": {
+  "ЗАБОЙ": "Went into the wildcat pit with Vitka as a coal digger.",
+  "ВОДИЛА": "Hauled coal from the wildcat pits in a Bychok truck.",
+  "БАТЯ": "Told Dad about the wildcat pit. He explained how to listen to the props."
+ },
+ "F_СТОЙКА": "In the wildcat pit I wedged a larch prop under the crack.",
+ "F_В404": {
+  "БРОСИЛ": "Climbed out of the wildcat pit alone. It took five hours to dig Vitka out.",
+  "ВЫТАЩИЛ": "Carried Vitka out of the wildcat pit on my back.",
+  "БАДЬЯ": "Held up the roof with my shoulder while Shurup lowered the bucket.",
+  "ПЕЧЬ": "Dragged Vitka into the old furnace, under the sandstone. They dug us out."
+ },
+ "F_В406": {
+  "ВЫИГРАЛ": "Won the Drum. Tyoma from Osinniki lost.",
+  "УШЁЛ": "Got up from the Drum and walked out to whistles.",
+  "ТЁМА": "Took Tyoma away from the Drum. They beat us both."
+ },
+ "F_В407": {
+  "ПРАВДА": "Told Nika about the wildcat pits and the club.",
+  "ВРАНЬЁ": "Lied to Nika and put her on the train.",
+  "СДАЛ": "Took Nika to Welder.",
+  "ТЕТРАДЬ": "Gave Nika Welder's notebook from the scales."
+ },
+ "F_В408": {
+  "САПЁР": "I work for Shadrin as a living sapper.",
+  "ОТКАЗ": "Turned Shadrin down."
+ },
+ "F_АРХИВ": "I have Granddad's notebook from Shadrin's archive.",
+ "F_В409": {
+  "СКАЗАЛ": "Told Shadrin who was sitting in the kitchen. There was shooting.",
+  "ПАРЕНЬ": "Let the kid out of the kitchen through the yard.",
+  "ОТКАЗ": "Didn't go into the meeting. Said it was a gut feeling."
+ },
+ "F_В410": {
+  "УЕХАЛ": "Left the zone with Lera, away from Shadrin.",
+  "ПРАВДА": "Told Lera how many times I've died.",
+  "ОТПУСТИЛ": "Let Lera go alone."
+ },
+ "F_В411": {
+  "ВОШЁЛ": "Went in to Dad past the car at the entrance.",
+  "ШАДРИН": "Called Shadrin to get the car at the hospital moved.",
+  "СОНЬКА": "Didn't go to Dad. Sonka brought the storm jacket.",
+  "ВИТЬКА": "Went to Vitka instead of Dad."
+ },
+ "F_В412": {
+  "ПЕРЕШЁЛ": "In '49 I crossed Sovetsky the way I had all my life.",
+  "ПЕРЕХОД": "In '49 I went the long way, through the underpass.",
+  "ЛЕВО": "I know that here we drive on the left now."
+ },
+ "F_В301": {
+  "РЮКЗАК": "My first summer I carried forty million years in a backpack behind Zoya Arkadyevna.",
+  "МОЛОТОК": "Zoya Arkadyevna taught me to listen to stone with a hammer.",
+  "ЛОШАДИ": "My first summer I looked after the horses with Miron Todyshev. The chestnut was called Chalkan."
+ },
+ "F_В302": {
+  "КЕДР": "On the bald peak I sat away from the cedar, behind the roots. The strike went into the cedar.",
+  "МОЛОТОК": "On the bald peak I threw off the backpack with the hammer. The hammer's pick is melted now.",
+  "ГРИВКА": "On the bald peak I sat on a little ridge while a mudflow went down the hollow beside me."
+ },
+ "F_В303": {
+  "МИФ": "Uncle Gosha told me Granddad wanted to turn the Tom back. Not the water. Time.",
+  "МИТЯ": "Uncle Gosha told me about Mitka, a graduate student's son who drowned in our backwater.",
+  "УШЁЛ": "Went off to sleep by the horses when Uncle Gosha started in about Granddad."
+ },
+ "F_В304": {
+  "ПОЛИТЕХ": "Studied geology by correspondence in Tomsk.",
+  "СЕВЕР": "Went north as a laborer. Studying can wait.",
+  "СОНЬКА": "Took Sonka out into the field. Miron gave her a bridle."
+ },
+ "F_В305": {
+  "БЕГОМ": "Ran to camp with a wet foot at fifty below. A fool, but a healthy one.",
+  "СНЕГ": "On the ice overflow I dried my felt boot with snow.",
+  "КОСТЁР": "On the ice overflow I dried my foot by the fire. Two toes on my right foot stayed behind in Yakutsk."
+ },
+ "F_В306": {
+  "ТОРГ": "Haggled three hours out of the tusk hunters for Sardaana, like at the market in '98.",
+  "РАЗГОВОР": "Told the tusk hunters the truth about myself, and they let us go.",
+  "УВЁЛ": "Drove Sardaana away from the tusk hunters. She called me a living coward.",
+  "ПУСТОТА": "Heard with my hammer that the tunnel in the permafrost was about to cave in."
+ },
+ "F_В307": {
+  "КАБИНА": "When the plane came down on the ridge, I went straight for Vitka.",
+  "САЛОН": "When the plane came down on the ridge, first I pushed Sardaana and the others outside.",
+  "ОГНЕТУШИТЕЛЬ": "When the plane came down on the ridge, first I put out the fire with the extinguisher."
+ },
+ "F_В308": {
+  "РВАНУЛ": "Tore Vitka out of the cockpit by force. His boot stayed under the pedal.",
+  "ПЕДАЛЬ": "Pried the pedals back with a tire iron and carried Vitka out on my back.",
+  "САПОГ": "Cut Vitka's boot open, and his foot came out by itself.",
+  "БЛИСТЕР": "Pushed Vitka up through the window, toward the sky.",
+  "БРОСИЛ": "Left Vitka in the burning cockpit. Kostya pulled him out."
+ },
+ "F_В309": {
+  "ЗАМЕР": "Took the readings on the mound to the last second and got out in time.",
+  "УВЁЛ": "Dropped the instruments at the mound and got everyone out at a run.",
+  "ЗВОН": "Drove my hammer into the ice of the mound and left when the ringing broke off.",
+  "ПОПЕРЁК": "Led everyone away from the mound at a walk, against the wind. Afterward the lake turned round."
+ },
+ "F_В310": {
+  "СЛУШАЛ": "At the station I wrote the strangers down in the log, under \"Phenomena.\"",
+  "УЕХАЛ": "Left the station for people, for somewhere noisy.",
+  "ВИТЬКА": "Wrote Vitka twelve pages from the station."
+ },
+ "F_В311": {
+  "СКАЗАЛ": "On the train I told Nika that it was me she was counting.",
+  "ОБРАЗЕЦ": "On the train Nika told me about the two vials of my blood. I didn't tell her who I am.",
+  "СОШЁЛ": "Got off the train in Yurga and didn't go back to the compartment."
+ },
+ "F_В312": {
+  "ПРОЧЁЛ": "Worked through Granddad's letters in the winter cabin. The protocol is in my notebook.",
+  "ВЗЯЛ": "Read Granddad's letters to Gosha one a day, until spring.",
+  "СЖЁГ": "Burned Granddad's letters by the stream. The ash went into the Tom."
+ },
+ "F_В120": {
+  "ПЛАН": "Gave Seryoga the bag for the sensor. The quota comes first.",
+  "СТОП": "Stopped the seventh longwall with my signature on the work order.",
+  "ВЕНТИЛЯТОР": "Got a fan for the junction. A week of downtime is on me."
+ },
+ "F_В121": {
+  "ЛЕНТА": "Rode the conveyor belt to the fire, lying on the coal.",
+  "ПЕШКОМ": "Ran a kilometer and a half down the drift. Seryoga breathed in too much.",
+  "ТРОС": "Remembered where the belt dives under the drum, and yanked the cable."
+ },
+ "F_В122": {
+  "ЛОМ": "Got Yegorka down off the slag heap, tapping the crust with a crowbar.",
+  "ПО_ИМЕНИ": "Called Yegorka by name, and he climbed down in his own footprints.",
+  "ОЖОГ": "Waited for the bulldozer. Yegorka got burned; Vitka didn't speak for a year.",
+  "ПОЛЫНЬ": "Remembered where the crust holds: upwind, along the wormwood."
+ },
+ "F_В123": {
+  "ОТКАЗ": "Didn't sign the report. Put out the slag heap the honest way.",
+  "ТАНЯ": "Didn't sign the report and left for Tanya, on Krasnaya Gorka."
+ },
+ "F_ВОДЯНЫЕ": {
+  "СЕКЦИЯ": "Started the Vodyanoys swimming club at the school. Thirty-one names on the roll.",
+  "ПИРС": "Pried open the OSVOD lifeguard hut with a crowbar and taught everyone who came to swim.",
+  "ВДВОЁМ": "We taught swimming together: me in the water, her on the shore.",
+  "СОНЬКА": "I taught swimming, Sonka taught resuscitation.",
+  "ХОР": "Didn't open the hut. Listened to the Choir and got to where people were drowning in time."
+ },
+ "F_МОСТ": {
+  "УГОВОРИЛ": "Talked Yegor down off the railing of the Kuznetsky Bridge.",
+  "ПРЫГНУЛ": "Yegor jumped off the bridge. The video got two million views.",
+  "ОТЕЦ": "Called Dimka to get Yegor off the bridge. Yegor never came back.",
+  "ДЕРЖАЛ": "Held Yegor by the ankle, lying on the bridge. My shoulder has ached ever since."
+ },
+ "F_П101": {
+  "СВАРНОЙ": "In '96 I went to Welder and told him I knew about the copper.",
+  "ШАДРИН": "In '96 I sold Shadrin what I know about the mines.",
+  "ЛУНЁВ": "In '96 I became Lunyov's patron.",
+  "ТИХО": "In '96 I borrowed a hundred dollars and waited for the default."
+ },
+ "F_П102": {
+  "КРОВЬ": "In '98 I bought the blood out from under Lunyov's buyers.",
+  "СЖЁГ": "In '98 Welder and I burned the blood behind the hotel.",
+  "ВЫЛИЛ": "In '98 Lunyov poured the blood into a trash can on the stairs.",
+  "ШАДРИН": "In '98 I gave the blood to Shadrin.",
+  "ПРОДАЛ": "In '98 I watched Lunyov sell the blood and didn't touch it."
+ },
+ "F_П103": {
+  "ПРАВДА": "I told him who I am, starting from the snag."
+ },
+ "F_П401": {
+  "МОЛЧА": "By the kiosk I said nothing to Dad.",
+  "ЛЁГКИЕ": "By the kiosk I told Dad to look after his lungs.",
+  "ПЛАВАТЬ": "By the kiosk I asked Dad to teach his son to swim.",
+  "ДЕД": "By the kiosk I passed Granddad's \"Synchronize watches\" on to Dad."
+ },
+ "F_П402": {
+  "ПРОСИЛ": "At dawn I asked the doctor from Tomsk not to sell anything.",
+  "СВОИ": "At dawn I didn't go up to the man without a fishing rod."
+ },
+ "F_РАЗВЕДЧИК": "I died three times on Varya's highway in a single morning and talked her down it minute by minute."
 }
