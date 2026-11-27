@@ -176,7 +176,7 @@
     [/^В файле: прожито жизней (\d+), строк в Тетради Хора (\d+)(?:, сохранено ([\d-]+))?\. Текущий прогресс на этом устройстве заменится\.$/, function (m) {
       return "In the file: " + m[1] + " lives lived, " + m[2] + " lines in the Choir Notebook" + (m[3] ? ", saved " + m[3] : "") + ". Your current progress on this device will be replaced.";
     }],
-    [/^Мне было (\d+)\. (.*)$/, function (m) { return "I was " + m[1] + ". " + m[2]; }],
+    [/^(— )?Мне было (\d+)\. ([\s\S]*)$/, function (m) { return (m[1] || "") + "I was " + m[2] + ". " + m[3]; }],
     [/^режим автора: (вкл|выкл)$/, function (m) { return "author mode: " + (m[1] === "вкл" ? "on" : "off"); }],
     [/^В([\d.]+)$/, function (m) { return "L" + m[1]; }],
     [/^🔒 (.+)$/, function (m) { var r = tr(m[1]); return r == null ? null : "🔒 " + r; }],
