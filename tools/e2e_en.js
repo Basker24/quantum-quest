@@ -73,7 +73,7 @@ const { chromium } = require('playwright');
     const m = await meta();
     const id = await p.evaluate(() => (window.__qqScene ? window.__qqScene() : null));
     await scan(m);
-    const ls = await p.$$eval('#choices button:not([hidden])', (bs) => bs.map((x) => (x.querySelector('.lbl') || x).innerText.trim()));
+    const ls = await p.$$eval('#choices button:not([hidden]):not([disabled])', (bs) => bs.map((x) => (x.querySelector('.lbl') || x).innerText.trim()));
     const title = await p.$eval('#text', (e) => (e.querySelector('h2, h1') || {}).innerText || '').catch(() => '');
     if (/^[^А-Яа-я]*$/.test(ls.join('')) === false && !/Next/.test(ls.join(''))) { console.log(m.padEnd(36), '| русский текст: стоп'); break; }
     if (steps === 3) await shot('scene');
@@ -87,14 +87,15 @@ const { chromium } = require('playwright');
     }
     tried[m].push(i);
     console.log(m.padEnd(36), '→', (ls[i] || '?').slice(0, 60));
+    if (/^Open My Life/.test(ls[i] || '')) { console.log(m.padEnd(36), '| финал/тупик достигнут'); break; }
     if (/Stay\. A job/.test(ls.join('|'))) { // выпускной: идём в «Обычную жизнь»
       const g = ls.findIndex((l) => /^Stay\./.test(l));
       await shot('graduation');
-      await (await p.$$('#choices button:not([hidden])'))[g].click(); await p.waitForTimeout(600);
+      await (await p.$$('#choices button:not([hidden]):not([disabled])'))[g].click(); await p.waitForTimeout(600);
       await p.waitForSelector('#scene:not([hidden])', { timeout: 20000 }); await p.click('#text').catch(() => {}); await p.waitForTimeout(700);
       await scan('В7-01'); console.log((await meta()).padEnd(36), '| В7-01 достигнута'); if (!FULL) break; continue;
     }
-    await (await p.$$('#choices button:not([hidden])'))[i].click(); await p.waitForTimeout(400);
+    await (await p.$$('#choices button:not([hidden]):not([disabled])'))[i].click(); await p.waitForTimeout(400);
     if (!(await p.$('#scene[hidden]')) && (await p.$('#text p.picked'))) { // экран «После»
       afters++; await p.click('#text').catch(() => {}); await p.waitForTimeout(500);
       await scan(m + ' / после'); if (afters === 1) await shot('after');
