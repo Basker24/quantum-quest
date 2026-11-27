@@ -12,8 +12,8 @@
    window.QQ_T(s) — перевод строки для мест, где текст не попадает в DOM (canvas, «поделиться»). */
 (function () {
   "use strict";
-  var TITLE = "Black Backwater"; // рабочее английское название (канон п. 36); окончательное выбирает автор
-  var TITLE_HTML = '<span class="h-a">Black</span><br><span class="h-b" data-t="Backwater">Backwater</span>';
+  var TITLE = "The One Who Stayed"; // английское название (автор, 27.11.2026; канон п. 36)
+  var TITLE_HTML = '<span class="h-a">The One</span><br><span class="h-b" data-t="Who Stayed">Who Stayed</span>';
   var CYR = /[А-Яа-яЁё]/;
 
   var STEP = { "один шаг": "one step", "два шага": "two steps", "три шага": "three steps", "четыре шага": "four steps", "пять шагов": "five steps" };
@@ -263,7 +263,7 @@
       '<p>The voices, the gift and the rewinds in the game are fiction. In real life, don\'t stop taking medication without a doctor.</p>' +
       '<p>All characters, mines, organizations, Orpheus, Second Chance, the Wager, and all events after 2026 are fictional. Any resemblance to real people, companies or states is coincidental.</p>' +
       '<p id="privacy-note" class="tiny">The game doesn\'t ask for a name, an email or registration. Progress is stored only in your browser and in a file you save yourself. Statistics are turned on only if you allow them. Then the game sends our server (Supabase) a random number with no name or email, plus markers: which deaths, endings and choices you\'ve had, and which scene you\'re in now. That\'s where shared numbers like "312 of 1,840 players got this death" come from. Yandex Metrica receives anonymized visit data: a cookie ID, IP address, device and browser type, and which chapters and endings are open. This helps me see where players give up. Other players\' shared numbers are visible without permission. You can turn this off with the "analytics" button in the menu or by clearing the site\'s data.</p>',
-    "#credits .cr-in": '<p class="cr-kick mono">28.07.2061 · 04:12 · Kemerovo</p><h1 class="cr-title"><span>Black</span><br>Backwater</h1>' +
+    "#credits .cr-in": '<p class="cr-kick mono">28.07.2061 · 04:12 · Kemerovo</p><h1 class="cr-title"><span>The One</span><br>Who Stayed</h1>' +
       '<p class="cr-sub">A text game about quantum immortality</p>' +
       '<h3>Idea</h3><p>Andrei Samokhin drowns at seven and survives.<br>He inherited quantum immortality<br>from his physicist grandfather<br>by way of his coal-miner father.<br>One life splits into nine roads.</p>' +
       '<h3>Author</h3><p class="cr-name">Basker</p><p>The idea, the world, the plot and the characters are his.<br>So are the canon and every decision.</p>' +

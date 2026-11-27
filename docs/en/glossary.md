@@ -49,7 +49,7 @@
 | штормовка | **a canvas storm jacket**, дальше **the storm jacket** | «Дедова, кажись» → *"Must be Granddad's."* (*I reckon* — деревенский диалект, не наш) |
 | «Штурманские» (часы) | **a Shturmanskie watch — a Soviet navigator's watch** при первом упоминании, дальше **the Shturmanskie watch** / **the watch** | Звёздочка на циферблате → *a little star on the dial* |
 | коряга, «как пятерня» | **the snag**, *white, fingers spread like a hand* | *snag* — затопленное дерево, точный речной термин |
-| Чёрная заводь | **Black Backwater** (имя места), **the backwater** | Совпадает с рабочим англ. названием игры (канон п. 36) |
+| Чёрная заводь | **Black Backwater** (имя места), **the backwater** | Только имя места; название игры — *The One Who Stayed* (канон п. 36, 27.11) |
 | тальник | **the willow thickets**, **the willows** | Сцена Я-03 «Тальник» → *The Willows* |
 | коса, сваи | **the spit**, **the old pilings** | *pilings* — естественное речное слово (критик 26.11) |
 | комета Галлея | **Halley's Comet** | |
@@ -223,4 +223,4 @@
 - **«Водяные» (2041)**: *The Vodyanoys* — неуклюже, но держит рифму; решить при переводе В2.2.
 - **Детская речь**: никакого *wha'?*, *like, ever*, *duh* — это американизирует ребёнка. Простая дворовая речь: *Huh? So? Bet you can't. No way. Can too.*
 - **Будущая техника**: не *lane drift* (слово «drift» занято Дрейфом), а *lane departure* / *the car chirped when I crossed the line*.
-- **Black Backwater** — рабочее название держится; *Blackwater* нельзя (частная военная компания, фэнтези).
+- **Название игры — *The One Who Stayed*** (автор, 27.11; рифма с финалом Ф-01, как в русском). *Black Backwater* — только имя места; *Blackwater* нельзя (частная военная компания, фэнтези).
