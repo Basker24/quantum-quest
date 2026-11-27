@@ -110,6 +110,7 @@ const { chromium } = require('playwright');
   console.log('видимая кириллица:', cyr.size ? '' : 'нет');
   for (const [t, w] of cyr) console.log('  ·', JSON.stringify(t), '←', w);
   console.log('словарь не узнал (всего, вкл. скрытое):', missing.length);
+  for (const t of missing.slice(0, 20)) console.log('  ·', JSON.stringify(t.slice(0, 120)));
   console.log('ОШИБКИ JS:', errs.length ? errs : 'нет');
   await b.close();
   process.exit(errs.length ? 1 : 0);

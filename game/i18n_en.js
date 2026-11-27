@@ -131,6 +131,7 @@
 
   function n(s) { return +s; }
   var PAT = [
+    [/^Влияет: ([\s\S]*)$/, function (m) { return "Affects: " + m[1]; }],
     [/^мне (\d+)$/, function (m) { return "age " + m[1]; }],
     [/^◌ другая жизнь · (.*)$/, function (m) { return "◌ another life · " + T(m[1]); }],
     [/^в первый раз так же выбрали (\d+)% игроков(.*)$/, function (m) { return "the first time, " + m[1] + "% of players chose the same" + dev(m[2]); }],
