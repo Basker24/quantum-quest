@@ -2422,11 +2422,13 @@
     "закрыть": ["замки снова закрыты (кроме ?dev)", () => { meta.unlock = {}; }],
     "сверим часы": ["все концы отмечены пройденными", () => { for (const id of ENDS()) meta.visited[id] = meta.visited[id] || 1; }],
   };
+  // английские синонимы (EN-версия): работают в обоих языках, ведут на те же коды
+  const CHEAT_EN = { "choirmaster": "регент", "lock": "закрыть", "synchronize watches": "сверим часы" };
   (function initCheats() {
     const f = $("#cheat-form"); if (!f) return;
     f.onsubmit = (e) => {
       e.preventDefault();
-      const k = $("#cheat-in").value.trim().toLowerCase(), c = CHEATS[k], m = $("#cheat-msg");
+      const raw = $("#cheat-in").value.trim().toLowerCase(), k = CHEAT_EN[raw] || raw, c = CHEATS[k], m = $("#cheat-msg");
       if (!c) { m.textContent = "такого кода нет"; return; }
       c[1](); saveMeta(); m.textContent = "✓ " + c[0] + (k === "регент" ? (devOn ? ": вкл" : ": выкл") : ""); $("#cheat-in").value = ""; showTitle();
     };
