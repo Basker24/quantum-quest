@@ -1409,7 +1409,9 @@
     const gs = G.guides || {};
     meta.guideFold = meta.guideFold || {};
     let n = 0;
-    const focus = guideFocus && gs[guideFocus] && meta.visited[guideFocus] ? guideFocus : null;
+    // фокус: один финал или группа финалов предмета на столе (только прожитые)
+    const fl = (Array.isArray(guideFocus) ? guideFocus : guideFocus ? [guideFocus] : []).filter((f) => gs[f] && meta.visited[f]);
+    const focus = fl.length ? new Set(fl) : null;
     $("#guide").classList.toggle("one", !!focus);
     if (focus) {
       const all = document.createElement("button"); all.className = "choice ghost-choice gall"; all.textContent = "← Все пути";
@@ -1417,7 +1419,7 @@
       list.append(all);
     }
     for (const [fid, g] of Object.entries(gs)) {
-      if (focus && fid !== focus) continue;
+      if (focus && !focus.has(fid)) continue;
       const done = !!meta.visited[fid];
       const locked = g.secret && !done && !(g.gate && meta.visited[g.gate]);
       const cut = done || devOn ? null : guideProgress(g);
@@ -1425,10 +1427,10 @@
       n++;
       const going = cut != null;
       const max = going ? 2 : 3; // начатая дорога: подсказка и путь до сегодня, без будущих развилок
-      if (focus === fid) { meta.guideFold[fid] = false; meta.guide[fid] = 3; }
+      if (focus && focus.has(fid)) { meta.guideFold[fid] = false; meta.guide[fid] = 3; }
       const lvl = Math.min(meta.guide[fid] || 0, max), fold = !!meta.guideFold[fid];
       const card = document.createElement("div");
-      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "") + (focus === fid ? " focus" : "");
+      card.className = "gcard" + (done ? " done" : "") + (going ? " going" : "") + (fold ? " folded" : "") + (focus && focus.has(fid) ? " focus" : "");
       let h = `<div class="ghead"><span class="mono gnum">${String(n).padStart(2, "0")}</span><b>${esc(g.title)}</b><span class="mono dim">${esc(g.year)}</span>${done ? `<span class="gdone mono">пройдено</span>` : `<span class="gdone gnow mono">иду сюда</span>`}</div>`;
       const steps = g.steps.filter((x) => x.choice);
       const shown = going ? g.steps.filter((x) => x.choice && !x.death).slice(0, cut) : steps; // начатая: ровно мои выборы
@@ -2718,7 +2720,10 @@
   // Прожил финал — лист «изучен», бумага исчезает, и на столе остаётся предмет. Клик по нему — его дорога в «Путях».
   const STILL_ITEMS = {"Ф-01": {"n": "float", "w": [4.167, 62.598, 18.88, 23.438, 13.61, 74.32, 13.67, 15.62], "p": [0.488, 82.227, 28.32, 15.625, 14.65, 90.04, 20.51, 10.42]}, "Ф-02": {"n": "glasses", "w": [58.268, 72.461, 18.88, 21.484, 67.71, 83.2, 13.67, 13.67], "p": [36.133, 82.682, 31.25, 16.276, 51.76, 90.82, 23.44, 11.07]}, "Ф-03": {"n": "carnation", "w": [79.557, 69.141, 19.531, 19.531, 89.32, 78.91, 14.32, 11.72], "p": [62.988, 74.219, 28.32, 14.323, 77.15, 81.38, 20.51, 9.11]}, "Ф-04": {"n": "beercap", "w": [22.461, 76.172, 16.276, 19.531, 30.6, 85.94, 11.07, 11.72], "p": [19.043, 77.148, 26.367, 14.974, 32.23, 84.64, 18.55, 9.77]}, "Ф-05": {"n": "cartridge", "w": [3.581, 75.684, 18.229, 20.508, 12.7, 85.94, 13.02, 12.7], "p": [53.223, 84.961, 28.32, 14.974, 67.38, 92.45, 20.51, 9.77]}, "Ф-06": {"n": "dvushka", "w": [80.078, 59.082, 16.927, 18.555, 88.54, 68.36, 11.72, 10.74], "p": [35.156, 74.544, 23.438, 13.672, 46.88, 81.38, 15.62, 8.46]}, "⊣": {"n": "candle", "w": [32.682, 52.246, 16.927, 21.484, 41.15, 62.99, 11.72, 13.67], "p": [18.555, 52.409, 27.344, 14.974, 32.23, 59.9, 19.53, 9.77]}};
   const ITEM_NAME = { "Ф-01": "поплавок", "Ф-02": "очки для чтения", "Ф-03": "сухая гвоздика", "Ф-04": "пробка от «Жигулёвского»", "Ф-05": "гильза", "Ф-06": "двушка", "⊣": "огарок свечи" };
-  const itemOpen = (fid) => fid === "⊣" ? ENDS().some((id) => id.startsWith("⊣") && meta.visited[id]) : !!meta.visited[fid];
+  // финалов стало 13 (автор, 28.11, вариант «В»): предмет отвечает за группу финалов по смыслу и загорается на первом из них
+  const ITEM_GROUP = { "Ф-01": ["Ф-01", "Ф-11"], "Ф-02": ["Ф-02", "Ф-10"], "Ф-03": ["Ф-03", "Ф-09", "Ф-13"], "Ф-04": ["Ф-04", "Ф-12"], "Ф-05": ["Ф-05", "Ф-08"], "Ф-06": ["Ф-06", "Ф-07"] };
+  const itemGroup = (fid) => fid === "⊣" ? ENDS().filter((id) => id.startsWith("⊣")) : (ITEM_GROUP[fid] || [fid]);
+  const itemOpen = (fid) => itemGroup(fid).some((id) => meta.visited[id]);
   function renderStillItems() {
     const box = $("#still-items"), frame = $("#still-frame"); if (!box || !frame) return;
     frame.querySelectorAll(".hs-item").forEach((x) => x.remove());
@@ -2743,13 +2748,15 @@
   }
   function itemCaption(fid) {
     if (!itemOpen(fid)) return "ещё не прожито";
-    if (fid === "⊣") { const all = ENDS().filter((id) => id.startsWith("⊣")); return `${ITEM_NAME[fid]} · тупики: ${all.filter((id) => meta.visited[id]).length} из ${all.length}`; }
+    const all = itemGroup(fid), n = all.filter((id) => meta.visited[id]).length;
+    if (fid === "⊣") return `${ITEM_NAME[fid]} · тупики: ${n} из ${all.length}`;
+    if (all.length > 1) return `${ITEM_NAME[fid]} · финалы: ${n} из ${all.length}`;
     const q = window.QQ_LANG === "en" ? ["“", "”"] : ["«", "»"];
     return `${ITEM_NAME[fid]} · ${q[0]}${(G.scenes[fid] && G.scenes[fid].title) || fid}${q[1]}`;
   }
   function openItem(fid) {
     if (!itemOpen(fid)) return false;
-    guideFocus = fid === "⊣" ? null : fid;
+    guideFocus = fid === "⊣" ? null : itemGroup(fid);
     openPanel("#guide");
     return true;
   }

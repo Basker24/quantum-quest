@@ -178,6 +178,7 @@
     }],
     [/^(— )?Мне было (\d+)\. ([\s\S]*)$/, function (m) { return (m[1] || "") + "I was " + m[2] + ". " + m[3]; }],
     [/^✓ ([\s\S]+)$/, function (m) { var r = tr(m[1]); return r == null ? null : "✓ " + r; }],
+    [/^финалы: (\d+) из (\d+)$/, function (m) { return "endings: " + m[1] + " of " + m[2]; }],
     [/^тупики: (\d+) из (\d+)$/, function (m) { return "dead ends: " + m[1] + " of " + m[2]; }],
     [/^режим автора: (вкл|выкл)$/, function (m) { return "author mode: " + (m[1] === "вкл" ? "on" : "off"); }],
     [/^В([\d.]+)$/, function (m) { return "L" + m[1]; }],
