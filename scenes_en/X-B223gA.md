@@ -11,7 +11,7 @@ src_sha: 2a633476f707
 ---
 I come up from behind, quietly, and say, "Come on, Yegor. Climb back." He turns toward my voice, and his heel slips off the ledge. I grab his hood with both hands and yank him toward me with all my strength.
 
-He flies back over the railings and lands on the asphalt. The railing jams into my stomach, right at my belt buckle, and I roll over the handrail like over a chin-up bar in gym class, slowly and clumsily.
+He flies back over the railings and lands on the asphalt. The railing jams into my stomach, right at my belt buckle, and I roll over the handrail the way you roll over a chin-up bar in gym class, slowly and clumsily.
 
 The icebreaker rushes up at me from below, a gray wet wedge. I have time to see the little river shells stuck to it and the green waterline. The blow hits me in the chest, and I don't hear the sound anymore.
 
