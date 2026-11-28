@@ -1,0 +1,157 @@
+<title>Тот, кто остался — itch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=PT+Sans:wght@400;700&display=swap">
+<style>
+/* Layout: itch-style project page — fixed page background, centered 960px column, game embed + description left, screenshots right. Single dark look (it is the game's own page theme). */
+:root{
+  --page:#120d09;        /* coal under the background image */
+  --panel:#1b1510;       /* itch "inner column" */
+  --panel-2:#241c15;
+  --text:#e8dccb;        /* lamp-lit paper */
+  --muted:#a89580;
+  --link:#e3a95a;        /* lamp amber */
+  --button:#c9873c;
+  --button-text:#1b1208;
+  --line:#3a2e22;
+  --water:#7fa3c2;       /* night window */
+  --serif:"Lora", Georgia, "Times New Roman", serif;
+  --sans:"PT Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--page) url(img/bg.jpg) center top/cover fixed no-repeat;color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55}
+a{color:var(--link)}
+.mocknote{background:#000a;color:var(--muted);font-size:13px;text-align:center;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mocknote b{color:var(--text)}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.column{background:color-mix(in srgb,var(--panel) 94%,transparent);border-radius:4px;overflow:hidden;box-shadow:0 10px 40px #0009}
+.header{padding:34px 32px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#00000055,transparent)}
+.header h1{font-family:var(--serif);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.1;margin:0;text-wrap:balance}
+.header .sub{font-family:var(--serif);font-style:italic;color:var(--link);margin-top:6px;font-size:18px}
+.header .en{color:var(--muted);font-size:14px;margin-top:4px;letter-spacing:.02em}
+.embed{position:relative;aspect-ratio:1280/800;max-width:100%;background:#000 url(img/s1.jpg) center/cover;display:grid;place-items:center}
+.embed::after{content:"";position:absolute;inset:0;background:#0008}
+.run{position:relative;z-index:1;font:700 18px var(--sans);background:var(--button);color:var(--button-text);border:0;border-radius:3px;padding:14px 30px;cursor:pointer;box-shadow:0 4px 18px #0008}
+.run:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.embed .hint{position:absolute;bottom:12px;z-index:1;color:var(--muted);font-size:13px}
+.body{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;padding:28px 32px 36px}
+.desc{min-width:0;max-width:62ch}
+.desc h2{font-family:var(--serif);font-size:22px;margin:28px 0 8px}
+.desc h2:first-child{margin-top:0}
+.desc p{margin:0 0 12px}
+.desc .lead{font-family:var(--serif);font-size:19px;line-height:1.5}
+.desc ul{margin:0 0 12px;padding-left:20px}
+.desc li{margin-bottom:5px}
+.desc hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+.warn{background:var(--panel-2);border-left:3px solid var(--link);padding:12px 16px;border-radius:2px;margin:16px 0;font-size:15px}
+.shots{display:flex;flex-direction:column;gap:12px;min-width:0}
+.shots img{width:100%;border-radius:3px;display:block;border:1px solid var(--line);cursor:zoom-in}
+.info{margin-top:26px;border:1px solid var(--line);border-radius:3px}
+.info summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--link)}
+.info table{width:100%;border-collapse:collapse;font-size:14px}
+.info td{padding:7px 14px;border-top:1px solid var(--line);vertical-align:top}
+.info td:first-child{color:var(--muted);width:38%;white-space:nowrap}
+.buy{margin-top:26px;background:var(--panel-2);border-radius:3px;padding:18px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.buy .price{font-family:var(--serif);font-size:18px}
+.buy .price small{display:block;color:var(--muted);font-family:var(--sans);font-size:13px}
+.btn2{font:700 15px var(--sans);background:transparent;color:var(--link);border:1px solid var(--link);border-radius:3px;padding:9px 18px;cursor:pointer}
+.tags a{display:inline-block;margin:0 6px 6px 0;font-size:13px;text-decoration:none;background:var(--panel-2);padding:2px 8px;border-radius:2px}
+dialog{border:0;padding:0;background:transparent;max-width:min(1100px,94vw)}
+dialog::backdrop{background:#000d}
+dialog img{width:100%;display:block;border-radius:3px}
+@media (max-width:760px){
+  .body{grid-template-columns:minmax(0,1fr);padding:22px 18px 30px}
+  .header{padding:26px 18px 18px}
+  .shots{display:grid;grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="mocknote"><b>Макет</b> страницы проекта на itch.io: так её увидит игрок. Настоящей страницы пока нет, цифры и тексты из текущей сборки.</div>
+
+<div class="wrap">
+<div class="column">
+  <div class="header">
+    <h1>Тот, кто остался</h1>
+    <div class="sub">текстовая игра о квантовом бессмертии</div>
+    <div class="en">The One Who Stayed · Кузбасс, 1996–2061 · русский и English</div>
+  </div>
+
+  <div class="embed">
+    <button class="run" id="run" type="button">Запустить игру</button>
+    <div class="hint">играется прямо в браузере · 1280×800 · есть кнопка полного экрана</div>
+  </div>
+
+  <div class="body">
+    <div class="desc">
+      <p class="lead">Лето 1996 года, Кемерово. Семилетний Андрей Самохин тонет в Чёрной заводи на Томи. Девочка на берегу считает вслух и досчитывает до двухсот пятидесяти двух. Потом из тальника выходит незнакомый старик в тельняшке, вытаскивает мальчика и откачивает его.</p>
+      <p>С этого дня Андрей не может умереть по-настоящему.</p>
+
+      <h2>О чём игра</h2>
+      <p>Каждый раз, когда Андрей умирает, он снова стоит за минуту до смерти и помнит её целиком: телом, запахом, тем, кто видел его последним. Смерть здесь не проигрыш, а знание. Пережитая гибель открывает пути, которых раньше не было.</p>
+      <p>Те, кто не вернулся, не исчезают. Все Андреи, умершие вместо него, остаются у него в голове и звучат там. Это Хор, и он помнит больше, чем хочется.</p>
+      <p>Шахта и горноспасатели, физфак в Томске, геологическая партия в тайге, подпольное казино, Таиланд, скит, обычная семья с дачей и баней. Восемь жизней, и все сходятся в одну ночь 2061 года у той же заводи.</p>
+
+      <h2>Что внутри</h2>
+      <ul>
+        <li><b>8 жизней, 163 сцены, 81 смерть, 26 концовок</b>: 13 финалов и 13 тупиков.</li>
+        <li><b>Никакого рандома.</b> Всё следует из твоих решений и из того, каким ты стал.</li>
+        <li><b>Тетрадь Хора</b>: все, кем ты был и кто не вернулся.</li>
+        <li><b>Дрейф</b>: чем чаще подгоняешь судьбу, тем сильнее мир уезжает.</li>
+        <li><b>«Моя жизнь»</b>: схема игры, где непрожитое скрыто туманом. У каждой жизни своё оформление.</li>
+        <li>Режим <b>«Одна жизнь»</b> без откатов, музыка, иллюстрации к сценам.</li>
+        <li>Дополнение <b>«Объяснение»</b> открывается после финала.</li>
+        <li><b>Длина:</b> первый финал за 1,5–2 часа, вся игра за 8–10.</li>
+      </ul>
+
+      <div class="warn"><b>16+.</b> В игре есть смерть, в том числе смерть ребёнка, суицидальные мысли, психическое расстройство, азартные игры со смертельным исходом, катастрофы в шахте, вымышленная война. В разделе «Об игре и помощь» есть телефоны, по которым ответят.</div>
+
+      <hr>
+      <h2>English</h2>
+      <p class="lead">Kemerovo, Siberia, 1996. I was seven when I drowned and came back. Since then every death of mine is a memory.</p>
+      <p>A first-person text game about one life sixty-five years long: eight lives, 163 scenes, 81 deaths, 26 endings, no dice. Fully translated. Switch the language on the title screen.</p>
+
+      <div class="buy">
+        <div class="price">Бесплатно<small>или «заплати сколько хочешь» — решает автор</small></div>
+        <button class="btn2" type="button" id="support">Поддержать автора</button>
+      </div>
+
+      <details class="info" open>
+        <summary>Подробнее</summary>
+        <table>
+          <tr><td>Статус</td><td>Released</td></tr>
+          <tr><td>Платформы</td><td>HTML5 (браузер, телефон и компьютер)</td></tr>
+          <tr><td>Автор</td><td>—</td></tr>
+          <tr><td>Жанр</td><td>Interactive Fiction</td></tr>
+          <tr><td>Языки</td><td>Русский, English</td></tr>
+          <tr><td>Управление</td><td>Мышь, клавиатура, сенсорный экран</td></tr>
+          <tr><td>Длина</td><td>Несколько часов</td></tr>
+          <tr><td>ИИ</td><td>Отмечено: при создании использован генеративный ИИ</td></tr>
+          <tr><td>Теги</td><td class="tags"><a href="#">Interactive Fiction</a><a href="#">Text based</a><a href="#">Choices Matter</a><a href="#">Multiple Endings</a><a href="#">Story Rich</a><a href="#">Psychological</a><a href="#">Sci-fi</a><a href="#">Atmospheric</a></td></tr>
+        </table>
+      </details>
+    </div>
+
+    <div class="shots" aria-label="Скриншоты">
+      <img src="img/s1.jpg" alt="Главное меню: стол деда, лампа, комета за окном">
+      <img src="img/s2.jpg" alt="Вступление про Эверетта">
+      <img src="img/s3.jpg" alt="Первый выбор у заводи">
+      <img src="img/s4.jpg" alt="Схема «Моя жизнь» в тумане">
+      <img src="img/s5.jpg" alt="Тетрадь Хора">
+      <img src="img/s6.jpg" alt="Два времени">
+    </div>
+  </div>
+</div>
+</div>
+
+<dialog id="zoom"><img id="zoomimg" alt=""></dialog>
+
+<script>
+const dlg=document.getElementById('zoom'),zi=document.getElementById('zoomimg');
+document.querySelectorAll('.shots img').forEach(im=>im.addEventListener('click',()=>{zi.src=im.src;zi.alt=im.alt;dlg.showModal();}));
+dlg.addEventListener('click',()=>dlg.close());
+document.getElementById('run').addEventListener('click',e=>{e.target.textContent='Здесь запустится игра (в макете — нет)';});
+document.getElementById('support').addEventListener('click',e=>{e.target.textContent='На itch откроется окно оплаты';});
+document.querySelectorAll('.tags a').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+</script>

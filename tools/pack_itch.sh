@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 python3 tools/build.py --no-witness >/dev/null
 OUT=dist/itch
 rm -rf "$OUT" && mkdir -p "$OUT/img"
-cp game/index.html game/engine.js game/graph.js game/dev.js game/style.css game/stats.js "$OUT/"
+cp game/index.html game/engine.js game/graph.js game/graph_en.js game/i18n_en.js game/dev.js game/style.css game/stats.js "$OUT/"
 [ -f game/music.js ] && cp game/music.js "$OUT/" || true
 if [ -d game/music ]; then mkdir -p "$OUT/music"; find game/music -name '._*' -delete 2>/dev/null || true; for f in $(cat game/music.js game/obyasnenie/*.js game/obyasnenie/*.html 2>/dev/null | grep -o '[a-z0-9_]*\.mp3' | sort -u); do [ -f "game/music/$f" ] && cp "game/music/$f" "$OUT/music/"; done; fi
 cp -r game/fonts "$OUT/"
