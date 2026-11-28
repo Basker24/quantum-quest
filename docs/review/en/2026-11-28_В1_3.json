@@ -1,0 +1,239 @@
+{
+ "fixes": [
+  {
+   "file": "B1-08.md",
+   "find": "The Maria-Ra bag is still on the sensor, on the same blue tape, only gray with dust.",
+   "replace": "The Maria-Ra shopping bag is still on the sensor, on the same blue electrical tape, only gray with dust.",
+   "kind": "смысл",
+   "why": "Изолента важна как способ заклейки датчика; просто blue tape звучит как обычный скотч. Shopping bag чуть яснее для реалии."
+  },
+  {
+   "file": "B1-08.md",
+   "find": "The sensor at the junction hangs there clean.",
+   "replace": "The sensor at the junction is clean.",
+   "kind": "калька",
+   "why": "Hangs there clean — буквальная русская конструкция, по-английски неестественно."
+  },
+  {
+   "file": "B1-08.md",
+   "find": "under the bag I put on myself.",
+   "replace": "under the bag I put on it myself.",
+   "kind": "смысл",
+   "why": "Put on myself значит «надел на себя»; нужно, что он сам надел пакет на датчик."
+  },
+  {
+   "file": "B1-08.md",
+   "find": "The degassing units run at the face for three days, and the shearer is only switched on again on the fourth.",
+   "replace": "Degassing crews work at the face for three days, and the shearer is only switched on again on the fourth.",
+   "kind": "смысл",
+   "why": "Дегазаторы здесь люди/бригады, не агрегаты, которые «run»."
+  },
+  {
+   "file": "B1-08.md",
+   "find": "The men I drove out don't talk to me for a week; their shift got cut.",
+   "replace": "The men I drove out don't talk to me for a week; their shift got docked.",
+   "kind": "сочетаемость",
+   "why": "Got cut читается как смену укоротили; got docked точнее передает потерю оплаты/смены."
+  },
+  {
+   "file": "B1-08.md",
+   "find": "That evening he catches up with me at the bus stop and without a word stuffs an Alyonka chocolate bar, the one with the girl in the headscarf, into my jacket pocket; he'd bought it for Mishka.",
+   "replace": "That evening he catches up with me at the bus stop and without a word stuffs an Alyonka chocolate bar into my jacket pocket, the one he'd bought for Mishka.",
+   "kind": "смысл",
+   "why": "Вставка про девочку на обертке добавлена от переводчика и чрезмерно объясняет реалию."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "He leads us down himself, as the first squad. In breathing sets, along the rails, into the draft, the way he taught everyone he ever taught.",
+   "replace": "He leads us down himself, with the first squad. In breathing apparatus, along the rails, against the airflow, the way he taught everyone he ever taught.",
+   "kind": "смысл",
+   "why": "«Первым отделением» — with the first squad; «против струи» — against the airflow. Breathing sets звучит неестественно."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "We go out by the emergency exit, into the draft, with our self-rescuers on, and at the fork we meet the mine rescuers.",
+   "replace": "We go out by the emergency exit, against the airflow, with our self-rescuers on, and at the fork we meet the mine rescuers.",
+   "kind": "смысл",
+   "why": "«Против струи» в шахте — против воздушного потока, не into the draft."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "next to his six.",
+   "replace": "next to his six men.",
+   "kind": "сочетаемость",
+   "why": "Next to his six по-английски слишком загадочно; русская эллиптичность здесь требует опоры."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "Two hundred meters to the fork I drag him on my back, walking backward over the sleepers, and I count the sleepers like Nika would.",
+   "replace": "For two hundred meters to the fork I drag him myself, walking backward over the sleepers, and I count the sleepers like Nika.",
+   "kind": "смысл",
+   "why": "On my back означает «на спине», хотя он тащит Витьку под мышки, пятясь."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "Six months later he's walking, with a cane, and a year later without one, only limping on the right leg and when the weather changes.",
+   "replace": "Six months later he's walking with a cane, and a year later without one, only with a limp on the right that gets worse when the weather changes.",
+   "kind": "сочетаемость",
+   "why": "Limping on the right leg and when the weather changes грамматически криво; нужно связать хромоту и погоду."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "At the regional hospital they take off both, below the knee.",
+   "replace": "At the regional hospital they amputate both legs below the knee.",
+   "kind": "регистр",
+   "why": "Take off both слишком разговорно и неясно для ампутации ног."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "Vitka pulls the mouthpiece out of his own mouth, rips his self-rescuer can off himself and shoves it into my hands.",
+   "replace": "Vitka pulls the mouthpiece out of his own mouth, rips his self-rescuer canister off his belt and shoves it into my hands.",
+   "kind": "сочетаемость",
+   "why": "Can off himself звучит не по-английски; canister и off his belt конкретнее."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "\"Vitya.\"",
+   "replace": "\"Vitka.\"",
+   "kind": "смысл",
+   "why": "По глоссарию Витька/Витёк держится как Vitka; Vitya вводит лишнее имя."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "And went yourself.",
+   "replace": "And left.",
+   "kind": "смысл",
+   "why": "«А сам ушёл» — left; went yourself означает другое."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "when he was grabbing back his half of the bike.",
+   "replace": "when he was taking the half-bike away.",
+   "kind": "смысл",
+   "why": "Back и his half добавляют неверную собственность/возврат; в оригинале он отнимал полвелика."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "There's no rewind for me from his heart.",
+   "replace": "His heart giving out gives me no rewind.",
+   "kind": "калька",
+   "why": "From his heart — калька; смысл в том, что смерть Палыча не дает герою отката."
+  },
+  {
+   "file": "B1-09.md",
+   "find": "one of its feet is battered.",
+   "replace": "one of its footplates is battered.",
+   "kind": "смысл",
+   "why": "У гидростойки не «нога», а пята/опорная плита; feet звучит антропоморфно."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "\"Grandma kept it all her life. Let it be yours.\"",
+   "replace": "\"Grandma kept it all her life. You should have it.\"",
+   "kind": "калька",
+   "why": "Let it be yours — буквальное «пусть у тебя будет», по-английски неестественно."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "The stroke is on the left side, a massive one.",
+   "replace": "Dad's stroke is in the left hemisphere, a massive one.",
+   "kind": "смысл",
+   "why": "Left-side stroke по-английски может читаться как симптомы слева; здесь левое полушарие и правосторонний паралич."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "At the regional hospital, in neurology, they give Dad a bed by the window, and from the window you can see the spoil heap of the Glubokaya, which was shut down last year.",
+   "replace": "At the regional hospital, on the neurology ward, they give Dad a bed by the window, and from the window you can see the spoil heap of the Glubokaya mine, which was shut down last year.",
+   "kind": "сочетаемость",
+   "why": "In neurology — калька больничного отделения; Glubokaya mine яснее и по глоссарию."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "On the fifth night he wakes up at four-twelve, and so do I, in the chair by the bed.",
+   "replace": "On the fifth night he wakes up at 04:12, and so do I, in the chair by the bed.",
+   "kind": "смысл",
+   "why": "По глоссарию 04:12 в прозе пишется цифрами; four-twelve только в речи."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "About gas that tastes of caramel.",
+   "replace": "About gas that smells like caramel.",
+   "kind": "смысл",
+   "why": "В оригинале газ пахнет карамелью, не имеет вкус."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "He dies the next night, at four-twelve. They call me from the nurses' station, but I'm not asleep anyway.",
+   "replace": "He dies the next night, at 04:12. They call me from the nurses' station, but I'm not asleep anyway.",
+   "kind": "смысл",
+   "why": "По глоссарию 04:12 в прозе пишется цифрами."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "the way he did when I was little and went for an outlet.",
+   "replace": "the way he did when I was little and tried to stick my fingers in an outlet.",
+   "kind": "смысл",
+   "why": "Went for an outlet не передает «лез в розетку»; нужен конкретный опасный жест ребенка."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "\"Don't,\" he says. \"O-pen. It.\"",
+   "replace": "\"Do not,\" he says. \"O-pen. It.\"",
+   "kind": "логика",
+   "why": "Текущий разрыв можно прочитать как «Don't. Open it.»; нужно недвусмысленное «не открывай»."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "He dies the next night, at four-twelve, and right to the end he lies turned away.",
+   "replace": "He dies the next night, at 04:12, and right to the end he lies turned away.",
+   "kind": "смысл",
+   "why": "По глоссарию 04:12 в прозе пишется цифрами."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "The letter has been in my wallet for seventeen years, folded in four, the wax all crumbled off.",
+   "replace": "The letter has been in my wallet for seventeen years, folded in quarters, the wax all crumbled off.",
+   "kind": "калька",
+   "why": "Folded in four — калька; идиоматично folded in quarters."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "He dies the next night, at four-twelve, with the letter in his fist.",
+   "replace": "He dies the next night, at 04:12, with the letter in his fist.",
+   "kind": "смысл",
+   "why": "По глоссарию 04:12 в прозе пишется цифрами."
+  },
+  {
+   "file": "B1-10.md",
+   "find": "Dad dies the next night, at four-twelve.",
+   "replace": "Dad dies the next night, at 04:12.",
+   "kind": "смысл",
+   "why": "По глоссарию 04:12 в прозе пишется цифрами."
+  }
+ ],
+ "verdict": "Партия в целом крепкая: рабочий голос держится, шахтная конкретика в основном не рассыпается, эмоциональные места не переписаны в мелодраму. Чаще всего всплывают кальки с русских конструкций, неточности в шахтной терминологии и нарушение канонического формата 04:12. Ещё несколько раз перевод добавляет лишние пояснения или, наоборот, оставляет русскую эллиптичность там, где английскому нужна одна опорная деталь.",
+ "_meta": {
+  "model": "gpt-5.5-2026-04-23",
+  "usage": {
+   "input_tokens": 21225,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cache_write_tokens_details": {
+     "ttl_12h_tokens": 0,
+     "ttl_30m_tokens": 0
+    },
+    "cached_tokens": 0
+   },
+   "output_tokens": 24337,
+   "output_tokens_details": {
+    "reasoning_tokens": 24337
+   },
+   "total_tokens": 45562
+  },
+  "files": [
+   "FILE B1-08.md",
+   "FILE B1-09.md",
+   "FILE B1-10.md"
+  ]
+ }
+}

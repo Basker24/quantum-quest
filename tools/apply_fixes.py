@@ -55,6 +55,8 @@ def apply(path, ok, edits, sync_en):
         rep = edits.get(str(i), f["replace"])
         p = base / f["file"]
         if not p.exists():
+            p = base / f["file"].replace("б.", "b.")
+        if not p.exists():
             f["decision"] = "failed: нет файла"; report["failed"].append(i); continue
         t = p.read_text(encoding="utf-8")
         n = t.count(f["find"])
