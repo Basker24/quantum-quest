@@ -2004,7 +2004,7 @@
     if (REDUCED) draw(0);
   }
   function bgMode(m) {
-    if (m === mode) return;
+    if (m === mode) { if (REDUCED && cx && m !== "off") draw(0); return; } // без анимации: статичный кадр новой жизни
     mode = m;
     cv.style.opacity = m === "off" ? 0 : 1;
     if (!cx) return;
@@ -2039,17 +2039,150 @@
     cx.lineWidth = 1; cx.beginPath(); cx.moveTo(kx, ky); cx.lineTo(kx - w * 0.5, ky + h * 0.27); cx.stroke();
     cx.fillStyle = "rgba(240,248,255,.9)"; cx.beginPath(); cx.arc(kx, ky, 2.4, 0, Math.PI * 2); cx.fill();
   }
+  // ---------- фон жизни (автор, 28.11): у каждой ветки своя тихая анимация; цвет частиц — CSS-переменная --fx
+  const LIFE_FX = { "Т": "fluff", "В1": "coal", "В1.2": "dust", "В2": "eeg", "В2.1": "waves", "В2.2": "river", "В3": "snow",
+    "В4": "rain", "В5": "bubbles", "В6": "fog", "В7": "bokeh", "Я": "night", "П2": "night", "П1": "fluff", "П4": "fluff",
+    "П3": "seam", "Ф": "dawn", "К": "ash" };
+  let fxLife = null, fxRGB = "217,164,65", fxSince = 0;
   function drawDust(t, w, h) {
-    const era = document.body.dataset.era;
-    const base = era === "future" ? "200,220,255" : era === "bw" ? "233,228,218" : "217,164,65";
-    for (let i = 0; i < 46; i++) {
-      const sp = 6 + hash(i + 50) * 14;
-      const x = (hash(i) * w + t * sp * (hash(i + 7) > 0.5 ? 1 : -1) + w * 10) % w;
-      const y = (hash(i + 100) * h + t * (3 + hash(i + 20) * 6)) % h;
-      const a = 0.05 + 0.12 * hash(i + 200) * (0.6 + 0.4 * Math.sin(t + i));
-      cx.fillStyle = `rgba(${base},${a})`;
-      const s = 0.8 + hash(i + 400) * 1.8;
-      cx.fillRect(x, y, s, s);
+    const life = document.body.dataset.life || "";
+    if (life !== fxLife) { // смена жизни: перечитать цвет, запомнить момент (рассвет считает от него)
+      fxLife = life; fxSince = t;
+      const v = getComputedStyle(document.body).getPropertyValue("--fx").trim();
+      fxRGB = v || (document.body.dataset.era === "future" ? "200,220,255" : "217,164,65");
+    }
+    const kind = LIFE_FX[life] || "dust", c = fxRGB;
+    const col = (a) => `rgba(${c},${a})`;
+    const dot = (x, y, r, a) => { cx.fillStyle = col(a); cx.beginPath(); cx.arc(x, y, r, 0, 6.2832); cx.fill(); };
+    const glow = (x, y, r, a) => { const g = cx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col(a)); g.addColorStop(1, col(0)); cx.fillStyle = g; cx.fillRect(x - r, y - r, r * 2, r * 2); };
+    const wrap = (v, m) => ((v % m) + m) % m;
+    switch (kind) {
+      case "fluff": // тополиный пух: медленно плывёт вбок и чуть вверх, покачиваясь
+        for (let i = 0; i < 30; i++) {
+          const sp = 8 + hash(i + 50) * 14;
+          const x = wrap(hash(i) * w + t * sp, w + 40) - 20;
+          const y = wrap(hash(i + 100) * h - t * (2 + hash(i + 20) * 4) + Math.sin(t * 0.6 + i) * 14, h + 40) - 20;
+          dot(x, y, 1 + hash(i + 400) * 1.8, 0.10 + 0.14 * hash(i + 200));
+        }
+        break;
+      case "coal": { // угольная пыль сверху вниз и луч каски, который медленно ходит
+        glow(w * (0.5 + 0.28 * Math.sin(t * 0.13)), h * 0.05, Math.max(w, h) * 0.45, 0.05);
+        for (let i = 0; i < 60; i++) {
+          const x = wrap(hash(i) * w + Math.sin(t * 0.3 + i) * 8, w);
+          const y = wrap(hash(i + 100) * h + t * (5 + hash(i + 20) * 10), h);
+          cx.fillStyle = col(0.06 + 0.14 * hash(i + 200)); const s = 0.7 + hash(i + 400) * 1.5; cx.fillRect(x, y, s, s);
+        }
+        break; }
+      case "eeg": { // ЭЭГ: тонкая бегущая линия внизу, раз в несколько секунд — всплеск
+        const y0 = h * 0.86, off = t * 45;
+        cx.strokeStyle = col(0.16); cx.lineWidth = 1.2; cx.beginPath();
+        for (let x = 0; x <= w; x += 3) {
+          const u = x + off, ph = wrap(u, 420);
+          const spike = ph < 24 ? Math.sin(ph / 24 * Math.PI * 3) * 22 * (1 - ph / 24) : 0;
+          const y = y0 + Math.sin(u * 0.045) * 2.5 + Math.sin(u * 0.13 + 1) * 1.2 + spike;
+          if (x === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
+        }
+        cx.stroke();
+        cx.fillStyle = col(0.025); for (let y = 0; y < h; y += 4) cx.fillRect(0, y, w, 1); // едва видные строки экрана
+        break; }
+      case "waves": { // радиоволны от антенны в правом верхнем углу
+        const ox = w * 0.86, oy = h * 0.1, R = Math.max(w, h) * 0.9;
+        cx.lineWidth = 1;
+        for (let k = 0; k < 6; k++) {
+          const r = wrap(t * 28 + k * R / 6, R);
+          cx.strokeStyle = col(0.13 * (1 - r / R)); cx.beginPath(); cx.arc(ox, oy, r, 0, 6.2832); cx.stroke();
+        }
+        dot(ox, oy, 1.6, 0.35 + 0.25 * Math.sin(t * 2));
+        break; }
+      case "river": // рябь Томи: волнистые линии в нижней части экрана
+        cx.lineWidth = 1;
+        for (let i = 0; i < 9; i++) {
+          const y0 = h * (0.58 + i * 0.05), a = 0.05 + 0.05 * (i / 9);
+          cx.strokeStyle = col(a); cx.beginPath();
+          for (let x = 0; x <= w; x += 8) { const y = y0 + Math.sin(x * 0.012 + t * (0.35 + i * 0.03) + i * 1.7) * (2 + i * 0.4); if (x === 0) cx.moveTo(x, y); else cx.lineTo(x, y); }
+          cx.stroke();
+        }
+        break;
+      case "snow": // снег
+        for (let i = 0; i < 70; i++) {
+          const sp = 14 + hash(i + 50) * 26;
+          const x = wrap(hash(i) * w + Math.sin(t * 0.5 + i * 1.3) * 18 + t * 4, w);
+          const y = wrap(hash(i + 100) * h + t * sp, h + 10) - 5;
+          dot(x, y, 0.8 + hash(i + 400) * 1.7, 0.12 + 0.22 * hash(i + 200));
+        }
+        break;
+      case "rain": { // косой дождь и красный неон, который иногда мигает
+        const on = hash(Math.floor(t * 7)) > 0.12 && !(wrap(t, 9) < 0.35 && hash(Math.floor(t * 20) + 3) < 0.6);
+        if (on) { const g = cx.createRadialGradient(w * 0.12, h * 0.22, 0, w * 0.12, h * 0.22, Math.max(w, h) * 0.5); g.addColorStop(0, "rgba(220,60,50,.10)"); g.addColorStop(1, "rgba(220,60,50,0)"); cx.fillStyle = g; cx.fillRect(0, 0, w, h); }
+        cx.lineWidth = 1;
+        for (let i = 0; i < 55; i++) {
+          const sp = 380 + hash(i + 50) * 260, len = 10 + hash(i + 7) * 14;
+          const y = wrap(hash(i + 100) * h + t * sp, h + 40) - 20, x = wrap(hash(i) * w - y * 0.18, w);
+          cx.strokeStyle = col(0.05 + 0.07 * hash(i + 200)); cx.beginPath(); cx.moveTo(x, y); cx.lineTo(x - len * 0.18, y - len); cx.stroke();
+        }
+        break; }
+      case "bubbles": // тёплая вода: блики и пузырьки вверх
+        glow(w * (0.3 + 0.1 * Math.sin(t * 0.11)), h * 0.85, w * 0.6, 0.045);
+        glow(w * (0.75 + 0.1 * Math.cos(t * 0.09)), h * 0.7, w * 0.5, 0.035);
+        cx.lineWidth = 1;
+        for (let i = 0; i < 24; i++) {
+          const sp = 10 + hash(i + 50) * 22, r = 1.2 + hash(i + 400) * 3;
+          const y = wrap(hash(i + 100) * h - t * sp, h + 20) - 10, x = hash(i) * w + Math.sin(t * 1.2 + i) * 4;
+          cx.strokeStyle = col(0.10 + 0.14 * hash(i + 200)); cx.beginPath(); cx.arc(x, y, r, 0, 6.2832); cx.stroke();
+        }
+        break;
+      case "fog": // туман: большие мягкие пятна плывут слоями
+        for (let i = 0; i < 7; i++) {
+          const x = wrap(hash(i) * w * 1.6 + t * (4 + hash(i + 5) * 6) * (i % 2 ? 1 : -1), w * 1.6) - w * 0.3;
+          glow(x, h * (0.2 + hash(i + 30) * 0.7), w * (0.35 + hash(i + 60) * 0.3), 0.05 + 0.03 * Math.sin(t * 0.2 + i));
+        }
+        break;
+      case "bokeh": // окна и фонари не в фокусе
+        for (let i = 0; i < 13; i++) {
+          const x = wrap(hash(i) * w + t * (1.5 + hash(i + 5) * 3), w + 80) - 40, y = h * (0.15 + hash(i + 100) * 0.8);
+          dot(x, y, 8 + hash(i + 400) * 26, 0.025 + 0.03 * (0.5 + 0.5 * Math.sin(t * 0.4 + i * 2)));
+        }
+        break;
+      case "night": // ночь у заводи: звёзды и рябь у нижнего края
+        for (let i = 0; i < 70; i++) {
+          const a = 0.12 + 0.25 * (0.5 + 0.5 * Math.sin(t * (0.4 + hash(i + 9)) + i));
+          cx.fillStyle = col(a * 0.7); cx.fillRect(hash(i) * w, hash(i + 300) * h * 0.55, 1.2, 1.2);
+        }
+        cx.lineWidth = 1;
+        for (let i = 0; i < 4; i++) {
+          const y0 = h * (0.84 + i * 0.04); cx.strokeStyle = col(0.05); cx.beginPath();
+          for (let x = 0; x <= w; x += 10) { const y = y0 + Math.sin(x * 0.02 + t * 0.4 + i) * 1.5; if (x === 0) cx.moveTo(x, y); else cx.lineTo(x, y); }
+          cx.stroke();
+        }
+        break;
+      case "seam": { // шов: вертикальная щель света, пульсирует; к ней тянутся пылинки
+        const sx = w * 0.5, a = 0.06 + 0.035 * Math.sin(t * 0.7);
+        const g = cx.createLinearGradient(sx - 60, 0, sx + 60, 0); g.addColorStop(0, col(0)); g.addColorStop(0.5, col(a)); g.addColorStop(1, col(0));
+        cx.fillStyle = g; cx.fillRect(sx - 60, 0, 120, h);
+        for (let i = 0; i < 26; i++) {
+          const k = wrap(t * (0.03 + hash(i + 5) * 0.04) + hash(i), 1), side = hash(i + 9) > 0.5 ? 1 : -1;
+          dot(sx + side * (1 - k) * w * 0.5, hash(i + 100) * h, 1 + hash(i + 400), 0.2 * k);
+        }
+        break; }
+      case "dawn": { // финал: снизу медленно светлеет, звёзды гаснут
+        const k = Math.min(1, (t - fxSince) / 50);
+        const g = cx.createLinearGradient(0, h, 0, h * 0.35); g.addColorStop(0, col(0.05 + 0.09 * k)); g.addColorStop(1, col(0)); cx.fillStyle = g; cx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 40; i++) { cx.fillStyle = `rgba(233,228,218,${(0.3 * (1 - k)) * (0.5 + 0.5 * Math.sin(t + i))})`; cx.fillRect(hash(i) * w, hash(i + 300) * h * 0.45, 1.1, 1.1); }
+        break; }
+      case "ash": // тупик: пепел, почти не двигается
+        for (let i = 0; i < 36; i++) {
+          const x = wrap(hash(i) * w + Math.sin(t * 0.15 + i) * 10, w), y = wrap(hash(i + 100) * h + t * (1 + hash(i + 20) * 2.5), h);
+          cx.fillStyle = col(0.07 + 0.10 * hash(i + 200)); const s = 0.8 + hash(i + 400) * 1.6; cx.fillRect(x, y, s, s);
+        }
+        break;
+      default: // прежняя пыль (на всякий случай: жизнь без своего фона)
+        for (let i = 0; i < 46; i++) {
+          const sp = 6 + hash(i + 50) * 14;
+          const x = (hash(i) * w + t * sp * (hash(i + 7) > 0.5 ? 1 : -1) + w * 10) % w;
+          const y = (hash(i + 100) * h + t * (3 + hash(i + 20) * 6)) % h;
+          cx.fillStyle = col(0.05 + 0.12 * hash(i + 200) * (0.6 + 0.4 * Math.sin(t + i)));
+          const s = 0.8 + hash(i + 400) * 1.8; cx.fillRect(x, y, s, s);
+        }
     }
   }
   addEventListener("resize", resize);

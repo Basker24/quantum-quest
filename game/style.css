@@ -660,17 +660,27 @@ body[data-era="future"] .choice { border-radius: 14px; }
 .choice.mem-fold { color: #8fd3ff; }
 .choice.lock-fold { color: var(--dim); }
 
-/* тон жизни: едва заметная подсветка фона, у каждой жизни своя */
-body[data-life] { background-attachment: fixed; }
-body[data-life="В1"], body[data-life="В1.2"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(110,90,60,.10), transparent 60%); }   /* угольная пыль, лампа */
-body[data-life="В2"], body[data-life="В2.1"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(120,170,210,.08), transparent 60%); } /* лаборатория, экран */
-body[data-life="В2.2"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(80,120,118,.10), transparent 60%); }                       /* Томь, набережная */
-body[data-life="В3"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(150,170,180,.08), transparent 60%); }                       /* снег, гольцы */
-body[data-life="В4"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(150,40,40,.09), transparent 60%); }                         /* ночной город, давление */
-body[data-life="В5"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(40,130,140,.10), transparent 60%); }                        /* тёплая вода */
-body[data-life="В6"] { background-image: radial-gradient(140% 90% at 50% 50%, rgba(160,160,170,.07), transparent 70%); }                        /* туман */
-body[data-life="В7"] { background-image: radial-gradient(120% 70% at 50% 110%, rgba(217,164,65,.08), transparent 60%); }                        /* домашний свет */
-body[data-life="Я"], body[data-life="Ф"], body[data-life="К"] { background-image: radial-gradient(120% 70% at 50% -10%, rgba(188,214,255,.07), transparent 60%); } /* комета */
+/* ===== оформление жизней (автор, 28.11): у каждой ветки своя палитра и свой тихий фон =====
+   --accent — акцент (даты, кнопки, метки), --bg — фон страницы, --fx — цвет частиц фоновой анимации (r,g,b),
+   --glow — подсветка снизу/сверху. Анимация — в engine.js (LIFE_FX). Эпоха фото (data-era) акцент не трогает,
+   пока идёт жизнь: правила ниже стоят позже и выигрывают. */
+body[data-life] { background-attachment: fixed; transition: background-color 1.2s ease; }
+body[data-life="Т"]    { --accent: #d9a441; --bg: #0f0d0b; --fx: 255,244,222; background-image: radial-gradient(120% 70% at 50% 115%, rgba(217,164,65,.10), transparent 60%); }  /* лето 96-го: тополиный пух, натриевый фонарь */
+body[data-life="В1"]   { --accent: #e3b45a; --bg: #0c0b09; --fx: 150,140,125; background-image: radial-gradient(90% 60% at 50% -15%, rgba(255,214,140,.09), transparent 60%); }  /* шахта: угольная пыль, луч каски */
+body[data-life="В1.2"] { --accent: #cf9a4a; --bg: #0d0c0a; --fx: 160,148,128; background-image: radial-gradient(120% 70% at 50% 115%, rgba(160,120,70,.10), transparent 60%); }  /* участок: та же шахта, но сверху */
+body[data-life="В2"]   { --accent: #7fb6d0; --bg: #0a0d10; --fx: 140,205,235;  background-image: radial-gradient(120% 70% at 50% -10%, rgba(120,175,215,.10), transparent 60%); } /* «Протокол»: лаборатория, ЭЭГ */
+body[data-life="В2.1"] { --accent: #a3a8ee; --bg: #0c0b12; --fx: 170,170,250;  background-image: radial-gradient(90% 60% at 85% 0%, rgba(150,150,240,.10), transparent 60%); }   /* «Удача»: антенна, радиоволны */
+body[data-life="В2.2"] { --accent: #79aba6; --bg: #0a0e0e; --fx: 120,180,175;  background-image: radial-gradient(120% 70% at 50% 115%, rgba(80,130,125,.12), transparent 60%); }  /* «Отказ»: Томь, набережная */
+body[data-life="В3"]   { --accent: #b1cadb; --bg: #0b0e11; --fx: 225,235,245;  background-image: radial-gradient(120% 70% at 50% -10%, rgba(170,195,215,.09), transparent 60%); } /* «Партия»: снег, гольцы, Якутия */
+body[data-life="В4"]   { --accent: #d0603f; --bg: #100b0b; --fx: 190,200,215;  background-image: radial-gradient(120% 70% at 50% 115%, rgba(170,45,40,.11), transparent 60%); }   /* «Барабан»: дождь, неон, давление */
+body[data-life="В5"]   { --accent: #5cc2b3; --bg: #081012; --fx: 170,235,230;  background-image: radial-gradient(120% 70% at 50% 115%, rgba(40,150,150,.13), transparent 60%); }  /* «Куда угодно»: тёплое море */
+body[data-life="В6"]   { --accent: #bdb7cf; --bg: #0e0e10; --fx: 200,200,215;  background-image: radial-gradient(140% 90% at 50% 50%, rgba(170,170,185,.07), transparent 70%); }  /* «Хор»: туман, тайга, голоса */
+body[data-life="В7"]   { --accent: #e6aa58; --bg: #0f0d0b; --fx: 255,200,130;  background-image: radial-gradient(120% 70% at 50% 115%, rgba(230,170,90,.10), transparent 60%); }  /* «Обычная жизнь»: окна, домашний свет */
+body[data-life="Я"], body[data-life="П2"] { --accent: #bcd6ff; --bg: #0a0b10; --fx: 220,232,255; background-image: radial-gradient(120% 70% at 50% -10%, rgba(188,214,255,.09), transparent 60%); } /* якорь: ночь, комета, заводь */
+body[data-life="П1"], body[data-life="П4"] { --accent: #d6c6a2; --bg: #0f0e0c; --fx: 245,235,210; background-image: radial-gradient(120% 70% at 50% 115%, rgba(200,180,140,.09), transparent 60%); } /* остаться в 96-м: сепия, пух */
+body[data-life="П3"]   { --accent: #e4ecff; --bg: #0b0b0f; --fx: 225,235,255;  background-image: radial-gradient(40% 100% at 50% 50%, rgba(200,215,255,.07), transparent 70%); }  /* «Шов»: свет в щели */
+body[data-life="Ф"]    { --accent: #f0c27a; --bg: #0e0c0c; --fx: 255,215,160;  background-image: radial-gradient(130% 80% at 50% 120%, rgba(240,170,110,.13), transparent 62%); } /* финал: рассвет */
+body[data-life="К"]    { --accent: #9a948a; --bg: #0d0d0d; --fx: 160,156,150;  background-image: none; }  /* тупик: пепел, всё остыло */
 
 /* мини-карта схемы */
 .flow-mini { position: absolute; right: 12px; bottom: 12px; z-index: 2; overflow: hidden; padding: 4px; opacity: .9;
