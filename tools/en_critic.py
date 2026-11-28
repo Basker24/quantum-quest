@@ -31,7 +31,7 @@ REVIEW = EN_DOCS / "review"
 MODELS = ["gpt-5.5-pro", "gpt-5.5"]
 
 BRIEF = """You are a demanding English-language literary editor and a native speaker reviewing a translation
-(an adaptation, not a crib) of a Russian branching text game, "Black Backwater" (working title).
+(an adaptation, not a crib) of a Russian branching text game, "The One Who Stayed".
 First person, present tense, a boy from Kemerovo (the Kuzbass coal region of Siberia) who drowns at
 seven in 1996 and keeps living; every age has its own voice, plus short dry italic asides from himself
 at 72 in 2061 (paragraphs starting with "> "). Lines starting with "! " are interface notes.
