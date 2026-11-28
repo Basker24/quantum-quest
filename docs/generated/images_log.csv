@@ -209,3 +209,8 @@ id,time,kind,model,quality,size,status,file,refs,tokens,input_tokens,output_toke
 Ф-06,2026-11-28T04:23:49,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-06.jpg,,1710,338,1372
 Ф-07,2026-11-28T04:24:17,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-07.jpg,,1705,333,1372
 Ф-08,2026-11-28T04:24:45,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-08.jpg,,1725,353,1372
+Ф-09,2026-11-28T04:25:13,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-09.jpg,,1697,325,1372
+Ф-10,2026-11-28T04:25:42,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-10.jpg,,1694,322,1372
+Ф-11,2026-11-28T04:26:11,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-11.jpg,the white hand-shaped snag,3307,1935,1372
+Ф-12,2026-11-28T04:26:36,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-12.jpg,,1717,345,1372
+Ф-13,2026-11-28T04:27:04,scene,gpt-image-2,medium,1536x1024,ok,game/img/Ф-13.jpg,,1713,341,1372
