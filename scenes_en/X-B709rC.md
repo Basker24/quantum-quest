@@ -7,7 +7,7 @@ stihia: ЛЮДИ
 lesson: In Yurga, a Niva backs up
 epitaph: Age 44. Yurga, the highway gas station. Was standing at the pump with a coffee, waiting for his daughter.
 mourner: Varya pulled into the gas station a minute later and saw her father's car at the pump. Later my wife found a map on his phone with marks all along the highway, and until she was an old woman she wondered what he'd been looking for.
-src_sha: e5d98e69f40a
+src_sha: e6e0796518c1
 ---
 In Yurga I pull into the gas station and buy coffee in a paper cup, the way Varya would. I stand with it by the pump, outside, because it's stuffy in the car. The coffee is hot, and I blow on it.
 
