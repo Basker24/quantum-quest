@@ -2744,7 +2744,8 @@
   function itemCaption(fid) {
     if (!itemOpen(fid)) return "ещё не прожито";
     if (fid === "⊣") { const all = ENDS().filter((id) => id.startsWith("⊣")); return `${ITEM_NAME[fid]} · тупики: ${all.filter((id) => meta.visited[id]).length} из ${all.length}`; }
-    return `${ITEM_NAME[fid]} · «${(G.scenes[fid] && G.scenes[fid].title) || fid}»`;
+    const q = window.QQ_LANG === "en" ? ["“", "”"] : ["«", "»"];
+    return `${ITEM_NAME[fid]} · ${q[0]}${(G.scenes[fid] && G.scenes[fid].title) || fid}${q[1]}`;
   }
   function openItem(fid) {
     if (!itemOpen(fid)) return false;
