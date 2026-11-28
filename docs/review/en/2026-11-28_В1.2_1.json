@@ -5,315 +5,362 @@
    "find": "still without a diploma, in my last year of correspondence school.",
    "replace": "still without a diploma, in my final year as a correspondence student.",
    "kind": "калька",
-   "why": "“correspondence school” sounds like a separate school, not заочка at an institute."
+   "why": "“correspondence school” sounds like a separate school, not заочка at an institute.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "a desk in the assignment room, by the window, where you can see the headframe.",
    "replace": "a desk in the shift office, by the window, where you can see the headframe.",
    "kind": "калька",
-   "why": "“assignment room” is a literal калька; “shift office” reads naturally in the mine context."
+   "why": "“assignment room” is a literal калька; “shift office” reads naturally in the mine context.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "who goes where, on what job, how many meters.",
    "replace": "who goes where, to do what, how many meters.",
    "kind": "сочетаемость",
-   "why": "“on what job” is unidiomatic here."
+   "why": "“on what job” is unidiomatic here.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "two kids in paid colleges in Kemerovo.",
    "replace": "two kids in Kemerovo colleges, both paying tuition.",
    "kind": "сочетаемость",
-   "why": "“paid colleges” sounds as if the colleges are paid/employed; the point is tuition."
+   "why": "“paid colleges” sounds as if the colleges are paid/employed; the point is tuition.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "Your Vitka's paying off a loan on his Lada.",
    "replace": "Your Vitka's paying off a loan on his Lada Nine.",
    "kind": "смысл",
-   "why": "Glossary keeps девятка as Lada Nine; plain Lada loses the specific realia."
+   "why": "Glossary keeps девятка as Lada Nine; plain Lada loses the specific realia.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "It can only show me, too.",
    "replace": "It only knows how to show things, too.",
    "kind": "калька",
-   "why": "The original echoes “I’m just showing you”; the English sentence is too cramped and unclear."
+   "why": "The original echoes “I’m just showing you”; the English sentence is too cramped and unclear.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "Vitka comes into the assignment room for his lamp, sees the bag and whistles.",
    "replace": "Vitka comes into the shift office for his lamp, sees the bag and whistles.",
    "kind": "калька",
-   "why": "Same нарядная issue: “shift office” is idiomatic."
+   "why": "Same нарядная issue: “shift office” is idiomatic.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "At the face he pulls it over the sensor and winds the tape, three turns, like a bandage.",
    "replace": "At the face he pulls it over the sensor and wraps the tape around it, three turns, like a bandage.",
    "kind": "сочетаемость",
-   "why": "You wrap tape around something; “winds the tape” is missing the object."
+   "why": "You wrap tape around something; “winds the tape” is missing the object.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "From that bag on, everything went for me, as they say in the mine, on a level floor.",
    "replace": "From that bag on, as they say underground, I had level ground under me.",
    "kind": "калька",
-   "why": "“everything went… on a level floor” is a literal translation that does not work as English."
+   "why": "“everything went… on a level floor” is a literal translation that does not work as English.",
+   "decision": "applied (edited)",
+   "replace_final": "From that bag on, as they say underground, it was level going for me."
   },
   {
    "file": "B1-2-00.md",
    "find": "They haven't made me section chief yet that year, and that's worse than swearing.",
    "replace": "Back then I'm not section chief yet, and that makes it worse than swearing.",
    "kind": "логика",
-   "why": "Present perfect plus “that year” is ungrammatical; present-tense narration can carry “back then.”"
+   "why": "Present perfect plus “that year” is ungrammatical; present-tense narration can carry “back then.”",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "I say with the institute, by correspondence.",
    "replace": "I say I'm enrolled, by correspondence.",
    "kind": "калька",
-   "why": "“with the institute” is a direct Russian construction, not English."
+   "why": "“with the institute” is a direct Russian construction, not English.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-00.md",
    "find": "carries his pork fat to work in it.",
    "replace": "carries his salt pork to the shift in it.",
    "kind": "сочетаемость",
-   "why": "“pork fat” is too raw/literal for сало in this context; “to the shift” also fits mine speech better."
+   "why": "“pork fat” is too raw/literal for сало in this context; “to the shift” also fits mine speech better.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "Palych lay down on the rail at meter one hundred.",
    "replace": "Palych lay down on the rail at the hundred-meter mark.",
    "kind": "калька",
-   "why": "“at meter one hundred” is Russian word order; “hundred-meter mark” is natural English."
+   "why": "“at meter one hundred” is Russian word order; “hundred-meter mark” is natural English.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "That night I sat at the dispatcher's on the intercom, counting tags.",
    "replace": "That night I sat in the dispatcher's room at the intercom, counting tags.",
    "kind": "калька",
-   "why": "“at the dispatcher’s” is an unidiomatic calque."
+   "why": "“at the dispatcher’s” is an unidiomatic calque.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "The door at the crosscut has been open for six days, propped with a prop, so they can haul timber faster.",
    "replace": "The door at the crosscut has been open for six days, held open with a roof prop, so they can haul timber faster.",
    "kind": "сочетаемость",
-   "why": "“propped with a prop” is clumsy repetition."
+   "why": "“propped with a prop” is clumsy repetition.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "somebody's propped it with a prop to haul timber faster.",
    "replace": "somebody's wedged it open with a roof prop to haul timber faster.",
    "kind": "сочетаемость",
-   "why": "Avoids the same awkward repetition and clarifies the action."
+   "why": "Avoids the same awkward repetition and clarifies the action.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "The cold behind my ear stands still, like water in a barrel.",
    "replace": "The chill behind my ear stands still, like water in a barrel.",
    "kind": "смысл",
-   "why": "Glossary term for холодок is “the chill,” not “the cold.”"
+   "why": "Glossary term for холодок is “the chill,” not “the cold.”",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "The door is propped with a prop.",
    "replace": "The door is held open with a roof prop.",
    "kind": "сочетаемость",
-   "why": "Again, “propped with a prop” sounds accidentally comic."
+   "why": "Again, “propped with a prop” sounds accidentally comic.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "I run along the drift, over the sleepers, in my self-rescuer, counting sleepers so I won't count minutes.",
    "replace": "I run along the drift, over the rail ties, in my self-rescuer, counting ties so I won't count minutes.",
    "kind": "регистр",
-   "why": "American spelling/style guide: “sleepers” is British; “rail ties” is clearer for a broad EN reader."
+   "why": "American spelling/style guide: “sleepers” is British; “rail ties” is clearer for a broad EN reader.",
+   "decision": "rejected"
   },
   {
    "file": "B1-2-01.md",
    "find": "At the six hundredth sleeper smoke starts coming toward me, clear at first, then yellow.",
    "replace": "At the six hundredth tie smoke starts coming toward me, clear at first, then yellow.",
    "kind": "регистр",
-   "why": "Keeps terminology consistent with the previous fix."
+   "why": "Keeps terminology consistent with the previous fix.",
+   "decision": "rejected"
   },
   {
    "file": "B1-2-01.md",
    "find": "The smoke is still standing in the drift, but no new smoke is coming.",
    "replace": "The smoke is still hanging in the drift, but no new smoke is coming.",
    "kind": "калька",
-   "why": "Smoke “hangs” in English; “stands” is Russian interference."
+   "why": "Smoke “hangs” in English; “stands” is Russian interference.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "He swallowed carbon monoxide while helping a young guy with his self-rescuer.",
    "replace": "He breathed in carbon monoxide while helping a young guy with his self-rescuer.",
    "kind": "сочетаемость",
-   "why": "You inhale/breathe in carbon monoxide, not swallow it."
+   "why": "You inhale/breathe in carbon monoxide, not swallow it.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "the third stall, the switch, the distribution point.",
    "replace": "the third recess, the switch, the distribution point.",
    "kind": "смысл",
-   "why": "Ниша in a mine passage is a recess/niche, not a stall."
+   "why": "Ниша in a mine passage is a recess/niche, not a stall.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-01.md",
    "find": "I climb down along the frame to the walkway like off a stove.",
    "replace": "I climb down along the frame to the walkway, slow and careful.",
    "kind": "калька",
-   "why": "“like off a stove” is opaque in English and distracts from the action."
+   "why": "“like off a stove” is opaque in English and distracts from the action.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "The Glubokaya was closed in '26.",
    "replace": "The Glubokaya mine was closed in '26.",
    "kind": "смысл",
-   "why": "Glossary form is “the Glubokaya mine”; otherwise the name hangs unclear."
+   "why": "Glossary form is “the Glubokaya mine”; otherwise the name hangs unclear.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "and this spoil heap is mine, by order, with a stamp.",
    "replace": "and this spoil heap is mine under an order with an official stamp on it.",
    "kind": "калька",
-   "why": "“by order, with a stamp” is too literal; the legal-bureaucratic sense needs idiomatic English."
+   "why": "“by order, with a stamp” is too literal; the legal-bureaucratic sense needs idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "he said three sentences to me, one per breath:",
    "replace": "he said three things to me, one per breath:",
    "kind": "сочетаемость",
-   "why": "“Three sentences” sounds grammatical/clinical; “three things” matches the Russian force better."
+   "why": "“Three sentences” sounds grammatical/clinical; “three things” matches the Russian force better.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "and his voice is torn, like in '96.",
    "replace": "and his voice is raw, like in '96.",
    "kind": "калька",
-   "why": "A voice is “raw” or “hoarse” in English; “torn” is a literal Russian image."
+   "why": "A voice is “raw” or “hoarse” in English; “torn” is a literal Russian image.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "by the fence with the sign \"DANGER! BURNING WASTE DUMP,\"",
    "replace": "by the fence with the sign \"DANGER! BURNING SPOIL HEAP,\"",
    "kind": "смысл",
-   "why": "“Waste dump” suggests a landfill; this is a mining spoil heap."
+   "why": "“Waste dump” suggests a landfill; this is a mining spoil heap.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "and under it nothing, and in that nothing it's six hundred degrees.",
    "replace": "and under it is empty space, six hundred degrees hot.",
    "kind": "калька",
-   "why": "The literal repetition of “nothing” is awkward in English."
+   "why": "The literal repetition of “nothing” is awkward in English.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "Dare you, don't dare you. In our yard that word drowned more kids than the current ever did.",
    "replace": "Chicken, not chicken. In our yard that word drowned more kids than the current ever did.",
    "kind": "регистр",
-   "why": "“Dare you, don’t dare you” is not what boys would say; “chicken” carries the dare."
+   "why": "“Dare you, don’t dare you” is not what boys would say; “chicken” carries the dare.",
+   "decision": "applied (edited)",
+   "replace_final": "\"Bet you can't.\" In our yard those words drowned more kids than the current ever did."
   },
   {
    "file": "B1-2-02.md",
    "find": "and heat blasts out like from a stove when you open the damper.",
    "replace": "and heat blasts out as if from a stove when you open the damper.",
    "kind": "сочетаемость",
-   "why": "“like from” is ungrammatical here."
+   "why": "“like from” is ungrammatical here.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "He grabs me with both hands, and I carry him down in my own tracks,",
    "replace": "He clings to me with both hands, and I carry him down along my own tracks,",
    "kind": "сочетаемость",
-   "why": "“Clings” fits вцепляется; “in my own tracks” is not idiomatic for the route."
+   "why": "“Clings” fits вцепляется; “in my own tracks” is not idiomatic for the route.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "Look at your feet.",
    "replace": "Look down at your feet.",
    "kind": "сочетаемость",
-   "why": "Natural command in this situation; the Russian means look under/down at them."
+   "why": "Natural command in this situation; the Russian means look under/down at them.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "You won't help him, you'll go through,",
    "replace": "You won't help him, you'll break through,",
    "kind": "смысл",
-   "why": "The danger is breaking through the crust, not just “going through” in the abstract."
+   "why": "The danger is breaking through the crust, not just “going through” in the abstract.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-02.md",
    "find": "I go around the slope from the river side, into the wind, watching my feet.",
    "replace": "I go around the slope from the river side, into the wind, watching where I step.",
    "kind": "сочетаемость",
-   "why": "English idiom is “watch where I step,” not “watch my feet.”"
+   "why": "English idiom is “watch where I step,” not “watch my feet.”",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "a sweater that costs as much as my Patriot SUV.",
    "replace": "a sweater that costs as much as my UAZ Patriot SUV.",
    "kind": "смысл",
-   "why": "“Patriot SUV” can read as generic/Western; the Russian realia is the UAZ Patriot."
+   "why": "“Patriot SUV” can read as generic/Western; the Russian realia is the UAZ Patriot.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "At the bottom, a line for the chief engineer's signature. Mine.",
    "replace": "At the bottom is a line for the chief engineer's signature: mine.",
    "kind": "ритм",
-   "why": "The one-word dramatic sentence is an AI-ish beat; the colon is cleaner and drier."
+   "why": "The one-word dramatic sentence is an AI-ish beat; the colon is cleaner and drier.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "and money the new owners won't give for it.",
    "replace": "and money the new owners won't spend on it.",
    "kind": "сочетаемость",
-   "why": "In English owners spend money on work; they don’t “give money for it” in this context."
+   "why": "In English owners spend money on work; they don’t “give money for it” in this context.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "\"The Kuzbass directorship opens up in January,\" says Arseny Olegovich, looking out the window.",
    "replace": "\"The Kuzbass director's post opens up in January,\" says Arseny Olegovich, looking out the window.",
    "kind": "канцелярит",
-   "why": "“Directorship” is stiff and vague; he is offering a конкретная должность."
+   "why": "“Directorship” is stiff and vague; he is offering a конкретная должность.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "the way people ask \"So, had the baby?\"",
    "replace": "the way people ask, \"So, have the baby yet?\"",
    "kind": "сочетаемость",
-   "why": "The colloquial English version of ну, родила? needs present perfect/“yet.”"
+   "why": "The colloquial English version of ну, родила? needs present perfect/“yet.”",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "Tanya is a caretaker at the museum on Krasnaya Gorka now;",
    "replace": "Tanya works as a museum attendant on Krasnaya Gorka now;",
    "kind": "смысл",
-   "why": "“Caretaker” suggests janitorial/building care; смотрительница is an attendant."
+   "why": "“Caretaker” suggests janitorial/building care; смотрительница is an attendant.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "and counts them back in by heads.",
    "replace": "and collects them afterward, counting heads.",
    "kind": "калька",
-   "why": "“By heads” is Russian interference; the action is counting children/helmets as they return."
+   "why": "“By heads” is Russian interference; the action is counting children/helmets as they return.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "\"Put it out,\" he says. I say I put it out.",
    "replace": "\"You put it out,\" he says. I say I did.",
    "kind": "смысл",
-   "why": "«Потушил» is a statement of completion, not an imperative."
+   "why": "«Потушил» is a statement of completion, not an imperative.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-03.md",
    "find": "and in winter the snow won't lie on it.",
    "replace": "and in winter snow doesn't lie on it.",
    "kind": "сочетаемость",
-   "why": "For habitual physical fact, English wants present simple; “won’t lie” sounds like prediction or refusal."
+   "why": "For habitual physical fact, English wants present simple; “won’t lie” sounds like prediction or refusal.",
+   "decision": "applied"
   }
  ],
  "verdict": "Партия в целом сильная: техническая среда читается, взрослый голос держится сухо, важные развилки понятны. Чаще всего мешают буквальные русские конструкции (“with the institute,” “by heads,” “at meter one hundred”), шероховатая сочетаемость в бытовых фразах и отдельные потери реалий/глоссария вроде Lada Nine, UAZ Patriot и the chill. Самые опасные смысловые сбои — там, где английская фраза меняет модальность: “Put it out” как приказ вместо признания, “go through” вместо провалиться сквозь корку.",

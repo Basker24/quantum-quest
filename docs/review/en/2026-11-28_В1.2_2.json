@@ -5,182 +5,210 @@
    "find": "where the buoys used to stand.",
    "replace": "where the river markers used to stand.",
    "kind": "сочетаемость",
-   "why": "Buoys don't “stand” in English; this reads like a literal transfer from бакены."
+   "why": "Buoys don't “stand” in English; this reads like a literal transfer from бакены.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "On TV scientists spread their hands over the backwater: all the water has gone, and this stays.",
    "replace": "On TV scientists throw up their hands at the backwater: all the water is gone, but this one is still there.",
    "kind": "калька",
-   "why": "“Spread their hands” is a Russian gesture calque; “this stays” is also too literal."
+   "why": "“Spread their hands” is a Russian gesture calque; “this stays” is also too literal.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "I see it from Tanya's window every morning, and every morning I put my palm to the glass, like to a stove.",
    "replace": "I see it from Tanya's window every morning, and every morning I put my palm to the glass as if it were a stove.",
    "kind": "калька",
-   "why": "“Like to a stove” is not idiomatic English."
+   "why": "“Like to a stove” is not idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "since the Tom went",
    "replace": "since the Tom ran dry",
    "kind": "смысл",
-   "why": "The point is that the river dried up; “went” is too vague and calqued."
+   "why": "The point is that the river dried up; “went” is too vague and calqued.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "seventy-two was never",
    "replace": "seventy-two was never going to happen",
    "kind": "калька",
-   "why": "“Это же никогда” needs an idiomatic English equivalent."
+   "why": "“Это же никогда” needs an idiomatic English equivalent.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "and all these years she's charged it once a month, she doesn't know why herself.",
    "replace": "and all these years she's charged it once a month without knowing why.",
    "kind": "калька",
-   "why": "The tail phrase is a Russian word order/calque."
+   "why": "The tail phrase is a Russian word order/calque.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "I charge it once a month, I don't know why myself.",
    "replace": "I charge it once a month. I don't know why.",
    "kind": "калька",
-   "why": "“I don't know why myself” is a literal Russian construction."
+   "why": "“I don't know why myself” is a literal Russian construction.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "About myself tomorrow I knew nothing.",
    "replace": "What would happen to me tomorrow, I didn't know.",
    "kind": "калька",
-   "why": "The current sentence is unidiomatic and too literal."
+   "why": "The current sentence is unidiomatic and too literal.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "I lock the door with one turn.",
    "replace": "I turn the lock once.",
    "kind": "калька",
-   "why": "“На один оборот” has been carried over too mechanically."
+   "why": "“На один оборот” has been carried over too mechanically.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "I go down to the riverbed by the old fishermen's stairs; the steps lead nowhere now, onto white stones, and I walk over the stones like over sleepers, counting.",
    "replace": "I go down to the riverbed by the old fishermen's stairs; the steps lead nowhere now, onto white stones, and I walk over them as if they were railroad ties, counting.",
    "kind": "сочетаемость",
-   "why": "“Like over sleepers” is unidiomatic, and “sleepers” is British for this American-spelled adaptation."
+   "why": "“Like over sleepers” is unidiomatic, and “sleepers” is British for this American-spelled adaptation.",
+   "decision": "failed: find встречается 0 раз"
   },
   {
    "file": "B1-2-04.md",
    "find": "Sonka answers on the third ring, though in Moscow it's past eleven at night and here it's four in the morning.",
    "replace": "Sonka answers on the third ring, though it's past eleven at night in Moscow and after three in the morning here.",
    "kind": "смысл",
-   "why": "«Четвёртый час утра» is after three, not necessarily four o'clock."
+   "why": "«Четвёртый час утра» is after three, not necessarily four o'clock.",
+   "decision": "applied"
   },
   {
    "file": "B1-2-04.md",
    "find": "Go on already, you poor thing.",
    "replace": "Go on already, you little disaster.",
    "kind": "смысл",
-   "why": "«Горе луковое» is affectionate scolding, not pity."
+   "why": "«Горе луковое» is affectionate scolding, not pity.",
+   "decision": "applied (edited)",
+   "replace_final": "Go on already, you silly thing."
   },
   {
    "file": "X-B121A.md",
    "find": "I see the drum whole, in the light of my lamp, wet, black, turning evenly and not fast.",
    "replace": "In the beam of my lamp I can see the whole drum, wet and black, turning steadily, not fast.",
    "kind": "калька",
-   "why": "“I see the drum whole” and “turning evenly” are literal and stiff."
+   "why": "“I see the drum whole” and “turning evenly” are literal and stiff.",
+   "decision": "applied"
   },
   {
    "file": "X-B121A.md",
    "find": "My lamp hits the roof, and the roof spins.",
    "replace": "The beam from my lamp hits the roof, and the roof spins.",
    "kind": "смысл",
-   "why": "The Russian means the lamp light strikes the mine roof; the English sounds like the physical lamp hits it."
+   "why": "The Russian means the lamp light strikes the mine roof; the English sounds like the physical lamp hits it.",
+   "decision": "applied"
   },
   {
    "file": "X-B122A.md",
    "find": "At the twentieth step",
    "replace": "On the twentieth step",
    "kind": "сочетаемость",
-   "why": "English counts steps with “on,” not “at,” in this context."
+   "why": "English counts steps with “on,” not “at,” in this context.",
+   "decision": "applied"
   },
   {
    "file": "X-B122A.md",
    "find": "My pant leg flares up, my boot runs.",
    "replace": "My pant leg flares up, and the rubber of my boot starts to run.",
    "kind": "сочетаемость",
-   "why": "Molten rubber can run; “my boot runs” sounds comic/wrong."
+   "why": "Molten rubber can run; “my boot runs” sounds comic/wrong.",
+   "decision": "applied"
   },
   {
    "file": "X-B122A.md",
    "find": "The heat comes into my mouth, and I stop breathing before I understand I'm burning.",
    "replace": "Heat fills my mouth, and I stop breathing before I understand I'm burning.",
    "kind": "сочетаемость",
-   "why": "“Comes into my mouth” is too literal and weak for the physical moment."
+   "why": "“Comes into my mouth” is too literal and weak for the physical moment.",
+   "decision": "applied"
   },
   {
    "file": "X-B122A.md",
    "find": "The last thing I hear is Vitka shouting \"Yegor!\" down below.",
    "replace": "Down below, Vitka is shouting \"Yegor!\"",
    "kind": "тик",
-   "why": "“The last thing I hear” is a stock death-frame; the detail is stronger without it."
+   "why": "“The last thing I hear” is a stock death-frame; the detail is stronger without it.",
+   "decision": "rejected"
   },
   {
    "file": "X-B122A.md",
    "find": "\"DANGER! BURNING WASTE DUMP\"",
    "replace": "\"DANGER! BURNING SPOIL HEAP\"",
    "kind": "смысл",
-   "why": "This is a burning mining spoil heap, not a garbage dump."
+   "why": "This is a burning mining spoil heap, not a garbage dump.",
+   "decision": "applied"
   },
   {
    "file": "X-B122A.md",
    "find": "I look at my boot and wait for it to run.",
    "replace": "I look at my boot and wait for the rubber to start running.",
    "kind": "сочетаемость",
-   "why": "Again, the material runs, not the boot itself."
+   "why": "Again, the material runs, not the boot itself.",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "I go fast and right, like in a drill, and I'm glad I didn't run.",
    "replace": "I move fast and do it right, like in a drill, and I'm glad I didn't run.",
    "kind": "калька",
-   "why": "“Go fast and right” is a Russian construction, not natural English."
+   "why": "“Go fast and right” is a Russian construction, not natural English.",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "It lays the smoke from the upper cracks right on this slope, on me, and at first I hardly see it, just the smell, rotten, sweetish.",
    "replace": "It drives the smoke from the upper cracks straight onto this slope, onto me, and at first I hardly see it, just the smell, rotten, sweetish.",
    "kind": "сочетаемость",
-   "why": "Wind “laying” smoke is too literal here; “drives” keeps the action clear."
+   "why": "Wind “laying” smoke is too literal here; “drives” keeps the action clear.",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "Ten meters from Yegorka my knees give.",
    "replace": "Ten meters from Yegorka my knees give way.",
    "kind": "сочетаемость",
-   "why": "The idiom is “knees give way.”"
+   "why": "The idiom is “knees give way.”",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "\"DANGER! BURNING WASTE DUMP\"",
    "replace": "\"DANGER! BURNING SPOIL HEAP\"",
    "kind": "смысл",
-   "why": "This is a coal spoil heap, not a trash dump."
+   "why": "This is a coal spoil heap, not a trash dump.",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "My throat is raw, like after a pack of Primas on an empty stomach.",
    "replace": "My throat is raw, like after a pack of Prima cigarettes on an empty stomach.",
    "kind": "смысл",
-   "why": "Without the noun, the brand realia is needlessly opaque to an English reader."
+   "why": "Without the noun, the brand realia is needlessly opaque to an English reader.",
+   "decision": "applied"
   },
   {
    "file": "X-B122B.md",
    "find": "I tapped the crust right. I tapped the crust right, and it was the wind that killed me. It blew off the river and laid all the smoke on the slope I was climbing. I should have gone into the wind, from the river side, where the smoke is carried off the slope.",
    "replace": "I tested the crust properly. I tested the crust properly, but the wind killed me. It blew off the river and drove all the smoke onto the slope I was climbing. I should have gone up against the wind, from the river side, where the smoke is carried away from the slope.",
    "kind": "калька",
-   "why": "Several phrases here are literal Russian: “tapped right,” “it was the wind that,” “laid smoke,” “gone into the wind.”"
+   "why": "Several phrases here are literal Russian: “tapped right,” “it was the wind that,” “laid smoke,” “gone into the wind.”",
+   "decision": "applied (edited)",
+   "replace_final": "I tested the crust properly, but the wind killed me. It blew off the river and drove all the smoke onto the slope I was climbing. I should have gone up against the wind, from the river side, where the smoke is carried away from the slope."
   }
  ],
  "verdict": "В целом партия крепкая: рабочий голос взрослого Андрея держится, сцены смертей плотные и ясные. Чаще всего мешают русские кальки жестов и синтаксиса, неточные горняцкие/речные реалии вроде dump/buoys, а также несколько стандартных death-scene формул, которые лучше заменить конкретной деталью.",

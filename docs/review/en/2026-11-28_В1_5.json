@@ -5,294 +5,337 @@
    "find": "my helmet knocks against the props, tok, tok, like a stick along a fence.",
    "replace": "my helmet knocks against the props, knock, knock, like a stick dragged along a fence.",
    "kind": "калька",
-   "why": "English onomatopoeia and the simile need a verb; the original wording reads transliterated."
+   "why": "English onomatopoeia and the simile need a verb; the original wording reads transliterated.",
+   "decision": "applied"
   },
   {
    "file": "X-B102C.md",
    "find": "I stood that minute out next to Mikhalych, listening.",
    "replace": "I spent that minute standing next to Mikhalych, listening.",
    "kind": "калька",
-   "why": "Literal Russian word order/verb choice; this is the idiomatic English phrasing."
+   "why": "Literal Russian word order/verb choice; this is the idiomatic English phrasing.",
+   "decision": "applied"
   },
   {
    "file": "X-B102C.md",
    "find": "Seryoga by the drive, by the way, they dug out alive; I remember that too, from somewhere.",
    "replace": "By the way, they dug Seryoga out alive by the drive; I remember that too, from somewhere.",
    "kind": "калька",
-   "why": "The object-fronting is Russian syntax and sounds non-native here."
+   "why": "The object-fronting is Russian syntax and sounds non-native here.",
+   "decision": "applied"
   },
   {
    "file": "X-B102D.md",
    "find": "Behind us something sighs, and the coal comes down the face in a rustling wave.",
    "replace": "Behind us something sighs, and the coal comes along the face in a rustling wave.",
    "kind": "логика",
-   "why": "The coal is moving along the longwall, not downward over the face."
+   "why": "The coal is moving along the longwall, not downward over the face.",
+   "decision": "applied"
   },
   {
    "file": "X-B102D.md",
    "find": "Under the frame there's a hollow left, and he breathes in it.",
    "replace": "A hollow stays under the frame, and that's where he breathes.",
    "kind": "калька",
-   "why": "“There's a hollow left” is a literal, awkward construction."
+   "why": "“There's a hollow left” is a literal, awkward construction.",
+   "decision": "applied"
   },
   {
    "file": "X-B102D.md",
    "find": "Seryoga surviving wasn't a clue to anything; I made that up myself.",
    "replace": "The fact that Seryoga survived didn't tell me anything; I made that up myself.",
    "kind": "смысл",
-   "why": "“Clue” adds a gamey detective register; the Russian is plainer and more self-accusing."
+   "why": "“Clue” adds a gamey detective register; the Russian is plainer and more self-accusing.",
+   "decision": "applied"
   },
   {
    "file": "X-B103A.md",
    "find": "I run over the sleepers with the self-rescuer in my mouth.",
    "replace": "I run over the rail ties with the self-rescuer in my mouth.",
    "kind": "сочетаемость",
-   "why": "The text uses American spelling; “rail ties” is clearer for the target reader than British “sleepers.”"
+   "why": "The text uses American spelling; “rail ties” is clearer for the target reader than British “sleepers.”",
+   "decision": "rejected"
   },
   {
    "file": "X-B103A.md",
    "find": "I ran it in PE at college.",
    "replace": "I ran it in PE at technical school.",
    "kind": "смысл",
-   "why": "“Техникум” is not generic college; this also keeps the social setting sharper."
+   "why": "“Техникум” is not generic college; this also keeps the social setting sharper.",
+   "decision": "applied"
   },
   {
    "file": "X-B103A.md",
    "find": "Down here every sleeper is higher than the last.",
    "replace": "Down here every tie is higher than the last.",
    "kind": "сочетаемость",
-   "why": "Keeps the rail-term change consistent."
+   "why": "Keeps the rail-term change consistent.",
+   "decision": "rejected"
   },
   {
    "file": "X-B103A.md",
    "find": "At four hundred meters I start counting sleepers so I won't count breaths.",
    "replace": "At four hundred meters I start counting ties so I won't count breaths.",
    "kind": "сочетаемость",
-   "why": "Keeps the rail-term change consistent."
+   "why": "Keeps the rail-term change consistent.",
+   "decision": "rejected"
   },
   {
    "file": "X-B103A.md",
    "find": "At five hundred I find I'm on my knees and don't remember getting down on them.",
    "replace": "At five hundred I'm on my knees and don't remember getting down on them.",
    "kind": "тик",
-   "why": "Removes a filter-verb construction; the sentence is stronger directly."
+   "why": "Removes a filter-verb construction; the sentence is stronger directly.",
+   "decision": "applied"
   },
   {
    "file": "X-B103A.md",
    "find": "My lamp shines on the roof, on a rusty lagging bar with \"520\" written on it in chalk.",
    "replace": "My lamp shines upward, on rusty roof lagging with \"520\" written on it in chalk.",
    "kind": "сочетаемость",
-   "why": "“Lagging bar” is clunky; “roof lagging” is the natural mining phrasing."
+   "why": "“Lagging bar” is clunky; “roof lagging” is the natural mining phrasing.",
+   "decision": "applied"
   },
   {
    "file": "X-B103A.md",
    "find": "Not a single sleeper yet.",
    "replace": "Not a single tie yet.",
    "kind": "сочетаемость",
-   "why": "Keeps the rail-term change consistent."
+   "why": "Keeps the rail-term change consistent.",
+   "decision": "rejected"
   },
   {
    "file": "X-B103B.md",
    "find": "The air in the crosscut stands still, like in a three-liter jar.",
    "replace": "The air in the crosscut stands still, trapped in a three-liter jar.",
    "kind": "калька",
-   "why": "“Like in” is literal and weak; the image works better as an active compression."
+   "why": "“Like in” is literal and weak; the image works better as an active compression.",
+   "decision": "applied (edited)",
+   "replace_final": "The air in the crosscut stands still, the way it does in a three-liter jar."
   },
   {
    "file": "X-B103B.md",
    "find": "Gas seeps in from the drift above, quiet as a cat into a kitchen.",
    "replace": "Gas seeps in from the drift above, quiet as a cat slipping into the kitchen.",
    "kind": "калька",
-   "why": "The English simile needs the implied motion made explicit."
+   "why": "The English simile needs the implied motion made explicit.",
+   "decision": "applied"
   },
   {
    "file": "X-B103B.md",
    "find": "I don't notice until my arms go limp and the self-rescuer feels heavy and pointless, like a winter hat in May.",
    "replace": "I don't notice until my arms go limp and the self-rescuer feels heavy and useless, like a winter hat in May.",
    "kind": "сочетаемость",
-   "why": "“Pointless” is abstract; the Russian means the thing feels needless/useless on the body."
+   "why": "“Pointless” is abstract; the Russian means the thing feels needless/useless on the body.",
+   "decision": "applied"
   },
   {
    "file": "X-B103B.md",
    "find": "I sat pressed against it with my back for that whole hour and never once turned around.",
    "replace": "I spent that whole hour with my back pressed to it and never once turned around.",
    "kind": "калька",
-   "why": "Literal Russian syntax; the revised line is idiomatic and keeps the bodily memory."
+   "why": "Literal Russian syntax; the revised line is idiomatic and keeps the bodily memory.",
+   "decision": "applied"
   },
   {
    "file": "X-B103B.md",
    "find": "The ventilation plan hanging in the assignment room I never studied properly; there was never time.",
    "replace": "I never really studied the ventilation plan hanging in the shift office; there was never time.",
    "kind": "калька",
-   "why": "Russian topicalization plus “assignment room” read unnatural; “shift office” is clearer."
+   "why": "Russian topicalization plus “assignment room” read unnatural; “shift office” is clearer.",
+   "decision": "applied"
   },
   {
    "file": "X-B103C.md",
    "find": "yelling that there's nothing in it to breathe.",
    "replace": "yelling that there's no air in it.",
    "kind": "калька",
-   "why": "“Nothing in it to breathe” is literal and unidiomatic."
+   "why": "“Nothing in it to breathe” is literal and unidiomatic.",
+   "decision": "applied"
   },
   {
    "file": "X-B103C.md",
    "find": "he fights me off like a drunk in a sobering-up cell and catches my mouthpiece with his elbow.",
    "replace": "he fights me off like a drunk in the drunk tank and elbows me in the mouthpiece.",
    "kind": "сочетаемость",
-   "why": "“Sobering-up cell” is a calque; “catches my mouthpiece” also misdescribes the blow."
+   "why": "“Sobering-up cell” is a calque; “catches my mouthpiece” also misdescribes the blow.",
+   "decision": "applied"
   },
   {
    "file": "X-B103C.md",
    "find": "Only I've already breathed without it, twice, deep, like before a dive.",
    "replace": "But I've already breathed without it, twice, deep, like before a dive.",
    "kind": "калька",
-   "why": "Sentence-initial “Only” in this sense is Russian connective logic, not natural English."
+   "why": "Sentence-initial “Only” in this sense is Russian connective logic, not natural English.",
+   "decision": "applied"
   },
   {
    "file": "X-B103C.md",
    "find": "My head goes light.",
    "replace": "I get light-headed.",
    "kind": "сочетаемость",
-   "why": "“Head goes light” is understandable but not idiomatic."
+   "why": "“Head goes light” is understandable but not idiomatic.",
+   "decision": "applied"
   },
   {
    "file": "X-B104A.md",
    "find": "Down at the shaft bottom it smells of burning and warm iron.",
    "replace": "Down at the shaft bottom it smells of smoke and warm iron.",
    "kind": "сочетаемость",
-   "why": "“Smells of burning” as a noun is awkward; “smoke” matches гарь here."
+   "why": "“Smells of burning” as a noun is awkward; “smoke” matches гарь here.",
+   "decision": "applied"
   },
   {
    "file": "X-B104A.md",
    "find": "I take the one lying down under the arms.",
    "replace": "I take the man on the ground under the arms.",
    "kind": "сочетаемость",
-   "why": "“The one lying down” is stiff in English action prose."
+   "why": "“The one lying down” is stiff in English action prose.",
+   "decision": "applied"
   },
   {
    "file": "X-B104A.md",
    "find": "My face is burning from the inside, from the throat.",
    "replace": "My face burns from the inside, starting at the throat.",
    "kind": "калька",
-   "why": "“From the throat” is a literal Russian attachment and reads incomplete."
+   "why": "“From the throat” is a literal Russian attachment and reads incomplete.",
+   "decision": "applied"
   },
   {
    "file": "X-B108A.md",
    "find": "Gray with dust, on blue tape, three turns, like a bandage. My three turns.",
    "replace": "Gray with dust, held on with blue electrical tape, three wraps, like a bandage. My three wraps.",
    "kind": "смысл",
-   "why": "“On blue tape” loses that it is taped over the sensor; “electrical tape” is the real object."
+   "why": "“On blue tape” loses that it is taped over the sensor; “electrical tape” is the real object.",
+   "decision": "applied"
   },
   {
    "file": "X-B108A.md",
    "find": "Seryoga is showing me Mishka on his phone, in the bobble hat.",
    "replace": "Seryoga is showing me Mishka on his phone, in a hat with a pom-pom.",
    "kind": "регистр",
-   "why": "“Bobble hat” is British; the glossary asks for neutral American spelling/wording."
+   "why": "“Bobble hat” is British; the glossary asks for neutral American spelling/wording.",
+   "decision": "applied"
   },
   {
    "file": "X-B108A.md",
    "find": "whose three turns of tape those are.",
    "replace": "whose three wraps of tape those are.",
    "kind": "сочетаемость",
-   "why": "Keeps the tape wording idiomatic and consistent with the earlier fix."
+   "why": "Keeps the tape wording idiomatic and consistent with the earlier fix.",
+   "decision": "applied"
   },
   {
    "file": "X-B108A.md",
    "find": "The back of my neck pulls me there, past this minute, to February, to that shift at this same junction.",
    "replace": "A pull at the back of my neck drags me there, past this minute, to February, to that shift at this same junction.",
    "kind": "калька",
-   "why": "The original English makes the body part act like a subject; the revised line keeps the loop sensation."
+   "why": "The original English makes the body part act like a subject; the revised line keeps the loop sensation.",
+   "decision": "applied"
   },
   {
    "file": "X-B108B.md",
    "find": "I'm just laid down on the conveyor, and above, where the roof was, there's suddenly nothing.",
    "replace": "The blast simply lays me flat on the conveyor, and above, where the roof was, there's suddenly nothing.",
    "kind": "сочетаемость",
-   "why": "“I'm just laid down” is unidiomatic passive phrasing."
+   "why": "“I'm just laid down” is unidiomatic passive phrasing.",
+   "decision": "applied"
   },
   {
    "file": "X-B108B.md",
    "find": "The support sections fold one after another, like dominoes, with an iron clang, and my turn comes.",
    "replace": "The support sections fold one after another, like dominoes, with iron clangs, and my turn comes.",
    "kind": "логика",
-   "why": "Several sections fold, so the sound should not be a single clang."
+   "why": "Several sections fold, so the sound should not be a single clang.",
+   "decision": "applied"
   },
   {
    "file": "X-B108B.md",
    "find": "Plastic rustles in my fingers, a Maria-Ra bag that isn't here.",
    "replace": "Plastic rustles in my fingers, a Maria-Ra grocery bag that isn't here.",
    "kind": "смысл",
-   "why": "A light in-line cue tells an English reader Maria-Ra is a store bag without overexplaining."
+   "why": "A light in-line cue tells an English reader Maria-Ra is a store bag without overexplaining.",
+   "decision": "applied"
   },
   {
    "file": "X-B108B.md",
    "find": "Why I'm remembering it now I don't understand, but the back of my neck pulls me there like a sore tooth.",
    "replace": "I don't understand why I'm remembering it now, but the back of my neck aches like a sore tooth and pulls me there.",
    "kind": "калька",
-   "why": "The fronted clause and the sore-tooth comparison are Russian-shaped in English."
+   "why": "The fronted clause and the sore-tooth comparison are Russian-shaped in English.",
+   "decision": "applied"
   },
   {
    "file": "X-B109A.md",
    "find": "The self-rescuer is breathing harder and harder, I'm hot, my mouth tastes sweetish, like caramel.",
    "replace": "Breathing through the self-rescuer gets harder and harder, I'm hot, my mouth tastes sweetish, like caramel.",
    "kind": "калька",
-   "why": "In English the device “breathing” sounds accidental rather than bodily."
+   "why": "In English the device “breathing” sounds accidental rather than bodily.",
+   "decision": "applied"
   },
   {
    "file": "X-B109A.md",
    "find": "My arms don't stop obeying all at once; first my fingers, then my wrists.",
    "replace": "My arms don't give out all at once; first my fingers, then my hands.",
    "kind": "смысл",
-   "why": "“Кисти” are hands, not wrists; “stop obeying” is also a Russian calque."
+   "why": "“Кисти” are hands, not wrists; “stop obeying” is also a Russian calque.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "holding a cable on hooks with one hand.",
    "replace": "holding on with one hand to a cable on hooks.",
    "kind": "сочетаемость",
-   "why": "The original object order is clumsy; “holding on to” is the idiom."
+   "why": "The original object order is clumsy; “holding on to” is the idiom.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "The flashlight reaches half a meter and stops in the murk, and something white floats in the murk, in flakes.",
    "replace": "The flashlight reaches half a meter and stops in the murk; something white floats there, in flakes.",
    "kind": "ритм",
-   "why": "Removes the heavy repeated “murk” while keeping the limited visibility."
+   "why": "Removes the heavy repeated “murk” while keeping the limited visibility.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "I swim on without the cable, by a memory of the plan that I don't have.",
    "replace": "I swim on without the cable, following a memory of the plan I don't have.",
    "kind": "калька",
-   "why": "“By a memory” is not idiomatic English."
+   "why": "“By a memory” is not idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "The rope at my waist snags on something and won't let me back.",
    "replace": "The rope at my waist snags on something and won't let me go back.",
    "kind": "сочетаемость",
-   "why": "“Let me back” is elliptical in a way that sounds non-native here."
+   "why": "“Let me back” is elliptical in a way that sounds non-native here.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "Everything like when I was seven. Black water, crowded, and right by my ear somebody starts counting.",
    "replace": "Everything is like when I was seven. Black water, no room, and right by my ear somebody starts counting.",
    "kind": "смысл",
-   "why": "“Crowded” implies people; тесно here is the cramped pressure of drowning."
+   "why": "“Crowded” implies people; тесно here is the cramped pressure of drowning.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "whether to put in the pump.",
    "replace": "whether to set up the pump.",
    "kind": "сочетаемость",
-   "why": "They are not installing a pump permanently; they are setting it up for use."
+   "why": "They are not installing a pump permanently; they are setting it up for use.",
+   "decision": "applied"
   },
   {
    "file": "X-B111A.md",
    "find": "At twenty my helmet knocked against something under the ceiling, hollow, with emptiness inside it, and I swam on, down, after the cable.",
    "replace": "At twenty meters my helmet knocked against something under the ceiling, a hollow sound with empty space behind it, and I swam on, down, after the cable.",
    "kind": "калька",
-   "why": "Restores “meters” and makes the air-pocket clue intelligible in English."
+   "why": "Restores “meters” and makes the air-pocket clue intelligible in English.",
+   "decision": "applied"
   }
  ],
  "verdict": "Партия в целом сильная: темп, телесность шахтёрских смертей и повторяющиеся детали в основном держатся. Самые частые проблемы — русская синтаксическая калька, чуть неточные технические/бытовые реалии и отдельные британизмы или неидиоматичные связки. Крупных смысловых провалов почти нет, но именно мелкие предлоги, порядок слов и термины местами выдают перевод.",
