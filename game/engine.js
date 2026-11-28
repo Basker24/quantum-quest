@@ -1661,9 +1661,17 @@
     for (const yr of years) {
       if (prev != null && yr - prev > 1) y += 12; // разрыв на пустых годах
       const lanes = byYear[yr];
-      const rows = Math.max(...Object.values(lanes).map((l) => l.length));
+      // ряды внутри года: ответвившаяся жизнь начинается на ряд ниже своей развилки в соседней дорожке (стрелка не идёт вверх)
+      const rowOf = {}, start = {};
+      for (const list of Object.values(lanes)) list.sort((a, b) => topo[a] - topo[b]);
+      for (let pass = 0; pass < 3; pass++) for (const [l, list] of Object.entries(lanes)) {
+        let s = 0;
+        list.forEach((id, i) => { for (const par of parents[id] || []) if (laneOf(par) !== l && rowOf[par] != null) s = Math.max(s, rowOf[par] + 1 - i); });
+        start[l] = s; list.forEach((id, i) => (rowOf[id] = s + i));
+      }
+      const rows = Math.max(...Object.entries(lanes).map(([l, list]) => start[l] + list.length));
       bands.push({ y, label: String(yr) });
-      for (const [l, list] of Object.entries(lanes)) list.sort((a, b) => topo[a] - topo[b]).forEach((id, i) => place(id, colX(laneIx[l]), y + i * ROW, "scene"));
+      for (const [l, list] of Object.entries(lanes)) list.forEach((id) => place(id, colX(laneIx[l]), y + rowOf[id] * ROW, "scene"));
       y += rows * ROW; prev = yr;
     }
     const lifeBottom = y;
