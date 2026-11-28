@@ -5,315 +5,362 @@
    "find": "I'm wearing a striped sailor's shirt and a canvas storm jacket. Grandma kept the jacket in her trunk until she died, and then Dad gave it to me and said, \"Granddad's, I think.\"",
    "replace": "I'm wearing a striped sailor's undershirt and a canvas storm jacket. Grandma kept the jacket in her trunk until she died, and then Dad gave it to me and said, \"Must be Granddad's.\"",
    "kind": "смысл",
-   "why": "Glossary: first mention is a striped sailor's undershirt; the quoted line has a set rendering."
+   "why": "Glossary: first mention is a striped sailor's undershirt; the quoted line has a set rendering.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "I'm wearing a striped sailor's shirt and Granddad's storm jacket, darned at the elbow.",
    "replace": "I'm wearing a striped sailor's undershirt and Granddad's storm jacket, darned at the elbow.",
    "kind": "смысл",
-   "why": "This branch can be the first mention of the telnyashka; glossary asks for undershirt."
+   "why": "This branch can be the first mention of the telnyashka; glossary asks for undershirt.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "For fifty-four years I lived by the sea, where the water is warm as a bath, and I taught people myself how not to drown in it.",
    "replace": "For fifty-four years I lived by the sea, where the water is warm as a bath, and I was the one teaching people how not to drown in it.",
    "kind": "сочетаемость",
-   "why": "\"Taught people myself how\" is a Russian-order calque."
+   "why": "\"Taught people myself how\" is a Russian-order calque.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "These are my third pair of boots on the road.",
    "replace": "This is my third pair of boots on the road.",
    "kind": "опечатка",
-   "why": "Agreement: pair is singular."
+   "why": "Agreement: pair is singular.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "Under the riverbed, six hundred meters or so beneath my feet, run the old workings of the Glubokaya.",
    "replace": "Under the riverbed, six hundred meters or so beneath my feet, run the old workings of the Glubokaya mine.",
    "kind": "смысл",
-   "why": "Glossary: Glubokaya needs \"mine\" for English readers."
+   "why": "Glossary: Glubokaya needs \"mine\" for English readers.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "\"All my life I handed you out light,\" she says. \"I'll hand it out today too. Bring it back.\"",
    "replace": "\"I gave you light all my life,\" she says. \"I'll give it today too. Bring it back.\"",
    "kind": "калька",
-   "why": "\"Handed you out light\" is not idiomatic English."
+   "why": "\"Handed you out light\" is not idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "\"Pa. I'm here. I wait.\"",
    "replace": "\"Pa. I'm here. I'm waiting.\"",
    "kind": "смысл",
-   "why": "The Russian line is careful but grammatical; broken English adds an error."
+   "why": "The Russian line is careful but grammatical; broken English adds an error.",
+   "decision": "rejected"
   },
   {
    "file": "A-01.md",
    "find": "\"Grandpa, there's perch here,\" he whispers. \"Only quiet.\"",
    "replace": "\"Grandpa, there are perch here,\" he whispers. \"Just be quiet.\"",
    "kind": "калька",
-   "why": "Plural agreement and \"Only quiet\" are calqued."
+   "why": "Plural agreement and \"Only quiet\" are calqued.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "a stack of five-thousand notes.",
    "replace": "a stack of five-thousand-ruble notes.",
    "kind": "смысл",
-   "why": "English needs the currency; otherwise the realia is unclear."
+   "why": "English needs the currency; otherwise the realia is unclear.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "from the shaft of the bootleg pit.",
    "replace": "from the shaft of a wildcat pit.",
    "kind": "смысл",
-   "why": "Glossary: копанка is a wildcat pit, not a bootleg pit."
+   "why": "Glossary: копанка is a wildcat pit, not a bootleg pit.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "the numbers on it stand at thirty meters.",
    "replace": "the readout is stuck at thirty meters.",
    "kind": "калька",
-   "why": "\"Numbers stand at\" is a Russian collocation."
+   "why": "\"Numbers stand at\" is a Russian collocation.",
+   "decision": "applied"
   },
   {
    "file": "A-01.md",
    "find": "A man's watch on a steel bracelet, a Shturmanskie, with a little star on the dial.",
    "replace": "A man's watch on a steel bracelet, a Shturmanskie watch, a Soviet navigator's watch, with a little star on the dial.",
    "kind": "смысл",
-   "why": "Glossary asks for the explanation at first possible mention."
+   "why": "Glossary asks for the explanation at first possible mention.",
+   "decision": "rejected"
   },
   {
    "file": "A-02.md",
    "find": "the bracelet slips off my wrist, and I don't manage to catch it.",
    "replace": "the bracelet slips off my wrist, and I can't catch it in time.",
    "kind": "калька",
-   "why": "\"Don't manage to\" is stiff here; the Russian means he is too late."
+   "why": "\"Don't manage to\" is stiff here; the Russian means he is too late.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "I come out from under the snag in 1996",
    "replace": "I surface from under the snag in 1996",
    "kind": "смысл",
-   "why": "He is emerging from underwater; \"surface\" keeps the action precise."
+   "why": "He is emerging from underwater; \"surface\" keeps the action precise.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "A steel bracelet hangs out of the fist",
    "replace": "A steel bracelet hangs from his fist",
    "kind": "сочетаемость",
-   "why": "\"Hangs out of the fist\" is not idiomatic."
+   "why": "\"Hangs out of the fist\" is not idiomatic.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "Beside us on her knees is a girl of about seven, panama hat in her fist, lips blue, counting out loud.",
    "replace": "Beside us, on her knees, is a girl of about seven, a little sunhat in her fist, lips blue, counting aloud.",
    "kind": "смысл",
-   "why": "Russian панамка is a child's sunhat here, not an English Panama hat."
+   "why": "Russian панамка is a child's sunhat here, not an English Panama hat.",
+   "decision": "rejected"
   },
   {
    "file": "A-02.md",
    "find": "\"One hundred ninety,\" she says. \"One hundred ninety-one.\"",
    "replace": "\"One hundred and ninety,\" she says. \"One hundred and ninety-one.\"",
    "kind": "смысл",
-   "why": "Glossary says children's counting keeps \"and\"."
+   "why": "Glossary says children's counting keeps \"and\".",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "The blood coming from it is pink with water.",
    "replace": "Water thins the blood pink.",
    "kind": "сочетаемость",
-   "why": "The original image is physical; the English phrasing is clumsy."
+   "why": "The original image is physical; the English phrasing is clumsy.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "My chest suddenly cramps, as if from a ball in the stomach.",
    "replace": "My chest suddenly cramps, as if I'd taken a ball to the gut.",
    "kind": "смысл",
-   "why": "\"Мяч под дых\" is a blow that knocks the breath out, not a ball in the stomach."
+   "why": "\"Мяч под дых\" is a blow that knocks the breath out, not a ball in the stomach.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "and my palm burns, as if it had somewhere to lie.",
    "replace": "and my palm burns, as if it knows where it belongs.",
    "kind": "калька",
-   "why": "Literal rendering of \"есть куда лечь\" does not work in English."
+   "why": "Literal rendering of \"есть куда лечь\" does not work in English.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "I press on his chest, hard, like a ball in the stomach.",
    "replace": "I press on his chest, hard, the way a ball knocks the breath out of you.",
    "kind": "смысл",
-   "why": "Same idiom: the force is like being hit in the solar plexus."
+   "why": "Same idiom: the force is like being hit in the solar plexus.",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "\"Two hundred,\" I say along with her. \"Two hundred one.\"",
    "replace": "\"Two hundred,\" I say along with her. \"Two hundred and one.\"",
    "kind": "смысл",
-   "why": "Keeps the established counting style with \"and\"."
+   "why": "Keeps the established counting style with \"and\".",
+   "decision": "applied"
   },
   {
    "file": "A-02.md",
    "find": "We really, really need to not lose count.",
    "replace": "We need, very badly, not to lose count.",
    "kind": "регистр",
-   "why": "The double \"really\" sounds modern and flat for this tense adult voice."
+   "why": "The double \"really\" sounds modern and flat for this tense adult voice.",
+   "decision": "applied (edited)",
+   "replace_final": "We really can't lose count."
   },
   {
    "file": "A-03.md",
    "find": "hold it on her knees",
    "replace": "hold it in her lap",
    "kind": "калька",
-   "why": "English says \"in her lap,\" not \"on her knees.\""
+   "why": "English says \"in her lap,\" not \"on her knees.\"",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "The girl with the panama hat in her fist looks at me with round eyes.",
    "replace": "The girl with the little sunhat in her fist looks at me with round eyes.",
    "kind": "смысл",
-   "why": "Панамка is a child's sunhat here; \"Panama hat\" misleads."
+   "why": "Панамка is a child's sunhat here; \"Panama hat\" misleads.",
+   "decision": "rejected"
   },
   {
    "file": "A-03.md",
    "find": "Nobody in this city knows this old man, and nobody ever will.",
    "replace": "Nobody in this city knows this old man, and nobody will recognize him.",
    "kind": "смысл",
-   "why": "\"Не узнает\" means recognize, not get to know him later."
+   "why": "\"Не узнает\" means recognize, not get to know him later.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "The bluff over the riverbed is the same, and the Gorka is the same, and the comet is the same.",
    "replace": "The bluff over the riverbed is the same, Krasnaya Gorka is the same, and the comet is the same.",
    "kind": "смысл",
-   "why": "\"The Gorka\" is opaque in English; the glossary form is Krasnaya Gorka."
+   "why": "\"The Gorka\" is opaque in English; the glossary form is Krasnaya Gorka.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "But the streetlights up top run wrong, and beyond the bluff burn the lights of a street I don't remember.",
    "replace": "But the lights up top move in unfamiliar ways, and beyond the bluff, the lights of a street I don't remember are burning.",
    "kind": "смысл",
-   "why": "\"Фонари ходят\" are moving lights, not streetlights that \"run.\""
+   "why": "\"Фонари ходят\" are moving lights, not streetlights that \"run.\"",
+   "decision": "applied (edited)",
+   "replace_final": "But the lanterns moving up top belong to strangers, and beyond the bluff burn the lights of a street I don't remember."
   },
   {
    "file": "A-03.md",
    "find": "Now in 2061 stands a life that resembles mine the way a cousin does.",
    "replace": "Now, in 2061, there is a life that resembles mine the way a cousin does.",
    "kind": "калька",
-   "why": "Russian inversion sounds unnatural in English."
+   "why": "Russian inversion sounds unnatural in English.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "The number I know by heart answers there in a stranger's sleepy voice",
    "replace": "The number I know by heart is answered by a stranger's sleepy voice",
    "kind": "калька",
-   "why": "A phone number does not \"answer there\" in idiomatic English."
+   "why": "A phone number does not \"answer there\" in idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "Mom, who's running here across the waste ground right now in her work overalls.",
    "replace": "Mom, who's running here across the vacant lot right now in her work overalls.",
    "kind": "регистр",
-   "why": "\"Waste ground\" reads British; \"vacant lot\" is neutral American English."
+   "why": "\"Waste ground\" reads British; \"vacant lot\" is neutral American English.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "They don't know anything yet, about the dust or the hospital.",
    "replace": "They don't know yet about the dust or the hospital.",
    "kind": "ритм",
-   "why": "The comma makes the sentence sag and over-explain."
+   "why": "The comma makes the sentence sag and over-explain.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "I feel I could hold it a while longer.",
    "replace": "I could hold it a while longer.",
    "kind": "тик",
-   "why": "Filter verb; the sentence is stronger without announcing the feeling."
+   "why": "Filter verb; the sentence is stronger without announcing the feeling.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "Here, in 1996, I won't have the Choir; the seam will go and take it with it.",
    "replace": "Here, in 1996, I won't have the Choir; the seam will close and take it with it.",
    "kind": "сочетаемость",
-   "why": "\"The seam will go\" is too literal and weak in English."
+   "why": "\"The seam will go\" is too literal and weak in English.",
+   "decision": "applied"
   },
   {
    "file": "A-03.md",
    "find": "Go back nowhere. Leave for the worlds where I don't grow old",
    "replace": "Don't go back anywhere. Leave for the worlds where I don't grow old",
    "kind": "калька",
-   "why": "Choice text is visible to the player; \"go back nowhere\" is not idiomatic."
+   "why": "Choice text is visible to the player; \"go back nowhere\" is not idiomatic.",
+   "decision": "applied"
   },
   {
    "file": "X-A01B.md",
    "find": "I can no longer stretch out mine.",
    "replace": "I can't reach out my own.",
    "kind": "сочетаемость",
-   "why": "\"Stretch out mine\" is stiff and unidiomatic for a hand."
+   "why": "\"Stretch out mine\" is stiff and unidiomatic for a hand.",
+   "decision": "applied"
   },
   {
    "file": "X-A01B.md",
    "find": "My heart is racing like an engine started with a push.",
    "replace": "My heart is racing like a push-started engine.",
    "kind": "сочетаемость",
-   "why": "More idiomatic English for the same механика image."
+   "why": "More idiomatic English for the same механика image.",
+   "decision": "applied"
   },
   {
    "file": "X-A01B.md",
    "find": "I'm seventy-two; headfirst is no longer for me, and the boy is down there by the snag, and the girl is already counting.",
    "replace": "I'm seventy-two; I can't go headfirst anymore, and the boy is down there by the snag, and the girl is already counting.",
    "kind": "калька",
-   "why": "\"Headfirst is no longer for me\" is a Russian-shaped phrase."
+   "why": "\"Headfirst is no longer for me\" is a Russian-shaped phrase.",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "walk home barefoot, from old memory, to where I lived.",
    "replace": "walk home barefoot by memory, to the place where I lived.",
    "kind": "калька",
-   "why": "\"From old memory\" is not idiomatic English."
+   "why": "\"From old memory\" is not idiomatic English.",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "The entrance is the same, but the door is different, steel, with a code I don't know.",
    "replace": "The building entrance is the same, but the door is different, steel, with a code I don't know.",
    "kind": "смысл",
-   "why": "Подъезд needs a little anchoring for English readers."
+   "why": "Подъезд needs a little anchoring for English readers.",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "A woman in a housecoat comes out with a trash bag and looks at me the way you look at drunks.",
    "replace": "A woman in a housecoat comes out with a trash bag and looks at me the way people look at drunks.",
    "kind": "регистр",
-   "why": "Generic \"you\" pulls the reader in too directly; the Russian is impersonal."
+   "why": "Generic \"you\" pulls the reader in too directly; the Russian is impersonal.",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "and the curtains there have flowers on them.",
    "replace": "and the curtains there are flowered.",
    "kind": "сочетаемость",
-   "why": "\"Have flowers on them\" is clunky for \"в цветочек.\""
+   "why": "\"Have flowers on them\" is clunky for \"в цветочек.\"",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "\"Who are you looking for, Grandpa?\"",
    "replace": "\"Who are you looking for, sir?\"",
    "kind": "регистр",
-   "why": "A stranger calling him \"Grandpa\" sounds wrong in English; Russian дедушка is a polite address."
+   "why": "A stranger calling him \"Grandpa\" sounds wrong in English; Russian дедушка is a polite address.",
+   "decision": "applied"
   },
   {
    "file": "X-A03B.md",
    "find": "The last thing I see is the light going out in my window.",
    "replace": "In my window, the light goes out.",
    "kind": "тик",
-   "why": "Avoids the stock death-frame \"the last thing I see\" while keeping the final detail."
+   "why": "Avoids the stock death-frame \"the last thing I see\" while keeping the final detail.",
+   "decision": "rejected"
   },
   {
    "file": "X-A03B.md",
    "find": "We never had curtains with flowers.",
    "replace": "We never had flowered curtains.",
    "kind": "сочетаемость",
-   "why": "Matches the corrected idiom and reads naturally."
+   "why": "Matches the corrected idiom and reads naturally.",
+   "decision": "applied"
   }
  ],
  "verdict": "Партия в целом сильная: финальная сцена держит холод и ясную геометрию шва, голос старика в основном выдержан. Чаще всего мешают русские синтаксические кальки, неточные бытовые реалии по глоссарию и отдельные неанглийские словосочетания. Самые важные фактические вещи — часы, 04:12, 252, шрам — сохранены.",

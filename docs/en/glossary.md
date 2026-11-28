@@ -45,6 +45,7 @@
 | 4 минуты 12 секунд | **four minutes, twelve seconds** | |
 | «Водяной» (кличка героя, бабкина страшилка) | **the Vodyanoy** (дух), кличка **Vodyanoy** | Вводится в Т-01 бабкиной страшилкой с объяснением в той же фразе: *the vodyanoy — the old man who lives under the water and grabs kids by the ankles*. Кличка в Т-03 тогда понятна. Глава «Водяные» (2041) → *The Vodyanoys*? — **решить при переводе В2.2** (кандидат: *Water Rats*). Кличку не переводим: она звучит чужим и страшным словом — так её и слышит Шмелёв |
 | «Тиша?..» | **"Tisha…?"** | Английская пунктуация, не русское «?..». Сразу после — *Tisha was what they called my grandfather* |
+| панамка (Никина, в вишнях) | **a sun hat**, *a little sun hat with cherries on it* | не *panama hat*: по-английски это взрослая соломенная шляпа (критик 28.11) |
 | тельняшка | **a striped sailor's undershirt** при первом упоминании, дальше **the striped shirt** / **the telnyashka** не используем | |
 | штормовка | **a canvas storm jacket**, дальше **the storm jacket** | «Дедова, кажись» → *"Must be Granddad's."* (*I reckon* — деревенский диалект, не наш) |
 | «Штурманские» (часы) | **a Shturmanskie watch — a Soviet navigator's watch** при первом упоминании, дальше **the Shturmanskie watch** / **the watch** | Звёздочка на циферблате → *a little star on the dial* |

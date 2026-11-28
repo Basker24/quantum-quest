@@ -41,9 +41,9 @@
     "начать всё заново (стереть прогресс)": "start over (erase all progress)", "точно? нажми ещё раз — всё сотрётся": "sure? tap again and everything is erased",
     "Разрешить анонимную статистику? Без имени и почты: общие счётчики игроков («эту смерть получили…») и Яндекс Метрика.": "Allow anonymous statistics? No name, no email: shared player counters (\"this death was found by…\") and Yandex Metrica.",
     "разрешить": "allow", "нет": "no",
-    "Стол у окна: лампа, детская панамка в вишнях, тельняшка, шахтёрская лампа с жетоном 246, письмо «Коле», наручные часы, камертон, всё на ворохе дедовых записок; за окном комета над шахтой": "A table by the window: a lamp, a child's panama hat with cherries, a striped sailor's shirt, a miner's lamp with tag 246, a letter \"For Kolya\", a wristwatch, a tuning fork, all on a heap of Grandfather's notes; outside, a comet over the mine",
+    "Стол у окна: лампа, детская панамка в вишнях, тельняшка, шахтёрская лампа с жетоном 246, письмо «Коле», наручные часы, камертон, всё на ворохе дедовых записок; за окном комета над шахтой": "A table by the window: a lamp, a child's sun hat with cherries, a striped sailor's shirt, a miner's lamp with tag 246, a letter \"For Kolya\", a wristwatch, a tuning fork, all on a heap of Grandfather's notes; outside, a comet over the mine",
     // предметы натюрморта
-    "панамка": "the panama hat", "тельняшка": "the striped shirt", "часы": "the watch", "настольная лампа": "the desk lamp", "камертон": "the tuning fork",
+    "панамка": "the sun hat", "тельняшка": "the striped shirt", "часы": "the watch", "настольная лампа": "the desk lamp", "камертон": "the tuning fork",
     "окно": "the window", "шахтёрская лампа": "the miner's lamp", "письмо «Коле»": "the letter \"For Kolya\"",
     "поплавок": "a fishing float", "очки для чтения": "reading glasses", "сухая гвоздика": "a dried carnation", "пробка от «Жигулёвского»": "a Zhigulevskoye bottle cap",
     "гильза": "a shell casing", "двушка": "a two-kopeck coin", "огарок свечи": "a candle stub", "ещё не прожито": "not lived yet", "пусто": "empty",

@@ -5,287 +5,331 @@
    "find": "My shift is brought up at ten at night.",
    "replace": "They bring my shift up at ten at night.",
    "kind": "калька",
-   "why": "Passive calque; active phrasing is more natural in English and keeps present tense."
+   "why": "Passive calque; active phrasing is more natural in English and keeps present tense.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "At 23:20 methane explodes at the Glubokaya.",
    "replace": "At 23:20 methane explodes at the Glubokaya mine.",
    "kind": "сочетаемость",
-   "why": "First standalone mention needs the noun; “at the Glubokaya” reads unfinished in English."
+   "why": "First standalone mention needs the noun; “at the Glubokaya” reads unfinished in English.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "By midnight the mine rescue buses are standing by the shaft, the paramilitary rescue unit, guys in orange with breathing sets in boxes on their backs.",
    "replace": "By midnight the buses from the paramilitary mine rescue unit are lined up by the shaft. The rescuers are guys in orange, with breathing-apparatus boxes on their backs.",
    "kind": "калька",
-   "why": "The apposition is tangled; “buses are standing” is also a Russianism."
+   "why": "The apposition is tangled; “buses are standing” is also a Russianism.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "It's the same Palych I hauled tanks for, three nights in '05.",
    "replace": "It's the same Palych I hauled air cylinders for, three nights in '05.",
    "kind": "сочетаемость",
-   "why": "“Tanks” can suggest armored vehicles; for rescue gear, “air cylinders” is clearer."
+   "why": "“Tanks” can suggest armored vehicles; for rescue gear, “air cylinders” is clearer.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "some in overalls, some in house clothes;",
    "replace": "some in work overalls, some in regular clothes;",
    "kind": "калька",
-   "why": "“House clothes” is not idiomatic for people who came from home."
+   "why": "“House clothes” is not idiomatic for people who came from home.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "The cage comes up empty and stands with its door open. Smoke and warm iron drift out of it.",
    "replace": "The cage comes up empty and stands with its door open. It smells of smoke and warm iron.",
    "kind": "сочетаемость",
-   "why": "Smoke can drift, but “warm iron” cannot; the Russian is about smell."
+   "why": "Smoke can drift, but “warm iron” cannot; the Russian is about smell.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "That's when I remember his \"four hours,\" and my legs stop by themselves.",
    "replace": "That's when I remember his \"four hours,\" and my feet stop on their own.",
    "kind": "калька",
-   "why": "“My legs stop by themselves” is a literal transfer; “feet stop” is the idiomatic body action."
+   "why": "“My legs stop by themselves” is a literal transfer; “feet stop” is the idiomatic body action.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "the gas is still coming down there",
    "replace": "the gas is still coming out down there",
    "kind": "смысл",
-   "why": "The gas is being released below, not descending."
+   "why": "The gas is being released below, not descending.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "Later three men from the second squad come out of the smoke, and Palych last, with his mask torn down around his neck.",
    "replace": "Later three men from the second squad come out of the smoke, and Palych comes last, his mask ripped loose around his neck.",
    "kind": "сочетаемость",
-   "why": "“Palych last” and “mask torn down” are stiff; the replacement keeps the concrete detail."
+   "why": "“Palych last” and “mask torn down” are stiff; the replacement keeps the concrete detail.",
+   "decision": "applied"
   },
   {
    "file": "B1-04.md",
    "find": "The first squad is already down; there's no shouting to them.",
    "replace": "The first squad is already down; no one can shout loud enough to reach them.",
    "kind": "калька",
-   "why": "“No shouting to them” is a direct calque of “не докричишься.”"
+   "why": "“No shouting to them” is a direct calque of “не докричишься.”",
+   "decision": "applied (edited)",
+   "replace_final": "The first squad is already down; no amount of shouting will reach them."
   },
   {
    "file": "B1-04.md",
    "find": "\"You left me five today. But not six.\"",
    "replace": "\"You kept five of mine alive today. Not the other six.\"",
    "kind": "смысл",
-   "why": "“Left me five” is opaque in English; the point is that five were saved and six were not."
+   "why": "“Left me five” is opaque in English; the point is that five were saved and six were not.",
+   "decision": "applied (edited)",
+   "replace_final": "\"You gave me back five today. But not six.\""
   },
   {
    "file": "B1-05.md",
    "find": "The six men from the first squad are buried on the same day, at Kedrovka cemetery, to a band that plays so slowly it seems the trumpeters are falling asleep.",
    "replace": "The six men from the first squad are buried on the same day, at Kedrovskoye Cemetery, with a band playing so slowly it seems the trumpeters are falling asleep.",
    "kind": "сочетаемость",
-   "why": "“Buried to a band” is unidiomatic; “Kedrovskoye Cemetery” is closer to the Russian ellipsis."
+   "why": "“Buried to a band” is unidiomatic; “Kedrovskoye Cemetery” is closer to the Russian ellipsis.",
+   "decision": "applied (edited)",
+   "replace_final": "The six men from the first squad are buried on the same day, at the Kedrovka cemetery, with a band playing so slowly it seems the trumpeters are falling asleep."
   },
   {
    "file": "B1-05.md",
    "find": "After the funerals the Glubokaya is shut for six months.",
    "replace": "After the funerals the Glubokaya mine is shut for six months.",
    "kind": "сочетаемость",
-   "why": "Standalone “the Glubokaya” reads odd in English; glossary form is “the Glubokaya mine.”"
+   "why": "Standalone “the Glubokaya” reads odd in English; glossary form is “the Glubokaya mine.”",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "Twice out of those times the roof came down at the face half an hour later.",
    "replace": "Twice, half an hour later, the roof came down at the face.",
    "kind": "калька",
-   "why": "“Twice out of those times” is a Russian structure; the leaner version carries the same meaning."
+   "why": "“Twice out of those times” is a Russian structure; the leaner version carries the same meaning.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "The rescue unit pays less than the face, but you only go down to the places everybody else is running up from.",
    "replace": "Working in the rescue unit pays less than working at the face, but you only go down to places everybody else is running up from.",
    "kind": "сочетаемость",
-   "why": "“Pays less than the face” is too compressed and sounds like the place itself pays wages."
+   "why": "“Pays less than the face” is too compressed and sounds like the place itself pays wages.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "Seryoga is spinning her a yarn about the mine, how in March he walked out of a gassed-up face \"all by himself.\"",
    "replace": "Seryoga is telling her a mine story, how in March he walked out of a gas-filled face \"all by himself.\"",
    "kind": "регистр",
-   "why": "“Spinning her a yarn” is folksy/old-fashioned; “gassed-up face” sounds like a car or a drunk."
+   "why": "“Spinning her a yarn” is folksy/old-fashioned; “gassed-up face” sounds like a car or a drunk.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "Neither one. Night school at the polytechnic for mine foreman, and then a section of my own",
    "replace": "Neither one. Correspondence courses at the polytechnic to become a mine foreman, and then a section of my own",
    "kind": "смысл",
-   "why": "“Заочно” is correspondence/part-time study, not night school."
+   "why": "“Заочно” is correspondence/part-time study, not night school.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "The straps of the set rub my shoulders raw, and by December the raw turns to skin.",
    "replace": "The straps of the set rub my shoulders raw, and by December the raw flesh turns to skin.",
    "kind": "сочетаемость",
-   "why": "“The raw” as a noun is awkward here; the Russian image is flesh turning to skin."
+   "why": "“The raw” as a noun is awkward here; the Russian image is flesh turning to skin.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "He took six men to replace those six, and I'm the extra one, the seventh.",
    "replace": "He recruited six men to replace the ones he lost, and I'm the extra one, the seventh.",
    "kind": "сочетаемость",
-   "why": "“Took six men” is vague; “the ones he lost” makes the reference clear without overexplaining."
+   "why": "“Took six men” is vague; “the ones he lost” makes the reference clear without overexplaining.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "There's no offense in it.",
    "replace": "He isn't offended.",
    "kind": "калька",
-   "why": "The Russian abstract construction sounds unnatural in English."
+   "why": "The Russian abstract construction sounds unnatural in English.",
+   "decision": "rejected"
   },
   {
    "file": "B1-05.md",
    "find": "That's when the face goes quiet in a way it isn't usually.",
    "replace": "That's when the face goes quiet in the wrong way.",
    "kind": "сочетаемость",
-   "why": "The original English is clumsy; the replacement keeps the miner’s practical intuition."
+   "why": "The original English is clumsy; the replacement keeps the miner’s practical intuition.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "In September I enroll at the polytechnic, mining, by correspondence.",
    "replace": "In September I enroll in the mining department at the polytechnic as a correspondence student.",
    "kind": "сочетаемость",
-   "why": "The list-like phrasing is a calque; English needs the institutional relation spelled out."
+   "why": "The list-like phrasing is a calque; English needs the institutional relation spelled out.",
+   "decision": "applied"
   },
   {
    "file": "B1-05.md",
    "find": "write term papers in the assignment room between shifts on the backs of work orders.",
    "replace": "write term papers on the backs of work orders in the assignment office between shifts.",
    "kind": "ритм",
-   "why": "The original piles locations awkwardly; the revised order reads cleanly."
+   "why": "The original piles locations awkwardly; the revised order reads cleanly.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "The wedding is at the Beryozka in Rudnichny, in a hall with a mirror ball and an MC from Leninsk who in every pause yells \"Gorko!\" as if he's being murdered.",
    "replace": "The wedding is at the Beryozka in Rudnichny, in a hall with a mirror ball and an MC from Leninsk who, every time the room goes quiet, yells \"Gorko!\", the \"bitter!\" shout that means the couple has to kiss, as if he's being murdered.",
    "kind": "смысл",
-   "why": "Glossary requires Gorko to be explained on first encounter; otherwise the wedding shout is opaque."
+   "why": "Glossary requires Gorko to be explained on first encounter; otherwise the wedding shout is opaque.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "When I come to the Glubokaya with the unit for an inspection, he yells across the whole drift, \"Rescuer! Rescue me from the foreman!\"",
    "replace": "When I come to the Glubokaya mine with the unit for a preventive inspection, he yells across the whole drift, \"Rescuer! Rescue me from the foreman!\"",
    "kind": "смысл",
-   "why": "“Профилактика” is preventive inspection, and the mine name needs the noun in English."
+   "why": "“Профилактика” is preventive inspection, and the mine name needs the noun in English.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "Had a duty shift.",
    "replace": "I was on duty.",
    "kind": "сочетаемость",
-   "why": "The fragment in English sounds non-native; this keeps the blunt spoken tone."
+   "why": "The fragment in English sounds non-native; this keeps the blunt spoken tone.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "when only the ears were left by the snag.",
    "replace": "when only my ears were sticking out by the snag.",
    "kind": "смысл",
-   "why": "The English loses the referent; the memory is of him in the water by the snag."
+   "why": "The English loses the referent; the memory is of him in the water by the snag.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "I promise and put him in the taxi head first, so he won't bump it.",
    "replace": "I promise and put him in the taxi head first, so he won't bang his head.",
    "kind": "сочетаемость",
-   "why": "“Bump it” has a dangling pronoun and sounds childish in the wrong way."
+   "why": "“Bump it” has a dangling pronoun and sounds childish in the wrong way.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "It goes so quiet you can hear somebody in the hall putting on Laskovy Mai, the old boy-band hit.",
    "replace": "It goes so quiet you can hear somebody in the hall putting on Laskovy Mai.",
    "kind": "смысл",
-   "why": "The explanation is intrusive and inaccurate: Laskovy Mai is the act/name, not “the hit.”"
+   "why": "The explanation is intrusive and inaccurate: Laskovy Mai is the act/name, not “the hit.”",
+   "decision": "rejected"
   },
   {
    "file": "B1-06.md",
    "find": "I drink vodka straight from the bottle behind the garages past the Beryozka and catch a taxi to the Glubokaya.",
    "replace": "I drink vodka straight from the bottle by the garages behind the Beryozka and catch a taxi to the Glubokaya mine.",
    "kind": "калька",
-   "why": "“Behind the garages past” muddles the spatial relation; mine name also needs the noun."
+   "why": "“Behind the garages past” muddles the spatial relation; mine name also needs the noun.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "The night shift is on in the lamp room, and Tanya is behind the window.",
    "replace": "The night shift is passing through the lamp room, and Tanya is behind the window.",
    "kind": "калька",
-   "why": "“Night shift is on in the lamp room” is not idiomatic; the men are passing through for lamps."
+   "why": "“Night shift is on in the lamp room” is not idiomatic; the men are passing through for lamps.",
+   "decision": "applied"
   },
   {
    "file": "B1-06.md",
    "find": "\"I'm not giving a lamp to a drunk,\" she says. \"Kill me if you like.\"",
    "replace": "\"I'm not giving a drunk a lamp,\" she says. \"Not if you kill me.\"",
    "kind": "калька",
-   "why": "“Хоть убей” is an idiom; the literal version sounds like an invitation."
+   "why": "“Хоть убей” is an idiom; the literal version sounds like an invitation.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "In '15 the ruble falls by half, coal gets cheaper abroad, and the holding company announces that bonuses will only be paid to sections that make quota.",
    "replace": "In '15 the ruble loses half its value, world coal prices fall, and the holding company announces that bonuses will only be paid to sections that make quota.",
    "kind": "калька",
-   "why": "“Coal gets cheaper abroad” is a Russian economic phrasing; “world coal prices fall” is idiomatic."
+   "why": "“Coal gets cheaper abroad” is a Russian economic phrasing; “world coal prices fall” is idiomatic.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "I'm here with the unit for an inspection, measuring gas along the whole face with my own instrument and writing it up.",
    "replace": "I'm here with the unit for a preventive inspection, measuring gas along the whole face with my own instrument and writing it up.",
    "kind": "смысл",
-   "why": "“Профилактика” here is a preventive inspection/check, not just any inspection."
+   "why": "“Профилактика” here is a preventive inspection/check, not just any inspection.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "and out of twelve men they brought nine up alive.",
    "replace": "and out of twelve men underground they brought nine up.",
    "kind": "смысл",
-   "why": "“Alive” is added detail not present in the Russian and may matter in a death-log story."
+   "why": "“Alive” is added detail not present in the Russian and may matter in a death-log story.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "My fingers feel like cotton, and the tape sticks to my glove.",
    "replace": "My fingers are numb and clumsy, and the tape sticks to my glove.",
    "kind": "калька",
-   "why": "“Пальцы ватные” should not be translated literally as “feel like cotton.”"
+   "why": "“Пальцы ватные” should not be translated literally as “feel like cotton.”",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "The pen writes badly, and I go over my signature twice.",
    "replace": "The pen skips, and I go over my signature twice.",
    "kind": "калька",
-   "why": "“The pen writes badly” is a Russianism; English says the pen skips or barely writes."
+   "why": "“The pen writes badly” is a Russianism; English says the pen skips or barely writes.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "At four-twelve I go out too.",
    "replace": "At 04:12 I go out too.",
    "kind": "смысл",
-   "why": "Glossary fixes this key time as 04:12 in prose; “four-twelve” is for speech."
+   "why": "Glossary fixes this key time as 04:12 in prose; “four-twelve” is for speech.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "In the report I write the sensor, the bag, the tape and the time, to the minute.",
    "replace": "In the report I write down the sensor, the bag, the tape, and the time, to the minute.",
    "kind": "сочетаемость",
-   "why": "English needs “write down” for entering listed facts in a report."
+   "why": "English needs “write down” for entering listed facts in a report.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "Bondarenko puts me on nights for a week, on cleanup, where they put the guys being punished.",
    "replace": "Bondarenko puts me on nights for a week, on cleanup, the punishment detail.",
    "kind": "сочетаемость",
-   "why": "“Where they put the guys being punished” is wordy and explanatory; “punishment detail” is natural."
+   "why": "“Where they put the guys being punished” is wordy and explanatory; “punishment detail” is natural.",
+   "decision": "applied"
   },
   {
    "file": "B1-07.md",
    "find": "The face gets gassy again and stops.",
    "replace": "The face starts giving off gas again and stops.",
    "kind": "смысл",
-   "why": "“Газит” is the seam/face giving off methane; “gets gassy” is looser and slightly comic."
+   "why": "“Газит” is the seam/face giving off methane; “gets gassy” is looser and slightly comic.",
+   "decision": "applied"
   }
  ],
  "verdict": "Партия в целом крепкая: голос взрослого Андрея держится, шахтная конкретика в основном работает, крупной потери фактов нет. Чаще всего мешают русские синтаксические кальки, неуверенная подача реалий/названий вроде Gorko и Glubokaya, а также мелкие сдвиги смысла в шахтных деталях. В нескольких местах английский слишком объясняет или, наоборот, оставляет русскую фразу непрозрачной.",

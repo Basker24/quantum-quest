@@ -1,0 +1,283 @@
+{
+ "fixes": [
+  {
+   "file": "B1-11.md",
+   "find": "By the plan it's forty meters to the next door.",
+   "replace": "According to the plan, it's forty meters to the next door.",
+   "kind": "калька",
+   "why": "“By the plan” is a Russian calque; this is the idiomatic English phrasing."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The room is about six meters by eight, dry, the walls covered in frost. A cot upholstered in leatherette, above it a ring of copper coils. A control panel with toggle switches and dials, all Soviet, all gray. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Research topic TUNING FORK. Observation log. Facility Level 640.\"",
+   "replace": "The room is about six meters by eight, dry, the walls covered in frost. A cot upholstered in leatherette, above it a ring of copper coils. A control panel with toggle switches and dials, all Soviet, all gray. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Topic: Tuning Fork. Observation Log. Object: Horizon-640.\"",
+   "kind": "смысл",
+   "why": "“Горизонт-640” is the object name, not “Facility Level 640”; Tuning Fork should follow glossary capitalization."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The room is about six meters by eight, the walls covered in frost. A cot, a ring of copper coils, a control panel. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Research topic TUNING FORK. Observation log. Facility Level 640.\"",
+   "replace": "The room is about six meters by eight, the walls covered in frost. A cot, a ring of copper coils, a control panel. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Topic: Tuning Fork. Observation Log. Object: Horizon-640.\"",
+   "kind": "смысл",
+   "why": "Same notebook-cover meaning error in the B branch."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The room is about six meters by eight, dry, the walls covered in frost. A cot, a ring of copper coils, a control panel. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Research topic TUNING FORK. Observation log. Facility Level 640.\"",
+   "replace": "The room is about six meters by eight, dry, the walls covered in frost. A cot, a ring of copper coils, a control panel. On the wall, in big chalk numbers: \"41.\" On the table, on an oilcloth, lies a thick school notebook in cellophane, held with a rubber band. On the cover, in ink: \"Topic: Tuning Fork. Observation Log. Object: Horizon-640.\"",
+   "kind": "смысл",
+   "why": "Same notebook-cover meaning error in the C branch."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "I sit down on the cot and read. The handwriting is the same as on the letter \"For Kolya.\" A table, ruled with a ruler: number, date, time, place, how, what I heard. \"No. 1. 12.04.61. 4:12. Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 4:12.",
+   "replace": "I sit down on the cot and read. The handwriting is the same as on the letter \"For Kolya.\" A ruled table: number, date, time, place, method, what was heard. \"No. 1. 12.04.61. 04:12. The Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 04:12.",
+   "kind": "смысл",
+   "why": "Fixes the canonical 04:12 format and removes the clumsy “ruled with a ruler” calque."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "I read it sitting on the cot. The handwriting is the same as on the letter \"For Kolya.\" A table, ruled with a ruler: number, date, time, place, how, what I heard. \"No. 1. 12.04.61. 4:12. Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 4:12.",
+   "replace": "I read it sitting on the cot. The handwriting is the same as on the letter \"For Kolya.\" A ruled table: number, date, time, place, method, what was heard. \"No. 1. 12.04.61. 04:12. The Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 04:12.",
+   "kind": "смысл",
+   "why": "Same 04:12/calqed-table issue in the B branch."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The handwriting is the same as on the letter \"For Kolya.\" A table, ruled with a ruler: number, date, time, place, how, what I heard. \"No. 1. 12.04.61. 4:12. Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 4:12. I look at the forty rows and think that my table in this life is already no shorter.",
+   "replace": "The handwriting is the same as on the letter \"For Kolya.\" A ruled table: number, date, time, place, method, what was heard. \"No. 1. 12.04.61. 04:12. The Ob Sea, ice hole. Water, 4 min. They sang.\" About forty rows. Almost all of them 04:12. I look at the forty rows and think my own table in this life is no shorter by now.",
+   "kind": "смысл",
+   "why": "Fixes canonical time format, calque, and the literal “my table … no shorter” phrasing."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The last entry: \"28.01.86. 4:12. The fortieth. Six men in the drift, can't get a single one out. They can't hear, and I hear them all. Vadim, synchronize watches. Forty-first. Going.\"\n\nBy the far wall, where water from the old adit once came into the chamber and left silt, lies a child's sandal.",
+   "replace": "The last entry: \"28.01.86. 04:12. The fortieth. Six men in the gallery; I can't get a single one out. They can't hear, but I hear them all. Vadim. Synchronize watches. Forty-first. Going.\"\n\nBy the far wall, where water from the old adit once came into the chamber and left silt, lies a child's sandal.",
+   "kind": "смысл",
+   "why": "04:12 is canonical; “drift” risks collision with the Drift and “Vadim. Synchronize watches.” is the glossary wording."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The last entry: \"28.01.86. 4:12. The fortieth. Six men in the drift, can't get a single one out. They can't hear, and I hear them all. Vadim, synchronize watches. Forty-first. Going.\"\n\nBy the far wall, where water from the old adit once came in, the pump has scraped the silt down to the concrete.",
+   "replace": "The last entry: \"28.01.86. 04:12. The fortieth. Six men in the gallery; I can't get a single one out. They can't hear, but I hear them all. Vadim. Synchronize watches. Forty-first. Going.\"\n\nBy the far wall, where water from the old adit once came in, the pump has scraped the silt down to the concrete.",
+   "kind": "смысл",
+   "why": "Same canonical-time and glossary-rhyme issue in the B branch."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "The last entry: \"28.01.86. 4:12. The fortieth. Six men in the drift, can't get a single one out. They can't hear, and I hear them all. Vadim, synchronize watches. Forty-first. Going.\"\n\nBy the far wall, in the silt, lies a child's sandal, brown, with a one-hole buckle.",
+   "replace": "The last entry: \"28.01.86. 04:12. The fortieth. Six men in the gallery; I can't get a single one out. They can't hear, but I hear them all. Vadim. Synchronize watches. Forty-first. Going.\"\n\nBy the far wall, in the silt, lies a child's sandal, brown, with a one-hole buckle.",
+   "kind": "смысл",
+   "why": "Same canonical-time and glossary-rhyme issue in the C branch."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "It pumps for five days and nights, humming day and night, and the level in the corridor drops a centimeter at a time.",
+   "replace": "It runs for five days, humming day and night, and the level in the corridor drops a centimeter at a time.",
+   "kind": "ритм",
+   "why": "“Five days and nights” plus “day and night” is redundant and clumsy in English."
+  },
+  {
+   "file": "B1-11.md",
+   "find": "At twenty I come up under the ceiling, to the pocket. It's where I remember.",
+   "replace": "At twenty I come up under the ceiling, to the pocket. It's where I remember it.",
+   "kind": "сочетаемость",
+   "why": "The object is needed in idiomatic English."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "My cough started in November and still hasn't gone by February.",
+   "replace": "My cough started in November and still hasn't gone away by February.",
+   "kind": "сочетаемость",
+   "why": "A cough “goes away,” not simply “goes,” in this register."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "At the regional hospital's pulmonology department Nika sees me.",
+   "replace": "Nika sees me in pulmonology at the regional hospital.",
+   "kind": "калька",
+   "why": "The original word order is stiff and institutional in English."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "\"In Novosibirsk they do lung lavage,\" she says. \"One lung at a time, under anesthesia. There's a free quota next year, and if you pay, tomorrow. Only there's no point if you go back down in April.\"",
+   "replace": "\"In Novosibirsk they do lung lavage,\" she says. \"One lung at a time, under anesthesia. There's a state-funded slot next year; if you pay, they can do it tomorrow. Only there's no point if you go back down in April.\"",
+   "kind": "сочетаемость",
+   "why": "“Free quota” is opaque bureaucratic calque; “state-funded slot” explains the realia in passing."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "\"A procedure for people with more money than conscience,\" she says. \"They put something in your blood, and then you don't die when you're supposed to. They offered me a department here. I said no. I don't understand what they make it from, and when I don't understand something, I don't take it on.\"",
+   "replace": "\"A procedure for people with more money than conscience,\" she says. \"They put something in your blood, and then you don't die when you're supposed to. They offered me a department to run here. I said no. I don't understand what they make it from, and when I don't understand something, I don't take it on.\"",
+   "kind": "смысл",
+   "why": "She was offered the job of running a department, not handed “a department” as a thing."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "She looks at me the way she used to look at a lamp I'd brought back.",
+   "replace": "She looks at me the way she used to look at the lamp I'd brought back.",
+   "kind": "смысл",
+   "why": "This is the known lamp from their shared history, not any lamp."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "She still lives alone on Shakhtyorov Street, and sometimes I drop by for tea, the way I used to drop by the lamp-room window.",
+   "replace": "She still lives alone on Shakhtyorov Street, and sometimes I drop by for tea, the way I used to drop by the lamp room window.",
+   "kind": "опечатка",
+   "why": "Keep “lamp room” consistent with the rest of the English text."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "At discharge Nika is silent for a long time, holding my chart. \"It's anthracosis, Andrei,\" she says at last. \"Dust. I'm not promising you anything.\" It's the first time in her life she's called me by my first name.",
+   "replace": "When I'm discharged, Nika is silent for a long time, holding my chart. \"It's anthracosis, Andrei,\" she says at last. \"Dust. I'm not promising you anything.\" It's the first time she's ever called me by my first name.",
+   "kind": "сочетаемость",
+   "why": "“At discharge” is chart language; the last sentence is more idiomatic with “ever.”"
+  },
+  {
+   "file": "B1-12.md",
+   "find": "At discharge Nika hands me my chart and says, \"Not one foot underground, understand? Not even on a tour.\" I promise. The way she looks at me makes it clear how much she believes me.",
+   "replace": "When I'm discharged, Nika hands me my chart and says, \"Don't set foot underground again, understand? Not even on a tour.\" I promise. The way she looks at me makes it clear how little she believes me.",
+   "kind": "калька",
+   "why": "“Not one foot underground” is a literal transfer; the irony of the last sentence needs to land in English."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "In the mornings she makes me drink a brew of some herb, foul as water from the mine sump.",
+   "replace": "In the mornings she makes me drink some herbal brew, foul as water from the mine sump.",
+   "kind": "сочетаемость",
+   "why": "“A brew of some herb” is awkward; “some herbal brew” keeps the dismissive tone."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "\"And the Severnaya?\" he says. \"Who's going to seal her, me?\" It turns out, him.",
+   "replace": "\"And the Severnaya?\" he says. \"Who's going to seal her, me?\" Turns out it will be him.",
+   "kind": "калька",
+   "why": "“It turns out, him” is a Russian syntax calque."
+  },
+  {
+   "file": "B1-12.md",
+   "find": "I don't call the guys, not one of them, because I don't know what to say to men I've been riding the cage with for thirty years.",
+   "replace": "I don't call the guys, not one of them, because I don't know what to say to men I've ridden the cage with for thirty years.",
+   "kind": "опечатка",
+   "why": "Present perfect needs the past participle here."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "Back then its mouth was underwater, but for three summers now, since the Tom went, it's been sticking out of the bluff as a brick arch, and kids run in there to scare each other.",
+   "replace": "Back then its mouth was underwater, but for three summers now the Tom has been drawing back; the mouth sticks out of the bluff as a brick arch, and kids run in there to scare each other.",
+   "kind": "сочетаемость",
+   "why": "“Since the Tom went” is unidiomatic and makes the river sound simply gone; the Russian means it has been receding."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "She takes a lamp out of the closet, mine, number two hundred forty-six, which she carried out of the lamp room thirty-five years ago when they closed the Glubokaya.",
+   "replace": "She takes a lamp out of the closet, mine, number two hundred forty-six, which she carried out of the lamp room thirty-five years ago when they closed the Glubokaya mine.",
+   "kind": "смысл",
+   "why": "First mention in the branch should make clear Glubokaya is a mine."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "I have my own lamp, number two hundred forty-six; Tanya gave it to me when they closed the Glubokaya.",
+   "replace": "I have my own lamp, number two hundred forty-six; Tanya gave it to me when they closed the Glubokaya mine.",
+   "kind": "смысл",
+   "why": "Same clarity issue in the alternate partner branch."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "Vitka's name was carved forty years ago on the stone by the old pithead building, in the common list.",
+   "replace": "Vitka's name was carved forty years ago on the stone by the old pithead building, in the shared list of names.",
+   "kind": "калька",
+   "why": "“Common list” is not natural English for a memorial list."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "> Can you get everyone out? I asked myself that all my life, since '09. That night they gave me a short answer.",
+   "replace": "> Could I get everyone out? I asked myself that all my life, since '09. That night the answer was short.",
+   "kind": "ритм",
+   "why": "The impersonal “Can you” is awkward here; the revised aside is drier and more like the old narrator."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "\"Mishka,\" I say. \"Right at the fork, about a hundred meters. There's a dead end. He's there.\"",
+   "replace": "\"Mishka,\" I say. \"Take the right fork, about a hundred meters. There's a dead end. He's there.\"",
+   "kind": "смысл",
+   "why": "“Right at the fork” means “exactly there”; the Russian means take the right-hand branch from the fork."
+  },
+  {
+   "file": "B1-13.md",
+   "find": "Tanya switches off the radio and says, \"There.\"",
+   "replace": "Tanya switches off the radio and says, \"There we are.\"",
+   "kind": "сочетаемость",
+   "why": "A bare “There” is too abrupt/unnatural for “Ну вот” in this context."
+  },
+  {
+   "file": "X-B102A.md",
+   "find": "I'm carried backward down the face, turned over, and I can't tell up from down anymore.",
+   "replace": "The coal carries me backward down the face, rolls me over, and I can't tell up from down anymore.",
+   "kind": "калька",
+   "why": "The passive construction is flat and calqued; the coal is the force acting on him."
+  },
+  {
+   "file": "X-B102A.md",
+   "find": "My lamp is shining somewhere under my arm, in the black, a yellow spot.",
+   "replace": "My lamp is shining somewhere near my hand, in the black, a yellow spot.",
+   "kind": "смысл",
+   "why": "“Под рукой” here means near/under his hand, not literally under his arm."
+  },
+  {
+   "file": "X-B102A.md",
+   "find": "How I know this I don't understand.",
+   "replace": "I don't understand how I know this.",
+   "kind": "калька",
+   "why": "Russian word order carried over into English."
+  },
+  {
+   "file": "X-B102B.md",
+   "find": "You can't see it or hear it; my ears just suddenly pop, like in the cage.",
+   "replace": "You can't see it or hear it; my ears suddenly clog, like in the cage.",
+   "kind": "смысл",
+   "why": "“Закладывает уши” means pressure blocks/clogs the ears; “pop” suggests the pressure releases."
+  },
+  {
+   "file": "X-B102B.md",
+   "find": "The air goes thick and empty, like in a jar with everything pumped out of it.",
+   "replace": "The air goes thick and empty, like the inside of a jar with everything pumped out.",
+   "kind": "сочетаемость",
+   "why": "“Like in a jar” is unidiomatic; this keeps the image without the calque."
+  },
+  {
+   "file": "X-B102B.md",
+   "find": "I open my mouth, and there's nothing in it to breathe.",
+   "replace": "I open my mouth, and there's nothing there to breathe.",
+   "kind": "смысл",
+   "why": "“In it” points to the mouth; the meaning is that there is no breathable air around him."
+  }
+ ],
+ "verdict": "Партия в целом сильная: рабочий голос взрослого Самохина держится, сцены шахты читаются плотно, основные рифмы не развалены. Чаще всего всплывают повторные кальки из русского синтаксиса, неточности в технических/канонических формулировках вроде 04:12 и Horizon-640, а также отдельные фразы, где английский звучит слишком буквальным переводом.",
+ "_meta": {
+  "model": "gpt-5.5-2026-04-23",
+  "usage": {
+   "input_tokens": 27770,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cache_write_tokens_details": {
+     "ttl_12h_tokens": 0,
+     "ttl_30m_tokens": 0
+    },
+    "cached_tokens": 7936
+   },
+   "output_tokens": 38107,
+   "output_tokens_details": {
+    "reasoning_tokens": 38107
+   },
+   "total_tokens": 65877
+  },
+  "files": [
+   "FILE B1-11.md",
+   "FILE B1-12.md",
+   "FILE B1-13.md",
+   "FILE X-B102A.md",
+   "FILE X-B102B.md"
+  ]
+ }
+}
