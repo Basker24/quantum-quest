@@ -7,7 +7,7 @@ stihia: ДОРОГА
 lesson: Never reach over railings from above
 epitaph: Age 56. Kuznetsky Bridge, the third span. Pulled his student back over the railings and went over them himself.
 mourner: Yegor Shmelyov became a rescuer. He tells every new recruit about the teacher who threw him back over the railings onto the bridge, and never once finishes the story.
-src_sha: 3649bb7fc323
+src_sha: 2a633476f707
 ---
 I come up from behind, quietly, and say, "Come on, Yegor. Climb back." He turns toward my voice, and his heel slips off the ledge. I grab his hood with both hands and yank him toward me with all my strength.
 

@@ -1,0 +1,296 @@
+{
+ "fixes": [
+  {
+   "file": "B1-01.md",
+   "find": "Two years of mining college I sat through for one piece of paper, and in September of '09 they hand it to me.",
+   "replace": "I sat through two years of mining college for one piece of paper, and in September of '09 they hand it to me.",
+   "kind": "калька",
+   "why": "Inversion copies Russian word order; the straightforward English sentence keeps the voice without sounding translated."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "That's exactly what it says in my employment book now",
+   "replace": "That's exactly what it says in my work record book now",
+   "kind": "сочетаемость",
+   "why": "\"Employment book\" is opaque in English; \"work record book\" is clearer while preserving the Russian realia."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "You hand a tin tag through the window and get a cap lamp and a self-rescuer, an iron can on a belt that gives you half an hour of air when there's nothing around you to breathe.",
+   "replace": "You hand a tin tag through the window and get a cap lamp and a self-rescuer, a metal canister on your belt that gives you half an hour of air when there's nothing around you to breathe.",
+   "kind": "сочетаемость",
+   "why": "\"Iron can\" sounds literal and clumsy; a self-rescuer is a metal canister."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "\"Brought it back. Good boy.\"",
+   "replace": "\"Brought it back. Good job.\"",
+   "kind": "регистр",
+   "why": "\"Good boy\" infantilizes adult miners more than Russian \"молодец\" does."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "We've crawled out from under the same roof once already… Not in this life",
+   "replace": "We've crawled out from under the same cave-in once already… Not in this life",
+   "kind": "смысл",
+   "why": "\"Under the same roof\" reads as a domestic idiom, not a mine-roof collapse."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "I follow Dad around like a tail, and he doesn't chase me off.",
+   "replace": "I follow Dad everywhere, and he doesn't chase me off.",
+   "kind": "калька",
+   "why": "\"Like a tail\" is a Russian idiom carried over too literally."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "Underground he talks more than he does at home in a week, and all of it to the point.",
+   "replace": "Underground he talks more than he does at home in a week, and every word is about the job.",
+   "kind": "калька",
+   "why": "\"All of it to the point\" is not idiomatic English for \"всё по делу.\""
+  },
+  {
+   "file": "B1-01.md",
+   "find": "he scrubs my back with a washcloth like when I was little, silently and hard.",
+   "replace": "he scrubs my back hard with a washcloth, like when I was little, without a word.",
+   "kind": "сочетаемость",
+   "why": "\"Silently and hard\" is an awkward adverb pairing."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "The tag is hanging from her hand.",
+   "replace": "The tag is in her hand.",
+   "kind": "сочетаемость",
+   "why": "A tag held by someone is \"in\" her hand; \"hanging from\" misplaces the image."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "She doesn't give it back right away, and in the second week she pours me tea from her thermos on top of it, strong and sweet like on a train.",
+   "replace": "She doesn't give it back right away, and in the second week she also pours me tea from her thermos, strong and sweet like on a train.",
+   "kind": "калька",
+   "why": "\"On top of it\" accidentally sounds as if she pours tea onto the tag."
+  },
+  {
+   "file": "B1-01.md",
+   "find": "the father's at the face, and the son runs off to his buddy.",
+   "replace": "his father is at the face, and he's running off to his buddy.",
+   "kind": "калька",
+   "why": "The article pattern copies Russian proverbial phrasing and sounds unnatural here."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "Night shift, the third longwall, past four in the morning.",
+   "replace": "Night shift, the third longwall, fourth hour.",
+   "kind": "смысл",
+   "why": "\"Четвёртый час\" here is the fourth hour of the shift, not simply clock time after four."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "Coal shoots at the Glubokaya every week",
+   "replace": "Coal shoots at Glubokaya every week",
+   "kind": "сочетаемость",
+   "why": "After the mine has been introduced, the bare mine name is more natural than \"the Glubokaya.\""
+  },
+  {
+   "file": "B1-02.md",
+   "find": "I look at it, and it looks back at me, I think.",
+   "replace": "I look at it, and it seems to look back.",
+   "kind": "ритм",
+   "why": "The tag-on \"I think\" weakens the line and creates a clumsy comma-splice feel."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "The coal flows down the face like water",
+   "replace": "The coal flows along the face like water",
+   "kind": "смысл",
+   "why": "The coal moves along the longwall, not vertically \"down\" the face."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "\"Forty years I've been listening to her. How did you hear her, Samokhin?\"",
+   "replace": "\"Forty years I've been listening to it. How did you hear it, Samokhin?\"",
+   "kind": "смысл",
+   "why": "The Russian refers to the seam/stratum; the added feminine personification is not motivated in English."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "\"Brought it back,\" she says. \"Good boy.\"",
+   "replace": "\"Brought it back,\" she says. \"Good job.\"",
+   "kind": "регистр",
+   "why": "As in the earlier refrain, \"Good boy\" is too infantilizing."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "thin, like the puppy he was at the backwater.",
+   "replace": "thin, the way he did as a puppy by the backwater.",
+   "kind": "сочетаемость",
+   "why": "The original phrasing is syntactically awkward and blurs sound with identity."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "The rubber is sour, breathing through it is tight.",
+   "replace": "The rubber tastes sour, and each breath comes hard.",
+   "kind": "сочетаемость",
+   "why": "\"Breathing is tight\" is a literal calque; the revised line is physical English."
+  },
+  {
+   "file": "B1-02.md",
+   "find": "\"What's got into you, Samokhin? She's only shooting.\"",
+   "replace": "\"What's got into you, Samokhin? It's only shooting.\"",
+   "kind": "смысл",
+   "why": "Again, \"she\" adds an English personification not present or needed here."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "Dying, it turns out, isn't something I can manage. What I can manage is remembering how I died, and going to work with that.",
+   "replace": "Apparently I can't manage dying. I remember how I died, and I carry that with me to work.",
+   "kind": "тик",
+   "why": "This falls into the \"not X but Y\" pattern and sounds more essayistic than the narrator."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "Sometimes at lunch I suddenly feel coal between my teeth and wash it down with stewed-fruit juice for a long time.",
+   "replace": "Sometimes at lunch I suddenly feel coal between my teeth and spend a long time washing it down with the sweet stewed-fruit drink.",
+   "kind": "сочетаемость",
+   "why": "\"Stewed-fruit juice\" is not idiomatic; the replacement explains компот without a footnote."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "at the Glubokaya it beeps all the time",
+   "replace": "at Glubokaya it beeps all the time",
+   "kind": "сочетаемость",
+   "why": "The mine name reads more naturally without the article after first mention."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "over the sleepers",
+   "replace": "over the rail ties",
+   "kind": "регистр",
+   "why": "\"Sleepers\" is British railway vocabulary; the style guide uses American spelling and neutral English."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "My body is strong; it has enough for this.",
+   "replace": "My body's strong; it can take this.",
+   "kind": "калька",
+   "why": "\"It has enough for this\" copies Russian \"его хватает\" too literally."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "\"You rat, you could've at least called me.\"",
+   "replace": "\"You rat, you could've at least yelled for me.\"",
+   "kind": "смысл",
+   "why": "In context he means shouting a warning, not phoning or generally calling."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "Cold air pulls through the gap, a real fresh current from the next drift, and I sit by that gap until the rescuers come.",
+   "replace": "A cold draft comes through the gap, a real fresh current from the next drift, and I sit there until the rescuers come.",
+   "kind": "сочетаемость",
+   "why": "\"Air pulls through\" is a Russian-style construction; \"draft comes through\" is natural."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "Here, at the Glubokaya, methane collects up top",
+   "replace": "Here, at Glubokaya, methane collects up top",
+   "kind": "сочетаемость",
+   "why": "Same article issue with the mine name."
+  },
+  {
+   "file": "B1-03.md",
+   "find": "On the third try it gives, and cold air pulls through the gap, a real fresh current.",
+   "replace": "On the third try it gives, and a cold draft comes through the gap, a real fresh current.",
+   "kind": "сочетаемость",
+   "why": "Same unidiomatic \"air pulls through\" construction."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "Up at the roof the gas detector chokes; down at the floor it beeps every other second.",
+   "replace": "Up by the roof the gas detector goes frantic; down by the floor it beeps on and off.",
+   "kind": "смысл",
+   "why": "\"Every other second\" invents a precise timing not in \"пищит через раз,\" and \"goes frantic\" better fits the detector."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "The crosscut comes out on a different current, from a different fan.",
+   "replace": "The crosscut opens onto a different air current, from a different fan.",
+   "kind": "сочетаемость",
+   "why": "\"Comes out on a current\" is not idiomatic; \"opens onto\" is clearer."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "and in it is an iron door, small, chest-high",
+   "replace": "and in it is a steel door, small, chest-high",
+   "kind": "сочетаемость",
+   "why": "English would normally call this a steel door; \"iron\" is a literal rendering of железная."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "In front of the door is a rock fall from the roof, knee-deep, and the door is wedged against it.",
+   "replace": "In front of the door is knee-deep fallen rock from the roof, and the door is wedged against it.",
+   "kind": "сочетаемость",
+   "why": "\"A rock fall\" is awkward here; the physical obstacle is fallen rock."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "The door sits as if it had grown there.",
+   "replace": "The door is stuck fast.",
+   "kind": "калька",
+   "why": "The literal image sounds translated; the scene needs the immediate physical fact."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "From under it, through the gap at the floor, comes the cold, damp air of the next drift, and I hold my palm under the gap like under a tap.",
+   "replace": "Cold, damp air from the next drift comes through the gap under it, down by the floor, and I hold my palm under the gap as if under a faucet.",
+   "kind": "сочетаемость",
+   "why": "The inversion and \"like under a tap\" are stiff; this keeps the action readable."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "On the other side there's a draft like from an open window in winter",
+   "replace": "On the other side there's a draft as cold as an open window in winter",
+   "kind": "сочетаемость",
+   "why": "\"Like from\" is unidiomatic; the comparison needs to be recast."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "he slaps my helmet:",
+   "replace": "he slaps me on the helmet:",
+   "kind": "сочетаемость",
+   "why": "In English you slap a person on the helmet, not usually the helmet alone in this construction."
+  },
+  {
+   "file": "B1-03b.md",
+   "find": "and breathe that gap for as long as I can.",
+   "replace": "and breathe through that gap for as long as I can.",
+   "kind": "сочетаемость",
+   "why": "\"Breathe that gap\" is a Russian calque; English needs \"through.\""
+  }
+ ],
+ "verdict": "В целом партия крепкая: шахтёрская среда читается материально, темп хороший, голос двадцатилетнего в основном выдержан. Чаще всего мешают кальки с русской синтаксики, буквальные горные/бытовые реалии вроде iron can или rock fall, и мелкие английские сочетаемостные сбои. Отдельно стоит выровнять обращения и рефрен Тани: \"Good boy\" уводит сцену не туда.",
+ "_meta": {
+  "model": "gpt-5.5-2026-04-23",
+  "usage": {
+   "input_tokens": 24232,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cache_write_tokens_details": {
+     "ttl_12h_tokens": 0,
+     "ttl_30m_tokens": 0
+    },
+    "cached_tokens": 0
+   },
+   "output_tokens": 32944,
+   "output_tokens_details": {
+    "reasoning_tokens": 32944
+   },
+   "total_tokens": 57176
+  },
+  "files": [
+   "FILE B1-01.md",
+   "FILE B1-02.md",
+   "FILE B1-03.md",
+   "FILE B1-03b.md"
+  ]
+ }
+}
